@@ -116,7 +116,7 @@
                   <div class="grid grid-cols-2 gap-4">
                     <q-input v-model="name" label="Name" outlined  disable class="custom-border-color" lazy-rules :rules="[ val => val && val.length > 0 || 'Please type something']"/>
                     <q-input v-model="gender" label="Gender" outlined  disable class=" rounded" lazy-rules :rules="[ val => val && val.length > 0 || 'Please type something']"/>
-                    <q-input v-model="birthday" label="Birthday" outlined  disable class=" rounded" lazy-rules :rules="[ val => val && val.length > 0 || 'Please type something']"/>
+                    <q-input v-model="birthdate" label="Birthday" outlined  disable class=" rounded" lazy-rules :rules="[ val => val && val.length > 0 || 'Please type something']"/>
                     <q-input v-model="position" label="Position" outlined  disable class=" rounded" lazy-rules :rules="[ val => val && val.length > 0 || 'Please type something']"/>
                   </div>
                   <div class="flex justify-end">
@@ -139,6 +139,33 @@
                   </div>
                 </div>
 
+                <!-- Password Information -->
+                <div class="h-[170px] w-[611px] border-[#ddb7ab] border mt-5 p-4 rounded">
+                  <p class="text-[#8F8073] text-[24px] font-bold">Password Info</p>
+                  <div class="">
+                    <q-input
+                      v-model="password"
+                      label="Current Password"
+                      outlined
+                      disable
+                      class="custom-border-color"
+                      lazy-rules
+                      :rules="[val => val && val.length > 0 || 'Please type something']"
+                      type="password"
+                    >
+                    <template v-slot:control>
+                      <div v-if="password">
+                        ****
+                      </div>
+                    </template>
+                    </q-input>
+                  </div>
+                  <div class="flex justify-end">
+                    <div class="w-[132px] text-center p-1 bg-[#9e896a] text-white rounded">
+                      <router-link to="">Update</router-link>
+                    </div>
+                  </div>
+                </div>
               </q-form>
           </div>
           </div>
@@ -161,9 +188,16 @@ export default {
       email: '',
       userProfileImage: null,
       username: '',
+      name: '',
+      gender: '',
+      birthdate: '',
+      position: '',
+      mobilenumber: '',
+      password: '',
       drawerVisible: true,
     };
   },
+
   mounted() {
     this.loadUserData();
   },
@@ -177,7 +211,12 @@ export default {
           this.email = userInformation.email;
           this.username = userInformation.username;
           this.userProfileImage = userInformation.pfp;
-
+          this.name = userInformation.fullname;
+          this.gender = userInformation.gender;
+          this.birthdate = userInformation.birthdate;
+          this.position = userInformation.position;
+          this.mobilenumber = userInformation.mobilenumber;
+          this.password = userInformation.password;
         } catch (error) {
           console.log('Error parsing user data:', error);
           // Provide user feedback or navigate to an error page
