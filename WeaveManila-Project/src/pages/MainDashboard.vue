@@ -116,7 +116,6 @@ export default {
   methods: {
     loadUserData() {
       const userData = SessionStorage.getItem('information');
-      console.log('Response Data:', userData);
       if (userData) {
         try {
           const userInformation = JSON.parse(userData);

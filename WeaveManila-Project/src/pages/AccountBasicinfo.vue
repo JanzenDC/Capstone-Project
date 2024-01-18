@@ -86,87 +86,78 @@
   </q-drawer>
   <q-page class="bg-[#f5f5f5] p-4">
     <div class="bg-white h-[520px] rounded p-10 overflow-auto">
-      <div class="text-center text-[#8F8073] text-[40px] font-bold border-b border-[#ddb7ab]">
-        ACCOUNT INFO
-      </div>
-      <div class="mt-10">
-        <div class="flex gap-6">
-          <div class="flex justify-center text-center">
-            <q-card class="w-[204px] h-[208px] border-[#ddb7ab] border">
-              <q-card-section class="mt-3">
-                <p class="font-bold text-lg">Profile</p>
-                <div class="relative">
-                  <q-img
-                    :src="getUserProfileImagePath()"
-                    alt="Description of the image"
-                    class="w-[100px] md:w-[100px] mt-3 rounded-full border-black border drop-shadow-md"
-                  />
-                  <q-icon name="photo_camera" class="text-[20px] absolute bottom-0 right-[40px] text-white bg-[#9e896a] rounded-full p-1"/>
-                </div>
-              </q-card-section>
-            </q-card>
+      <p class="text-[15px]"><q-icon name="arrow_back_ios"/> <span class=" font-bold text-[#9e896a]">Basic Info</span></p>
+      <div class="w-[800px] h-[400px] mt-2 border border-[#dfc8c0] rounded p-5 text-[15px]">
+        <q-form
+          @submit="onSubmit"
+        >
+          <p class="text-[#9e896a] font-bold">Name</p>
+          <div class="grid grid-cols-2 gap-4 mt-3">
+              <q-input v-model="name" label="First name" outlined   class="custom-border-color" lazy-rules :rules="[ val => val && val.length > 0 || 'Please type something']"/>
+              <q-input v-model="gender" label="Last name" outlined   class=" rounded" lazy-rules :rules="[ val => val && val.length > 0 || 'Please type something']"/>
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div class="">
+              <p class="text-[#9e896a] font-bold">Birthday</p>
+              <div class="grid grid-cols-3 gap-4 mt-3">
+                <q-input
+                  v-model="day"
+                  label="Day"
+                  outlined
+
+                  class="rounded"
+                />
+                <!-- Year Input -->
+                <q-input
+                  v-model="year"
+                  label="Year"
+                  outlined
+
+                  class="rounded"
+                />
+                <!-- Month Input -->
+                <q-select
+                  v-model="month"
+                  label="Months"
+                  outlined
+                  class="rounded"
+                  :options="monthsOptions"
+                />
+              </div>
+            </div>
+            <div class="">
+              <p class="text-[#9e896a] font-bold">Position</p>
+              <q-input v-model="position" label="Position" outlined  disable class=" rounded mt-3" lazy-rules :rules="[ val => val && val.length > 0 || 'Please type something']"/>
+            </div>
           </div>
           <div>
-            <div class="">
-                <!-- Basic Information -->
-                <div class="h-[275px] w-[611px] border-[#ddb7ab] border p-4 rounded">
-                  <p class="text-[#8F8073] text-[24px] font-bold">Basic Info</p>
-                  <div class="grid grid-cols-2 gap-4">
-                    <q-input v-model="name" label="Name" outlined  disable class="custom-border-color" lazy-rules :rules="[ val => val && val.length > 0 || 'Please type something']"/>
-                    <q-input v-model="gender" label="Gender" outlined  disable class=" rounded" lazy-rules :rules="[ val => val && val.length > 0 || 'Please type something']"/>
-                    <q-input v-model="birthdate" label="Birthday" outlined  disable class=" rounded" lazy-rules :rules="[ val => val && val.length > 0 || 'Please type something']"/>
-                    <q-input v-model="position" label="Position" outlined  disable class=" rounded" lazy-rules :rules="[ val => val && val.length > 0 || 'Please type something']"/>
-                  </div>
-                  <div class="flex justify-end">
-                    <div class="w-[132px] text-center p-1 bg-[#9e896a] text-white rounded">
-                      <router-link to="/dashboard/account-basicinfo">Update</router-link>
-                    </div>
-                  </div>
-                </div>
-                <!-- Contact Information -->
-                <div class="h-[170px] w-[611px] border-[#ddb7ab] border mt-5 p-4 rounded">
-                  <p class="text-[#8F8073] text-[24px] font-bold">Contact Info</p>
-                  <div class="grid grid-cols-2 gap-4">
-                    <q-input v-model="email" label="Email" outlined disable class="custom-border-color" lazy-rules :rules="[ val => val && val.length > 0 || 'Please type something']"/>
-                    <q-input v-model="mobilenumber" label="Mobile Number" type="number" outlined disable class=" rounded" lazy-rules :rules="[ val => val && val.length > 0 || 'Please type something']"/>
-                  </div>
-                  <div class="flex justify-end">
-                    <div class="w-[132px] text-center p-1 bg-[#9e896a] text-white rounded">
-                      <router-link to="">Update</router-link>
-                    </div>
-                  </div>
-                </div>
+          <p class="text-[#9e896a] font-bold">Gender</p>
 
-                <!-- Password Information -->
-                <div class="h-[170px] w-[611px] border-[#ddb7ab] border mt-5 p-4 rounded">
-                  <p class="text-[#8F8073] text-[24px] font-bold">Password Info</p>
-                  <div class="">
-                    <q-input
-                      v-model="password"
-                      label="Current Password"
-                      outlined
-                      disable
-                      class="custom-border-color"
-                      lazy-rules
-                      :rules="[val => val && val.length > 0 || 'Please type something']"
-                      type="password"
-                    >
-                    <template v-slot:control>
-                      <div v-if="password">
-                        ****
-                      </div>
-                    </template>
-                    </q-input>
-                  </div>
-                  <div class="flex justify-end">
-                    <div class="w-[132px] text-center p-1 bg-[#9e896a] text-white rounded">
-                      <router-link to="">Update</router-link>
-                    </div>
-                  </div>
-                </div>
-          </div>
-          </div>
+          <!-- q-radio for male -->
+          <q-radio
+            v-model="gender"
+            val="male"
+            label="Male"
+            color="primary"
+          />
+
+          <!-- q-radio for female -->
+          <q-radio
+            v-model="gender"
+            val="female"
+            label="Female"
+            color="primary"
+          />
+
+          <!-- q-radio for rather not to say -->
+          <q-radio
+            v-model="gender"
+            val="notToSay"
+            label="Rather Not to Say"
+            color="primary"
+          />
         </div>
+        </q-form>
       </div>
     </div>
   </q-page>
@@ -187,11 +178,28 @@ export default {
       username: '',
       name: '',
       gender: '',
-      birthdate: '',
+      day: '',
+      year: '',
       position: '',
       mobilenumber: '',
       password: '',
       drawerVisible: true,
+      months: '',
+      month: '',  // Newly added property for v-model binding
+      monthsOptions: [
+        { label: 'January', value: '01' },
+        { label: 'February', value: '02' },
+        { label: 'March', value: '03' },
+        { label: 'April', value: '04' },
+        { label: 'May', value: '05' },
+        { label: 'June', value: '06' },
+        { label: 'July', value: '07' },
+        { label: 'August', value: '08' },
+        { label: 'September', value: '09' },
+        { label: 'October', value: '10' },
+        { label: 'November', value: '11' },
+        { label: 'December', value: '12' },
+      ],
     };
   },
 
@@ -201,6 +209,7 @@ export default {
   methods: {
     loadUserData() {
       const userData = SessionStorage.getItem('information');
+      console.log("Response Data:", userData);
       if (userData) {
         try {
           const userInformation = JSON.parse(userData);
@@ -208,11 +217,20 @@ export default {
           this.username = userInformation.username;
           this.userProfileImage = userInformation.pfp;
           this.name = userInformation.fullname;
-          this.gender = userInformation.gender;
-          this.birthdate = userInformation.birthdate;
+          this.gender = (userInformation.gender || '').toLowerCase();
+
           this.position = userInformation.position;
           this.mobilenumber = userInformation.mobilenumber;
           this.password = userInformation.password;
+
+          if (userInformation.birthdate) {
+            const birthdateParts = userInformation.birthdate.split('-');
+            if (birthdateParts.length === 3) {
+              this.day = birthdateParts[2];
+              this.month = this.getMonthName(birthdateParts[1]);
+              this.year = birthdateParts[0];
+            }
+          }
         } catch (error) {
           console.log('Error parsing user data:', error);
           // Provide user feedback or navigate to an error page
@@ -226,6 +244,15 @@ export default {
         // Handle the case when user data is not available
         this.$router.push('/');
       }
+    },
+    getMonthName(monthNumber) {
+      // Add logic to get the month name based on the month number
+      const monthNames = [
+        'January', 'February', 'March', 'April', 'May', 'June',
+        'July', 'August', 'September', 'October', 'November', 'December'
+      ];
+
+      return monthNames[parseInt(monthNumber, 10) - 1] || '';
     },
     getUserProfileImagePath() {
       // Ensure userProfileImage is not null before creating the path
