@@ -34,7 +34,9 @@
       <li class="font-bold">Overview</li>
         <li class="py-[17px] px-[20px]">
           <div class="flex items-center">
+            <router-link to="/dashboard/main-dashboard">
             <q-icon name="dashboard" class="mr-2"/> Dashboard
+            </router-link>
           </div>
         </li>
         <!-- Process Section -->
