@@ -26,7 +26,36 @@
         <div>
           {{ username }}
         </div>
-        <q-icon name="arrow_drop_down" class="text-[25px]"/>
+        <q-icon
+          name="arrow_drop_down"
+          class="text-[25px] cursor-pointer"
+          @click="toggleModal"
+        />
+        <div v-if="showModal" class="fixed right-5 top-[110px] transform bg-white p-3 border border-gray-300 z-50 rounded-md drop-shadow-lg w-[308px] h-[200px]">
+          <div class="flex justify-center">
+            <div>
+              <div class="flex justify-center mt-3 ">
+                <q-img
+                  :src="getUserProfileImagePath()"
+                  alt="Description of the image"
+                  class="w-[80px] rounded-full border-black border"
+                />
+              </div>
+              <div class="font-bold">{{ fullname }}</div>
+              <div class="text-center">{{ position }}</div>
+            </div>
+          </div>
+          <router-link to="/dashboard/account-settings">
+            <p class="flex justify-between text-[16px]">
+              Account Settings <q-icon name="manage_accounts" class="mr-2 text-[16px]"/>
+            </p>
+          </router-link>
+          <router-link @click="logout" to="/">
+            <p class="flex justify-between text-[16px]">
+              Logout <q-icon name="logout" class="mr-2 text-[16px]"/>
+            </p>
+          </router-link>
+        </div>
       </div>
   </q-header>
   <q-drawer show-if-above v-model="leftDrawerOpen" side="left" bordered>
@@ -68,103 +97,81 @@
             <q-icon name="group" class="mr-2"/> User Management
           </div>
         </li>
-        <li class="py-[17px] px-[20px]">
-          <div class="flex items-center">
-            <router-link to="/dashboard/account-settings">
-              <q-icon name="manage_accounts" class="mr-2"/> Account
-            </router-link>
-          </div>
-        </li>
-        <li class="py-[17px] px-[20px]">
-          <div class="flex items-center">
-            <router-link @click="logout" to="/">
-              <q-icon name="logout" class="mr-2"/> Logout
-            </router-link>
-          </div>
-        </li>
     </ul>
   </q-drawer>
   <q-page class="bg-[#f5f5f5] p-4">
-    <div class="bg-white h-[520px] rounded p-10 overflow-auto">
-      <div class="text-center text-[#8F8073] text-[40px] font-bold border-b border-[#ddb7ab]">
-        ACCOUNT INFO
-      </div>
-      <div class="mt-10">
-        <div class="flex gap-6">
-          <div class="flex justify-center text-center">
-            <q-card class="w-[204px] h-[208px] border-[#ddb7ab] border">
-              <q-card-section class="mt-3">
-                <p class="font-bold text-lg">Profile</p>
-                <div class="relative">
-                  <q-img
-                    :src="getUserProfileImagePath()"
-                    alt="Description of the image"
-                    class="w-[100px] md:w-[100px] mt-3 rounded-full border-black border drop-shadow-md"
-                  />
-                  <q-icon name="photo_camera" class="text-[20px] absolute bottom-0 right-[40px] text-white bg-[#9e896a] rounded-full p-1"/>
-                </div>
-              </q-card-section>
-            </q-card>
-          </div>
-          <div>
-            <div class="">
-                <!-- Basic Information -->
-                <div class="h-[275px] w-[611px] border-[#ddb7ab] border p-4 rounded">
-                  <p class="text-[#8F8073] text-[24px] font-bold">Basic Info</p>
-                  <div class="grid grid-cols-2 gap-4">
-                    <q-input v-model="name" label="Name" outlined  disable class="custom-border-color" lazy-rules :rules="[ val => val && val.length > 0 || 'Please type something']"/>
-                    <q-input v-model="gender" label="Gender" outlined  disable class=" rounded" lazy-rules :rules="[ val => val && val.length > 0 || 'Please type something']"/>
-                    <q-input v-model="birthdate" label="Birthday" outlined  disable class=" rounded" lazy-rules :rules="[ val => val && val.length > 0 || 'Please type something']"/>
-                    <q-input v-model="position" label="Position" outlined  disable class=" rounded" lazy-rules :rules="[ val => val && val.length > 0 || 'Please type something']"/>
-                  </div>
-                  <div class="flex justify-end">
-                    <div class="w-[132px] text-center p-1 bg-[#9e896a] text-white rounded">
-                      <router-link to="/dashboard/account-basicinfo">Update</router-link>
-                    </div>
-                  </div>
-                </div>
-                <!-- Contact Information -->
-                <div class="h-[170px] w-[611px] border-[#ddb7ab] border mt-5 p-4 rounded">
-                  <p class="text-[#8F8073] text-[24px] font-bold">Contact Info</p>
-                  <div class="grid grid-cols-2 gap-4">
-                    <q-input v-model="email" label="Email" outlined disable class="custom-border-color" lazy-rules :rules="[ val => val && val.length > 0 || 'Please type something']"/>
-                    <q-input v-model="mobilenumber" label="Mobile Number" type="number" outlined disable class=" rounded" lazy-rules :rules="[ val => val && val.length > 0 || 'Please type something']"/>
-                  </div>
-                  <div class="flex justify-end">
-                    <div class="w-[132px] text-center p-1 bg-[#9e896a] text-white rounded">
-                      <router-link to="">Update</router-link>
-                    </div>
-                  </div>
-                </div>
+    <div class="bg-white h-[520px] rounded p-4 px-7 overflow-auto">
+      <h1 class="text-[25px] font-bold">Account Settings</h1>
+      <div class="w-full flex justify-center">
+        <div>
 
-                <!-- Password Information -->
-                <div class="h-[170px] w-[611px] border-[#ddb7ab] border mt-5 p-4 rounded">
-                  <p class="text-[#8F8073] text-[24px] font-bold">Password Info</p>
-                  <div class="">
-                    <q-input
-                      v-model="password"
-                      label="Current Password"
-                      outlined
-                      disable
-                      class="custom-border-color"
-                      lazy-rules
-                      :rules="[val => val && val.length > 0 || 'Please type something']"
-                      type="password"
-                    >
-                    <template v-slot:control>
-                      <div v-if="password">
-                        ****
-                      </div>
-                    </template>
-                    </q-input>
-                  </div>
-                  <div class="flex justify-end">
-                    <div class="w-[132px] text-center p-1 bg-[#9e896a] text-white rounded">
-                      <router-link to="">Update</router-link>
-                    </div>
-                  </div>
-                </div>
+          <!-- User Area -->
+          <div class="p-4 w-[600px] h-[150px] border border-[#ddb7ab] rounded-[15px] drop-shadow-md flex justify-between">
+            <div class="flex items-center">
+              <q-img
+                :src="getUserProfileImagePath()"
+                alt="Description of the image"
+                class="w-[100px] rounded-full"
+              />
+              <div class="text-center">
+                <p class="font-bold text-[16px]">{{ username }}</p>
+                {{ position }}
+              </div>
+            </div>
+              <div class="w-[84px] flex items-center justify-center ">
+                <router-link to="/dashboard/account-basicinfo" class="text-center w-full border border-[#9e896a] rounded-full">
+                  <span class=" p-1   text-[#9e896a]"><q-icon name="edit"/> Edit</span>
+                </router-link>
+              </div>
           </div>
+          <!-- Personal Information -->
+          <div class="mt-3 w-[600px] p-5 border border-[#ddb7ab] rounded-[15px] drop-shadow-md">
+            <div class="flex justify-between -mt-8">
+              <h1 class="text-[19px] font-bold">Personal Information</h1>
+              <div class="w-[84px] flex items-center justify-center ">
+                <router-link to="" class="text-center w-full border border-[#9e896a] rounded-full">
+                  <span class=" p-1   text-[#9e896a]"><q-icon name="edit"/> Edit</span>
+                </router-link>
+              </div>
+            </div>
+            <div class="grid grid-cols-2 gap-10 -mt-4">
+              <div>
+                <p>First Name:</p> {{ firstname }}
+              </div>
+              <div>
+                <p>Last Name:</p> {{ lastname }}
+              </div>
+              <div>
+                <p>Birthday:</p> {{ birthdate }}
+              </div>
+              <div>
+                <p>Gender:</p> {{ gender }}
+              </div>
+              <div>
+                <p>Address:</p> {{ address }}
+              </div>
+              <div>
+                <p>Position:</p> {{ position }}
+              </div>
+            </div>
+          </div>
+          <div class="mt-3 w-[600px] p-5 border border-[#ddb7ab] rounded-[15px] drop-shadow-md">
+            <div class="flex justify-between -mt-8">
+              <h1 class="text-[19px] font-bold">Contact Information</h1>
+              <div class="w-[84px] flex items-center justify-center ">
+                <router-link to="" class="text-center w-full border border-[#9e896a] rounded-full">
+                  <span class=" p-1   text-[#9e896a]"><q-icon name="edit"/> Edit</span>
+                </router-link>
+              </div>
+            </div>
+            <div class="grid grid-cols-2 gap-10 -mt-4">
+              <div>
+                <p>Email:</p> {{ email }}
+              </div>
+              <div>
+                <p>Mobile Number:</p> {{ mobilenumber }}
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -185,13 +192,17 @@ export default {
       email: '',
       userProfileImage: null,
       username: '',
-      name: '',
+      firstname: '',
+      middlename: '',
+      lastname: '',
       gender: '',
       birthdate: '',
+      address: '',
       position: '',
       mobilenumber: '',
       password: '',
       drawerVisible: true,
+      showModal: false,
     };
   },
 
@@ -207,12 +218,15 @@ export default {
           this.email = userInformation.email;
           this.username = userInformation.username;
           this.userProfileImage = userInformation.pfp;
-          this.name = userInformation.fullname;
+          this.firstname = userInformation.firstname;
+          this.middlename = userInformation.middlename;
+          this.lastname = userInformation.lastname;
           this.gender = userInformation.gender;
           this.birthdate = userInformation.birthdate;
           this.position = userInformation.position;
           this.mobilenumber = userInformation.mobilenumber;
           this.password = userInformation.password;
+          this.address = userInformation.address;
         } catch (error) {
           console.log('Error parsing user data:', error);
           // Provide user feedback or navigate to an error page
@@ -226,6 +240,9 @@ export default {
         // Handle the case when user data is not available
         this.$router.push('/');
       }
+    },
+    toggleModal() {
+      this.showModal = !this.showModal;
     },
     getUserProfileImagePath() {
       // Ensure userProfileImage is not null before creating the path

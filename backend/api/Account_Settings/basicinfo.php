@@ -9,8 +9,8 @@
   // Used in response to a preflight request which includes the Access-Control-Request-Headers to indicate which HTTP headers can be used during the actual request
   header("Access-Control-Allow-Headers: Content-Type");
   header('Content-Type: application/json');
-  require_once('../MysqliDb.php');
-//   require_once(__DIR__ . '/SendInBlue/vendor/autoload.php');
+  require_once('../../MysqliDb.php');
+
 
 
   class API{
@@ -26,7 +26,13 @@
     
     public function httpPost($payload)
     {
-        $requiredFields = ['loginEmail','loginPassword'];
+
+    }
+    
+    
+    public function httpPut($ids, $payload)
+    {     
+        $requiredFields = ['Firstname', 'Lastname','Day','Month','Year', 'Gender']; // Update field names here
         foreach ($requiredFields as $field) {
             if (!isset($payload[$field])) {
                 $response = ['status' => 'fail', 'message' => 'Missing required field: ' . $field];
@@ -34,54 +40,63 @@
                 exit;
             }
         }
-        
-        $existingRecord = $this->db->where("email", $payload['loginEmail'])->getOne('w_users');
-        $password = $payload['loginPassword'];
-        if ($existingRecord) {
-            if(password_verify($password, $existingRecord['password'])){
-                $response = [
-                    'status' => 'success',
-                    'message' => 'Successfully logged in.',
-                    'information' => [
-                        'email' =>    $existingRecord['email'],
-                        'password' => $existingRecord['password'],
-                        'username' => $existingRecord['username'],
-                        'pfp' =>      $existingRecord['profile_pic'],
-                        'firstname' => $existingRecord['firstname'],
-                        'middlename' => $existingRecord['middlename'],
-                        'lastname' => $existingRecord['lastname'],
-                        'gender' =>   $existingRecord['gender'],
-                        'position' => $existingRecord['position'],
-                        'mobilenumber' => $existingRecord['mobile_number'],
-                        'birthdate' => $existingRecord['birthdate'],
-                        'address' => $existingRecord['address'],
-                        'age' => $existingRecord['age'],
-                    ]
-                ];
-                echo json_encode($response);
-            }else{
-                $response = [
-                    'status' => 'fail',
-                    'message' => 'Password Incorrect.',
-                ];
-                echo json_encode($response);
-                exit;         
-            }            
+
+        // Map gender strings to their respective codes
+        $genders = [
+            'Male' => 'Male',
+            'Female' => 'Female',
+            'Rather Not to Say' => 'Rather Not to Say',
+        ];
+        // Convert of Month names to desired values
+        $months = [
+            'January' => 1,
+            'February' => 2,
+            'March' => 3,
+            'April' => 4,
+            'May' => 5,
+            'June' => 6,
+            'July' => 7,
+            'August' => 8,
+            'September' => 9,
+            'October' => 10,
+            'November' => 11,
+            'December' => 12,
+        ];
+        $monthNumber = $months[$payload['Month']] ?? null;
+        $genderCode = $genders[$payload['Gender']] ?? null;
+
+        $user = $this->db->where("email", $ids)->getOne('w_users');
+
+        if ($user === null) {
+            $response = ['status' => 'fail', 'message' => 'Invalid Email.'];
+            echo json_encode($response);
+            exit;
         }
-        else{
+        // Update Data in SQL
+        $updateData = [
+            'firstname' => $payload['Firstname'],
+            'lastname' => $payload['Lastname'],
+            'birthdate' => sprintf('%04d-%02d-%02d', $payload['Year'], $monthNumber, $payload['Day']),
+            'gender' => $genderCode,
+        ];
+        $addData = $this->db->where('email', $ids)->update('w_users', $updateData);
+        if($addData){
             $response = [
-                'status' => 'fail',
-                'message' => 'Email not registered.',
+                'status' => 'success',
+                'message' => 'Update Successfully.',
+                'information' => [
+                    'firstname' => $payload['Firstname'],
+                    'lastname' => $payload['Lastname'],
+                    'birthdate' => sprintf('%04d-%02d-%02d', $payload['Year'], $monthNumber, $payload['Day']),
+                    'gender' => $genderCode,
+                ]
             ];
             echo json_encode($response);
-            exit;         
+        } else {
+            $response = ['status' => 'fail', 'message' => 'Failed to update user record.'];
+            echo json_encode($response);
+            exit;
         }
-    }    
-    
-    
-    public function httpPut($ids, $payload)
-    {
-
     }
 
     public function httpDelete($payload)

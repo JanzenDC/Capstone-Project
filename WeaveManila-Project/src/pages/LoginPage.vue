@@ -172,12 +172,15 @@ export default {
             existingInformation.password = this.responseInformation.password;
             existingInformation.username = this.responseInformation.username;
             existingInformation.pfp = this.responseInformation.pfp;
-            existingInformation.fullname = this.responseInformation.fullname;
+            existingInformation.firstname = this.responseInformation.firstname;
+            existingInformation.middlename = this.responseInformation.middlename;
+            existingInformation.lastname = this.responseInformation.lastname;
             existingInformation.gender = this.responseInformation.gender;
             existingInformation.position = this.responseInformation.position;
             existingInformation.mobilenumber = this.responseInformation.mobilenumber;
             existingInformation.birthdate = this.responseInformation.birthdate;
             existingInformation.age = this.responseInformation.age;
+            existingInformation.address = this.responseInformation.address;
             // Save the updated information object back to session storage
             SessionStorage.set('information', JSON.stringify(existingInformation));
             this.$router.push('/dashboard/main-dashboard');

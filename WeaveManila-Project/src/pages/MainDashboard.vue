@@ -26,7 +26,36 @@
         <div>
           {{ username }}
         </div>
-        <q-icon name="arrow_drop_down" class="text-[25px]"/>
+        <q-icon
+          name="arrow_drop_down"
+          class="text-[25px] cursor-pointer"
+          @click="toggleModal"
+        />
+        <div v-if="showModal" class="fixed right-5 top-[110px] transform bg-white p-3 border border-gray-300 z-50 rounded-md drop-shadow-lg w-[308px] h-[200px]">
+          <div class="flex justify-center">
+            <div>
+              <div class="flex justify-center mt-3 ">
+                <q-img
+                  :src="getUserProfileImagePath()"
+                  alt="Description of the image"
+                  class="w-[80px] rounded-full border-black border"
+                />
+              </div>
+              <div class="font-bold">{{ fullname }}</div>
+              <div class="text-center">{{ position }}</div>
+            </div>
+          </div>
+          <router-link to="/dashboard/account-settings">
+            <p class="flex justify-between text-[16px]">
+              Account Settings <q-icon name="manage_accounts" class="mr-2 text-[16px]"/>
+            </p>
+          </router-link>
+          <router-link @click="logout" to="/">
+            <p class="flex justify-between text-[16px]">
+              Logout <q-icon name="logout" class="mr-2 text-[16px]"/>
+            </p>
+          </router-link>
+        </div>
       </div>
   </q-header>
   <q-drawer show-if-above v-model="leftDrawerOpen" side="left" bordered>
@@ -68,21 +97,6 @@
             <q-icon name="group" class="mr-2"/> User Management
           </div>
         </li>
-        <li class="py-[17px] px-[20px]">
-          <div class="flex items-center">
-            <router-link to="/dashboard/account-settings">
-              <q-icon name="manage_accounts" class="mr-2"/> Account
-            </router-link>
-
-          </div>
-        </li>
-        <li class="py-[17px] px-[20px]">
-          <div class="flex items-center">
-            <router-link @click="logout" to="/">
-              <q-icon name="logout" class="mr-2"/> Logout
-            </router-link>
-          </div>
-        </li>
     </ul>
   </q-drawer>
   <!-- <q-page class="bg-[#f5f5f5] p-4">
@@ -105,9 +119,14 @@ export default {
   data() {
     return {
       email: '',
+      firstname: '',
+      middlename: '',
+      lastname: '',
       userProfileImage: null,
       username: '',
       drawerVisible: true,
+      showModal: false,
+      position: '',
     };
   },
   mounted() {
@@ -122,7 +141,10 @@ export default {
           this.email = userInformation.email;
           this.username = userInformation.username;
           this.userProfileImage = userInformation.pfp;
-
+          this.firstname = userInformation.firstname;
+          this.middlename = userInformation.middlename;
+          this.lastname = userInformation.lastname;
+          this.position = userInformation.position;
         } catch (error) {
           console.log('Error parsing user data:', error);
           // Provide user feedback or navigate to an error page
@@ -136,6 +158,9 @@ export default {
         // Handle the case when user data is not available
         this.$router.push('/');
       }
+    },
+    toggleModal() {
+      this.showModal = !this.showModal;
     },
     getUserProfileImagePath() {
       // Ensure userProfileImage is not null before creating the path
