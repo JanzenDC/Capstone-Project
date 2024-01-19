@@ -1,36 +1,40 @@
 <template>
-  <q-header elevated class="bg-white w-full text-black h-[100px] flex justify-between border-2">
-      <div class="w-[400px] p-4 flex">
+  <q-header elevated class="bg-white w-full text-black h-[100px]  md:flex md:justify-between border-2">
+
+    <div class="md:w-[400px] p-4 md:flex min-[320px]:hidden">
         <div>
+          <q-btn flat @click="drawer = !drawer" round dense icon="menu" />
           <q-img
             src="../assets/favicon-128x128.png"
             alt="Description of the image"
-            class="w-[60px] md:w-[60px]"
+            class="w-[60px] md:w-[60px] "
           />
         </div>
         <div class="w-[250px]">
-          <p class="text-[20px] text-[#8F8073] font-bold">WEAVEMANILA INC.</p>
+          <p class="text-[20px] text-[#8F8073] font-bold ">WEAVEMANILA INC.</p>
           <p class="text-[12px] text-[#9e896a]">Production Monitoring & Inventory Management System</p>
         </div>
-      </div>
-      <div class="flex items-center p-4 gap-2">
+    </div>
+      <div class="flex items-center p-4 gap-2 min-[320px]:justify-between">
+        <q-btn flat @click="drawer = !drawer" round dense icon="menu" class="md:hidden"/>
+        <div class="flex items-center p-4 gap-2">
         <q-icon name="notifications" class="text-[21px]"/>
-
         <div>
-          <q-img
-            :src="getUserProfileImagePath()"
-            alt="Description of the image"
-            class="w-12 md:w-12 rounded-full border-black border"
-          />
-        </div>
-        <div>
-          {{ username }}
-        </div>
-        <q-icon
-          name="arrow_drop_down"
-          class="text-[25px] cursor-pointer"
-          @click="toggleModal"
-        />
+            <q-img
+              :src="getUserProfileImagePath()"
+              alt="Description of the image"
+              class="w-12 md:w-12 rounded-full border-black border"
+            />
+            </div>
+            <div>
+              {{ firstname }}
+            </div>
+            <q-icon
+              name="arrow_drop_down"
+              class="text-[25px] cursor-pointer"
+              @click="toggleModal"
+            />
+          </div>
         <div v-if="showModal" class="fixed right-5 top-[110px] transform bg-white p-3 border border-gray-300 z-50 rounded-md drop-shadow-lg w-[308px] h-[200px]">
           <div class="flex justify-center">
             <div>
@@ -58,7 +62,7 @@
         </div>
       </div>
   </q-header>
-  <q-drawer show-if-above v-model="leftDrawerOpen" side="left" bordered>
+  <q-drawer show-if-above v-model="drawer" side="left" bordered>
     <ul class="p-4">
       <li class="font-bold">Overview</li>
         <li class="py-[17px] px-[20px]">
@@ -124,15 +128,17 @@ export default {
       lastname: '',
       userProfileImage: null,
       username: '',
-      drawerVisible: true,
       showModal: false,
       position: '',
+      drawer: true,
+
     };
   },
   mounted() {
     this.loadUserData();
   },
   methods: {
+
     loadUserData() {
       const userData = SessionStorage.getItem('information');
       if (userData) {

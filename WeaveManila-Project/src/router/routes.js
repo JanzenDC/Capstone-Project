@@ -25,6 +25,9 @@ const routes = [
       { path: 'main-dashboard', component: () => import('pages/MainDashboard.vue') },
       { path: 'account-settings', component: () => import('pages/AccountDashboard.vue') },
       { path: 'account-basicinfo', component: () => import('pages/AccountBasicinfo.vue') },
+      { path: 'account-profilepic', component: () => import('pages/AccountUserprofile.vue') },
+
+
       // Add more dashboard-related routes if needed
     ]
   },

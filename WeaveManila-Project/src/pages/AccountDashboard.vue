@@ -1,64 +1,67 @@
 <template>
-  <q-header elevated class="bg-white w-full text-black h-[100px] flex justify-between border-2">
-      <div class="w-[400px] p-4 flex">
-        <div>
-          <q-img
-            src="../assets/favicon-128x128.png"
-            alt="Description of the image"
-            class="w-[60px] md:w-[60px]"
-          />
-        </div>
-        <div class="w-[250px]">
-          <p class="text-[20px] text-[#8F8073] font-bold">WEAVEMANILA INC.</p>
-          <p class="text-[12px] text-[#9e896a]">Production Monitoring & Inventory Management System</p>
-        </div>
+<q-header elevated class="bg-white w-full text-black h-[100px]  md:flex md:justify-between border-2">
+  <div class="md:w-[400px] p-4 md:flex min-[320px]:hidden">
+      <div>
+        <q-btn flat @click="drawer = !drawer" round dense icon="menu" />
+        <q-img
+          src="../assets/favicon-128x128.png"
+          alt="Description of the image"
+          class="w-[60px] md:w-[60px] "
+        />
       </div>
-      <div class="flex items-center p-4 gap-2">
-        <q-icon name="notifications" class="text-[21px]"/>
-
-        <div>
-          <q-img
-            :src="getUserProfileImagePath()"
-            alt="Description of the image"
-            class="w-12 md:w-12 rounded-full border-black border"
-          />
+      <div class="w-[250px]">
+        <p class="text-[20px] text-[#8F8073] font-bold ">WEAVEMANILA INC.</p>
+        <p class="text-[12px] text-[#9e896a]">Production Monitoring & Inventory Management System</p>
+      </div>
+  </div>
+  <div class="flex items-center p-4 gap-2 min-[320px]:justify-between">
+    <q-btn flat @click="drawer = !drawer" round dense icon="menu" class="md:hidden"/>
+    <div class="flex items-center p-4 gap-2">
+    <q-icon name="notifications" class="text-[21px]"/>
+    <div>
+        <q-img
+          :src="getUserProfileImagePath()"
+          alt="Description of the image"
+          class="w-12 md:w-12 rounded-full border-black border"
+        />
         </div>
         <div>
-          {{ username }}
+          {{ firstname }}
         </div>
         <q-icon
           name="arrow_drop_down"
           class="text-[25px] cursor-pointer"
           @click="toggleModal"
         />
-        <div v-if="showModal" class="fixed right-5 top-[110px] transform bg-white p-3 border border-gray-300 z-50 rounded-md drop-shadow-lg w-[308px] h-[200px]">
-          <div class="flex justify-center">
-            <div>
-              <div class="flex justify-center mt-3 ">
-                <q-img
-                  :src="getUserProfileImagePath()"
-                  alt="Description of the image"
-                  class="w-[80px] rounded-full border-black border"
-                />
-              </div>
-              <div class="font-bold">{{ fullname }}</div>
-              <div class="text-center">{{ position }}</div>
-            </div>
+      </div>
+    <div v-if="showModal" class="fixed right-5 top-[110px] transform bg-white p-3 border border-gray-300 z-50 rounded-md drop-shadow-lg w-[308px] h-[200px]">
+      <div class="flex justify-center">
+        <div>
+          <div class="flex justify-center mt-3 ">
+            <q-img
+              :src="getUserProfileImagePath()"
+              alt="Description of the image"
+              class="w-[80px] rounded-full border-black border"
+            />
           </div>
-          <router-link to="/dashboard/account-settings">
-            <p class="flex justify-between text-[16px]">
-              Account Settings <q-icon name="manage_accounts" class="mr-2 text-[16px]"/>
-            </p>
-          </router-link>
-          <router-link @click="logout" to="/">
-            <p class="flex justify-between text-[16px]">
-              Logout <q-icon name="logout" class="mr-2 text-[16px]"/>
-            </p>
-          </router-link>
+          <div class="font-bold">{{ fullname }}</div>
+          <div class="text-center">{{ position }}</div>
         </div>
       </div>
-  </q-header>
-  <q-drawer show-if-above v-model="leftDrawerOpen" side="left" bordered>
+      <router-link to="/dashboard/account-settings">
+        <p class="flex justify-between text-[16px]">
+          Account Settings <q-icon name="manage_accounts" class="mr-2 text-[16px]"/>
+        </p>
+      </router-link>
+      <router-link @click="logout" to="/">
+        <p class="flex justify-between text-[16px]">
+          Logout <q-icon name="logout" class="mr-2 text-[16px]"/>
+        </p>
+      </router-link>
+    </div>
+  </div>
+</q-header>
+  <q-drawer show-if-above v-model="drawer" side="left" bordered>
     <ul class="p-4">
       <li class="font-bold">Overview</li>
         <li class="py-[17px] px-[20px]">
@@ -114,12 +117,12 @@
                 class="w-[100px] rounded-full"
               />
               <div class="text-center">
-                <p class="font-bold text-[16px]">{{ username }}</p>
+                <p class="font-bold text-[16px]">{{ firstname }} {{ lastname }}</p>
                 {{ position }}
               </div>
             </div>
               <div class="w-[84px] flex items-center justify-center ">
-                <router-link to="/dashboard/account-basicinfo" class="text-center w-full border border-[#9e896a] rounded-full">
+                <router-link to="/dashboard/account-profilepic" class="text-center w-full border border-[#9e896a] rounded-full">
                   <span class=" p-1   text-[#9e896a]"><q-icon name="edit"/> Edit</span>
                 </router-link>
               </div>
@@ -129,7 +132,7 @@
             <div class="flex justify-between -mt-8">
               <h1 class="text-[19px] font-bold">Personal Information</h1>
               <div class="w-[84px] flex items-center justify-center ">
-                <router-link to="" class="text-center w-full border border-[#9e896a] rounded-full">
+                <router-link to="/dashboard/account-basicinfo" class="text-center w-full border border-[#9e896a] rounded-full">
                   <span class=" p-1   text-[#9e896a]"><q-icon name="edit"/> Edit</span>
                 </router-link>
               </div>
@@ -201,8 +204,8 @@ export default {
       position: '',
       mobilenumber: '',
       password: '',
-      drawerVisible: true,
       showModal: false,
+      drawer: true,
     };
   },
 

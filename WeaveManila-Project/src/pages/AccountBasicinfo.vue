@@ -1,64 +1,67 @@
 <template>
-  <q-header elevated class="bg-white w-full text-black h-[100px] flex justify-between border-2">
-      <div class="w-[400px] p-4 flex">
-        <div>
-          <q-img
-            src="../assets/favicon-128x128.png"
-            alt="Description of the image"
-            class="w-[60px] md:w-[60px]"
-          />
-        </div>
-        <div class="w-[250px]">
-          <p class="text-[20px] text-[#8F8073] font-bold">WEAVEMANILA INC.</p>
-          <p class="text-[12px] text-[#9e896a]">Production Monitoring & Inventory Management System</p>
-        </div>
+<q-header elevated class="bg-white w-full text-black h-[100px]  md:flex md:justify-between border-2">
+  <div class="md:w-[400px] p-4 md:flex min-[320px]:hidden">
+      <div>
+        <q-btn flat @click="drawer = !drawer" round dense icon="menu" />
+        <q-img
+          src="../assets/favicon-128x128.png"
+          alt="Description of the image"
+          class="w-[60px] md:w-[60px] "
+        />
       </div>
-      <div class="flex items-center p-4 gap-2">
-        <q-icon name="notifications" class="text-[21px]"/>
-
-        <div>
-          <q-img
-            :src="getUserProfileImagePath()"
-            alt="Description of the image"
-            class="w-12 md:w-12 rounded-full border-black border"
-          />
+      <div class="w-[250px]">
+        <p class="text-[20px] text-[#8F8073] font-bold ">WEAVEMANILA INC.</p>
+        <p class="text-[12px] text-[#9e896a]">Production Monitoring & Inventory Management System</p>
+      </div>
+  </div>
+  <div class="flex items-center p-4 gap-2 min-[320px]:justify-between">
+    <q-btn flat @click="drawer = !drawer" round dense icon="menu" class="md:hidden"/>
+    <div class="flex items-center p-4 gap-2">
+    <q-icon name="notifications" class="text-[21px]"/>
+    <div>
+        <q-img
+          :src="getUserProfileImagePath()"
+          alt="Description of the image"
+          class="w-12 md:w-12 rounded-full border-black border"
+        />
         </div>
         <div>
-          {{ username }}
+          {{ firstname }}
         </div>
         <q-icon
           name="arrow_drop_down"
           class="text-[25px] cursor-pointer"
           @click="toggleModal"
         />
-        <div v-if="showModal" class="fixed right-5 top-[110px] transform bg-white p-3 border border-gray-300 z-50 rounded-md drop-shadow-lg w-[308px] h-[200px]">
-          <div class="flex justify-center">
-            <div>
-              <div class="flex justify-center mt-3 ">
-                <q-img
-                  :src="getUserProfileImagePath()"
-                  alt="Description of the image"
-                  class="w-[80px] rounded-full border-black border"
-                />
-              </div>
-              <div class="font-bold">{{ fullname }}</div>
-              <div class="text-center">{{ position }}</div>
-            </div>
+      </div>
+    <div v-if="showModal" class="fixed right-5 top-[110px] transform bg-white p-3 border border-gray-300 z-50 rounded-md drop-shadow-lg w-[308px] h-[200px]">
+      <div class="flex justify-center">
+        <div>
+          <div class="flex justify-center mt-3 ">
+            <q-img
+              :src="getUserProfileImagePath()"
+              alt="Description of the image"
+              class="w-[80px] rounded-full border-black border"
+            />
           </div>
-          <router-link to="/dashboard/account-settings">
-            <p class="flex justify-between text-[16px]">
-              Account Settings <q-icon name="manage_accounts" class="mr-2 text-[16px]"/>
-            </p>
-          </router-link>
-          <router-link @click="logout" to="/">
-            <p class="flex justify-between text-[16px]">
-              Logout <q-icon name="logout" class="mr-2 text-[16px]"/>
-            </p>
-          </router-link>
+          <div class="font-bold">{{ fullname }}</div>
+          <div class="text-center">{{ position }}</div>
         </div>
       </div>
-  </q-header>
-  <q-drawer show-if-above v-model="leftDrawerOpen" side="left" bordered>
+      <router-link to="/dashboard/account-settings">
+        <p class="flex justify-between text-[16px]">
+          Account Settings <q-icon name="manage_accounts" class="mr-2 text-[16px]"/>
+        </p>
+      </router-link>
+      <router-link @click="logout" to="/">
+        <p class="flex justify-between text-[16px]">
+          Logout <q-icon name="logout" class="mr-2 text-[16px]"/>
+        </p>
+      </router-link>
+    </div>
+  </div>
+</q-header>
+  <q-drawer show-if-above v-model="drawer" side="left" bordered>
     <ul class="p-4">
       <li class="font-bold">Overview</li>
         <li class="py-[17px] px-[20px]">
@@ -130,7 +133,7 @@
       <router-link to="/dashboard/account-settings">
         <p class="text-[15px]"><q-icon name="arrow_back_ios"/> <span class=" font-bold text-[#9e896a]">Basic Info</span></p>
       </router-link>
-      <div class="w-[800px] h-[440px] mt-2 border border-[#dfc8c0] rounded p-5 text-[15px]">
+      <div class="w-[800px] h-[510px] mt-2 border border-[#dfc8c0] rounded p-5 text-[15px]">
         <q-form
           @submit="onSubmit"
         >
@@ -139,7 +142,7 @@
               <q-input v-model="firstname" label="First name" outlined  dense class="custom-border-color" lazy-rules :rules="[ val => val && val.length > 0 || 'Please type something']"/>
               <q-input v-model="lastname" label="Last name" outlined dense  class=" rounded" lazy-rules :rules="[ val => val && val.length > 0 || 'Please type something']"/>
           </div>
-          <div class="grid grid-cols-2 gap-4">
+          <div class="w-[370px]">
             <div class="">
               <p class="text-[#9e896a] font-bold">Birthday</p>
               <div class="grid grid-cols-3 gap-4 mt-3">
@@ -237,7 +240,7 @@ export default {
       password: '',
       showModal: false,
       showSuccessModal: false,
-      drawerVisible: true,
+      drawer: true,
       month: '',  // Newly added property for v-model binding
       monthsOptions: [
       'January', 'February', 'March', 'April',
