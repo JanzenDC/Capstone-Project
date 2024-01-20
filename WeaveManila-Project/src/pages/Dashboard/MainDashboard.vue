@@ -30,7 +30,7 @@
               {{ firstname }}
             </div>
             <q-icon
-              name="arrow_drop_down"
+              :name="arrowDirection ? 'arrow_drop_up' : 'arrow_drop_down'"
               class="text-[25px] cursor-pointer"
               @click="toggleModal"
             />
@@ -45,7 +45,7 @@
                   class="w-[80px] rounded-full border-black border"
                 />
               </div>
-              <div class="font-bold">{{ fullname }}</div>
+              <div class="font-bold">{{ firstname }} {{ lastname }}</div>
               <div class="text-center">{{ position }}</div>
             </div>
           </div>
@@ -129,6 +129,7 @@ export default {
       userProfileImage: null,
       username: '',
       showModal: false,
+      arrowDirection: false,
       position: '',
       drawer: true,
 
@@ -141,7 +142,7 @@ export default {
 
     loadUserData() {
       const userData = SessionStorage.getItem('information');
-        
+
       if (userData) {
         try {
           const userInformation = JSON.parse(userData);
@@ -167,6 +168,7 @@ export default {
       }
     },
     toggleModal() {
+      this.arrowDirection = !this.arrowDirection;
       this.showModal = !this.showModal;
     },
     getUserProfileImagePath() {

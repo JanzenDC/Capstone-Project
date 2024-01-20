@@ -107,81 +107,28 @@
       <router-link to="/dashboard/account-settings">
         <p class="text-[15px]"><q-icon name="arrow_back_ios"/> <span class=" font-bold text-[#9e896a]">Basic Info</span></p>
       </router-link>
-      <div class="w-[800px] h-[510px] mt-2 border border-[#dfc8c0] rounded p-5 text-[15px]">
-        <q-form
-          @submit="onSubmit"
-        >
-          <p class="text-[#9e896a] font-bold">Name</p>
-          <div class="grid grid-cols-2 gap-4 mt-3">
-              <q-input v-model="firstname" label="First name" outlined  dense class="custom-border-color" lazy-rules :rules="[ val => val && val.length > 0 || 'Please type something']"/>
-              <q-input v-model="lastname" label="Last name" outlined dense  class=" rounded" lazy-rules :rules="[ val => val && val.length > 0 || 'Please type something']"/>
-          </div>
-          <div class="w-[370px]">
-            <div class="">
-              <p class="text-[#9e896a] font-bold">Birthday</p>
-              <div class="grid grid-cols-3 gap-4 mt-3">
-                <q-input
-                  v-model="day"
-                  label="Day"
-                  outlined
-                  dense
-                  class="rounded"
-                  :rules="[validateDay]"
-                />
-                <!-- Year Input -->
-                <q-input
-                  v-model="year"
-                  label="Year"
-                  outlined
-                  dense
-                  class="rounded"
-                  :rules="[validateYear]"
-                />
-                <!-- Month Input -->
-                <q-select
-                  v-model="month"
-                  label="Months"
-                  outlined
-                  dense
-                  class="rounded"
-                  :options="monthsOptions"
-                  @change="[validateMonth]"
-                />
-              </div>
-            </div>
-            <div class="">
-              <p class="text-[#9e896a] font-bold">Position</p>
-              <q-input v-model="position" dense label="Position" outlined  disable class=" rounded mt-3" lazy-rules :rules="[ val => val && val.length > 0 || 'Please type something']"/>
-            </div>
-          </div>
-          <div class="w-40">
-            <p class="text-[#9e896a] font-bold">Gender</p>
-            <q-radio
-              v-model="gender"
-              val="Male"
-              label="Male"
-              color="primary"
-            />
-            <q-radio
-              v-model="gender"
-              val="Female"
-              label="Female"
-              color="primary"
-            />
-            <q-radio
-              v-model="gender"
-              val="Rather Not to Say"
-              label="Rather Not to Say"
-              color="primary"
-            />
-          </div>
-            <div class="flex justify-end w-full gap-2">
+      <div class="w-[500px] h-[320px] mt-2 border border-[#dfc8c0] rounded p-5 text-[15px]">
+          <q-form @submit="onSubmit">
+            <p class="text-[#9e896a] font-bold">Email</p>
+            <q-input v-model="email" label="Email" outlined  dense class="custom-border-color mt-3" lazy-rules :rules="[ val => val && val.length > 0 || 'Please type something']"/>
+            <p class="text-[#9e896a] font-bold">Phone</p>
+              <q-input
+                v-model="mobilenumber"
+                label="Phone Number"
+                type="number"
+                outlined
+                dense
+                class="custom-border-color mt-3"
+                lazy-rules
+                :rules="[val => val && val.length > 0 || 'Please type something', val => val && val.length <= 12 || 'Maximum length is 12 characters']"
+              />
+              <div class="flex justify-end w-full gap-2">
               <router-link to="/dashboard/account-settings" class="bg-white rounded-full text-center p-2 text-[#9e896a] w-[74px] border-2 border-[#9e896a]">
                 Cancel
               </router-link>
               <q-btn label="Save" type="submit" class="bg-[#9e896a] rounded-full  text-white"/>
             </div>
-        </q-form>
+          </q-form>
       </div>
     </div>
   </q-page>
@@ -202,27 +149,13 @@ export default {
     return {
       responseInformation: '',
       responseStatus: '',
+      uid: '',
       email: '',
       userProfileImage: null,
-      username: '',
-      firstname: '',
-      middlename: '',
-      lastname: '',
-      gender: '',
-      day: '',
-      year: '',
-      position: '',
       mobilenumber: '',
-      password: '',
       arrowDirection: false,
       showModal: false,
       drawer: true,
-      month: '',  // Newly added property for v-model binding
-      monthsOptions: [
-      'January', 'February', 'March', 'April',
-      'May', 'June', 'July', 'August',
-      'September', 'October', 'November', 'December'
-      ],
     };
   },
 
@@ -237,17 +170,13 @@ export default {
         try {
           const userInformation = JSON.parse(userData);
           this.email = userInformation.email;
-          this.username = userInformation.username;
+          this.uid = userInformation.uid;
           this.userProfileImage = userInformation.pfp;
           this.firstname = userInformation.firstname;
           this.middlename = userInformation.middlename;
           this.lastname = userInformation.lastname;
 
-          this.gender = userInformation.gender;
-
-          this.position = userInformation.position;
           this.mobilenumber = userInformation.mobilenumber;
-          this.password = userInformation.password;
 
           if (userInformation.birthdate) {
             const birthdateParts = userInformation.birthdate.split('-');
@@ -329,13 +258,11 @@ export default {
         console.log(this.responseInformation);
         if (this.responseStatus === "success") {
             const existingInformation = JSON.parse(SessionStorage.getItem('information')) || {};
-            existingInformation.firstname = this.responseInformation.firstname;
-            existingInformation.lastname = this.responseInformation.lastname;
-            existingInformation.birthdate = this.responseInformation.birthdate;
-            existingInformation.gender = this.responseInformation.gender;
+            existingInformation.firstname = this.responseInformation.email;
+            existingInformation.lastname = this.responseInformation.mobilenumber;
             this.$q.notify({
-                message: 'Personal Information Updated!',
-                caption: 'Your personal information has been changed successfully.',
+                message: 'Contact Information Updated!',
+                caption: 'Your contact iformation has been changed successfully.',
                 color: 'green',
             });
 

@@ -29,7 +29,7 @@
           {{ firstname }}
         </div>
         <q-icon
-          name="arrow_drop_down"
+          :name="arrowDirection ? 'arrow_drop_up' : 'arrow_drop_down'"
           class="text-[25px] cursor-pointer"
           @click="toggleModal"
         />
@@ -44,7 +44,7 @@
               class="w-[80px] rounded-full border-black border"
             />
           </div>
-          <div class="font-bold">{{ fullname }}</div>
+          <div class="font-bold">{{ firstname }} {{ lastname }}</div>
           <div class="text-center">{{ position }}</div>
         </div>
       </div>
@@ -110,7 +110,7 @@
 
           <!-- User Area -->
           <div class="p-4 w-[600px] h-[150px] border border-[#ddb7ab] rounded-[15px] drop-shadow-md flex justify-between">
-            <div class="flex items-center">
+            <div class="flex items-center gap-2">
               <q-img
                 :src="getUserProfileImagePath()"
                 alt="Description of the image"
@@ -162,7 +162,7 @@
             <div class="flex justify-between -mt-8">
               <h1 class="text-[19px] font-bold">Contact Information</h1>
               <div class="w-[84px] flex items-center justify-center ">
-                <router-link to="" class="text-center w-full border border-[#9e896a] rounded-full">
+                <router-link to="/dashboard/account-contactinfo" class="text-center w-full border border-[#9e896a] rounded-full">
                   <span class=" p-1   text-[#9e896a]"><q-icon name="edit"/> Edit</span>
                 </router-link>
               </div>
@@ -204,6 +204,7 @@ export default {
       position: '',
       mobilenumber: '',
       password: '',
+      arrowDirection: false,
       showModal: false,
       drawer: true,
     };
@@ -245,6 +246,7 @@ export default {
       }
     },
     toggleModal() {
+      this.arrowDirection = !this.arrowDirection;
       this.showModal = !this.showModal;
     },
     getUserProfileImagePath() {

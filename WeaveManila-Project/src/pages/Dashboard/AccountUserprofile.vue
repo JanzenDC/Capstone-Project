@@ -29,7 +29,7 @@
             {{ firstname }}
           </div>
           <q-icon
-            name="arrow_drop_down"
+            :name="arrowDirection ? 'arrow_drop_up' : 'arrow_drop_down'"
             class="text-[25px] cursor-pointer"
             @click="toggleModal"
           />
@@ -44,7 +44,7 @@
                 class="w-[80px] rounded-full border-black border"
               />
             </div>
-            <div class="font-bold">{{ fullname }}</div>
+            <div class="font-bold">{{ firstname }} {{ lastname }}</div>
             <div class="text-center">{{ position }}</div>
           </div>
         </div>
@@ -132,7 +132,7 @@
     <router-link to="/dashboard/account-settings">
       <p class="text-[15px]"><q-icon name="arrow_back_ios"/> <span class=" font-bold text-[#9e896a]">Basic Info</span></p>
     </router-link>
-        <div class="w-[800px] h-[360px] mt-2 border border-[#dfc8c0] rounded p-5 text-[15px]">
+        <div class="w-[800px] h-[430px] mt-2 border border-[#dfc8c0] rounded p-5 text-[15px]">
             <div class="flex justify-center">
               <div>
                 <div class="flex justify-center">
@@ -152,7 +152,7 @@
             <div>
               <!-- Avatar options -->
               <p class="font-bold text-[24px]">Choose Avatar</p>
-              <div class="flex gap-2 justify-center mt-3">
+              <div class="grid grid-cols-5 mt-3 gap-4">
                 <q-img
                   src="/pfp/default_pfp.png"
                   alt="Default Avatar"
@@ -168,15 +168,64 @@
                   :class="{ 'selected-avatar': selectedAvatar === 'man' }"
                 />
                 <q-img
+                  src="/pfp/man_2.png"
+                  alt="Woman Avatar"
+                  class="w-16 h-16 rounded-full"
+                  @click="selectAvatar('man_2')"
+                  :class="{ 'selected-avatar': selectedAvatar === 'man_2' }"
+                />
+                <q-img
+                  src="/pfp/man_3.png"
+                  alt="Woman Avatar"
+                  class="w-16 h-16 rounded-full"
+                  @click="selectAvatar('man_3')"
+                  :class="{ 'selected-avatar': selectedAvatar === 'man_3' }"
+                />
+                <q-img
+                  src="/pfp/man_4.png"
+                  alt="Woman Avatar"
+                  class="w-16 h-16 rounded-full"
+                  @click="selectAvatar('man_4')"
+                  :class="{ 'selected-avatar': selectedAvatar === 'man_4' }"
+                />
+                <q-img
                   src="/pfp/woman_1.png"
                   alt="Woman Avatar"
                   class="w-16 h-16 rounded-full"
                   @click="selectAvatar('woman_1')"
                   :class="{ 'selected-avatar': selectedAvatar === 'woman_1' }"
                 />
+                <q-img
+                  src="/pfp/woman_2.png"
+                  alt="Woman Avatar"
+                  class="w-16 h-16 rounded-full"
+                  @click="selectAvatar('woman_2')"
+                  :class="{ 'selected-avatar': selectedAvatar === 'woman_2' }"
+                />
+                <q-img
+                  src="/pfp/woman_3.png"
+                  alt="Woman Avatar"
+                  class="w-16 h-16 rounded-full"
+                  @click="selectAvatar('woman_3')"
+                  :class="{ 'selected-avatar': selectedAvatar === 'woman_3' }"
+                />
+                <q-img
+                  src="/pfp/woman_4.png"
+                  alt="Woman Avatar"
+                  class="w-16 h-16 rounded-full"
+                  @click="selectAvatar('woman_4')"
+                  :class="{ 'selected-avatar': selectedAvatar === 'woman_4' }"
+                />
+                <q-img
+                  src="/pfp/woman_5.png"
+                  alt="Woman Avatar"
+                  class="w-16 h-16 rounded-full"
+                  @click="selectAvatar('woman_5')"
+                  :class="{ 'selected-avatar': selectedAvatar === 'woman_5' }"
+                />
               </div>
             </div>
-            <div class="flex justify-end w-full gap-2">
+            <div class="flex justify-end w-full gap-2 mt-3">
               <router-link
                 to="/dashboard/account-settings"
                 class="bg-white rounded-full text-center p-2 text-[#9e896a] w-[74px] border-2 border-[#9e896a]"
@@ -212,6 +261,8 @@
         username: '',
         firstname: '',
         selectedAvatar: null,
+        showModal: false,
+        arrowDirection: false,
       };
     },
 
@@ -247,6 +298,7 @@
         }
       },
       toggleModal() {
+        this.arrowDirection = !this.arrowDirection;
         this.showModal = !this.showModal;
       },
       selectAvatar(avatar) {
@@ -277,9 +329,8 @@
                 message: 'Successfully changed profile picture.',
                 color: 'green',
               });
-              this.$router.push('/dashboard/account-profilepic').then(() => {
-                this.$router.go();
-              });
+              this.loadUserData();
+              this.$router.push('/dashboard/account-profilepic');
           }
         }).catch(error => {
         console.error('Error submitting form:', error);
