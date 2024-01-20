@@ -4,7 +4,7 @@
         <div>
           <q-btn flat @click="drawer = !drawer" round dense icon="menu" />
           <q-img
-            src="../assets/favicon-128x128.png"
+            src="../../assets/favicon-128x128.png"
             alt="Description of the image"
             class="w-[60px] md:w-[60px] "
           />
@@ -133,9 +133,6 @@
       <p class="text-[15px]"><q-icon name="arrow_back_ios"/> <span class=" font-bold text-[#9e896a]">Basic Info</span></p>
     </router-link>
         <div class="w-[800px] h-[360px] mt-2 border border-[#dfc8c0] rounded p-5 text-[15px]">
-          <q-form
-            @submit="onSubmit"
-          >
             <div class="flex justify-center">
               <div>
                 <div class="flex justify-center">
@@ -151,19 +148,42 @@
                 </div>
               </div>
             </div>
+            <q-form @submit="onSubmit">
             <div>
+              <!-- Avatar options -->
               <p class="font-bold text-[24px]">Choose Avatar</p>
-                <div class="flex gap-2 justify-center mt-3">
-                  <q-img
-d
-
+              <div class="flex gap-2 justify-center mt-3">
+                <q-img
+                  src="/pfp/default_pfp.png"
+                  alt="Default Avatar"
+                  class="w-16 h-16 rounded-full"
+                  @click="selectAvatar('default_pfp')"
+                  :class="{ 'selected-avatar': selectedAvatar === 'default_pfp' }"
+                />
+                <q-img
+                  src="/pfp/man.png"
+                  alt="Man Avatar"
+                  class="w-16 h-16 rounded-full"
+                  @click="selectAvatar('man')"
+                  :class="{ 'selected-avatar': selectedAvatar === 'man' }"
+                />
+                <q-img
+                  src="/pfp/woman_1.png"
+                  alt="Woman Avatar"
+                  class="w-16 h-16 rounded-full"
+                  @click="selectAvatar('woman_1')"
+                  :class="{ 'selected-avatar': selectedAvatar === 'woman_1' }"
+                />
               </div>
             </div>
             <div class="flex justify-end w-full gap-2">
-              <router-link to="/dashboard/account-settings" class="bg-white rounded-full text-center p-2 text-[#9e896a] w-[74px] border-2 border-[#9e896a]">
+              <router-link
+                to="/dashboard/account-settings"
+                class="bg-white rounded-full text-center p-2 text-[#9e896a] w-[74px] border-2 border-[#9e896a]"
+              >
                 Cancel
               </router-link>
-              <q-btn label="Save" type="submit" class="bg-[#9e896a] rounded-full  text-white"/>
+              <q-btn label="Save" type="submit" class="bg-[#9e896a] rounded-full text-white" />
             </div>
           </q-form>
         </div>
@@ -179,11 +199,14 @@ d
   export default {
     setup() {
       const $q = useQuasar();
+
+      return { $q };
     },
     data() {
       return {
         responseInformation: '',
         responseStatus: '',
+        uid: '',
         email: '',
         userProfileImage: null,
         username: '',
@@ -205,13 +228,9 @@ d
             this.userProfileImage = userInformation.pfp;
             this.firstname = userInformation.firstname;
             this.email = userInformation.email;
+            this.uid = userInformation.uid;
           } catch (error) {
             console.log('Error parsing user data:', error);
-            // Provide user feedback or navigate to an error page
-            this.$q.notify({
-              type: 'negative',
-              message: 'Error loading user data. Please try again.',
-            });
             this.$router.push('/');
           }
         } else {
@@ -219,20 +238,11 @@ d
           this.$router.push('/');
         }
       },
-      getMonthName(monthNumber) {
-        const months = [
-          'January', 'February', 'March', 'April',
-          'May', 'June', 'July', 'August',
-          'September', 'October', 'November', 'December'
-        ];
-        return months[monthNumber - 1] || null;
-      },
+
       getUserProfileImagePath() {
-        // Ensure userProfileImage is not null before creating the path
         if (this.userProfileImage) {
           return `/pfp/${this.userProfileImage}.png`;
         } else {
-          // Return a default path or handle it as per your requirement
           return '/default_profile.png';
         }
       },
@@ -244,8 +254,36 @@ d
       },
 
       onSubmit() {
-        console.log('Selected Avatar:', this.selectedAvatar);
-        this.showSuccessModal = true;
+        if (!this.selectedAvatar) {
+          this.$q.notify({
+            message: 'Please choose an avatar.',
+            color: 'red',
+          });
+          return;
+        }
+        const formData = {
+          pfp: this.selectedAvatar,
+        };
+        axios.put(`http://localhost/Capstone-Project/backend/api/Account_Settings/changeprofile.php/${this.uid}`, formData)
+        .then((response) =>{
+          this.responseStatus = response.data.status;
+          this.responseMessage = response.data.message;
+          this.responseInformation = response.data.information;
+          if (this.responseStatus === "success") {
+              const existingInformation = JSON.parse(SessionStorage.getItem('information')) || {};
+              existingInformation.pfp = this.responseInformation.pfp;
+              SessionStorage.set('information', JSON.stringify(existingInformation));
+              this.$q.notify({
+                message: 'Successfully changed profile picture.',
+                color: 'green',
+              });
+              this.$router.push('/dashboard/account-profilepic').then(() => {
+                this.$router.go();
+              });
+          }
+        }).catch(error => {
+        console.error('Error submitting form:', error);
+      });
 
       },
       closeModal() {

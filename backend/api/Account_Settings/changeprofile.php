@@ -9,8 +9,8 @@
   // Used in response to a preflight request which includes the Access-Control-Request-Headers to indicate which HTTP headers can be used during the actual request
   header("Access-Control-Allow-Headers: Content-Type");
   header('Content-Type: application/json');
-  require_once('../MysqliDb.php');
-//   require_once(__DIR__ . '/SendInBlue/vendor/autoload.php');
+  require_once('../../MysqliDb.php');
+
 
 
   class API{
@@ -26,7 +26,13 @@
     
     public function httpPost($payload)
     {
-        $requiredFields = ['loginEmail','loginPassword'];
+
+    }
+    
+    
+    public function httpPut($ids, $payload)
+    {     
+        $requiredFields = ['pfp']; // Update field names here
         foreach ($requiredFields as $field) {
             if (!isset($payload[$field])) {
                 $response = ['status' => 'fail', 'message' => 'Missing required field: ' . $field];
@@ -34,55 +40,35 @@
                 exit;
             }
         }
-        
-        $existingRecord = $this->db->where("email", $payload['loginEmail'])->getOne('w_users');
-        $password = $payload['loginPassword'];
-        if ($existingRecord) {
-            if(password_verify($password, $existingRecord['password'])){
-                $response = [
-                    'status' => 'success',
-                    'message' => 'Successfully logged in.',
-                    'information' => [
-                        'uid' =>    $existingRecord['uid'],
-                        'email' =>    $existingRecord['email'],
-                        'password' => $existingRecord['password'],
-                        'username' => $existingRecord['username'],
-                        'pfp' =>      $existingRecord['profile_pic'],
-                        'firstname' => $existingRecord['firstname'],
-                        'middlename' => $existingRecord['middlename'],
-                        'lastname' => $existingRecord['lastname'],
-                        'gender' =>   $existingRecord['gender'],
-                        'position' => $existingRecord['position'],
-                        'mobilenumber' => $existingRecord['mobile_number'],
-                        'birthdate' => $existingRecord['birthdate'],
-                        'address' => $existingRecord['address'],
-                        'age' => $existingRecord['age'],
-                    ]
-                ];
-                echo json_encode($response);
-            }else{
-                $response = [
-                    'status' => 'fail',
-                    'message' => 'Password Incorrect.',
-                ];
-                echo json_encode($response);
-                exit;         
-            }            
+
+        $user = $this->db->where("uid", $ids)->getOne('w_users');
+
+        if ($user === null) {
+            $response = ['status' => 'fail', 'message' => 'Invalid target id.'];
+            echo json_encode($response);
+            exit;
         }
-        else{
+        // Update Data in SQL
+        $updateData = [
+            'profile_pic' => $payload['pfp']
+        ];
+
+        $addData = $this->db->where('uid', $ids)->update('w_users', $updateData);
+
+        if ($addData) {
             $response = [
-                'status' => 'fail',
-                'message' => 'Email not registered.',
+                'status' => 'success',
+                'message' => 'Avatar has been successfully changed.',
+                'information' => [
+                    'pfp' => $payload['pfp'],
+                ]
             ];
             echo json_encode($response);
-            exit;         
+        } else {
+            $response = ['status' => 'fail', 'message' => 'Failed to update user avatar.'];
+            echo json_encode($response);
+            exit;
         }
-    }    
-    
-    
-    public function httpPut($ids, $payload)
-    {
-
     }
 
     public function httpDelete($payload)

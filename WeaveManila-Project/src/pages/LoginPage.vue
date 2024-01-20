@@ -168,6 +168,7 @@ export default {
             const existingInformation = JSON.parse(SessionStorage.getItem('information')) || {};
 
             // Update or add new properties to the information object
+            existingInformation.uid = this.responseInformation.uid;
             existingInformation.email = this.responseInformation.email;
             existingInformation.password = this.responseInformation.password;
             existingInformation.username = this.responseInformation.username;

@@ -4,7 +4,7 @@
       <div>
         <q-btn flat @click="drawer = !drawer" round dense icon="menu" />
         <q-img
-          src="../assets/favicon-128x128.png"
+          src="../../assets/favicon-128x128.png"
           alt="Description of the image"
           class="w-[60px] md:w-[60px] "
         />

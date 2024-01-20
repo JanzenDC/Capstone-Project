@@ -1,13 +1,13 @@
 <template>
   <q-page class="md:flex bg-[#9e896a] relative ">
     <q-img
-      src="../assets/images/login_images.jpg"
+      src="../../assets/images/login_images.jpg"
       alt="Description of the image"
       class=" min-[320px]:right-[16px] min-[320px]:top-[88px] w-[328px] md:w-[550px] absolute md:top-[50px] md:right-[250px] rounded-[32px]"
     />
     <div class="bg-[#9e896a]  md:bg-white md:w-[800px] p-4 h-64 md:h-screen">
       <q-img
-      src="../assets/favicon-128x128.png"
+      src="../../assets/favicon-128x128.png"
       alt="Description of the image"
       class="w-[46px] md:w-[96px]"
       />
@@ -74,8 +74,6 @@ export default {
         try {
           const user = JSON.parse(userData);
           this.email = user;
-          console.log("Email set to:", this.email);
-
           if (isChangingPass === '0') {
             this.$router.push('/forgot/reset');
           }
