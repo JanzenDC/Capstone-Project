@@ -120,6 +120,7 @@
                 dense
                 class="custom-border-color mt-3"
                 lazy-rules
+                :maxlength="12"
                 :rules="[val => val && val.length > 0 || 'Please type something', val => val && val.length <= 12 || 'Maximum length is 12 characters']"
               />
               <div class="flex justify-end w-full gap-2">
@@ -178,15 +179,6 @@ export default {
 
           this.mobilenumber = userInformation.mobilenumber;
 
-          if (userInformation.birthdate) {
-            const birthdateParts = userInformation.birthdate.split('-');
-            if (birthdateParts.length === 3) {
-              this.day = birthdateParts[2];
-              this.year = birthdateParts[0];
-              const monthNumber = parseInt(birthdateParts[1], 10);
-              this.month = this.getMonthName(monthNumber);
-            }
-          }
         } catch (error) {
           console.log('Error parsing user data:', error);
           // Provide user feedback or navigate to an error page
@@ -201,14 +193,6 @@ export default {
         this.$router.push('/');
       }
     },
-    getMonthName(monthNumber) {
-      const months = [
-        'January', 'February', 'March', 'April',
-        'May', 'June', 'July', 'August',
-        'September', 'October', 'November', 'December'
-      ];
-      return months[monthNumber - 1] || null;
-    },
     getUserProfileImagePath() {
       // Ensure userProfileImage is not null before creating the path
       if (this.userProfileImage) {
@@ -222,44 +206,22 @@ export default {
       this.arrowDirection = !this.arrowDirection;
       this.showModal = !this.showModal;
     },
-    validateDay(value) {
-      if (isNaN(value) || value < 1 || value > 31) {
-        return 'Invalid day!';
-      }
-      return true;
-    },
-    validateYear(value) {
 
-      if (isNaN(value) || value < 1900 || value > 2100) {
-        return 'Invalid year!';
-      }
-      return true;
-    },
-    validateMonth(value) {
-
-      if (!value) {
-        return 'Month is required!';
-      }
-      return true;
-    },
     onSubmit() {
       const formData = {
-        Firstname: this.firstname,
-        Lastname: this.lastname,
-        Day: this.day,
-        Month: this.month,
-        Year: this.year,
-        Gender: this.gender,
+        Email: this.email,
+        CPnumber: this.mobilenumber,
       };
-      axios.put(`http://localhost/Capstone-Project/backend/api/Account_Settings/basicinfo.php/${this.email}`, formData)
+      console.log(formData);
+      axios.put(`http://localhost/Capstone-Project/backend/api/Account_Settings/contactinfo.php/${this.uid}`, formData)
       .then((response) =>{
         this.responseStatus = response.data.status;
         this.responseInformation = response.data.information;
         console.log(this.responseInformation);
         if (this.responseStatus === "success") {
             const existingInformation = JSON.parse(SessionStorage.getItem('information')) || {};
-            existingInformation.firstname = this.responseInformation.email;
-            existingInformation.lastname = this.responseInformation.mobilenumber;
+            existingInformation.email = this.responseInformation.email;
+            existingInformation.mobilenumber = this.responseInformation.mobilenumber;
             this.$q.notify({
                 message: 'Contact Information Updated!',
                 caption: 'Your contact iformation has been changed successfully.',
@@ -268,7 +230,8 @@ export default {
 
             SessionStorage.set('information', JSON.stringify(existingInformation));
             this.loadUserData();
-            this.$router.push('/dashboard/account-basicinfo');
+            this.$router.push('/dashboard/account-contactinfo');
+
         }
       }).catch(error => {
         console.error('Error submitting form:', error);
