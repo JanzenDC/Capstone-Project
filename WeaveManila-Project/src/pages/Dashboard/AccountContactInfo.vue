@@ -242,17 +242,17 @@
             </q-dialog>
           <q-form @submit="onSubmit">
             <p class="text-[#9e896a] font-bold">Phone</p>
-              <q-input
-                v-model="mobilenumber"
-                label="Phone Number"
-                type="number"
-                outlined
-                dense
-                class="custom-border-color mt-3"
-                lazy-rules
-                :maxlength="12"
-                :rules="[val => val && val.length > 0 || 'Please type something', val => val && val.length <= 12 || 'Maximum length is 12 characters']"
-              />
+            <q-input
+              v-model="mobilenumber"
+              label="Phone Number"
+              type="number"
+              outlined
+              dense
+              class="custom-border-color mt-3"
+              lazy-rules
+              :maxlength="12"
+              :rules="[val => val && val.length === 12 || 'Please enter exactly 12 characters']"
+            />
               <div class="flex justify-end w-full gap-2">
               <router-link to="/dashboard/account-settings" class="bg-white rounded-full text-center p-2 text-[#9e896a] w-[74px] border-2 border-[#9e896a]">
                 Cancel

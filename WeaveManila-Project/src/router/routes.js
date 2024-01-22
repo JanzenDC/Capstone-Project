@@ -27,6 +27,7 @@ const routes = [
       { path: 'account-basicinfo', component: () => import('pages/Dashboard/AccountBasicinfo.vue') },
       { path: 'account-profilepic', component: () => import('pages/Dashboard/AccountUserprofile.vue') },
       { path: 'account-contactinfo', component: () => import('pages/Dashboard/AccountContactInfo.vue') },
+      { path: 'account-changepass', component: () => import('pages/Dashboard/AccountSecurity.vue') },
 
     ]
   },

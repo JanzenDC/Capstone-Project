@@ -108,25 +108,90 @@
         </li>
     </ul>
   </q-drawer>
-  <!-- <q-page class="bg-[#f5f5f5] p-4">
-    <div class="bg-white h-[520px] rounded p-10">
-      <div class="text-center text-[#8F8073] text-[40px] font-bold">
-        ACCOUNT INFO
-      </div>
+  <q-page class="bg-[#f5f5f5] p-4">
+    <div class="bg-white h-[520px] rounded p-4 px-7 overflow-auto">
+      <h1 class="text-[25px] font-bold">Change Password</h1>
+      <q-form @submit="onSubmit">
+        <div class="w-full">
+          <q-input
+            :type="showPassword ? 'text' : 'password'"
+            label="Current Password"
+            outlined
+            dense
+            v-model="currentPW"
+            class="w-[300px]"
+            :no-error-icon="true"
+            :rules="[passwordsMatchRule]"
+          >
+            <template v-slot:append>
+              <q-icon
+                :name="showPassword ? 'visibility_off' : 'visibility'"
+                @click="togglePasswordVisibility"
+              />
+            </template>
+          </q-input>
+          <div class="flex gap-16 mt-5">
+            <q-input
+            :type="showChangePassword ? 'text' : 'password'"
+            label="Change Password"
+            outlined
+            dense
+            v-model="changePW"
+            class="w-[300px]"
+            :no-error-icon="true"
+            :rules="[passwordLengthRule, passwordStrengthRule, passwordsDoNotMatchRule]"
+          >
+            <template v-slot:append>
+              <q-icon
+                :name="showChangePassword ? 'visibility_off' : 'visibility'"
+                @click="togglePasswordChange"
+              />
+            </template>
+            </q-input>
+            <q-input
+              :type="showChangePassword ? 'text' : 'password'"
+              label="Confirm Password"
+              outlined
+              dense
+              v-model="confirmPW"
+              class="w-[300px]"
+              :no-error-icon="true"
+              :rules="[passwordsDoNotMatchRule]"
+            >
+            </q-input>
+          </div>
+        </div>
+          <p class="font-bold text-[16px]">Password Rules:</p>
+          <p class="mt-2">To create new password, you have to meet all the following</p>
+          <p class="mt-2">Your password must be at least 10 characters long.</p>
+          <p class="mt-2">Include upper and lowercase then special characters, such as !, @, #, $, etc.</p>
+          <p class="mt-2">Use at least one numerical digit.</p>
+          <p class="mt-2">Cannot be the same as previous password</p>
+        <div class="flex justify-end w-full gap-2 mt-3">
+          <router-link
+            to="/dashboard/account-settings"
+            class="bg-white rounded-full text-center p-2 text-[#9e896a] w-[74px] border-2 border-[#9e896a]"
+          >
+            Cancel
+          </router-link>
+          <q-btn label="Save" type="submit" class="bg-[#9e896a] rounded-full text-white" />
+        </div>
+      </q-form>
     </div>
-  </q-page> -->
+  </q-page>
 </template>
 
 <script>
 import { useQuasar } from 'quasar';
 import { SessionStorage } from 'quasar';
-
+import axios from 'axios';
 export default {
   setup() {
     const $q = useQuasar();
   },
   data() {
     return {
+      uid: '',
       email: '',
       firstname: '',
       middlename: '',
@@ -136,9 +201,35 @@ export default {
       showModal: false,
       arrowDirection: false,
       position: '',
-      drawer: true,
+      drawer: false,
 
+      currentPW: '',
+      changePW: '',
+      confirmPW: '',
+      showPassword: false,
+      showChangePassword: false,
     };
+  },
+  computed: {
+    passwordLengthRule() {
+      return (value) => {
+        this.isLengthValid = value.length >= 10;
+        return this.isLengthValid || 'Your password must be at least 10 characters long.';
+      };
+    },
+    passwordStrengthRule() {
+      return (value) => {
+        const strengthRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+{}\[\]:;<>,.?~\\-]).+$/;
+        this.isStrengthValid = strengthRegex.test(value);
+        return this.isStrengthValid || 'Include upper and lowercase, and special characters.';
+      };
+    },
+    passwordsDoNotMatchRule() {
+      return (value) => value === this.changePW || 'New Password and Confirm Password should be the same';
+    },
+    passwordsMatchRule() {
+      return (value) => value !== this.changePW || 'Current Password and New Password should not be the same';
+    },
   },
   mounted() {
     this.loadUserData();
@@ -151,6 +242,7 @@ export default {
       if (userData) {
         try {
           const userInformation = JSON.parse(userData);
+          this.uid = userInformation.uid;
           this.email = userInformation.email;
           this.username = userInformation.username;
           this.userProfileImage = userInformation.pfp;
@@ -158,6 +250,7 @@ export default {
           this.middlename = userInformation.middlename;
           this.lastname = userInformation.lastname;
           this.position = userInformation.position;
+          this.password = userInformation.password;
         } catch (error) {
           console.log('Error parsing user data:', error);
           // Provide user feedback or navigate to an error page
@@ -186,6 +279,48 @@ export default {
         // Return a default path or handle it as per your requirement
         return '/default_profile.png';
       }
+    },
+    togglePasswordVisibility() {
+      this.showPassword = !this.showPassword;
+
+    },
+    togglePasswordChange() {
+      this.showChangePassword = !this.showChangePassword;
+    },
+    onSubmit() {
+      const formData = {
+        currentPass: this.currentPW,
+        newpass: this.changePW,
+      }
+      axios.put(`http://localhost/Capstone-Project/backend/api/Account_Settings/changepassword.php/${this.uid}`, formData)
+      .then((response) =>{
+        this.responseStatus = response.data.status;
+        this.responseInformation = response.data.information;
+        console.log(response.data);
+        if (this.responseStatus === "success") {
+            const existingInformation = JSON.parse(SessionStorage.getItem('information')) || {};
+            existingInformation.password = this.responseInformation.password;
+            this.$q.notify({
+                message: 'Password Updated!!',
+                caption: 'Your password has been changed successfully.',
+                color: 'green',
+            });
+            this.currentPW = null;
+            this.changePW = null;
+            this.confirmPW = null;
+            SessionStorage.set('information', JSON.stringify(existingInformation));
+            this.loadUserData();
+            this.$router.push('/dashboard/account-changepass');
+        }
+        if (this.responseStatus === "fail") {
+          this.$q.notify({
+            color: 'negative',
+            message: `${response.data.message} Please try again.`,
+          });
+        }
+      }).catch(error => {
+        console.error('Error submitting form:', error);
+      });
     },
     logout() {
       sessionStorage.clear();

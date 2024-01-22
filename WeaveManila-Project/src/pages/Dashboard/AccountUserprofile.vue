@@ -61,7 +61,12 @@
       </div>
     </div>
   </q-header>
-    <q-drawer show-if-above v-model="drawer" side="left" bordered>
+  <q-drawer
+  show-if-above
+  v-model="drawer"
+  side="left"
+  bordered
+  :width="250">
       <ul class="p-4">
         <li class="font-bold">Overview</li>
           <li class="py-[17px] px-[20px]">
@@ -425,13 +430,14 @@
           this.responseInformation = response.data.information;
           if (this.responseStatus === "success") {
             const existingInformation = JSON.parse(SessionStorage.getItem('information')) || {};
-              existingInformation.pfp = this.responseInformation.pfp;
-              this.$q.notify({
-                  message: 'Success',
-                  caption: 'You have successfully change your profile picture.',
-                  color: 'green',
-              });
-              SessionStorage.set('information', JSON.stringify(existingInformation));
+            existingInformation.pfp = this.responseInformation.pfp;
+            this.$q.notify({
+                message: 'Success',
+                caption: 'You have successfully change your profile picture.',
+                color: 'green',
+            });
+            this.uploadDialog = false;
+            SessionStorage.set('information', JSON.stringify(existingInformation));
             this.loadUserData();
             this.$router.push('/dashboard/account-profilepic');
           }

@@ -37,19 +37,62 @@
         // Generate a unique filename
         $uniqueFilename = time() . '_' . uniqid('', true) . '_' . basename($file['name']);
         $uid = $_POST['uid'];
+    
         // Example: Move the uploaded file to a specific directory
         $uploadDir = 'C:/xampp/htdocs/Capstone-Project/WeaveManila-Project/public/pfp/';
         $uploadPath = $uploadDir . $uniqueFilename;
     
         if (move_uploaded_file($file['tmp_name'], $uploadPath)) {
+            // Resize the image to 800x800 pixels
+            list($width, $height) = getimagesize($uploadPath);
+            $newWidth = 800;
+            $newHeight = 800;
+            $imageResized = imagecreatetruecolor($newWidth, $newHeight);
+    
+            switch (strtolower(pathinfo($uploadPath, PATHINFO_EXTENSION))) {
+                case 'jpg':
+                case 'jpeg':
+                    $image = imagecreatefromjpeg($uploadPath);
+                    break;
+                case 'png':
+                    $image = imagecreatefrompng($uploadPath);
+                    break;
+                case 'gif':
+                    $image = imagecreatefromgif($uploadPath);
+                    break;
+                default:
+                    // Unsupported file format
+                    $response = [
+                        'status' => 'fail',
+                        'message' => 'Unsupported file format.',
+                    ];
+                    echo json_encode($response);
+                    return;
+            }
+    
+            imagecopyresampled($imageResized, $image, 0, 0, 0, 0, $newWidth, $newHeight, $width, $height);
+    
+            switch (strtolower(pathinfo($uploadPath, PATHINFO_EXTENSION))) {
+                case 'jpg':
+                case 'jpeg':
+                    imagejpeg($imageResized, $uploadPath);
+                    break;
+                case 'png':
+                    imagepng($imageResized, $uploadPath);
+                    break;
+                case 'gif':
+                    imagegif($imageResized, $uploadPath);
+                    break;
+            }
+    
+            // Update the database with the new filename
             $existingRecord = $this->db->where("uid", $uid)->getOne('w_users');
-
             $updateData = ['profile_pic' => $uniqueFilename];
             $updateData = $this->db->where('uid', $existingRecord['uid'])->update('w_users', $updateData);
-
+    
             $response = [
                 'status' => 'success',
-                'message' => 'File uploaded succesfully.',
+                'message' => 'File uploaded successfully.',
                 'information' => [
                     'uid' => $uid,
                     'pfp' => $uniqueFilename,
@@ -64,6 +107,8 @@
             echo json_encode($response);
         }
     }
+    
+    
     
     
     

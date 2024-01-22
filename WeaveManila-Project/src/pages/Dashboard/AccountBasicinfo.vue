@@ -61,7 +61,12 @@
     </div>
   </div>
 </q-header>
-  <q-drawer show-if-above v-model="drawer" side="left" bordered>
+<q-drawer
+  show-if-above
+  v-model="drawer"
+  side="left"
+  bordered
+  :width="250">
     <ul class="p-4">
       <li class="font-bold">Overview</li>
         <li class="py-[17px] px-[20px]">

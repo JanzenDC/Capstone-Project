@@ -61,7 +61,12 @@
     </div>
   </div>
 </q-header>
-  <q-drawer show-if-above v-model="drawer" side="left" bordered>
+  <q-drawer
+  show-if-above
+  v-model="drawer"
+  side="left"
+  bordered
+  :width="250">
     <ul class="p-4">
       <li class="font-bold">Overview</li>
         <li class="py-[17px] px-[20px]">
@@ -158,6 +163,7 @@
               </div>
             </div>
           </div>
+          <!-- Contact Information -->
           <div class="mt-3 w-[600px] p-5 border border-[#ddb7ab] rounded-[15px] drop-shadow-md">
             <div class="flex justify-between -mt-8">
               <h1 class="text-[19px] font-bold">Contact Information</h1>
@@ -173,6 +179,22 @@
               </div>
               <div>
                 <p>Mobile Number:</p> {{ mobilenumber }}
+              </div>
+            </div>
+          </div>
+          <!-- Password Information -->
+          <div class="mt-3 w-[600px] p-5 border border-[#ddb7ab] rounded-[15px] drop-shadow-md">
+            <div class="flex justify-between -mt-8">
+              <h1 class="text-[19px] font-bold">Security</h1>
+              <div class="w-[84px] flex items-center justify-center ">
+                <router-link to="/dashboard/account-changepass" class="text-center w-full border border-[#9e896a] rounded-full">
+                  <span class=" p-1   text-[#9e896a]"><q-icon name="edit"/> Edit</span>
+                </router-link>
+              </div>
+            </div>
+            <div class="grid grid-cols-2 gap-10 -mt-4">
+              <div>
+                <p>Current Password</p> {{ password }}
               </div>
             </div>
           </div>
@@ -229,7 +251,7 @@ export default {
           this.birthdate = userInformation.birthdate;
           this.position = userInformation.position;
           this.mobilenumber = userInformation.mobilenumber;
-          this.password = userInformation.password;
+          this.password = userInformation.password ? '*'.repeat(Math.min(8, userInformation.password.length)) : '';
           this.address = userInformation.address;
         } catch (error) {
           console.log('Error parsing user data:', error);
