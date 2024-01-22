@@ -216,7 +216,7 @@ export default {
       password: '',
       arrowDirection: false,
       showModal: false,
-      drawer: true,
+      drawer: false,
       month: '',  // Newly added property for v-model binding
       monthsOptions: [
       'January', 'February', 'March', 'April',
@@ -232,7 +232,7 @@ export default {
   methods: {
     loadUserData() {
       const userData = SessionStorage.getItem('information');
-      console.log(userData);
+
       if (userData) {
         try {
           const userInformation = JSON.parse(userData);
@@ -266,10 +266,12 @@ export default {
             message: 'Error loading user data. Please try again.',
           });
           this.$router.push('/');
+          sessionStorage.clear();
         }
       } else {
         // Handle the case when user data is not available
         this.$router.push('/');
+        sessionStorage.clear();
       }
     },
     getMonthName(monthNumber) {
@@ -283,7 +285,7 @@ export default {
     getUserProfileImagePath() {
       // Ensure userProfileImage is not null before creating the path
       if (this.userProfileImage) {
-        return `/pfp/${this.userProfileImage}.png`;
+        return `/pfp/${this.userProfileImage}`;
       } else {
         // Return a default path or handle it as per your requirement
         return '/default_profile.png';

@@ -9,8 +9,8 @@
   // Used in response to a preflight request which includes the Access-Control-Request-Headers to indicate which HTTP headers can be used during the actual request
   header("Access-Control-Allow-Headers: Content-Type");
   header('Content-Type: application/json');
-  require_once('../MysqliDb.php');
-//   require_once(__DIR__ . '/SendInBlue/vendor/autoload.php');
+  require_once('../../MysqliDb.php');
+
 
 
   class API{
@@ -21,64 +21,50 @@
     }
     public function httpGet($payload)
     {
-
+ 
     }
     
     public function httpPost($payload)
     {
-        $requiredFields = ['loginEmail','loginPassword'];
-        foreach ($requiredFields as $field) {
-            if (!isset($payload[$field])) {
-                $response = ['status' => 'fail', 'message' => 'Missing required field: ' . $field];
-                echo json_encode($response);
-                exit;
-            }
+        if (!isset($_FILES['file'])) {
+            http_response_code(400);
+            echo json_encode(array("message" => "No file uploaded."));
+            return;
         }
-        
-        $existingRecord = $this->db->where("email", $payload['loginEmail'])->getOne('w_users');
-        $password = $payload['loginPassword'];
-        if ($existingRecord) {
-            if(password_verify($password, $existingRecord['password'])){
-                $response = [
-                    'status' => 'success',
-                    'message' => 'Successfully logged in.',
-                    'information' => [
-                        'uid' =>    $existingRecord['uid'],
-                        'email' =>    $existingRecord['email'],
-                        'password' => $existingRecord['password'],
-                        'username' => $existingRecord['username'],
-                        'pfp' =>      $existingRecord['profile_pic'],
-                        'firstname' => $existingRecord['firstname'],
-                        'middlename' => $existingRecord['middlename'],
-                        'lastname' => $existingRecord['lastname'],
-                        'gender' =>   $existingRecord['gender'],
-                        'position' => $existingRecord['position'],
-                        'mobilenumber' => $existingRecord['mobile_number'],
-                        'birthdate' => $existingRecord['birthdate'],
-                        'address' => $existingRecord['address'],
-                        'age' => $existingRecord['age'],
-                        'otp_code' => 0,
-                    ]
-                ];
-                echo json_encode($response);
-            }else{
-                $response = [
-                    'status' => 'fail',
-                    'message' => 'Password Incorrect.',
-                ];
-                echo json_encode($response);
-                exit;         
-            }            
-        }
-        else{
+    
+        $file = $_FILES['file'];
+    
+        // Generate a unique filename
+        $uniqueFilename = time() . '_' . uniqid('', true) . '_' . basename($file['name']);
+        $uid = $_POST['uid'];
+        // Example: Move the uploaded file to a specific directory
+        $uploadDir = 'C:/xampp/htdocs/Capstone-Project/WeaveManila-Project/public/pfp/';
+        $uploadPath = $uploadDir . $uniqueFilename;
+    
+        if (move_uploaded_file($file['tmp_name'], $uploadPath)) {
+            $existingRecord = $this->db->where("uid", $uid)->getOne('w_users');
+
+            $updateData = ['profile_pic' => $uniqueFilename];
+            $updateData = $this->db->where('uid', $existingRecord['uid'])->update('w_users', $updateData);
+
             $response = [
-                'status' => 'fail',
-                'message' => 'Email not registered.',
+                'status' => 'success',
+                'message' => 'File uploaded succesfully.',
+                'information' => [
+                    'uid' => $uid,
+                    'pfp' => $uniqueFilename,
+                ]
             ];
             echo json_encode($response);
-            exit;         
+        } else {
+            $response = [
+                'status' => 'fail',
+                'message' => 'Error uploading file.',
+            ];
+            echo json_encode($response);
         }
-    }    
+    }
+    
     
     
     public function httpPut($ids, $payload)

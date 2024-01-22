@@ -31,7 +31,7 @@
     
     
     public function httpPut($ids, $payload)
-    {     
+    {   
         $requiredFields = ['pfp']; // Update field names here
         foreach ($requiredFields as $field) {
             if (!isset($payload[$field])) {

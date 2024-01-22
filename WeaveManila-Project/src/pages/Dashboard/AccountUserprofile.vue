@@ -105,30 +105,6 @@
     <q-page class="bg-[#f5f5f5] p-4">
       <div class="bg-white h-[520px] rounded p-10 overflow-auto">
 
-
-    <div class="modal fixed w-full h-full top-0 left-0 flex items-center  z-50  justify-center" v-show="showSuccessModal">
-      <div class="modal-overlay absolute w-full h-full bg-gray-900 opacity-50" @click="closeModal"></div>
-      <div class="modal-container bg-white w-[400px] h-[230px] md:max-w-md mx-auto rounded shadow-lg  z-50  overflow-y-auto">
-        <div class="modal-content py-4 text-left px-6">
-          <div class="modal-header flex text-right items-end justify-end">
-            <slot name="header">
-              <q-icon name="close" class="text-[20px]" @click="closeModal"/>
-            </slot>
-          </div>
-          <div class="modal-body flex justify-center">
-            <slot name="body" class="flex">
-              <q-icon name="task_alt" class="text-[72px] text-[#9E896A]" />
-              <div class="w-full text-center">
-                <p class="text-[20px] font-bold">Personal Information Updated!</p>
-              </div>
-              <div class="w-full text-center">
-                <p class="text-[14px]">Your personal information has been changed successfully.</p>
-              </div>
-            </slot>
-          </div>
-        </div>
-      </div>
-    </div>
     <router-link to="/dashboard/account-settings">
       <p class="text-[15px]"><q-icon name="arrow_back_ios"/> <span class=" font-bold text-[#9e896a]">Basic Info</span></p>
     </router-link>
@@ -143,8 +119,50 @@
                   />
                 </div>
                 <div class="flex gap-2 mt-3">
-                  <q-btn dense label="Upload Photo" type="submit" class="bg-[#9e896a] rounded-full  text-white"/>
-                  <q-btn label="Cancel" type="submit" class="bg-white rounded-full  text-[#9e896a] border border-[#9e896a]"/>
+                  <q-btn dense label="Upload Photo" @click="uploadDialog = true" class="bg-[#9e896a] rounded-full  text-white"/>
+                  <q-dialog v-model="uploadDialog" persistent transition-show="scale" transition-hide="scale">
+
+                    <q-card class="text-Black" style="width: 550px">
+                      <q-form @submit="onUpload">
+                        <q-card-section class="row items-center q-pb-none">
+                          <div class="text-h6">Update Profile</div>
+                          <q-space />
+                          <q-btn icon="close" flat round dense v-close-popup />
+                        </q-card-section>
+
+                      <q-separator />
+
+
+                          <div class="flex justify-center">
+                            <q-img
+                              :src="previewImage || getUserImagePath()"
+                              alt="Description of the image"
+                              class="w-[300px] rounded-full"
+                            />
+                          </div>
+                          <q-input
+                            ref="fileInput"
+                            @update:model-value="handleFileChange"
+                            filled
+                            type="file"
+                            accept="image/png"
+                            hint="Only PNG format picture allowed."
+                            v-model="selectedFile"
+                          />
+                          <div v-if="previewImage">
+                            <q-btn flat label="Cancel Preview" @click="cancelPreview" class="q-mt-sm" />
+                          </div>
+
+                      <q-separator />
+
+                      <q-card-actions align="right" class="bg-white text-teal">
+                        <q-btn label="Save" type="submit" class="bg-[#9e896a] rounded-md text-white"/>
+                        <q-btn flat label="Discard Changes" @click="cancelUpload" v-close-popup />
+                      </q-card-actions>
+                      </q-form>
+                    </q-card>
+                  </q-dialog>
+
                 </div>
               </div>
             </div>
@@ -157,71 +175,71 @@
                   src="/pfp/default_pfp.png"
                   alt="Default Avatar"
                   class="w-16 h-16 rounded-full"
-                  @click="selectAvatar('default_pfp')"
-                  :class="{ 'selected-avatar': selectedAvatar === 'default_pfp' }"
+                  @click="selectAvatar('default_pfp.png')"
+                  :class="{ 'selected-avatar': selectedAvatar === 'default_pfp.png' }"
                 />
                 <q-img
                   src="/pfp/man.png"
                   alt="Man Avatar"
                   class="w-16 h-16 rounded-full"
-                  @click="selectAvatar('man')"
-                  :class="{ 'selected-avatar': selectedAvatar === 'man' }"
+                  @click="selectAvatar('man.png')"
+                  :class="{ 'selected-avatar': selectedAvatar === 'man.png' }"
                 />
                 <q-img
                   src="/pfp/man_2.png"
                   alt="Woman Avatar"
                   class="w-16 h-16 rounded-full"
-                  @click="selectAvatar('man_2')"
-                  :class="{ 'selected-avatar': selectedAvatar === 'man_2' }"
+                  @click="selectAvatar('man_2.png')"
+                  :class="{ 'selected-avatar': selectedAvatar === 'man_2.png' }"
                 />
                 <q-img
                   src="/pfp/man_3.png"
                   alt="Woman Avatar"
                   class="w-16 h-16 rounded-full"
-                  @click="selectAvatar('man_3')"
-                  :class="{ 'selected-avatar': selectedAvatar === 'man_3' }"
+                  @click="selectAvatar('man_3.png')"
+                  :class="{ 'selected-avatar': selectedAvatar === 'man_3.png' }"
                 />
                 <q-img
                   src="/pfp/man_4.png"
                   alt="Woman Avatar"
                   class="w-16 h-16 rounded-full"
-                  @click="selectAvatar('man_4')"
-                  :class="{ 'selected-avatar': selectedAvatar === 'man_4' }"
+                  @click="selectAvatar('man_4.png')"
+                  :class="{ 'selected-avatar': selectedAvatar === 'man_4.png' }"
                 />
                 <q-img
                   src="/pfp/woman_1.png"
                   alt="Woman Avatar"
                   class="w-16 h-16 rounded-full"
-                  @click="selectAvatar('woman_1')"
-                  :class="{ 'selected-avatar': selectedAvatar === 'woman_1' }"
+                  @click="selectAvatar('woman_1.png')"
+                  :class="{ 'selected-avatar': selectedAvatar === 'woman_1.png' }"
                 />
                 <q-img
                   src="/pfp/woman_2.png"
                   alt="Woman Avatar"
                   class="w-16 h-16 rounded-full"
-                  @click="selectAvatar('woman_2')"
-                  :class="{ 'selected-avatar': selectedAvatar === 'woman_2' }"
+                  @click="selectAvatar('woman_2.png')"
+                  :class="{ 'selected-avatar': selectedAvatar === 'woman_2.png' }"
                 />
                 <q-img
                   src="/pfp/woman_3.png"
                   alt="Woman Avatar"
                   class="w-16 h-16 rounded-full"
-                  @click="selectAvatar('woman_3')"
-                  :class="{ 'selected-avatar': selectedAvatar === 'woman_3' }"
+                  @click="selectAvatar('woman_3.png')"
+                  :class="{ 'selected-avatar': selectedAvatar === 'woman_3.png' }"
                 />
                 <q-img
                   src="/pfp/woman_4.png"
                   alt="Woman Avatar"
                   class="w-16 h-16 rounded-full"
-                  @click="selectAvatar('woman_4')"
-                  :class="{ 'selected-avatar': selectedAvatar === 'woman_4' }"
+                  @click="selectAvatar('woman_4.png')"
+                  :class="{ 'selected-avatar': selectedAvatar === 'woman_4.png' }"
                 />
                 <q-img
                   src="/pfp/woman_5.png"
                   alt="Woman Avatar"
                   class="w-16 h-16 rounded-full"
-                  @click="selectAvatar('woman_5')"
-                  :class="{ 'selected-avatar': selectedAvatar === 'woman_5' }"
+                  @click="selectAvatar('woman_5.png')"
+                  :class="{ 'selected-avatar': selectedAvatar === 'woman_5.png' }"
                 />
               </div>
             </div>
@@ -258,21 +276,28 @@
         uid: '',
         email: '',
         userProfileImage: null,
+        changeImage: null,
         username: '',
         firstname: '',
         selectedAvatar: null,
         showModal: false,
         arrowDirection: false,
+        uploadDialog: false,
+        file: null,
+        previewImage: null,
+        drawer: false,
+        selectedFile: null,
       };
     },
-
+    watch: {
+      file: 'handleFileChange',
+    },
     mounted() {
       this.loadUserData();
     },
     methods: {
       loadUserData() {
         const userData = SessionStorage.getItem('information');
-        console.log(userData);
         if (userData) {
           try {
             const userInformation = JSON.parse(userData);
@@ -280,19 +305,62 @@
             this.firstname = userInformation.firstname;
             this.email = userInformation.email;
             this.uid = userInformation.uid;
+            this.changeImage = userInformation.pfp;
           } catch (error) {
-            console.log('Error parsing user data:', error);
             this.$router.push('/');
+            sessionStorage.clear();
           }
         } else {
           // Handle the case when user data is not available
           this.$router.push('/');
+          sessionStorage.clear();
+        }
+      },
+      handleFileChange(event) {
+        this.selectedFile = event[0];
+        if (event && event[0]) {
+          const file = event[0];
+          this.file = event;
+          this.previewImage = URL.createObjectURL(file); // Set previewImage for preview
         }
       },
 
+      cancelPreview() {
+        this.file = 0;
+        this.previewImage = 0;
+        this.userProfileImage = this.userProfileImage; // Set back to default value
+        this.$refs.fileInput.$el.querySelector('input[type=file]').value = null; // Clear file input
+      },
+      cancelUpload() {
+        this.file = 0;
+        this.previewImage = 0;
+        this.userProfileImage = this.userProfileImage; // Set back to default value
+        this.$refs.fileInput.$el.querySelector('input[type=file]').value = null; // Clear file input
+      },
+      getUserImagePath() {
+        if (this.userProfileImage) {
+          // Check if the file extension is present
+          const hasExtension = /\.\w+$/.test(this.userProfileImage);
+
+          if (hasExtension) {
+            return `/pfp/${this.userProfileImage}`;
+          } else {
+            return `/pfp/${this.userProfileImage}`;
+          }
+        } else {
+          return '/default_profile.png';
+        }
+      },
       getUserProfileImagePath() {
         if (this.userProfileImage) {
-          return `/pfp/${this.userProfileImage}.png`;
+          // Check if the file extension is present
+          const hasExtension = /\.\w+$/.test(this.userProfileImage);
+
+          if (hasExtension) {
+            return `/pfp/${this.userProfileImage}`;
+          } else {
+            return `/pfp/${this.userProfileImage}`;
+          }
         } else {
           return '/default_profile.png';
         }
@@ -316,29 +384,68 @@
         const formData = {
           pfp: this.selectedAvatar,
         };
-        axios.put(`http://localhost/Capstone-Project/backend/api/Account_Settings/changeprofile.php/${this.uid}`, formData)
-        .then((response) =>{
+          axios.put(`http://localhost/Capstone-Project/backend/api/Account_Settings/changeprofile.php/${this.uid}`, formData)
+          .then((response) =>{
+            this.responseStatus = response.data.status;
+            this.responseMessage = response.data.message;
+            this.responseInformation = response.data.information;
+            if (this.responseStatus === "success") {
+                const existingInformation = JSON.parse(SessionStorage.getItem('information')) || {};
+                existingInformation.pfp = this.responseInformation.pfp;
+                SessionStorage.set('information', JSON.stringify(existingInformation));
+                this.$q.notify({
+                  message: 'Successfully changed profile picture.',
+                  color: 'green',
+                });
+                this.loadUserData();
+                this.$router.push('/dashboard/account-profilepic');
+            }
+          }).catch(error => {
+          console.error('Error submitting form:', error);
+        });
+      },
+      onUpload() {
+        if (!this.file) {
+          this.$q.notify({
+            message: 'Image does not exist.',
+            color: 'red',
+          });
+          return;
+        }
+        console.log('File type:', typeof this.selectedFile);
+        const formData = new FormData();
+        const uid = this.uid;
+        formData.append("file", this.selectedFile);
+        formData.append("uid", uid);
+
+        axios
+        .post(`http://localhost/Capstone-Project/backend/api/Account_Settings/uploadprofile.php`, formData)
+        .then((response) => {
           this.responseStatus = response.data.status;
-          this.responseMessage = response.data.message;
           this.responseInformation = response.data.information;
           if (this.responseStatus === "success") {
-              const existingInformation = JSON.parse(SessionStorage.getItem('information')) || {};
+            const existingInformation = JSON.parse(SessionStorage.getItem('information')) || {};
               existingInformation.pfp = this.responseInformation.pfp;
-              SessionStorage.set('information', JSON.stringify(existingInformation));
               this.$q.notify({
-                message: 'Successfully changed profile picture.',
-                color: 'green',
+                  message: 'Success',
+                  caption: 'You have successfully change your profile picture.',
+                  color: 'green',
               });
-              this.loadUserData();
-              this.$router.push('/dashboard/account-profilepic');
+              SessionStorage.set('information', JSON.stringify(existingInformation));
+            this.loadUserData();
+            this.$router.push('/dashboard/account-profilepic');
           }
-        }).catch(error => {
-        console.error('Error submitting form:', error);
-      });
+          if (this.responseStatus === "fail") {
 
-      },
-      closeModal() {
-        this.showSuccessModal = false;
+            this.$q.notify({
+              color: 'negative',
+              message: `${response.data.message} Please try again.`,
+            });
+          }
+        })
+        .catch((error) => {
+          console.error('Error submitting form:', error);
+        });
       },
       logout() {
         sessionStorage.clear();

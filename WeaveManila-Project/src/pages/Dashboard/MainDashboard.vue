@@ -161,10 +161,12 @@ export default {
             message: 'Error loading user data. Please try again.',
           });
           this.$router.push('/');
+          sessionStorage.clear();
         }
       } else {
         // Handle the case when user data is not available
         this.$router.push('/');
+        sessionStorage.clear();
       }
     },
     toggleModal() {
@@ -174,7 +176,7 @@ export default {
     getUserProfileImagePath() {
       // Ensure userProfileImage is not null before creating the path
       if (this.userProfileImage) {
-        return `/pfp/${this.userProfileImage}.png`;
+        return `/pfp/${this.userProfileImage}`;
       } else {
         // Return a default path or handle it as per your requirement
         return '/default_profile.png';

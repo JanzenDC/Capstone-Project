@@ -182,6 +182,7 @@ export default {
             existingInformation.birthdate = this.responseInformation.birthdate;
             existingInformation.age = this.responseInformation.age;
             existingInformation.address = this.responseInformation.address;
+            existingInformation.otp_code = this.responseInformation.otp_code;
             // Save the updated information object back to session storage
             SessionStorage.set('information', JSON.stringify(existingInformation));
             this.$router.push('/dashboard/main-dashboard');
