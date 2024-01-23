@@ -108,32 +108,47 @@
     </ul>
   </q-drawer>
   <q-page class="bg-[#f5f5f5] p-4">
-    <div class="bg-white h-[520px] rounded p-4 px-7 overflow-auto">
+    <div class="bg-white h-[520px] rounded p-4 px-7 overflow-y-auto overflow-x-hidden">
       <h1 class="text-[25px] font-bold">Account Settings</h1>
-      <div class="w-full flex justify-center">
+      <div class="w-full md:flex md:justify-center">
         <div>
 
           <!-- User Area -->
-          <div class="p-4 w-[600px] h-[150px] border border-[#ddb7ab] rounded-[15px] drop-shadow-md flex justify-between">
-            <div class="flex items-center gap-2">
-              <q-img
-                :src="getUserProfileImagePath()"
-                alt="Description of the image"
-                class="w-[100px] rounded-full"
-              />
+          <div class="p-4 md:w-[600px] h-[150px] border border-[#ddb7ab] rounded-[15px] drop-shadow-md flex md:justify-between
+          min-[320px]:justify-center">
+            <div class="md:flex items-center gap-2">
+              <div>
+                <div  class="relative flex justify-center items-center">
+                  <q-img
+                    :src="getUserProfileImagePath()"
+                    alt="Description of the image"
+                    class="w-[100px] rounded-full min-[320px]:w-[80px] "
+                  />
+                  <div class="absolute right-12 bottom-0">
+                    <router-link to="/dashboard/account-profilepic">
+                      <div class="rounded-full py-2 px-3 bg-[#ddb7ab] md:hidden">
+                        <q-icon name="photo_camera"/>
+                      </div>
+                    </router-link>
+                  </div>
+                </div>
+
+              </div>
               <div class="text-center">
                 <p class="font-bold text-[16px]">{{ firstname }} {{ lastname }}</p>
                 {{ position }}
               </div>
             </div>
-              <div class="w-[84px] flex items-center justify-center ">
+              <div class="w-[84px] flex items-center justify-center min-[320px]:hidden md:flex">
                 <router-link to="/dashboard/account-profilepic" class="text-center w-full border border-[#9e896a] rounded-full">
                   <span class=" p-1   text-[#9e896a]"><q-icon name="edit"/> Edit</span>
                 </router-link>
               </div>
           </div>
+
+
           <!-- Personal Information -->
-          <div class="mt-3 w-[600px] p-5 border border-[#ddb7ab] rounded-[15px] drop-shadow-md">
+          <div class="mt-3 md:w-[600px] p-5 border border-[#ddb7ab] rounded-[15px] drop-shadow-md">
             <div class="flex justify-between -mt-8">
               <h1 class="text-[19px] font-bold">Personal Information</h1>
               <div class="w-[84px] flex items-center justify-center ">
@@ -164,7 +179,7 @@
             </div>
           </div>
           <!-- Contact Information -->
-          <div class="mt-3 w-[600px] p-5 border border-[#ddb7ab] rounded-[15px] drop-shadow-md">
+          <div class="mt-3 md:w-[600px] p-5 border border-[#ddb7ab] rounded-[15px] drop-shadow-md">
             <div class="flex justify-between -mt-8">
               <h1 class="text-[19px] font-bold">Contact Information</h1>
               <div class="w-[84px] flex items-center justify-center ">
@@ -183,7 +198,7 @@
             </div>
           </div>
           <!-- Password Information -->
-          <div class="mt-3 w-[600px] p-5 border border-[#ddb7ab] rounded-[15px] drop-shadow-md">
+          <div class="mt-3 md:w-[600px] p-5 border border-[#ddb7ab] rounded-[15px] drop-shadow-md">
             <div class="flex justify-between -mt-8">
               <h1 class="text-[19px] font-bold">Security</h1>
               <div class="w-[84px] flex items-center justify-center ">

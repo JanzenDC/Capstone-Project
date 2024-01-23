@@ -42,6 +42,8 @@
             exit;
         }
         
+        date_default_timezone_set('Asia/Singapore');
+
         $newOtpCode = $payload['code'];
         $expirationTime = date('Y-m-d H:i:s', strtotime('+2 minutes'));
         
