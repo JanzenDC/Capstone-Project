@@ -3,7 +3,7 @@
     <q-img
       src="../assets/images/login_images.jpg"
       alt="Description of the image"
-      class="min-[320px]:right-[16px] min-[320px]:top-[88px] w-[328px] md:w-[550px] absolute md:top-[50px] md:right-[250px] rounded-[32px]"
+      class="min-[390px]:right-[30px] min-[390px]:top-[88px] w-[328px] md:w-[550px] absolute md:top-[50px] md:right-[250px] rounded-[32px]"
     />
     <div class="bg-[#9e896a]  md:bg-white md:w-[800px] p-4 h-64 md:h-screen">
       <q-img
@@ -12,7 +12,7 @@
       class="w-[46px] md:w-[96px]"
       />
       <div class="flex justify-center items-center w-[550px]">
-        <div class="p-4 mt-3 w-[340px] min-[320px]:hidden sm:hidden md:block">
+        <div class="p-4 mt-3 w-[340px] min-[390px]:hidden sm:hidden md:block">
           <div>
             <p class="text-[15px] ">Welcome to <span class="text-[#9e896a]">Online Production</span>
             <br><span class="text-[#9e896a]">Monitoring & Inventory Management</span>
@@ -64,8 +64,8 @@
         </div>
       </div>
     </div>
-    <div class="min-[320px]:bg-white h-screen md:bg-[#9e896a] ">
-      <div class="p-4 mt-3 md:w-[340px] min-[320px]:block sm:block md:hidden">
+    <div class="min-[390px]:bg-white h-screen md:bg-[#9e896a] ">
+      <div class="p-4 mt-3 md:w-[340px] min-[390px]:block sm:block md:hidden">
           <div class="mt-[150px]">
             <p class="text-[16px] text-center">Welcome to <span class="text-[#9e896a]">Online Production</span>
             <br><span class="text-[#9e896a]">Monitoring & Inventory Management</span>
@@ -139,9 +139,40 @@ export default {
       responseMessage: '',
       responseStatus: '',
       responseInformation: {},
+      isOnline: '',
     };
   },
+  mounted() {
+    this.loadUserData();
+  },
   methods: {
+    loadUserData() {
+      const userData = SessionStorage.getItem('information');
+      if (userData) {
+        try {
+          const userInformation = JSON.parse(userData);
+          this.isOnline = userInformation.isOnline;
+          if(this.isOnline == 1)
+          {
+            this.$router.push('/dashboard/main-dashboard');
+          }else if(this.isOnline == 0){
+            this.$router.push('/');
+            sessionStorage.clear();
+          }else{
+            this.$router.push('/');
+            sessionStorage.clear();
+          }
+        } catch (error) {
+          console.log('Error parsing user data:', error);
+          this.$router.push('/');
+          sessionStorage.clear();
+        }
+      } else {
+        // Handle the case when user data is not available
+        this.$router.push('/');
+        sessionStorage.clear();
+      }
+    },
     ruleRequired(value) {
       return !!value || 'Password is required';
     },
@@ -183,6 +214,7 @@ export default {
             existingInformation.age = this.responseInformation.age;
             existingInformation.address = this.responseInformation.address;
             existingInformation.otp_code = this.responseInformation.otp_code;
+            existingInformation.isOnline = this.responseInformation.isOnline;
             // Save the updated information object back to session storage
             SessionStorage.set('information', JSON.stringify(existingInformation));
             this.$router.push('/dashboard/main-dashboard');

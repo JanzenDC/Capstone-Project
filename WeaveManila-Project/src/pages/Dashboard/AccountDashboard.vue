@@ -1,6 +1,6 @@
 <template>
 <q-header elevated class="bg-white w-full text-black h-[100px]  md:flex md:justify-between border-2">
-  <div class="md:w-[400px] p-4 md:flex min-[320px]:hidden">
+  <div class="md:w-[400px] p-4 md:flex min-[390px]:hidden">
       <div>
         <q-btn flat @click="drawer = !drawer" round dense icon="menu" />
         <q-img
@@ -14,7 +14,7 @@
         <p class="text-[12px] text-[#9e896a]">Production Monitoring & Inventory Management System</p>
       </div>
   </div>
-  <div class="flex items-center p-4 gap-2 min-[320px]:justify-between">
+  <div class="flex items-center p-4 gap-2 min-[390px]:justify-between">
     <q-btn flat @click="drawer = !drawer" round dense icon="menu" class="md:hidden"/>
     <div class="flex items-center p-4 gap-2">
     <q-icon name="notifications" class="text-[21px]"/>
@@ -115,14 +115,14 @@
 
           <!-- User Area -->
           <div class="p-4 md:w-[600px] h-[150px] border border-[#ddb7ab] rounded-[15px] drop-shadow-md flex md:justify-between
-          min-[320px]:justify-center">
+          min-[390px]:justify-center">
             <div class="md:flex items-center gap-2">
               <div>
                 <div  class="relative flex justify-center items-center">
                   <q-img
                     :src="getUserProfileImagePath()"
                     alt="Description of the image"
-                    class="w-[100px] rounded-full min-[320px]:w-[80px] "
+                    class="w-[100px] rounded-full min-[390px]:w-[80px] "
                   />
                   <div class="absolute right-12 bottom-0">
                     <router-link to="/dashboard/account-profilepic">
@@ -139,7 +139,7 @@
                 {{ position }}
               </div>
             </div>
-              <div class="w-[84px] flex items-center justify-center min-[320px]:hidden md:flex">
+              <div class="w-[84px] flex items-center justify-center min-[390px]:hidden md:flex">
                 <router-link to="/dashboard/account-profilepic" class="text-center w-full border border-[#9e896a] rounded-full">
                   <span class=" p-1   text-[#9e896a]"><q-icon name="edit"/> Edit</span>
                 </router-link>
@@ -246,10 +246,10 @@ export default {
       drawer: false,
     };
   },
-
   mounted() {
     this.loadUserData();
   },
+  
   methods: {
     loadUserData() {
       const userData = SessionStorage.getItem('information');

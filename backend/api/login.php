@@ -58,6 +58,7 @@
                         'address' => $existingRecord['address'],
                         'age' => $existingRecord['age'],
                         'otp_code' => 0,
+                        'isOnline' => 1,
                     ]
                 ];
                 echo json_encode($response);
