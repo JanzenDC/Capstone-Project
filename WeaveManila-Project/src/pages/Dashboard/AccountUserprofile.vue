@@ -85,7 +85,7 @@
           </li>
           <li class="py-[17px] px-[20px] ">
             <div class="flex items-center gap-2">
-              <q-icon name=""/> Product Monitoring
+              <i class="bi bi-box-seam"></i> Product Monitoring
             </div>
           </li>
           <li class="py-[17px] px-[20px]">
@@ -98,7 +98,7 @@
           <li class="py-[17px] px-[20px]">
             <div class="flex items-center">
               <router-link to="/dashboard/auditlogs-section">
-                <q-icon name="" class="mr-2"/> Audit Logs
+                <i class="bi bi-activity"></i> Audit Logs
               </router-link>
             </div>
           </li>

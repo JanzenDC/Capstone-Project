@@ -85,7 +85,7 @@
           </li>
           <li class="py-[17px] px-[20px] ">
             <div class="flex items-center gap-2">
-              <q-icon name=""/> Product Monitoring
+              <i class="bi bi-box-seam"></i> Product Monitoring
             </div>
           </li>
           <li class="py-[17px] px-[20px]">
@@ -98,7 +98,7 @@
           <li class="py-[17px] px-[20px]">
             <div class="flex items-center">
               <router-link to="/dashboard/auditlogs-section">
-                <q-icon name="" class="mr-2"/> Audit Logs
+                <i class="bi bi-activity"></i> Audit Logs
               </router-link>
             </div>
           </li>
@@ -128,10 +128,19 @@
             :name="arrowDirection_1 ? 'arrow_drop_up' : 'arrow_drop_down'"
             class="text-[25px] cursor-pointer"
           />
-          
+          </q-btn>
+          <q-btn @click="openModifyModal_2" label="People" class="h-5 bg-[#907d60] text-white">
+          <q-icon
+            :name="arrowDirection_2 ? 'arrow_drop_up' : 'arrow_drop_down'"
+            class="text-[25px] cursor-pointer"
+          />
           </q-btn>
         </div>
 
+      </div>
+
+      <div class="fixed right-12 top-[200px] transform bg-white z-50 rounded-md border border-gray-500" style="max-width: 350px" v-if="showModifyModal_2">
+        test
       </div>
 
       <div class="fixed right-12 top-[200px] transform bg-white z-50 rounded-md border border-gray-500" style="max-width: 350px" v-if="showModifyModal">
@@ -261,6 +270,8 @@ export default {
       startDate: '',
       endDate: '',
       arrowDirection_1: false,
+      showModifyModal_2: false,
+      arrowDirection_2: false,
     };
 
   },
@@ -361,7 +372,19 @@ export default {
         this.showDateArea = true;
       }
     },
+    openModifyModal_2() {
+      this.arrowDirection_2 = !this.arrowDirection_2;
+      this.showModifyModal = false;
+      if(this.showModifyModal_2 === true){
+        this.showModifyModal_2 = false;
+
+      }
+      else if(this.showModifyModal_2 === false){
+        this.showModifyModal_2 = true;
+      }
+    },
     openModifyModal() {
+      this.showModifyModal_2 = false;
       this.arrowDirection_1 = !this.arrowDirection_1;
       if(this.showModifyModal === true){
         this.showModifyModal = false;
