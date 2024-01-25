@@ -68,45 +68,47 @@
   side="left"
   bordered
   :width="250">
-    <ul class="p-4">
-      <li class="font-bold">Overview</li>
-        <li class="py-[17px] px-[20px]">
-          <div class="flex items-center">
-            <router-link to="/dashboard/main-dashboard">
+      <ul class="p-4">
+        <li class="font-bold">Overview</li>
+          <li class="py-[17px] px-[20px]">
+            <div class="flex items-center">
+              <router-link to="/dashboard/main-dashboard">
               <q-icon name="dashboard" class="mr-2"/> Dashboard
-            </router-link>
-          </div>
-        </li>
-        <!-- Process Section -->
-        <li class="font-bold">Process</li>
-        <li class="py-[17px] px-[20px]">
-          <div class="flex items-center gap-2">
-            <q-icon name="inventory"/> Inventory
-          </div>
-        </li>
-        <li class="py-[17px] px-[20px] ">
-          <div class="flex items-center gap-2">
-            <q-icon name=""/> Product Monitoring
-          </div>
-        </li>
-        <li class="py-[17px] px-[20px]">
-          <div class="flex items-center">
-            <q-icon name="description" class="mr-2"/> Production Cost Report
-          </div>
-        </li>
-        <!-- Settings Section -->
-        <li class="font-bold">Settings</li>
-        <li class="py-[17px] px-[20px]">
-          <div class="flex items-center">
-            <q-icon name="" class="mr-2"/> Audit Logs
-          </div>
-        </li>
-        <li class="py-[17px] px-[20px]">
-          <div class="flex items-center">
-            <q-icon name="group" class="mr-2"/> User Management
-          </div>
-        </li>
-    </ul>
+              </router-link>
+            </div>
+          </li>
+          <!-- Process Section -->
+          <li class="font-bold">Process</li>
+          <li class="py-[17px] px-[20px]">
+            <div class="flex items-center gap-2">
+              <q-icon name="inventory"/> Inventory
+            </div>
+          </li>
+          <li class="py-[17px] px-[20px] ">
+            <div class="flex items-center gap-2">
+              <q-icon name=""/> Product Monitoring
+            </div>
+          </li>
+          <li class="py-[17px] px-[20px]">
+            <div class="flex items-center">
+              <q-icon name="description" class="mr-2"/> Production Cost Report
+            </div>
+          </li>
+          <!-- Settings Section -->
+          <li class="font-bold">Settings</li>
+          <li class="py-[17px] px-[20px]">
+            <div class="flex items-center">
+              <router-link to="/dashboard/auditlogs-section">
+                <q-icon name="" class="mr-2"/> Audit Logs
+              </router-link>
+            </div>
+          </li>
+          <li class="py-[17px] px-[20px]">
+            <div class="flex items-center">
+              <q-icon name="group" class="mr-2"/> User Management
+            </div>
+          </li>
+      </ul>
   </q-drawer>
   <q-page class="bg-[#f5f5f5] p-4">
     <div class="bg-white h-[520px] rounded p-4 px-7 overflow-auto">
@@ -130,7 +132,7 @@
               />
             </template>
           </q-input>
-          <div class="flex gap-16 mt-5">
+          <div class="md:flex md:gap-16 md:mt-5">
             <q-input
             :type="showChangePassword ? 'text' : 'password'"
             label="Change Password"

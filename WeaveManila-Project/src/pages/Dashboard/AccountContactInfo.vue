@@ -1,6 +1,6 @@
 <template>
 <q-header elevated class="bg-white w-full text-black h-[100px]  md:flex md:justify-between border-2">
-  <div class="md:w-[400px] p-4 md:flex min-[320px]:hidden">
+  <div class="md:w-[400px] p-4 md:flex min-[390px]:hidden">
       <div>
         <q-btn flat @click="drawer = !drawer" round dense icon="menu" />
         <q-img
@@ -14,7 +14,7 @@
         <p class="text-[12px] text-[#9e896a]">Production Monitoring & Inventory Management System</p>
       </div>
   </div>
-  <div class="flex items-center p-4 gap-2 min-[320px]:justify-between">
+  <div class="flex items-center p-4 gap-2 min-[390px]:justify-between">
     <q-btn flat @click="drawer = !drawer" round dense icon="menu" class="md:hidden"/>
     <div class="flex items-center p-4 gap-2">
     <q-icon name="notifications" class="text-[21px]"/>
@@ -61,58 +61,60 @@
     </div>
   </div>
 </q-header>
-  <q-drawer
+<q-drawer
   show-if-above
   v-model="drawer"
   side="left"
   bordered
   :width="250">
-    <ul class="p-4">
-      <li class="font-bold">Overview</li>
-        <li class="py-[17px] px-[20px]">
-          <div class="flex items-center">
-            <router-link to="/dashboard/main-dashboard">
-            <q-icon name="dashboard" class="mr-2"/> Dashboard
-            </router-link>
-          </div>
-        </li>
-        <!-- Process Section -->
-        <li class="font-bold">Process</li>
-        <li class="py-[17px] px-[20px]">
-          <div class="flex items-center gap-2">
-            <q-icon name="inventory"/> Inventory
-          </div>
-        </li>
-        <li class="py-[17px] px-[20px] ">
-          <div class="flex items-center gap-2">
-            <q-icon name=""/> Product Monitoring
-          </div>
-        </li>
-        <li class="py-[17px] px-[20px]">
-          <div class="flex items-center">
-            <q-icon name="description" class="mr-2"/> Production Cost Report
-          </div>
-        </li>
-        <!-- Settings Section -->
-        <li class="font-bold">Settings</li>
-        <li class="py-[17px] px-[20px]">
-          <div class="flex items-center">
-            <q-icon name="" class="mr-2"/> Audit Logs
-          </div>
-        </li>
-        <li class="py-[17px] px-[20px]">
-          <div class="flex items-center">
-            <q-icon name="group" class="mr-2"/> User Management
-          </div>
-        </li>
-    </ul>
+      <ul class="p-4">
+        <li class="font-bold">Overview</li>
+          <li class="py-[17px] px-[20px]">
+            <div class="flex items-center">
+              <router-link to="/dashboard/main-dashboard">
+              <q-icon name="dashboard" class="mr-2"/> Dashboard
+              </router-link>
+            </div>
+          </li>
+          <!-- Process Section -->
+          <li class="font-bold">Process</li>
+          <li class="py-[17px] px-[20px]">
+            <div class="flex items-center gap-2">
+              <q-icon name="inventory"/> Inventory
+            </div>
+          </li>
+          <li class="py-[17px] px-[20px] ">
+            <div class="flex items-center gap-2">
+              <q-icon name=""/> Product Monitoring
+            </div>
+          </li>
+          <li class="py-[17px] px-[20px]">
+            <div class="flex items-center">
+              <q-icon name="description" class="mr-2"/> Production Cost Report
+            </div>
+          </li>
+          <!-- Settings Section -->
+          <li class="font-bold">Settings</li>
+          <li class="py-[17px] px-[20px]">
+            <div class="flex items-center">
+              <router-link to="/dashboard/auditlogs-section">
+                <q-icon name="" class="mr-2"/> Audit Logs
+              </router-link>
+            </div>
+          </li>
+          <li class="py-[17px] px-[20px]">
+            <div class="flex items-center">
+              <q-icon name="group" class="mr-2"/> User Management
+            </div>
+          </li>
+      </ul>
   </q-drawer>
   <q-page class="bg-[#f5f5f5] p-4">
     <div class="bg-white h-[520px] rounded p-10 overflow-auto">
       <router-link to="/dashboard/account-settings">
         <p class="text-[15px]"><q-icon name="arrow_back_ios"/> <span class=" font-bold text-[#9e896a]">Basic Info</span></p>
       </router-link>
-      <div class="w-[500px] h-[320px] mt-2 border border-[#dfc8c0] rounded p-5 text-[15px]">
+      <div class="md:w-[500px] md:h-[390px] mt-2 border border-[#dfc8c0] rounded p-5 text-[15px]">
 
             <p class="text-[#9e896a] font-bold">Email</p>
             <q-input outlined bottom-slots v-model="email" label="Email" disable>
@@ -145,7 +147,7 @@
                 </q-card-section>
 
                 <q-card-actions align="right" class="bg-white text-teal">
-                  <q-btn flat label="Cancel" v-close-popup />
+                  <q-btn flat label="Cancel" @click="cancelButtonClick" v-close-popup />
                 </q-card-actions>
               </q-card>
             </q-dialog>
@@ -183,7 +185,7 @@
                 </q-card-section>
 
                 <q-card-actions align="right" class="bg-white text-teal">
-                  <q-btn flat label="Cancel" v-close-popup />
+                  <q-btn flat label="Cancel" @click="cancelButtonClick" v-close-popup />
                 </q-card-actions>
               </q-card>
             </q-dialog>
@@ -236,7 +238,7 @@
                 </q-card-section>
 
                 <q-card-actions align="right" class="bg-white text-teal">
-                  <q-btn flat label="Cancel" v-close-popup />
+                  <q-btn flat label="Cancel" @click="cancelButtonClick" v-close-popup />
                 </q-card-actions>
               </q-card>
             </q-dialog>
@@ -282,7 +284,7 @@ export default {
       responseStatus: '',
       uid: '',
       email: '',
-      currentEmail: '',
+
       userProfileImage: null,
       mobilenumber: '',
       arrowDirection: false,
@@ -295,6 +297,7 @@ export default {
       // Validating OTP
       otpVal: null,
       // ChangeEmail Properties
+      currentEmail: '',
       newEmail: '',
       confirmNewEmail: ''
     };
@@ -334,6 +337,13 @@ export default {
         this.$router.push('/');
         sessionStorage.clear();
       }
+    },
+    cancelButtonClick() {
+      // Reset the values when the Cancel button is clicked
+      this.otpVal = null;
+      this.currentEmail = '';
+      this.newEmail = '';
+      this.confirmNewEmail = '';
     },
     validateOtp(value) {
       if (!value) {

@@ -61,51 +61,53 @@
     </div>
   </div>
 </q-header>
-  <q-drawer
+<q-drawer
   show-if-above
   v-model="drawer"
   side="left"
   bordered
   :width="250">
-    <ul class="p-4">
-      <li class="font-bold">Overview</li>
-        <li class="py-[17px] px-[20px]">
-          <div class="flex items-center">
-            <router-link to="/dashboard/main-dashboard">
-            <q-icon name="dashboard" class="mr-2"/> Dashboard
-            </router-link>
-          </div>
-        </li>
-        <!-- Process Section -->
-        <li class="font-bold">Process</li>
-        <li class="py-[17px] px-[20px]">
-          <div class="flex items-center gap-2">
-            <q-icon name="inventory"/> Inventory
-          </div>
-        </li>
-        <li class="py-[17px] px-[20px] ">
-          <div class="flex items-center gap-2">
-            <q-icon name=""/> Product Monitoring
-          </div>
-        </li>
-        <li class="py-[17px] px-[20px]">
-          <div class="flex items-center">
-            <q-icon name="description" class="mr-2"/> Production Cost Report
-          </div>
-        </li>
-        <!-- Settings Section -->
-        <li class="font-bold">Settings</li>
-        <li class="py-[17px] px-[20px]">
-          <div class="flex items-center">
-            <q-icon name="" class="mr-2"/> Audit Logs
-          </div>
-        </li>
-        <li class="py-[17px] px-[20px]">
-          <div class="flex items-center">
-            <q-icon name="group" class="mr-2"/> User Management
-          </div>
-        </li>
-    </ul>
+      <ul class="p-4">
+        <li class="font-bold">Overview</li>
+          <li class="py-[17px] px-[20px]">
+            <div class="flex items-center">
+              <router-link to="/dashboard/main-dashboard">
+              <q-icon name="dashboard" class="mr-2"/> Dashboard
+              </router-link>
+            </div>
+          </li>
+          <!-- Process Section -->
+          <li class="font-bold">Process</li>
+          <li class="py-[17px] px-[20px]">
+            <div class="flex items-center gap-2">
+              <q-icon name="inventory"/> Inventory
+            </div>
+          </li>
+          <li class="py-[17px] px-[20px] ">
+            <div class="flex items-center gap-2">
+              <q-icon name=""/> Product Monitoring
+            </div>
+          </li>
+          <li class="py-[17px] px-[20px]">
+            <div class="flex items-center">
+              <q-icon name="description" class="mr-2"/> Production Cost Report
+            </div>
+          </li>
+          <!-- Settings Section -->
+          <li class="font-bold">Settings</li>
+          <li class="py-[17px] px-[20px]">
+            <div class="flex items-center">
+              <router-link to="/dashboard/auditlogs-section">
+                <q-icon name="" class="mr-2"/> Audit Logs
+              </router-link>
+            </div>
+          </li>
+          <li class="py-[17px] px-[20px]">
+            <div class="flex items-center">
+              <q-icon name="group" class="mr-2"/> User Management
+            </div>
+          </li>
+      </ul>
   </q-drawer>
   <q-page class="bg-[#f5f5f5] p-4">
     <div class="bg-white h-[520px] rounded p-4 px-7 overflow-y-auto overflow-x-hidden">
@@ -139,8 +141,8 @@
                 {{ position }}
               </div>
             </div>
-              <div class="w-[84px] flex items-center justify-center min-[390px]:hidden md:flex">
-                <router-link to="/dashboard/account-profilepic" class="text-center w-full border border-[#9e896a] rounded-full">
+              <div class="w-[84px] flex items-center justify-center min-[390px]:hidden md:flex ">
+                <router-link to="/dashboard/account-profilepic" class="text-center w-full border border-[#9e896a] rounded-full ">
                   <span class=" p-1   text-[#9e896a]"><q-icon name="edit"/> Edit</span>
                 </router-link>
               </div>
@@ -150,7 +152,7 @@
           <!-- Personal Information -->
           <div class="mt-3 md:w-[600px] p-5 border border-[#ddb7ab] rounded-[15px] drop-shadow-md">
             <div class="flex justify-between -mt-8">
-              <h1 class="text-[19px] font-bold">Personal Information</h1>
+              <h1 class="md:text-[19px] font-bold">Personal Information</h1>
               <div class="w-[84px] flex items-center justify-center ">
                 <router-link to="/dashboard/account-basicinfo" class="text-center w-full border border-[#9e896a] rounded-full">
                   <span class=" p-1   text-[#9e896a]"><q-icon name="edit"/> Edit</span>
@@ -181,18 +183,18 @@
           <!-- Contact Information -->
           <div class="mt-3 md:w-[600px] p-5 border border-[#ddb7ab] rounded-[15px] drop-shadow-md">
             <div class="flex justify-between -mt-8">
-              <h1 class="text-[19px] font-bold">Contact Information</h1>
+              <h1 class="md:text-[19px] font-bold">Contact Information</h1>
               <div class="w-[84px] flex items-center justify-center ">
                 <router-link to="/dashboard/account-contactinfo" class="text-center w-full border border-[#9e896a] rounded-full">
                   <span class=" p-1   text-[#9e896a]"><q-icon name="edit"/> Edit</span>
                 </router-link>
               </div>
             </div>
-            <div class="grid grid-cols-2 gap-10 -mt-4">
+            <div class="md:grid md:grid-cols-2 md:gap-10 -mt-4">
               <div>
                 <p>Email:</p> {{ email }}
               </div>
-              <div>
+              <div class="min-[390px]:mt-3">
                 <p>Mobile Number:</p> {{ mobilenumber }}
               </div>
             </div>
@@ -200,7 +202,7 @@
           <!-- Password Information -->
           <div class="mt-3 md:w-[600px] p-5 border border-[#ddb7ab] rounded-[15px] drop-shadow-md">
             <div class="flex justify-between -mt-8">
-              <h1 class="text-[19px] font-bold">Security</h1>
+              <h1 class="md:text-[19px] font-bold">Security</h1>
               <div class="w-[84px] flex items-center justify-center ">
                 <router-link to="/dashboard/account-changepass" class="text-center w-full border border-[#9e896a] rounded-full">
                   <span class=" p-1   text-[#9e896a]"><q-icon name="edit"/> Edit</span>
@@ -249,7 +251,7 @@ export default {
   mounted() {
     this.loadUserData();
   },
-  
+
   methods: {
     loadUserData() {
       const userData = SessionStorage.getItem('information');

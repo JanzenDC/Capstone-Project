@@ -28,6 +28,7 @@ const routes = [
       { path: 'account-profilepic', component: () => import('pages/Dashboard/AccountUserprofile.vue') },
       { path: 'account-contactinfo', component: () => import('pages/Dashboard/AccountContactInfo.vue') },
       { path: 'account-changepass', component: () => import('pages/Dashboard/AccountSecurity.vue') },
+      { path: 'auditlogs-section', component: () => import('pages/Dashboard/AuditLogs/AuditlogPage.vue') },
 
     ]
   },
