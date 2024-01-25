@@ -129,19 +129,10 @@
             class="text-[25px] cursor-pointer"
           />
           </q-btn>
-          <q-btn @click="openModifyModal_2" label="People" class="h-5 bg-[#907d60] text-white">
-          <q-icon
-            :name="arrowDirection_2 ? 'arrow_drop_up' : 'arrow_drop_down'"
-            class="text-[25px] cursor-pointer"
-          />
-          </q-btn>
         </div>
 
       </div>
 
-      <div class="fixed right-12 top-[200px] transform bg-white z-50 rounded-md border border-gray-500" style="max-width: 350px" v-if="showModifyModal_2">
-        test
-      </div>
 
       <div class="fixed right-12 top-[200px] transform bg-white z-50 rounded-md border border-gray-500" style="max-width: 350px" v-if="showModifyModal">
         <q-form @submit="onSubmitDate">
@@ -191,7 +182,11 @@
         class="my-sticky-header-table"
         :dense="$q.screen.lt.md"
         flat bordered
+        :loading="loading"
         >
+        <template v-slot:loading>
+          <q-inner-loading showing color="primary" />
+        </template>
         <!-- User Column Template -->
         <template v-slot:body-cell-user="props">
           <q-td :props="props" class="flex items-center gap-4" >
@@ -270,8 +265,7 @@ export default {
       startDate: '',
       endDate: '',
       arrowDirection_1: false,
-      showModifyModal_2: false,
-      arrowDirection_2: false,
+      loading: true,
     };
 
   },
@@ -290,8 +284,14 @@ export default {
   mounted() {
     this.loadUserData();
     this.fetchData();
+    this.timeOut();
   },
   methods: {
+    timeOut(){
+      setTimeout(() => {
+        this.loading = false;  // Set loading to false after 3 seconds
+      }, 1000);
+    },
     filterTableDataByDate(days) {
       this.showDateArea = false;
       this.tableData = [];
@@ -372,19 +372,7 @@ export default {
         this.showDateArea = true;
       }
     },
-    openModifyModal_2() {
-      this.arrowDirection_2 = !this.arrowDirection_2;
-      this.showModifyModal = false;
-      if(this.showModifyModal_2 === true){
-        this.showModifyModal_2 = false;
-
-      }
-      else if(this.showModifyModal_2 === false){
-        this.showModifyModal_2 = true;
-      }
-    },
     openModifyModal() {
-      this.showModifyModal_2 = false;
       this.arrowDirection_1 = !this.arrowDirection_1;
       if(this.showModifyModal === true){
         this.showModifyModal = false;
@@ -404,21 +392,38 @@ export default {
       switch (option) {
         case 'today':
           this.filterTableDataByDate(1);
+          this.loading = true;
+          this.timeOut();
+          this.arrowDirection_1 = !this.arrowDirection_1;
           break;
         case 'last7days':
           this.filterTableDataByDate(2);
+          this.loading = true;
+          this.timeOut();
+          this.arrowDirection_1 = !this.arrowDirection_1;
           break;
         case 'last30days':
           this.filterTableDataByDate(3);
+          this.loading = true;
+          this.timeOut();
+          this.arrowDirection_1 = !this.arrowDirection_1;
           break;
         case 'thisYear':
           this.filterTableDataByDate(4);
+          this.loading = true;
+          this.timeOut();
           break;
         case 'lastYear':
           this.filterTableDataByDate(5);
+          this.loading = true;
+          this.timeOut();
+          this.arrowDirection_1 = !this.arrowDirection_1;
           break;
         case 'customDate':
           this.filterTableDataByDate(6);
+          this.loading = true;
+          this.timeOut();
+          this.arrowDirection_1 = !this.arrowDirection_1;
           break;
         default:
           break;
@@ -533,7 +538,7 @@ export default {
   height: 400px
 
   .q-table__top,
-  .q-table__bottom,
+
   thead tr:first-child th
     /* bg color is important for th; just specify one */
     background-color: #667085
@@ -541,7 +546,6 @@ export default {
     text-align: center
     font-size: 13px
     font-weight: bold
-
 
   thead tr th
     position: sticky
