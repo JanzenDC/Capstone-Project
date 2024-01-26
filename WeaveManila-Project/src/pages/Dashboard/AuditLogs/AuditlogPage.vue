@@ -105,124 +105,126 @@
           </li>
           <li class="py-[17px] px-[20px]">
             <div class="flex items-center">
-              <q-icon name="group" class="mr-2"/> User Management
+              <router-link to="/dashboard/usermanagement-section">
+                <q-icon name="group" class="mr-2"/> User Management
+              </router-link>
             </div>
           </li>
       </ul>
 </q-drawer>
-  <q-page class="bg-[#f5f5f5] p-4">
-   <div class="bg-white md:h-[520px] rounded p-10 overflow-y-auto">
-      <div class="flex justify-between items-center">
-        <router-link to="/dashboard/account-settings">
-          <p class="text-[15px]"><q-icon name="arrow_back_ios"/> <span class=" font-bold text-[#9e896a]">AUDIT LOGS</span></p>
-        </router-link>
-        <div class="flex gap-2 items-center">
-            <q-input
-            v-model="searchInput"
-            filled
-            outlined
-            dense
-            placeholder="Search..."
-            />
-          <q-btn @click="openModifyModal" label="Modify" class="h-5 bg-[#907d60] text-white">
-          <q-icon
-            :name="arrowDirection_1 ? 'arrow_drop_up' : 'arrow_drop_down'"
-            class="text-[25px] cursor-pointer"
+<q-page class="bg-[#f5f5f5] p-4">
+  <div class="bg-white md:h-[520px] rounded p-10 overflow-y-auto">
+    <div class="flex justify-between items-center">
+      <router-link to="/dashboard/account-settings">
+        <p class="text-[15px]"><q-icon name="arrow_back_ios"/> <span class=" font-bold text-[#9e896a]">AUDIT LOGS</span></p>
+      </router-link>
+      <div class="flex gap-2 items-center">
+          <q-input
+          v-model="searchInput"
+          filled
+          outlined
+          dense
+          placeholder="Search..."
           />
-          </q-btn>
-        </div>
-
+        <q-btn @click="openModifyModal" label="Modify" class="h-5 bg-[#907d60] text-white">
+        <q-icon
+          :name="arrowDirection_1 ? 'arrow_drop_up' : 'arrow_drop_down'"
+          class="text-[25px] cursor-pointer"
+        />
+        </q-btn>
       </div>
 
-
-      <div class="fixed right-12 top-[200px] transform bg-white z-50 rounded-md border border-gray-500" style="max-width: 350px" v-if="showModifyModal">
-        <q-form @submit="onSubmitDate">
-          <div class="grid grid-cols-2 gap-2 border-b-[1px]">
-            <q-list dense class=" border-e-[1px]">
-              <q-item clickable v-ripple @click="selectOption('today')">
-                <q-item-section>Today</q-item-section>
-              </q-item>
-              <q-item clickable v-ripple @click="selectOption('last7days')">
-                <q-item-section>Last 7 Days</q-item-section>
-              </q-item>
-              <q-item clickable v-ripple @click="selectOption('last30days')">
-                <q-item-section>Last 30 Days</q-item-section>
-              </q-item>
-              <q-item clickable v-ripple @click="selectOption('thisYear')">
-                <q-item-section>This Year ({{ getCurrentYear() }})</q-item-section>
-              </q-item>
-              <q-item clickable v-ripple @click="selectOption('lastYear')">
-                <q-item-section>Last Year ({{ getLastYear() }})</q-item-section>
-              </q-item>
-              <q-item clickable v-ripple @click="openDateModal">
-                <q-item-section>Custom Date</q-item-section>
-              </q-item>
-            </q-list>
-
-            <div v-if="showDateArea" class="p-2">
-              <q-input v-model="startDate" label="Start Date" type="date" outlined required/>
-              <q-input v-model="endDate" label="End Date" type="date" outlined class="mt-2" required/>
-            </div>
-          </div>
-          <div class="flex gap-2 justify-between p-2">
-            <q-btn label="Clear" padding="xs" @click="selectDefault" />
-            <div class="gap-2 flex">
-              <q-btn label="Cancel" class="bg-[#907d60] text-white" padding="xs" @click="closeModifyModal" />
-              <q-btn label="Apply" class="bg-[#907d60] text-white" padding="xs" v-if="showDateArea" type="submit"/>
-            </div>
-          </div>
-        </q-form>
-      </div>
-
-
-      <q-separator class="mt-3 mb-3" />
-      <div class="q-pa-md">
-        <q-table
-        :rows="filteredTableData"
-        :columns="columns"
-        class="my-sticky-header-table"
-        :dense="$q.screen.lt.md"
-        flat bordered
-        :pagination="initialPagination"
-        row-key="yourUniqueRowKey"
-        >
-        <!-- User Column Template -->
-        <template v-slot:body-cell-user="props">
-          <q-td :props="props" class="flex items-center gap-4" >
-            <q-img :src="getUserImagePublicPath(props.row.user.image)" :alt="props.row.user.name" class="w-[34px] rounded-full min-[390px]:hidden md:flex"/>
-            <div class="min-[390px]:flex md:block min-[390px]:gap-2">
-              <p class="font-bold">
-              {{ props.row.user.name }}
-              </p>
-              {{ props.row.user.position }}
-            </div>
-          </q-td>
-        </template>
-
-        <!-- Action Column Template -->
-        <template v-slot:body-cell-action="props">
-          <q-td :props="props">
-            {{ props.row.action }}
-          </q-td>
-        </template>
-
-        <!-- Date Column Template -->
-        <template v-slot:body-cell-date="props">
-          <q-td :props="props">
-            {{ formatFullDate(props.row.date) }}
-          </q-td>
-        </template>
-
-        <!-- Timestamp Column Template -->
-        <template v-slot:body-cell-timestamp="props">
-          <q-td :props="props">
-            {{ props.row.timestamp }}
-          </q-td>
-        </template>
-        </q-table>
-      </div>
     </div>
-  </q-page>
+
+
+    <div class="fixed right-12 top-[200px] transform bg-white z-50 rounded-md border border-gray-500" style="max-width: 350px" v-if="showModifyModal">
+      <q-form @submit="onSubmitDate">
+        <div class="grid grid-cols-2 gap-2 border-b-[1px]">
+          <q-list dense class=" border-e-[1px]">
+            <q-item clickable v-ripple @click="selectOption('today')">
+              <q-item-section>Today</q-item-section>
+            </q-item>
+            <q-item clickable v-ripple @click="selectOption('last7days')">
+              <q-item-section>Last 7 Days</q-item-section>
+            </q-item>
+            <q-item clickable v-ripple @click="selectOption('last30days')">
+              <q-item-section>Last 30 Days</q-item-section>
+            </q-item>
+            <q-item clickable v-ripple @click="selectOption('thisYear')">
+              <q-item-section>This Year ({{ getCurrentYear() }})</q-item-section>
+            </q-item>
+            <q-item clickable v-ripple @click="selectOption('lastYear')">
+              <q-item-section>Last Year ({{ getLastYear() }})</q-item-section>
+            </q-item>
+            <q-item clickable v-ripple @click="openDateModal">
+              <q-item-section>Custom Date</q-item-section>
+            </q-item>
+          </q-list>
+
+          <div v-if="showDateArea" class="p-2">
+            <q-input v-model="startDate" label="Start Date" type="date" outlined required/>
+            <q-input v-model="endDate" label="End Date" type="date" outlined class="mt-2" required/>
+          </div>
+        </div>
+        <div class="flex gap-2 justify-between p-2">
+          <q-btn label="Clear" padding="xs" @click="selectDefault" />
+          <div class="gap-2 flex">
+            <q-btn label="Cancel" class="bg-[#907d60] text-white" padding="xs" @click="closeModifyModal" />
+            <q-btn label="Apply" class="bg-[#907d60] text-white" padding="xs" v-if="showDateArea" type="submit"/>
+          </div>
+        </div>
+      </q-form>
+    </div>
+
+
+    <q-separator class="mt-3 mb-3" />
+    <div class="q-pa-md">
+      <q-table
+      :rows="filteredTableData"
+      :columns="columns"
+      class="my-sticky-header-table"
+      :dense="$q.screen.lt.md"
+      flat bordered
+      :pagination="initialPagination"
+      row-key="yourUniqueRowKey"
+      >
+      <!-- User Column Template -->
+      <template v-slot:body-cell-user="props">
+        <q-td :props="props" class="flex items-center gap-4" >
+          <q-img :src="getUserImagePublicPath(props.row.user.image)" :alt="props.row.user.name" class="w-[34px] rounded-full min-[390px]:hidden md:flex"/>
+          <div class="min-[390px]:flex md:block min-[390px]:gap-2">
+            <p class="font-bold">
+            {{ props.row.user.name }}
+            </p>
+            {{ props.row.user.position }}
+          </div>
+        </q-td>
+      </template>
+
+      <!-- Action Column Template -->
+      <template v-slot:body-cell-action="props">
+        <q-td :props="props">
+          {{ props.row.action }}
+        </q-td>
+      </template>
+
+      <!-- Date Column Template -->
+      <template v-slot:body-cell-date="props">
+        <q-td :props="props">
+          {{ formatFullDate(props.row.date) }}
+        </q-td>
+      </template>
+
+      <!-- Timestamp Column Template -->
+      <template v-slot:body-cell-timestamp="props">
+        <q-td :props="props">
+          {{ props.row.timestamp }}
+        </q-td>
+      </template>
+      </q-table>
+    </div>
+  </div>
+</q-page>
 </template>
 
 <script>

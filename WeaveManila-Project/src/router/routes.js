@@ -28,8 +28,10 @@ const routes = [
       { path: 'account-profilepic', component: () => import('pages/Dashboard/AccountUserprofile.vue') },
       { path: 'account-contactinfo', component: () => import('pages/Dashboard/AccountContactInfo.vue') },
       { path: 'account-changepass', component: () => import('pages/Dashboard/AccountSecurity.vue') },
+      // Audit Logs
       { path: 'auditlogs-section', component: () => import('pages/Dashboard/AuditLogs/AuditlogPage.vue') },
-
+      // User Management
+      { path: 'usermanagement-section', component: () => import('pages/Dashboard/UserManagement/UserManagement.vue') },
     ]
   },
   {

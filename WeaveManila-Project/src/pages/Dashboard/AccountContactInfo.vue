@@ -104,11 +104,13 @@
           </li>
           <li class="py-[17px] px-[20px]">
             <div class="flex items-center">
-              <q-icon name="group" class="mr-2"/> User Management
+              <router-link to="/dashboard/usermanagement-section">
+                <q-icon name="group" class="mr-2"/> User Management
+              </router-link>
             </div>
           </li>
       </ul>
-</q-drawer>
+  </q-drawer>
 <q-page class="bg-[#f5f5f5] p-4">
   <div class="bg-white h-[520px] rounded p-10 overflow-auto">
     <router-link to="/dashboard/account-settings">

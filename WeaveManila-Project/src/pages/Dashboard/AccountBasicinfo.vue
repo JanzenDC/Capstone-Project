@@ -104,94 +104,96 @@
           </li>
           <li class="py-[17px] px-[20px]">
             <div class="flex items-center">
-              <q-icon name="group" class="mr-2"/> User Management
+              <router-link to="/dashboard/usermanagement-section">
+                <q-icon name="group" class="mr-2"/> User Management
+              </router-link>
             </div>
           </li>
       </ul>
 </q-drawer>
-  <q-page class="bg-[#f5f5f5] p-4">
-    <div class="bg-white h-[520px] rounded p-10 overflow-auto">
-      <router-link to="/dashboard/account-settings">
-        <p class="text-[15px]"><q-icon name="arrow_back_ios"/> <span class=" font-bold text-[#9e896a]">Basic Info</span></p>
-      </router-link>
-      <div class="md:w-[800px] h-[510px] mt-2 border border-[#dfc8c0] rounded p-5 text-[15px]">
-        <q-form
-          @submit="onSubmit"
-        >
-          <p class="text-[#9e896a] font-bold">Name</p>
-          <div class="grid grid-cols-2 gap-4 mt-3">
-              <q-input v-model="firstname" label="First name" outlined  dense class="custom-border-color" lazy-rules :rules="[ val => val && val.length > 0 || 'Please type something']"/>
-              <q-input v-model="lastname" label="Last name" outlined dense  class=" rounded" lazy-rules :rules="[ val => val && val.length > 0 || 'Please type something']"/>
-          </div>
-          <div class="md:w-[370px]">
-            <div class="">
-              <p class="text-[#9e896a] font-bold">Birthday</p>
-              <div class="grid grid-cols-3 gap-4 mt-3">
-                <q-input
-                  v-model="day"
-                  label="Day"
-                  outlined
-                  dense
-                  class="rounded"
-                  :rules="[validateDay]"
-                />
-                <!-- Year Input -->
-                <q-input
-                  v-model="year"
-                  label="Year"
-                  outlined
-                  dense
-                  class="rounded"
-                  :rules="[validateYear]"
-                />
-                <!-- Month Input -->
-                <q-select
-                  v-model="month"
-                  label="Months"
-                  outlined
-                  dense
-                  class="rounded"
-                  :options="monthsOptions"
-                  @change="[validateMonth]"
-                />
-              </div>
-            </div>
-            <div class="">
-              <p class="text-[#9e896a] font-bold">Position</p>
-              <q-input v-model="position" dense label="Position" outlined  disable class=" rounded mt-3" lazy-rules :rules="[ val => val && val.length > 0 || 'Please type something']"/>
+<q-page class="bg-[#f5f5f5] p-4">
+  <div class="bg-white h-[520px] rounded p-10 overflow-auto">
+    <router-link to="/dashboard/account-settings">
+      <p class="text-[15px]"><q-icon name="arrow_back_ios"/> <span class=" font-bold text-[#9e896a]">Basic Info</span></p>
+    </router-link>
+    <div class="md:w-[800px] h-[510px] mt-2 border border-[#dfc8c0] rounded p-5 text-[15px]">
+      <q-form
+        @submit="onSubmit"
+      >
+        <p class="text-[#9e896a] font-bold">Name</p>
+        <div class="grid grid-cols-2 gap-4 mt-3">
+            <q-input v-model="firstname" label="First name" outlined  dense class="custom-border-color" lazy-rules :rules="[ val => val && val.length > 0 || 'Please type something']"/>
+            <q-input v-model="lastname" label="Last name" outlined dense  class=" rounded" lazy-rules :rules="[ val => val && val.length > 0 || 'Please type something']"/>
+        </div>
+        <div class="md:w-[370px]">
+          <div class="">
+            <p class="text-[#9e896a] font-bold">Birthday</p>
+            <div class="grid grid-cols-3 gap-4 mt-3">
+              <q-input
+                v-model="day"
+                label="Day"
+                outlined
+                dense
+                class="rounded"
+                :rules="[validateDay]"
+              />
+              <!-- Year Input -->
+              <q-input
+                v-model="year"
+                label="Year"
+                outlined
+                dense
+                class="rounded"
+                :rules="[validateYear]"
+              />
+              <!-- Month Input -->
+              <q-select
+                v-model="month"
+                label="Months"
+                outlined
+                dense
+                class="rounded"
+                :options="monthsOptions"
+                @change="[validateMonth]"
+              />
             </div>
           </div>
-          <div class="w-40">
-            <p class="text-[#9e896a] font-bold">Gender</p>
-            <q-radio
-              v-model="gender"
-              val="Male"
-              label="Male"
-              color="primary"
-            />
-            <q-radio
-              v-model="gender"
-              val="Female"
-              label="Female"
-              color="primary"
-            />
-            <q-radio
-              v-model="gender"
-              val="Rather Not to Say"
-              label="Rather Not to Say"
-              color="primary"
-            />
+          <div class="">
+            <p class="text-[#9e896a] font-bold">Position</p>
+            <q-input v-model="position" dense label="Position" outlined  disable class=" rounded mt-3" lazy-rules :rules="[ val => val && val.length > 0 || 'Please type something']"/>
           </div>
-            <div class="flex justify-end w-full gap-2">
-              <router-link to="/dashboard/account-settings" class="bg-white rounded-full text-center p-2 text-[#9e896a] w-[74px] border-2 border-[#9e896a]">
-                Cancel
-              </router-link>
-              <q-btn label="Save" type="submit" class="bg-[#9e896a] rounded-full  text-white"/>
-            </div>
-        </q-form>
-      </div>
+        </div>
+        <div class="w-40">
+          <p class="text-[#9e896a] font-bold">Gender</p>
+          <q-radio
+            v-model="gender"
+            val="Male"
+            label="Male"
+            color="primary"
+          />
+          <q-radio
+            v-model="gender"
+            val="Female"
+            label="Female"
+            color="primary"
+          />
+          <q-radio
+            v-model="gender"
+            val="Rather Not to Say"
+            label="Rather Not to Say"
+            color="primary"
+          />
+        </div>
+          <div class="flex justify-end w-full gap-2">
+            <router-link to="/dashboard/account-settings" class="bg-white rounded-full text-center p-2 text-[#9e896a] w-[74px] border-2 border-[#9e896a]">
+              Cancel
+            </router-link>
+            <q-btn label="Save" type="submit" class="bg-[#9e896a] rounded-full  text-white"/>
+          </div>
+      </q-form>
     </div>
-  </q-page>
+  </div>
+</q-page>
 </template>
 
 <script>

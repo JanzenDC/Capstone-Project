@@ -105,7 +105,9 @@
           </li>
           <li class="py-[17px] px-[20px]">
             <div class="flex items-center">
-              <q-icon name="group" class="mr-2"/> User Management
+              <router-link to="/dashboard/usermanagement-section">
+                <q-icon name="group" class="mr-2"/> User Management
+              </router-link>
             </div>
           </li>
       </ul>
@@ -158,7 +160,7 @@ export default {
         axios.get(`http://localhost/Capstone-Project/backend/api/verification.php?email=${this.email}`)
         .then(response => {
         const latestStatus = response.data.information.status;
-        
+
         // Update the local status and take appropriate action if it has changed
         if (this.status !== latestStatus) {
           this.status = latestStatus;

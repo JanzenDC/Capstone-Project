@@ -104,7 +104,9 @@
           </li>
           <li class="py-[17px] px-[20px]">
             <div class="flex items-center">
-              <q-icon name="group" class="mr-2"/> User Management
+              <router-link to="/dashboard/usermanagement-section">
+                <q-icon name="group" class="mr-2"/> User Management
+              </router-link>
             </div>
           </li>
       </ul>
