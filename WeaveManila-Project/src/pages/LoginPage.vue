@@ -215,6 +215,7 @@ export default {
             existingInformation.address = this.responseInformation.address;
             existingInformation.otp_code = this.responseInformation.otp_code;
             existingInformation.isOnline = this.responseInformation.isOnline;
+            existingInformation.status = this.responseInformation.status;
             // Save the updated information object back to session storage
             SessionStorage.set('information', JSON.stringify(existingInformation));
             this.$router.push('/dashboard/main-dashboard');

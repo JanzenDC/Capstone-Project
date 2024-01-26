@@ -109,160 +109,158 @@
           </li>
       </ul>
   </q-drawer>
-    <q-page class="bg-[#f5f5f5] p-4">
-      <div class="bg-white h-[520px] rounded p-10 overflow-auto">
+  <q-page class="bg-[#f5f5f5] p-4">
+    <div class="bg-white h-[520px] rounded p-10 overflow-auto">
 
-    <router-link to="/dashboard/account-settings">
-      <p class="text-[15px]"><q-icon name="arrow_back_ios"/> <span class=" font-bold text-[#9e896a]">Basic Info</span></p>
-    </router-link>
-        <div class="md:w-[800px] md:h-[430px] mt-2 border border-[#dfc8c0] rounded p-5 text-[15px]">
-            <div class="flex justify-center">
-              <div>
-                <div class="flex justify-center">
-                  <q-img
-                  :src="getUserProfileImagePath()"
-                  alt="Description of the image"
-                  class="w-[100px] rounded-full"
-                  />
-                </div>
-                <div class="flex gap-2 mt-3">
-                  <q-btn dense label="Upload Photo" @click="uploadDialog = true" class="bg-[#9e896a] rounded-full  text-white"/>
-                  <q-dialog v-model="uploadDialog" persistent transition-show="scale" transition-hide="scale">
-
-                    <q-card class="text-Black" style="width: 550px">
-                      <q-form @submit="onUpload">
-                        <q-card-section class="row items-center q-pb-none">
-                          <div class="text-h6">Update Profile</div>
-                          <q-space />
-                          <q-btn icon="close" flat round dense v-close-popup />
-                        </q-card-section>
-
-                      <q-separator />
-
-
-                          <div class="flex justify-center">
-                            <q-img
-                              :src="previewImage || getUserImagePath()"
-                              alt="Description of the image"
-                              class="w-[300px] rounded-full"
-                            />
-                          </div>
-                          <q-input
-                            ref="fileInput"
-                            @update:model-value="handleFileChange"
-                            filled
-                            type="file"
-                            accept="image/png"
-                            hint="Only PNG format picture allowed."
-                            v-model="selectedFile"
-                          />
-                          <div v-if="previewImage">
-                            <q-btn flat label="Cancel Preview" @click="cancelPreview" class="q-mt-sm" />
-                          </div>
-
-                      <q-separator />
-
-                      <q-card-actions align="right" class="bg-white text-teal">
-                        <q-btn label="Save" type="submit" class="bg-[#9e896a] rounded-md text-white"/>
-                        <q-btn flat label="Discard Changes" @click="cancelUpload" v-close-popup />
-                      </q-card-actions>
-                      </q-form>
-                    </q-card>
-                  </q-dialog>
-
-                </div>
-              </div>
-            </div>
-            <q-form @submit="onSubmit">
+  <router-link to="/dashboard/account-settings">
+    <p class="text-[15px]"><q-icon name="arrow_back_ios"/> <span class=" font-bold text-[#9e896a]">Basic Info</span></p>
+  </router-link>
+      <div class="md:w-[800px] md:h-[430px] mt-2 border border-[#dfc8c0] rounded p-5 text-[15px]">
+          <div class="flex justify-center">
             <div>
-              <!-- Avatar options -->
-              <p class="font-bold text-[24px]">Choose Avatar</p>
-              <div class="grid min-[390px]:grid-cols-2 md:grid-cols-5 mt-3 md:gap-4 min-[390px]:gap-9">
+              <div class="flex justify-center">
                 <q-img
-                  src="/pfp/default_pfp.png"
-                  alt="Default Avatar"
-                  class="w-16 h-16 rounded-full"
-                  @click="selectAvatar('default_pfp.png')"
-                  :class="{ 'selected-avatar': selectedAvatar === 'default_pfp.png' }"
-                />
-                <q-img
-                  src="/pfp/man.png"
-                  alt="Man Avatar"
-                  class="w-16 h-16 rounded-full"
-                  @click="selectAvatar('man.png')"
-                  :class="{ 'selected-avatar': selectedAvatar === 'man.png' }"
-                />
-                <q-img
-                  src="/pfp/man_2.png"
-                  alt="Woman Avatar"
-                  class="w-16 h-16 rounded-full"
-                  @click="selectAvatar('man_2.png')"
-                  :class="{ 'selected-avatar': selectedAvatar === 'man_2.png' }"
-                />
-                <q-img
-                  src="/pfp/man_3.png"
-                  alt="Woman Avatar"
-                  class="w-16 h-16 rounded-full"
-                  @click="selectAvatar('man_3.png')"
-                  :class="{ 'selected-avatar': selectedAvatar === 'man_3.png' }"
-                />
-                <q-img
-                  src="/pfp/man_4.png"
-                  alt="Woman Avatar"
-                  class="w-16 h-16 rounded-full"
-                  @click="selectAvatar('man_4.png')"
-                  :class="{ 'selected-avatar': selectedAvatar === 'man_4.png' }"
-                />
-                <q-img
-                  src="/pfp/woman_1.png"
-                  alt="Woman Avatar"
-                  class="w-16 h-16 rounded-full"
-                  @click="selectAvatar('woman_1.png')"
-                  :class="{ 'selected-avatar': selectedAvatar === 'woman_1.png' }"
-                />
-                <q-img
-                  src="/pfp/woman_2.png"
-                  alt="Woman Avatar"
-                  class="w-16 h-16 rounded-full"
-                  @click="selectAvatar('woman_2.png')"
-                  :class="{ 'selected-avatar': selectedAvatar === 'woman_2.png' }"
-                />
-                <q-img
-                  src="/pfp/woman_3.png"
-                  alt="Woman Avatar"
-                  class="w-16 h-16 rounded-full"
-                  @click="selectAvatar('woman_3.png')"
-                  :class="{ 'selected-avatar': selectedAvatar === 'woman_3.png' }"
-                />
-                <q-img
-                  src="/pfp/woman_4.png"
-                  alt="Woman Avatar"
-                  class="w-16 h-16 rounded-full"
-                  @click="selectAvatar('woman_4.png')"
-                  :class="{ 'selected-avatar': selectedAvatar === 'woman_4.png' }"
-                />
-                <q-img
-                  src="/pfp/woman_5.png"
-                  alt="Woman Avatar"
-                  class="w-16 h-16 rounded-full"
-                  @click="selectAvatar('woman_5.png')"
-                  :class="{ 'selected-avatar': selectedAvatar === 'woman_5.png' }"
+                :src="getUserProfileImagePath()"
+                alt="Description of the image"
+                class="w-[100px] rounded-full"
                 />
               </div>
+              <div class="flex gap-2 mt-3">
+                <q-btn dense label="Upload Photo" @click="uploadDialog = true" class="bg-[#9e896a] rounded-full  text-white"/>
+                <q-dialog v-model="uploadDialog" persistent transition-show="scale" transition-hide="scale">
+
+                  <q-card class="text-Black" style="width: 550px">
+                    <q-form @submit="onUpload">
+                      <q-card-section class="row items-center q-pb-none">
+                        <div class="text-h6">Update Profile</div>
+                        <q-space />
+                        <q-btn icon="close" flat round dense v-close-popup />
+                      </q-card-section>
+
+                    <q-separator />
+                        <div class="flex justify-center">
+                          <q-img
+                            :src="previewImage || getUserImagePath()"
+                            alt="Description of the image"
+                            class="w-[300px] rounded-full"
+                          />
+                        </div>
+                        <q-input
+                          ref="fileInput"
+                          @update:model-value="handleFileChange"
+                          filled
+                          type="file"
+                          accept="image/png"
+                          hint="Only PNG format picture allowed."
+                          v-model="selectedFile"
+                        />
+                        <div v-if="previewImage">
+                          <q-btn flat label="Cancel Preview" @click="cancelPreview" class="q-mt-sm" />
+                        </div>
+
+                    <q-separator />
+
+                    <q-card-actions align="right" class="bg-white text-teal">
+                      <q-btn label="Save" type="submit" class="bg-[#9e896a] rounded-md text-white"/>
+                      <q-btn flat label="Discard Changes" @click="cancelUpload" v-close-popup />
+                    </q-card-actions>
+                    </q-form>
+                  </q-card>
+                </q-dialog>
+
+              </div>
             </div>
-            <div class="flex justify-end w-full gap-2 mt-3">
-              <router-link
-                to="/dashboard/account-settings"
-                class="bg-white rounded-full text-center p-2 text-[#9e896a] w-[74px] border-2 border-[#9e896a]"
-              >
-                Cancel
-              </router-link>
-              <q-btn label="Save" type="submit" class="bg-[#9e896a] rounded-full text-white" />
+          </div>
+          <q-form @submit="onSubmit">
+          <div>
+            <!-- Avatar options -->
+            <p class="font-bold text-[24px]">Choose Avatar</p>
+            <div class="grid min-[390px]:grid-cols-2 md:grid-cols-5 mt-3 md:gap-4 min-[390px]:gap-9">
+              <q-img
+                src="/pfp/default_pfp.png"
+                alt="Default Avatar"
+                class="w-16 h-16 rounded-full"
+                @click="selectAvatar('default_pfp.png')"
+                :class="{ 'selected-avatar': selectedAvatar === 'default_pfp.png' }"
+              />
+              <q-img
+                src="/pfp/man.png"
+                alt="Man Avatar"
+                class="w-16 h-16 rounded-full"
+                @click="selectAvatar('man.png')"
+                :class="{ 'selected-avatar': selectedAvatar === 'man.png' }"
+              />
+              <q-img
+                src="/pfp/man_2.png"
+                alt="Woman Avatar"
+                class="w-16 h-16 rounded-full"
+                @click="selectAvatar('man_2.png')"
+                :class="{ 'selected-avatar': selectedAvatar === 'man_2.png' }"
+              />
+              <q-img
+                src="/pfp/man_3.png"
+                alt="Woman Avatar"
+                class="w-16 h-16 rounded-full"
+                @click="selectAvatar('man_3.png')"
+                :class="{ 'selected-avatar': selectedAvatar === 'man_3.png' }"
+              />
+              <q-img
+                src="/pfp/man_4.png"
+                alt="Woman Avatar"
+                class="w-16 h-16 rounded-full"
+                @click="selectAvatar('man_4.png')"
+                :class="{ 'selected-avatar': selectedAvatar === 'man_4.png' }"
+              />
+              <q-img
+                src="/pfp/woman_1.png"
+                alt="Woman Avatar"
+                class="w-16 h-16 rounded-full"
+                @click="selectAvatar('woman_1.png')"
+                :class="{ 'selected-avatar': selectedAvatar === 'woman_1.png' }"
+              />
+              <q-img
+                src="/pfp/woman_2.png"
+                alt="Woman Avatar"
+                class="w-16 h-16 rounded-full"
+                @click="selectAvatar('woman_2.png')"
+                :class="{ 'selected-avatar': selectedAvatar === 'woman_2.png' }"
+              />
+              <q-img
+                src="/pfp/woman_3.png"
+                alt="Woman Avatar"
+                class="w-16 h-16 rounded-full"
+                @click="selectAvatar('woman_3.png')"
+                :class="{ 'selected-avatar': selectedAvatar === 'woman_3.png' }"
+              />
+              <q-img
+                src="/pfp/woman_4.png"
+                alt="Woman Avatar"
+                class="w-16 h-16 rounded-full"
+                @click="selectAvatar('woman_4.png')"
+                :class="{ 'selected-avatar': selectedAvatar === 'woman_4.png' }"
+              />
+              <q-img
+                src="/pfp/woman_5.png"
+                alt="Woman Avatar"
+                class="w-16 h-16 rounded-full"
+                @click="selectAvatar('woman_5.png')"
+                :class="{ 'selected-avatar': selectedAvatar === 'woman_5.png' }"
+              />
             </div>
-          </q-form>
-        </div>
+          </div>
+          <div class="flex justify-end w-full gap-2 mt-3">
+            <router-link
+              to="/dashboard/account-settings"
+              class="bg-white rounded-full text-center p-2 text-[#9e896a] w-[74px] border-2 border-[#9e896a]"
+            >
+              Cancel
+            </router-link>
+            <q-btn label="Save" type="submit" class="bg-[#9e896a] rounded-full text-white" />
+          </div>
+        </q-form>
       </div>
-    </q-page>
+    </div>
+  </q-page>
   </template>
 
   <script>
@@ -286,6 +284,7 @@
         changeImage: null,
         username: '',
         firstname: '',
+        status: '',
         selectedAvatar: null,
         showModal: false,
         arrowDirection: false,
@@ -294,6 +293,7 @@
         previewImage: null,
         drawer: false,
         selectedFile: null,
+        statusCheckTimer: null,
       };
     },
     watch: {
@@ -301,8 +301,36 @@
     },
     mounted() {
       this.loadUserData();
+      this.statusCheckTimer = setInterval(() => {
+      this.checkUserStatus();
+      }, 1 * 1000); // 5 minutes (in milliseconds)
+    },
+    beforeUnmount() {
+      clearInterval(this.statusCheckTimer);
     },
     methods: {
+      checkUserStatus() {
+          axios.get(`http://localhost/Capstone-Project/backend/api/verification.php?email=${this.email}`)
+          .then(response => {
+          const latestStatus = response.data.information.status;
+
+          // Update the local status and take appropriate action if it has changed
+          if (this.status !== latestStatus) {
+            this.status = latestStatus;
+
+            if (this.status === 0) {
+              this.$q.notify({
+                type: 'negative',
+                message: 'Your account is currently inactive. Please contact the account owner for activation.',
+              });
+              this.$router.push('/');
+              sessionStorage.clear();
+            }
+          }
+        }).catch(error => {
+              console.error('Error fetching data:', error);
+        });
+      },
       loadUserData() {
         const userData = SessionStorage.getItem('information');
         if (userData) {
@@ -313,6 +341,16 @@
             this.email = userInformation.email;
             this.uid = userInformation.uid;
             this.changeImage = userInformation.pfp;
+            this.status = userInformation.status;
+            if(this.status == 0)
+            {
+              this.$q.notify({
+              type: 'negative',
+                message: 'Your account is currently inactive. Please contact the account owner for activation.',
+              });
+              this.$router.push('/');
+              sessionStorage.clear();
+            }
           } catch (error) {
             this.$router.push('/');
             sessionStorage.clear();

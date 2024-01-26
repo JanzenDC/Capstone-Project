@@ -1,4 +1,5 @@
 <template>
+
 <q-header elevated class="bg-white w-full text-black h-[100px]  md:flex md:justify-between border-2">
   <div class="md:w-[400px] p-4 md:flex min-[390px]:hidden">
       <div>
@@ -182,11 +183,9 @@
         class="my-sticky-header-table"
         :dense="$q.screen.lt.md"
         flat bordered
-        :loading="loading"
+        :pagination="initialPagination"
+        row-key="yourUniqueRowKey"
         >
-        <template v-slot:loading>
-          <q-inner-loading showing color="primary" />
-        </template>
         <!-- User Column Template -->
         <template v-slot:body-cell-user="props">
           <q-td :props="props" class="flex items-center gap-4" >
@@ -232,8 +231,9 @@ import { SessionStorage } from 'quasar';
 import axios from 'axios';
 
 export default {
-  setup() {
-      const $q = useQuasar();
+  setup () {
+    const $q = useQuasar()
+    return { $q };
   },
   data() {
     return {
@@ -247,16 +247,16 @@ export default {
       lastname: '',
       position: '',
       arrowDirection: false,
-
+      status: '',
       showModal: false,
       drawer: false,
-
+      statusCheckTimer: null,
       // Additional here
       columns: [
-        { name: 'user', label: 'User', align: 'left', field: 'user' , sortable: true},
-        { name: 'action', label: 'Action', align: 'left', field: 'action' },
-        { name: 'date', label: 'Date', align: 'left', field: 'date' },
-        { name: 'timestamp', label: 'Timestamp', align: 'left', field: 'timestamp' },
+        { name: 'user', label: 'User', align: 'left', field: 'user' },
+        { name: 'action', label: 'Action', align: 'left', field: 'action', sortable: true },
+        { name: 'date', label: 'Date', align: 'left', field: 'date', sortable: true },
+        { name: 'timestamp', label: 'Timestamp', align: 'left', field: 'timestamp', sortable: true },
       ],
       tableData: [],
       searchInput: '',
@@ -265,7 +265,11 @@ export default {
       startDate: '',
       endDate: '',
       arrowDirection_1: false,
-      loading: true,
+      initialPagination: {
+        page: 1,
+        rowsPerPage: 10
+        // rowsNumber: xx if getting data from a server
+      },
     };
 
   },
@@ -284,13 +288,36 @@ export default {
   mounted() {
     this.loadUserData();
     this.fetchData();
-    this.timeOut();
+    this.statusCheckTimer = setInterval(() => {
+      this.checkUserStatus();
+      }, 1 * 1000); // 5 minutes (in milliseconds)
+    },
+  beforeUnmount() {
+    clearInterval(this.statusCheckTimer);
   },
+
   methods: {
-    timeOut(){
-      setTimeout(() => {
-        this.loading = false;  // Set loading to false after 3 seconds
-      }, 1000);
+    checkUserStatus() {
+        axios.get(`http://localhost/Capstone-Project/backend/api/verification.php?email=${this.email}`)
+        .then(response => {
+        const latestStatus = response.data.information.status;
+
+        // Update the local status and take appropriate action if it has changed
+        if (this.status !== latestStatus) {
+          this.status = latestStatus;
+
+          if (this.status === 0) {
+            this.$q.notify({
+              type: 'negative',
+              message: 'Your account is currently inactive. Please contact the account owner for activation.',
+            });
+            this.$router.push('/');
+            sessionStorage.clear();
+          }
+        }
+      }).catch(error => {
+            console.error('Error fetching data:', error);
+      });
     },
     filterTableDataByDate(days) {
       this.showDateArea = false;
@@ -392,36 +419,36 @@ export default {
       switch (option) {
         case 'today':
           this.filterTableDataByDate(1);
-          this.loading = true;
+
           this.timeOut();
           this.arrowDirection_1 = !this.arrowDirection_1;
           break;
         case 'last7days':
           this.filterTableDataByDate(2);
-          this.loading = true;
+
           this.timeOut();
           this.arrowDirection_1 = !this.arrowDirection_1;
           break;
         case 'last30days':
           this.filterTableDataByDate(3);
-          this.loading = true;
+
           this.timeOut();
           this.arrowDirection_1 = !this.arrowDirection_1;
           break;
         case 'thisYear':
           this.filterTableDataByDate(4);
-          this.loading = true;
+
           this.timeOut();
           break;
         case 'lastYear':
           this.filterTableDataByDate(5);
-          this.loading = true;
+
           this.timeOut();
           this.arrowDirection_1 = !this.arrowDirection_1;
           break;
         case 'customDate':
           this.filterTableDataByDate(6);
-          this.loading = true;
+
           this.timeOut();
           this.arrowDirection_1 = !this.arrowDirection_1;
           break;
@@ -482,7 +509,16 @@ export default {
           this.middlename = userInformation.middlename;
           this.lastname = userInformation.lastname;
           this.position = userInformation.position;
-
+          this.status = userInformation.status;
+          if(this.status == 0)
+          {
+            this.$q.notify({
+            type: 'negative',
+              message: 'Your account is currently inactive. Please contact the account owner for activation.',
+            });
+            this.$router.push('/');
+            sessionStorage.clear();
+          }
           // If another value add here
         } catch (error) {
           console.log('Error parsing user data:', error);

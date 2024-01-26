@@ -59,6 +59,7 @@
                         'age' => $existingRecord['age'],
                         'otp_code' => 0,
                         'isOnline' => 1,
+                        'status' => $existingRecord['status'],
                     ]
                 ];
                 echo json_encode($response);

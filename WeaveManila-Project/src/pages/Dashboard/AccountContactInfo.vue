@@ -109,162 +109,162 @@
           </li>
       </ul>
 </q-drawer>
-  <q-page class="bg-[#f5f5f5] p-4">
-    <div class="bg-white h-[520px] rounded p-10 overflow-auto">
-      <router-link to="/dashboard/account-settings">
-        <p class="text-[15px]"><q-icon name="arrow_back_ios"/> <span class=" font-bold text-[#9e896a]">Basic Info</span></p>
-      </router-link>
-      <div class="md:w-[500px] md:h-[390px] mt-2 border border-[#dfc8c0] rounded p-5 text-[15px]">
+<q-page class="bg-[#f5f5f5] p-4">
+  <div class="bg-white h-[520px] rounded p-10 overflow-auto">
+    <router-link to="/dashboard/account-settings">
+      <p class="text-[15px]"><q-icon name="arrow_back_ios"/> <span class=" font-bold text-[#9e896a]">Basic Info</span></p>
+    </router-link>
+    <div class="md:w-[500px] md:h-[390px] mt-2 border border-[#dfc8c0] rounded p-5 text-[15px]">
 
-            <p class="text-[#9e896a] font-bold">Email</p>
-            <q-input outlined bottom-slots v-model="email" label="Email" disable>
-              <template v-slot:after>
-                <q-icon name="edit" @click="small = true"/>
-              </template>
-            </q-input>
-            <q-dialog
-              v-model="small"
-            >
-              <q-card style="width: 350px">
-                <q-card-section>
-                  <div class="text-h6">Change Email</div>
-                </q-card-section>
+          <p class="text-[#9e896a] font-bold">Email</p>
+          <q-input outlined bottom-slots v-model="email" label="Email" disable>
+            <template v-slot:after>
+              <q-icon name="edit" @click="small = true"/>
+            </template>
+          </q-input>
+          <q-dialog
+            v-model="small"
+          >
+            <q-card style="width: 350px">
+              <q-card-section>
+                <div class="text-h6">Change Email</div>
+              </q-card-section>
 
-                <q-card-section class="q-pt-none p-4">
-                  <q-form @submit="onChangeEmail">
-                    Kindly provide your current email address.
-                    <q-input
-                      v-model="currentEmail"
-                      label="Current Email Address"
-                      type="email"
-                      filled
-                      class="mt-3"
-                      :no-error-icon="true"
-                      :rules="[ruleEmail]"
-                    ></q-input>
-                    <q-btn label="Send Code" type="submit" class="bg-[#9e896a] rounded-md w-full text-white mt-4"/>
-                  </q-form>
-                </q-card-section>
+              <q-card-section class="q-pt-none p-4">
+                <q-form @submit="onChangeEmail">
+                  Kindly provide your current email address.
+                  <q-input
+                    v-model="currentEmail"
+                    label="Current Email Address"
+                    type="email"
+                    filled
+                    class="mt-3"
+                    :no-error-icon="true"
+                    :rules="[ruleEmail]"
+                  ></q-input>
+                  <q-btn label="Send Code" type="submit" class="bg-[#9e896a] rounded-md w-full text-white mt-4"/>
+                </q-form>
+              </q-card-section>
 
-                <q-card-actions align="right" class="bg-white text-teal">
-                  <q-btn flat label="Cancel" @click="cancelButtonClick" v-close-popup />
-                </q-card-actions>
-              </q-card>
-            </q-dialog>
+              <q-card-actions align="right" class="bg-white text-teal">
+                <q-btn flat label="Cancel" @click="cancelButtonClick" v-close-popup />
+              </q-card-actions>
+            </q-card>
+          </q-dialog>
 
-            <!-- Validating -->
-            <q-dialog
-              v-model="otpDialog"
-            >
-              <q-card style="width: 350px">
-                <q-card-section>
-                  <div class="text-h6">Otp Verification</div>
-                </q-card-section>
+          <!-- Validating -->
+          <q-dialog
+            v-model="otpDialog"
+          >
+            <q-card style="width: 350px">
+              <q-card-section>
+                <div class="text-h6">Otp Verification</div>
+              </q-card-section>
 
-                <q-card-section class="q-pt-none p-4">
-                  <div class="text-3xl flex justify-start items-center gap-2">
-                    <q-icon name="check_circle" color="green" />
-                    <p class="text-[15px]">Confirm Email Address</p>
-                  </div>
-                  <q-form @submit="onValidating">
-                    <div class="text-3xl flex justify-start items-center gap-2">
-                      <q-icon name="radio_button_unchecked" color="red" />
-                      <p class="text-[15px]">Validating OTP</p>
-                    </div>
-                    <q-input
-                      v-model="otpVal"
-                      label="OTP Code"
-                      type="number"
-                      filled
-                      class="mt-3"
-                      :no-error-icon="true"
-                      :rules="[validateOtp]"
-                    ></q-input>
-                    <q-btn label="Submit" type="submit" class="bg-[#9e896a] rounded-md w-full text-white mt-4"/>
-                  </q-form>
-                </q-card-section>
-
-                <q-card-actions align="right" class="bg-white text-teal">
-                  <q-btn flat label="Cancel" @click="cancelButtonClick" v-close-popup />
-                </q-card-actions>
-              </q-card>
-            </q-dialog>
-
-            <!-- Changing Email -->
-            <q-dialog
-              v-model="changeEmail"
-            >
-              <q-card style="width: 500px">
-                <q-card-section>
-                  <div class="text-h6">Change Email</div>
-                </q-card-section>
-
-                <q-card-section class="q-pt-none p-4">
-                  <div class="text-3xl flex justify-start items-center gap-2">
-                    <q-icon name="check_circle" color="green" />
-                    <p class="text-[15px]">Confirm Email Address</p>
-                  </div>
-                  <div class="text-3xl flex justify-start items-center gap-2">
-                    <q-icon name="check_circle" color="green" />
-                    <p class="text-[15px]">Validating OTP</p>
-                  </div>
+              <q-card-section class="q-pt-none p-4">
+                <div class="text-3xl flex justify-start items-center gap-2">
+                  <q-icon name="check_circle" color="green" />
+                  <p class="text-[15px]">Confirm Email Address</p>
+                </div>
+                <q-form @submit="onValidating">
                   <div class="text-3xl flex justify-start items-center gap-2">
                     <q-icon name="radio_button_unchecked" color="red" />
-                    <p class="text-[15px]">Change Email</p>
+                    <p class="text-[15px]">Validating OTP</p>
                   </div>
-                  <q-form @submit="onNewEmail">
-                    Please enter your new email address.
-                    <q-input
-                      v-model="newEmail"
-                      filled
-                      label="New Email Address"
-                      type="email"
-                      :rules="[val => !!val || 'Email is required', val => /.+@.+\..+/.test(val) || 'Invalid email']"
-                      lazy-rules
-                    />
+                  <q-input
+                    v-model="otpVal"
+                    label="OTP Code"
+                    type="number"
+                    filled
+                    class="mt-3"
+                    :no-error-icon="true"
+                    :rules="[validateOtp]"
+                  ></q-input>
+                  <q-btn label="Submit" type="submit" class="bg-[#9e896a] rounded-md w-full text-white mt-4"/>
+                </q-form>
+              </q-card-section>
 
-                    <!-- Re-enter new email for confirmation -->
-                    <q-input
-                      v-model="confirmNewEmail"
-                      filled
-                      label="Confirm New Email Address"
-                      type="email"
-                      :rules="[val => !!val || 'Confirmation email is required', val => val === newEmail || 'Email addresses do not match']"
-                      lazy-rules
-                    />
-                    <q-btn label="Confirm" type="submit" class="bg-[#9e896a] rounded-md w-full text-white mt-4"/>
+              <q-card-actions align="right" class="bg-white text-teal">
+                <q-btn flat label="Cancel" @click="cancelButtonClick" v-close-popup />
+              </q-card-actions>
+            </q-card>
+          </q-dialog>
 
-                  </q-form>
-                </q-card-section>
+          <!-- Changing Email -->
+          <q-dialog
+            v-model="changeEmail"
+          >
+            <q-card style="width: 500px">
+              <q-card-section>
+                <div class="text-h6">Change Email</div>
+              </q-card-section>
 
-                <q-card-actions align="right" class="bg-white text-teal">
-                  <q-btn flat label="Cancel" @click="cancelButtonClick" v-close-popup />
-                </q-card-actions>
-              </q-card>
-            </q-dialog>
-          <q-form @submit="onSubmit">
-            <p class="text-[#9e896a] font-bold">Phone</p>
-            <q-input
-              v-model="mobilenumber"
-              label="Phone Number"
-              type="number"
-              outlined
-              dense
-              class="custom-border-color mt-3"
-              lazy-rules
-              :maxlength="12"
-              :rules="[val => val && val.length === 12 || 'Please enter exactly 12 characters']"
-            />
-              <div class="flex justify-end w-full gap-2">
-              <router-link to="/dashboard/account-settings" class="bg-white rounded-full text-center p-2 text-[#9e896a] w-[74px] border-2 border-[#9e896a]">
-                Cancel
-              </router-link>
-              <q-btn label="Save" type="submit" class="bg-[#9e896a] rounded-full  text-white"/>
-            </div>
-          </q-form>
-      </div>
+              <q-card-section class="q-pt-none p-4">
+                <div class="text-3xl flex justify-start items-center gap-2">
+                  <q-icon name="check_circle" color="green" />
+                  <p class="text-[15px]">Confirm Email Address</p>
+                </div>
+                <div class="text-3xl flex justify-start items-center gap-2">
+                  <q-icon name="check_circle" color="green" />
+                  <p class="text-[15px]">Validating OTP</p>
+                </div>
+                <div class="text-3xl flex justify-start items-center gap-2">
+                  <q-icon name="radio_button_unchecked" color="red" />
+                  <p class="text-[15px]">Change Email</p>
+                </div>
+                <q-form @submit="onNewEmail">
+                  Please enter your new email address.
+                  <q-input
+                    v-model="newEmail"
+                    filled
+                    label="New Email Address"
+                    type="email"
+                    :rules="[val => !!val || 'Email is required', val => /.+@.+\..+/.test(val) || 'Invalid email']"
+                    lazy-rules
+                  />
+
+                  <!-- Re-enter new email for confirmation -->
+                  <q-input
+                    v-model="confirmNewEmail"
+                    filled
+                    label="Confirm New Email Address"
+                    type="email"
+                    :rules="[val => !!val || 'Confirmation email is required', val => val === newEmail || 'Email addresses do not match']"
+                    lazy-rules
+                  />
+                  <q-btn label="Confirm" type="submit" class="bg-[#9e896a] rounded-md w-full text-white mt-4"/>
+
+                </q-form>
+              </q-card-section>
+
+              <q-card-actions align="right" class="bg-white text-teal">
+                <q-btn flat label="Cancel" @click="cancelButtonClick" v-close-popup />
+              </q-card-actions>
+            </q-card>
+          </q-dialog>
+        <q-form @submit="onSubmit">
+          <p class="text-[#9e896a] font-bold">Phone</p>
+          <q-input
+            v-model="mobilenumber"
+            label="Phone Number"
+            type="number"
+            outlined
+            dense
+            class="custom-border-color mt-3"
+            lazy-rules
+            :maxlength="12"
+            :rules="[val => val && val.length === 12 || 'Please enter exactly 12 characters']"
+          />
+            <div class="flex justify-end w-full gap-2">
+            <router-link to="/dashboard/account-settings" class="bg-white rounded-full text-center p-2 text-[#9e896a] w-[74px] border-2 border-[#9e896a]">
+              Cancel
+            </router-link>
+            <q-btn label="Save" type="submit" class="bg-[#9e896a] rounded-full  text-white"/>
+          </div>
+        </q-form>
     </div>
-  </q-page>
+  </div>
+</q-page>
 </template>
 
 <script>
@@ -284,6 +284,7 @@ export default {
       responseStatus: '',
       uid: '',
       email: '',
+      status: '',
 
       userProfileImage: null,
       mobilenumber: '',
@@ -299,14 +300,43 @@ export default {
       // ChangeEmail Properties
       currentEmail: '',
       newEmail: '',
-      confirmNewEmail: ''
+      confirmNewEmail: '',
+      statusCheckTimer: null,
     };
   },
 
   mounted() {
     this.loadUserData();
+    this.statusCheckTimer = setInterval(() => {
+      this.checkUserStatus();
+      }, 1 * 1000); // 5 minutes (in milliseconds)
+    },
+  beforeUnmount() {
+    clearInterval(this.statusCheckTimer);
   },
   methods: {
+    checkUserStatus() {
+        axios.get(`http://localhost/Capstone-Project/backend/api/verification.php?email=${this.email}`)
+        .then(response => {
+        const latestStatus = response.data.information.status;
+
+        // Update the local status and take appropriate action if it has changed
+        if (this.status !== latestStatus) {
+          this.status = latestStatus;
+
+          if (this.status === 0) {
+            this.$q.notify({
+              type: 'negative',
+              message: 'Your account is currently inactive. Please contact the account owner for activation.',
+            });
+            this.$router.push('/');
+            sessionStorage.clear();
+          }
+        }
+      }).catch(error => {
+            console.error('Error fetching data:', error);
+      });
+    },
     loadUserData() {
       const userData = SessionStorage.getItem('information');
 
@@ -322,6 +352,16 @@ export default {
 
           this.mobilenumber = userInformation.mobilenumber;
           this.code = userInformation.otp_code;
+          this.status = userInformation.status;
+          if(this.status == 0)
+          {
+            this.$q.notify({
+            type: 'negative',
+              message: 'Your account is currently inactive. Please contact the account owner for activation.',
+            });
+            this.$router.push('/');
+            sessionStorage.clear();
+          }
         } catch (error) {
           console.log('Error parsing user data:', error);
           // Provide user feedback or navigate to an error page

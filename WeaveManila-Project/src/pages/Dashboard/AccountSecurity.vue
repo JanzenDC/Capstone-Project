@@ -112,6 +112,9 @@
   </q-drawer>
   <q-page class="bg-[#f5f5f5] p-4">
     <div class="bg-white h-[520px] rounded p-4 px-7 overflow-auto">
+      <router-link to="/dashboard/account-settings">
+        <p class="text-[15px]"><q-icon name="arrow_back_ios"/> <span class=" font-bold text-[#9e896a]">Basic Info</span></p>
+      </router-link>
       <h1 class="text-[25px] font-bold">Change Password</h1>
       <q-form @submit="onSubmit">
         <div class="w-full">
@@ -200,6 +203,7 @@ export default {
       lastname: '',
       userProfileImage: null,
       username: '',
+      status: '',
       showModal: false,
       arrowDirection: false,
       position: '',
@@ -210,6 +214,7 @@ export default {
       confirmPW: '',
       showPassword: false,
       showChangePassword: false,
+      statusCheckTimer: null,
     };
   },
   computed: {
@@ -235,9 +240,36 @@ export default {
   },
   mounted() {
     this.loadUserData();
+    this.statusCheckTimer = setInterval(() => {
+      this.checkUserStatus();
+      }, 1 * 1000); // 5 minutes (in milliseconds)
+    },
+  beforeUnmount() {
+    clearInterval(this.statusCheckTimer);
   },
   methods: {
+    checkUserStatus() {
+    axios.get(`http://localhost/Capstone-Project/backend/api/verification.php?email=${this.email}`)
+    .then(response => {
+    const latestStatus = response.data.information.status;
 
+    // Update the local status and take appropriate action if it has changed
+    if (this.status !== latestStatus) {
+      this.status = latestStatus;
+
+      if (this.status === 0) {
+        this.$q.notify({
+          type: 'negative',
+          message: 'Your account is currently inactive. Please contact the account owner for activation.',
+        });
+        this.$router.push('/');
+        sessionStorage.clear();
+      }
+    }
+  }).catch(error => {
+        console.error('Error fetching data:', error);
+  });
+    },
     loadUserData() {
       const userData = SessionStorage.getItem('information');
 
@@ -253,6 +285,16 @@ export default {
           this.lastname = userInformation.lastname;
           this.position = userInformation.position;
           this.password = userInformation.password;
+          this.status = userInformation.status;
+          if(this.status == 0)
+          {
+            this.$q.notify({
+            type: 'negative',
+              message: 'Your account is currently inactive. Please contact the account owner for activation.',
+            });
+            this.$router.push('/');
+            sessionStorage.clear();
+          }
         } catch (error) {
           console.log('Error parsing user data:', error);
           // Provide user feedback or navigate to an error page

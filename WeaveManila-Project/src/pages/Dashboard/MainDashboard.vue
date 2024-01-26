@@ -122,6 +122,7 @@
 <script>
 import { useQuasar } from 'quasar';
 import { SessionStorage } from 'quasar';
+import axios from 'axios';
 
 export default {
   setup() {
@@ -138,15 +139,43 @@ export default {
       showModal: false,
       arrowDirection: false,
       position: '',
+      status: '',
       drawer: true,
-
+      statusCheckTimer: null,
     };
   },
   mounted() {
     this.loadUserData();
+    this.statusCheckTimer = setInterval(() => {
+      this.checkUserStatus();
+    }, 1 * 1000); // 1 second (in milliseconds)
+  },
+  beforeUnmount() {
+    clearInterval(this.statusCheckTimer);
   },
   methods: {
+    checkUserStatus() {
+        axios.get(`http://localhost/Capstone-Project/backend/api/verification.php?email=${this.email}`)
+        .then(response => {
+        const latestStatus = response.data.information.status;
+        
+        // Update the local status and take appropriate action if it has changed
+        if (this.status !== latestStatus) {
+          this.status = latestStatus;
 
+          if (this.status === 0) {
+            this.$q.notify({
+              type: 'negative',
+              message: 'Your account is currently inactive. Please contact the account owner for activation.',
+            });
+            this.$router.push('/');
+            sessionStorage.clear();
+          }
+        }
+      }).catch(error => {
+            console.error('Error fetching data:', error);
+      });
+    },
     loadUserData() {
       const userData = SessionStorage.getItem('information');
 
@@ -160,6 +189,17 @@ export default {
           this.middlename = userInformation.middlename;
           this.lastname = userInformation.lastname;
           this.position = userInformation.position;
+          this.status = userInformation.status;
+          if(this.status == 0)
+          {
+            this.$q.notify({
+            type: 'negative',
+              message: 'Your account is currently inactive. Please contact the account owner for activation.',
+            });
+            this.$router.push('/');
+            sessionStorage.clear();
+          }
+
         } catch (error) {
           console.log('Error parsing user data:', error);
           // Provide user feedback or navigate to an error page

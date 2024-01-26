@@ -109,121 +109,122 @@
           </li>
       </ul>
 </q-drawer>
-  <q-page class="bg-[#f5f5f5] p-4">
-    <div class="bg-white h-[520px] rounded p-4 px-7 overflow-y-auto overflow-x-hidden">
-      <h1 class="text-[25px] font-bold">Account Settings</h1>
-      <div class="w-full md:flex md:justify-center">
-        <div>
+<q-page class="bg-[#f5f5f5] p-4">
+  <div class="bg-white h-[520px] rounded p-4 px-7 overflow-y-auto overflow-x-hidden">
+    <h1 class="text-[25px] font-bold">Account Settings</h1>
+    <div class="w-full md:flex md:justify-center">
+      <div>
 
-          <!-- User Area -->
-          <div class="p-4 md:w-[600px] h-[150px] border border-[#ddb7ab] rounded-[15px] drop-shadow-md flex md:justify-between
-          min-[390px]:justify-center">
-            <div class="md:flex items-center gap-2">
-              <div>
-                <div  class="relative flex justify-center items-center">
-                  <q-img
-                    :src="getUserProfileImagePath()"
-                    alt="Description of the image"
-                    class="w-[100px] rounded-full min-[390px]:w-[80px] "
-                  />
-                  <div class="absolute right-12 bottom-0">
-                    <router-link to="/dashboard/account-profilepic">
-                      <div class="rounded-full py-2 px-3 bg-[#ddb7ab] md:hidden">
-                        <q-icon name="photo_camera"/>
-                      </div>
-                    </router-link>
-                  </div>
+        <!-- User Area -->
+        <div class="p-4 md:w-[600px] h-[150px] border border-[#ddb7ab] rounded-[15px] drop-shadow-md flex md:justify-between
+        min-[390px]:justify-center">
+          <div class="md:flex items-center gap-2">
+            <div>
+              <div  class="relative flex justify-center items-center">
+                <q-img
+                  :src="getUserProfileImagePath()"
+                  alt="Description of the image"
+                  class="w-[100px] rounded-full min-[390px]:w-[80px] "
+                />
+                <div class="absolute right-12 bottom-0">
+                  <router-link to="/dashboard/account-profilepic">
+                    <div class="rounded-full py-2 px-3 bg-[#ddb7ab] md:hidden">
+                      <q-icon name="photo_camera"/>
+                    </div>
+                  </router-link>
                 </div>
+              </div>
 
-              </div>
-              <div class="text-center">
-                <p class="font-bold text-[16px]">{{ firstname }} {{ lastname }}</p>
-                {{ position }}
-              </div>
             </div>
-              <div class="w-[84px] flex items-center justify-center min-[390px]:hidden md:flex ">
-                <router-link to="/dashboard/account-profilepic" class="text-center w-full border border-[#9e896a] rounded-full ">
-                  <span class=" p-1   text-[#9e896a]"><q-icon name="edit"/> Edit</span>
-                </router-link>
-              </div>
-          </div>
-
-
-          <!-- Personal Information -->
-          <div class="mt-3 md:w-[600px] p-5 border border-[#ddb7ab] rounded-[15px] drop-shadow-md">
-            <div class="flex justify-between -mt-8">
-              <h1 class="md:text-[19px] font-bold">Personal Information</h1>
-              <div class="w-[84px] flex items-center justify-center ">
-                <router-link to="/dashboard/account-basicinfo" class="text-center w-full border border-[#9e896a] rounded-full">
-                  <span class=" p-1   text-[#9e896a]"><q-icon name="edit"/> Edit</span>
-                </router-link>
-              </div>
-            </div>
-            <div class="grid grid-cols-2 gap-10 -mt-4">
-              <div>
-                <p>First Name:</p> {{ firstname }}
-              </div>
-              <div>
-                <p>Last Name:</p> {{ lastname }}
-              </div>
-              <div>
-                <p>Birthday:</p> {{ birthdate }}
-              </div>
-              <div>
-                <p>Gender:</p> {{ gender }}
-              </div>
-              <div>
-                <p>Address:</p> {{ address }}
-              </div>
-              <div>
-                <p>Position:</p> {{ position }}
-              </div>
+            <div class="text-center">
+              <p class="font-bold text-[16px]">{{ firstname }} {{ lastname }}</p>
+              {{ position }}
             </div>
           </div>
-          <!-- Contact Information -->
-          <div class="mt-3 md:w-[600px] p-5 border border-[#ddb7ab] rounded-[15px] drop-shadow-md">
-            <div class="flex justify-between -mt-8">
-              <h1 class="md:text-[19px] font-bold">Contact Information</h1>
-              <div class="w-[84px] flex items-center justify-center ">
-                <router-link to="/dashboard/account-contactinfo" class="text-center w-full border border-[#9e896a] rounded-full">
-                  <span class=" p-1   text-[#9e896a]"><q-icon name="edit"/> Edit</span>
-                </router-link>
-              </div>
+            <div class="w-[84px] flex items-center justify-center min-[390px]:hidden md:flex ">
+              <router-link to="/dashboard/account-profilepic" class="text-center w-full border border-[#9e896a] rounded-full ">
+                <span class=" p-1   text-[#9e896a]"><q-icon name="edit"/> Edit</span>
+              </router-link>
             </div>
-            <div class="md:grid md:grid-cols-2 md:gap-10 -mt-4">
-              <div>
-                <p>Email:</p> {{ email }}
-              </div>
-              <div class="min-[390px]:mt-3">
-                <p>Mobile Number:</p> {{ mobilenumber }}
-              </div>
+        </div>
+
+
+        <!-- Personal Information -->
+        <div class="mt-3 md:w-[600px] p-5 border border-[#ddb7ab] rounded-[15px] drop-shadow-md">
+          <div class="flex justify-between -mt-8">
+            <h1 class="md:text-[19px] font-bold">Personal Information</h1>
+            <div class="w-[84px] flex items-center justify-center ">
+              <router-link to="/dashboard/account-basicinfo" class="text-center w-full border border-[#9e896a] rounded-full">
+                <span class=" p-1   text-[#9e896a]"><q-icon name="edit"/> Edit</span>
+              </router-link>
             </div>
           </div>
-          <!-- Password Information -->
-          <div class="mt-3 md:w-[600px] p-5 border border-[#ddb7ab] rounded-[15px] drop-shadow-md">
-            <div class="flex justify-between -mt-8">
-              <h1 class="md:text-[19px] font-bold">Security</h1>
-              <div class="w-[84px] flex items-center justify-center ">
-                <router-link to="/dashboard/account-changepass" class="text-center w-full border border-[#9e896a] rounded-full">
-                  <span class=" p-1   text-[#9e896a]"><q-icon name="edit"/> Edit</span>
-                </router-link>
-              </div>
+          <div class="grid grid-cols-2 gap-10 -mt-4">
+            <div>
+              <p>First Name:</p> {{ firstname }}
             </div>
-            <div class="grid grid-cols-2 gap-10 -mt-4">
-              <div>
-                <p>Current Password</p> {{ password }}
-              </div>
+            <div>
+              <p>Last Name:</p> {{ lastname }}
+            </div>
+            <div>
+              <p>Birthday:</p> {{ birthdate }}
+            </div>
+            <div>
+              <p>Gender:</p> {{ gender }}
+            </div>
+            <div>
+              <p>Address:</p> {{ address }}
+            </div>
+            <div>
+              <p>Position:</p> {{ position }}
+            </div>
+          </div>
+        </div>
+        <!-- Contact Information -->
+        <div class="mt-3 md:w-[600px] p-5 border border-[#ddb7ab] rounded-[15px] drop-shadow-md">
+          <div class="flex justify-between -mt-8">
+            <h1 class="md:text-[19px] font-bold">Contact Information</h1>
+            <div class="w-[84px] flex items-center justify-center ">
+              <router-link to="/dashboard/account-contactinfo" class="text-center w-full border border-[#9e896a] rounded-full">
+                <span class=" p-1   text-[#9e896a]"><q-icon name="edit"/> Edit</span>
+              </router-link>
+            </div>
+          </div>
+          <div class="md:grid md:grid-cols-2 md:gap-10 -mt-4">
+            <div>
+              <p>Email:</p> {{ email }}
+            </div>
+            <div class="min-[390px]:mt-3">
+              <p>Mobile Number:</p> {{ mobilenumber }}
+            </div>
+          </div>
+        </div>
+        <!-- Password Information -->
+        <div class="mt-3 md:w-[600px] p-5 border border-[#ddb7ab] rounded-[15px] drop-shadow-md">
+          <div class="flex justify-between -mt-8">
+            <h1 class="md:text-[19px] font-bold">Security</h1>
+            <div class="w-[84px] flex items-center justify-center ">
+              <router-link to="/dashboard/account-changepass" class="text-center w-full border border-[#9e896a] rounded-full">
+                <span class=" p-1   text-[#9e896a]"><q-icon name="edit"/> Edit</span>
+              </router-link>
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-10 -mt-4">
+            <div>
+              <p>Current Password</p> {{ password }}
             </div>
           </div>
         </div>
       </div>
     </div>
-  </q-page>
+  </div>
+</q-page>
 </template>
 
 <script>
 import { useQuasar } from 'quasar';
 import { SessionStorage } from 'quasar';
+import axios from 'axios';
 
 export default {
   setup() {
@@ -243,16 +244,46 @@ export default {
       position: '',
       mobilenumber: '',
       password: '',
+      status: '',
       arrowDirection: false,
       showModal: false,
       drawer: false,
+      statusCheckTimer: null,
     };
   },
   mounted() {
     this.loadUserData();
+    this.statusCheckTimer = setInterval(() => {
+    this.checkUserStatus();
+    }, 1 * 1000); // 5 minutes (in milliseconds)
+  },
+  beforeUnmount() {
+    clearInterval(this.statusCheckTimer);
   },
 
   methods: {
+    checkUserStatus() {
+        axios.get(`http://localhost/Capstone-Project/backend/api/verification.php?email=${this.email}`)
+        .then(response => {
+        const latestStatus = response.data.information.status;
+
+        // Update the local status and take appropriate action if it has changed
+        if (this.status !== latestStatus) {
+          this.status = latestStatus;
+
+          if (this.status === 0) {
+            this.$q.notify({
+              type: 'negative',
+              message: 'Your account is currently inactive. Please contact the account owner for activation.',
+            });
+            this.$router.push('/');
+            sessionStorage.clear();
+          }
+        }
+      }).catch(error => {
+            console.error('Error fetching data:', error);
+      });
+    },
     loadUserData() {
       const userData = SessionStorage.getItem('information');
       if (userData) {
@@ -270,6 +301,16 @@ export default {
           this.mobilenumber = userInformation.mobilenumber;
           this.password = userInformation.password ? '*'.repeat(Math.min(8, userInformation.password.length)) : '';
           this.address = userInformation.address;
+          this.status = userInformation.status;
+          if(this.status == 0)
+          {
+            this.$q.notify({
+            type: 'negative',
+              message: 'Your account is currently inactive. Please contact the account owner for activation.',
+            });
+            this.$router.push('/');
+            sessionStorage.clear();
+          }
         } catch (error) {
           console.log('Error parsing user data:', error);
           // Provide user feedback or navigate to an error page
