@@ -35,6 +35,7 @@ const AuthService = {
             otp_code: information.otp_code,
             isOnline: information.isOnline,
             status: information.status,
+            password: information.password,
           };
           SessionStorage.set('information', JSON.stringify(this.information));
 

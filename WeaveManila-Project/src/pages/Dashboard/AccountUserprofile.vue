@@ -337,6 +337,7 @@
       },
       loadUserData() {
         const userData = SessionStorage.getItem('information');
+        console.log(userData);
         if (userData) {
           try {
             const userInformation = JSON.parse(userData);

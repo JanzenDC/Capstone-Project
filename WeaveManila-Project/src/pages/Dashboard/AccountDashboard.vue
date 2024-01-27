@@ -288,6 +288,7 @@ export default {
     },
     loadUserData() {
       const userData = SessionStorage.getItem('information');
+
       if (userData) {
         try {
           const userInformation = JSON.parse(userData);
@@ -304,6 +305,7 @@ export default {
           this.password = userInformation.password ? '*'.repeat(Math.min(8, userInformation.password.length)) : '';
           this.address = userInformation.address;
           this.status = userInformation.status;
+          console.log(this.password);
           if(this.status == 0)
           {
             this.$q.notify({
