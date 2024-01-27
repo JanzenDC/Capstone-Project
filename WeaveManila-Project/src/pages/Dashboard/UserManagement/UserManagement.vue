@@ -344,10 +344,10 @@
           props.row.userInfo.lastname,
           props.row.userInfo.birthday,
           props.row.userInfo.gender,
-          props.row.userInfo.civil_staus,
+          props.row.userInfo.civil_status,
           props.row.userInfo.address,
           props.row.userInfo.email,
-          props.row.userInfo.contact_number,
+          props.row.userInfo.mobile_number,
           props.row.userInfo.password)"
           class="font-bold text-[15px]"
         >
@@ -520,48 +520,6 @@
               ></q-input>
             </div>
           </div>
-          <div class="text-h6 font-bold text-[#667085]">Security</div>
-          <div class="grid grid-cols-2 gap-5">
-            <!-- Password -->
-            <div>
-              <p class="text-[15px]">Password</p>
-                <q-input
-                  class="w-full"
-                  v-model="pvalue"
-                  label="Password"
-                  outlined
-                  dense
-                  :type="showPassword ? 'text' : 'password'"
-                  :no-error-icon="true"
-                  :rules="[val => !!val || 'Password is required',
-                            val => val.length >= 8 || 'Password must be at least 8 characters']"
-                >
-                <template v-slot:append>
-                  <span @click="togglePasswordVisibility">
-                    <i class="bi" :class="showPassword ? 'bi-eye-slash' : 'bi-eye'"></i>
-                  </span>
-                </template>
-                <template v-slot:after>
-                  <q-btn class="bg-[#667085] text-white text-[10px] w-[100px]" label="Generate Password" @click="generatePassword" size="xs"/>
-                </template>
-                </q-input>
-            </div>
-            <!-- Confirm Password -->
-            <div>
-              <p class="text-[15px]">Confirm Password</p>
-              <q-input
-                v-model="cpvalue"
-                label="Confirm Password"
-                type='password'
-                outlined
-                dense
-                :no-error-icon="true"
-                :rules="[val => !!val || 'Confirm Password is required',
-                          val => val === pvalue || 'Passwords do not match']"
-              >
-              </q-input>
-            </div>
-          </div>
           <div class="flex gap-2">
             <q-btn label="Submit" type="submit" />
             <q-btn flat color="primary" @click="closeEditDialog">Close</q-btn>
@@ -662,23 +620,24 @@ export default {
     clearInterval(this.statusCheckTimer);
   },
   methods: {
+
     FetchUser(){
       axios.get('http://localhost/Capstone-Project/backend/api/Usermanagement/userdata.php?select=all')
       .then(response => {
-        console.log(response.data);
         this.tableData = response.data.informations.rows.map(row => {
           const time = new Date(row.account_created).toLocaleDateString('en-US', { year: 'numeric', month: 'numeric', day: 'numeric' });          const fullname = row.firstname + " " + row.lastname;
           return {
             id: row.id,
+
               userInfo: {
                 firstname: row.firstname,
                 lastname: row.lastname,
                 birthday: row.birthdate,
                 gender: row.gender,
-                civil_staus: row.civil_staus,
                 address: row.address,
                 email: row.email,
-                contact_number: row.mobile_number,
+                civil_status: row.civil_status,
+                mobile_number: row.mobile_number,
                 password: row.password,
               },
               user: {
@@ -708,7 +667,7 @@ export default {
     toggleDropdown(index) {
       this.openDropdownRow = this.showDropdown ? index : -1; // Update the openDropdownRow
     },
-    openDropdown(userId, userName, firstname, lastname, birthday, gender, civil_status, address,email,contact_number,password) {
+    openDropdown(userId, userName, firstname, lastname, birthday, gender, civil_status, address,email,mobile_number,password) {
       this.showDropdown = true;
       this.selectedUserId = userId;
       this.selectedUserName = userName;
@@ -720,10 +679,7 @@ export default {
       this.cInput = civil_status;
       this.avalue = address;
       this.evalue = email;
-      this.cvalue = contact_number;
-      this.pvalue = password;
-      this.cpvalue = password;
-      console.log(this.fname);
+      this.cvalue = mobile_number;
     },
 
     setStatus(status, userId) {
@@ -817,17 +773,53 @@ export default {
       });
     },
     onSubmitEdit(){
-      this.fname = '';
-      this.lname = '';
-      this.bdate = ''; // Reset other form fields
-      this.gInput = '';
-      this.cInput = '';
-      this.avalue = '';
-      this.evalue = '';
-      this.cvalue = '';
-      this.pvalue = '';
-      this.cpvalue = '';
-      this.showEditArea = false;
+      const formData = {
+        id: this.selectedUserId,
+        fname: this.fname,
+        lname: this.lname,
+        bdate: this.bdate,
+        gInput: this.gInput,
+        cInput: this.cInput,
+        avalue: this.avalue,
+        evalue: this.evalue,
+        cvalue: this.cvalue,
+        type: 3
+      };
+      console.log(formData);
+      axios.put(`http://localhost/Capstone-Project/backend/api/Usermanagement/userdata.php/${this.selectedUserId}`, formData)
+      .then(response => {
+        const Status = response.data.status;
+        const Message = response.data.message;
+        console.log(response.data.informations)
+        if (Status === "success") {
+          this.showEditArea = false;
+          this.showDropdown = false;
+          this.$q.notify({
+              message: 'User Updated!!',
+              caption: `${Message}`,
+              color: 'green',
+          });
+          this.fname = '';
+          this.lname = '';
+          this.bdate = ''; // Reset other form fields
+          this.gInput = '';
+          this.cInput = '';
+          this.avalue = '';
+          this.evalue = '';
+          this.cvalue = '';
+          this.pvalue = '';
+          this.cpvalue = '';
+          this.FetchUser();
+        }
+        if (Status === "fail") {
+          this.$q.notify({
+            color: 'negative',
+            message: `${Message} Please try again.`,
+          });
+        }
+      }).catch(error => {
+          console.error('Error Uploading data:', error);
+      });
     },
     openEditDialog(){
       this.showEditArea = true;

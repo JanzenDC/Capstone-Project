@@ -47,7 +47,7 @@
                         w_users.age,                
                         w_users.address,            
                         w_users.civil_status,      
-                            audit_logs.action
+                        audit_logs.action
                         FROM 
                             w_users
                         JOIN (
@@ -240,7 +240,67 @@
     
     public function httpPut($ids, $payload)
     {
+        if (empty($ids)) {
+            $response = ['status' => 'fail', 'message' => 'Target ID is required'];
+            echo json_encode($response);
+            exit;
+        }
+        if ($payload['type'] == '3') {
+            $requiredFields = ['fname', 'lname', 'bdate', 'gInput', 'cInput', 'avalue', 'evalue', 'cvalue'];
+            foreach ($requiredFields as $field) {
+                if (!isset($payload[$field])) {
+                    $response = ['status' => 'fail', 'message' => 'Missing required field: ' . $field];
+                    echo json_encode($response);
+                    exit;
+                }
+            }
+            $email = $payload['evalue'];
+            if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                $response = ['status' => 'fail', 'message' => 'Invalid email address'];
+                echo json_encode($response);
+                exit;
+            }
+            $contactNumber = $payload['cvalue'];
+            if (!preg_match('/^09\d{9}$/', $contactNumber)) {
+                $response = ['status' => 'fail', 'message' => 'Invalid Philippine contact number'];
+                echo json_encode($response);
+                exit;
+            }
+            $existingEmail = $this->db->where('id', $ids)->getOne('w_users');
+            if($existingEmail){
+                $mobileNumber = isset($payload['cvalue']) ? intval($payload['cvalue']) : null;
+                $updateData = [
+                    'firstname' => $payload['fname'],
+                    'lastname' => $payload['lname'],
+                    'email' => $payload['evalue'],
+                    'birthdate' => $payload['bdate'],
+                    'gender' => $payload['gInput'],
+                    'civil_status' => $payload['cInput'],
+                    'address' => $payload['avalue'],
+                    'mobile_number' => $mobileNumber
+                ];
+                $addData = $this->db->where('id', $ids)->update('w_users', $updateData);
+                if($addData){
+                    $response = [
+                        'status' => 'success',
+                        'message' => 'User Information has been updated successfully.',
+                        'informations' => $updateData,    
+                    ];
+                    echo json_encode($response);
+                    exit;
+                }else{
+                    $response = ['status' => 'fail', 'message' => 'Fail to update.'];
+                    echo json_encode($response);
+                    exit;
+                }
+            }else{
+                $response = ['status' => 'fail', 'message' => 'Did not find user account.'];
+                echo json_encode($response);
+                exit;
+            } 
+        }
     }
+    
 
     public function httpDelete($payload)
     {
