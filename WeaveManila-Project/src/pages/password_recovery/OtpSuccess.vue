@@ -21,7 +21,7 @@
             <p class="font-bold text-[31px] text-[#9e896a]"> Password Changed!</p>
             <p class="text-lg">Your password has been changed successfully.</p>
             <div class="bg-[#9e896a] text-white p-2 text-center rounded-md mt-3">
-              <router-link to="/">
+              <router-link to="/" @click="clearSession">
                 Back to login
               </router-link>
             </div>
@@ -39,7 +39,7 @@
             <p class="font-bold text-[31px] text-[#9e896a]"> Password Changed!</p>
             <p class="text-lg">Your password has been changed successfully.</p>
             <div class="bg-[#9e896a] text-white p-2 text-center rounded-md mt-3">
-              <router-link to="/">
+              <router-link to="/" @click="clearSession">
                 Back to login
               </router-link>
             </div>
@@ -53,6 +53,7 @@
 
 <script>
 import { useQuasar } from 'quasar';
+import { SessionStorage } from 'quasar';
 
 export default {
   setup() {
@@ -64,10 +65,16 @@ export default {
     });
   },
   methods: {
+    clearSession() {
+      // Add logic to clear the session
+      // For example, if using sessionStorage:
+      sessionStorage.clear();
+
+      // Redirect to the login page
+      this.$router.push('/');
+    },
     loadUserData() {
       const userData = SessionStorage.getItem('email');
-      console.log("User Data from Session Storage:", userData);
-
       const isChangingPass = SessionStorage.getItem('isChangingPass');
 
       if (userData) {
@@ -75,14 +82,17 @@ export default {
           const user = JSON.parse(userData);
           this.email = user;
           if (isChangingPass === '0') {
-            this.$router.push('/forgot/reset');
+            this.$router.push('/');
+            sessionStorage.clear();
           }
         } catch (error) {
           console.log('Error parsing user data:', error);
-          this.$router.push('/forgot/reset');
+          this.$router.push('/');
+          sessionStorage.clear();
         }
       } else {
-        this.$router.push('/forgot/reset');
+        this.$router.push('/');
+        sessionStorage.clear();
       }
     },
   }

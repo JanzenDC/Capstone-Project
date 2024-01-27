@@ -122,8 +122,8 @@
       >
         <p class="text-[#9e896a] font-bold">Name</p>
         <div class="grid grid-cols-2 gap-4 mt-3">
-            <q-input v-model="firstname" label="First name" outlined  dense class="custom-border-color" lazy-rules :rules="[ val => val && val.length > 0 || 'Please type something']"/>
-            <q-input v-model="lastname" label="Last name" outlined dense  class=" rounded" lazy-rules :rules="[ val => val && val.length > 0 || 'Please type something']"/>
+            <q-input v-model="fname" label="First name" outlined  dense class="custom-border-color" lazy-rules :rules="[ val => val && val.length > 0 || 'Please type something']"/>
+            <q-input v-model="lname" label="Last name" outlined dense  class=" rounded" lazy-rules :rules="[ val => val && val.length > 0 || 'Please type something']"/>
         </div>
         <div class="md:w-[370px]">
           <div class="">
@@ -215,6 +215,10 @@ export default {
       email: '',
       userProfileImage: null,
       username: '',
+
+      fname: '',
+      lname: '',
+
       firstname: '',
       middlename: '',
       lastname: '',
@@ -278,6 +282,7 @@ export default {
           this.email = userInformation.email;
           this.username = userInformation.username;
           this.userProfileImage = userInformation.pfp;
+
           this.firstname = userInformation.firstname;
           this.middlename = userInformation.middlename;
           this.lastname = userInformation.lastname;
@@ -287,6 +292,8 @@ export default {
           this.position = userInformation.position;
           this.mobilenumber = userInformation.mobilenumber;
           this.password = userInformation.password;
+          this.fname = userInformation.firstname;
+          this.lname = userInformation.lastname;
 
           this.status = userInformation.status;
           if(this.status == 0)
@@ -366,8 +373,8 @@ export default {
     },
     onSubmit() {
       const formData = {
-        Firstname: this.firstname,
-        Lastname: this.lastname,
+        Firstname: this.fname,
+        Lastname: this.lname,
         Day: this.day,
         Month: this.month,
         Year: this.year,
@@ -377,7 +384,6 @@ export default {
       .then((response) =>{
         this.responseStatus = response.data.status;
         this.responseInformation = response.data.information;
-        console.log(this.responseInformation);
         if (this.responseStatus === "success") {
             const existingInformation = JSON.parse(SessionStorage.getItem('information')) || {};
             existingInformation.firstname = this.responseInformation.firstname;

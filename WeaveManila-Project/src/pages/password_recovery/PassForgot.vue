@@ -37,7 +37,7 @@
               {{ responseMessage }}
             </div>
               <div class="flex gap-2">
-                <p class="text-[12px] mt-[3px]">Remember Password?</p><router-link to="/"><span class="text-[12px] font-bold">Login</span></router-link>
+                <p class="text-[12px] mt-[3px]">Remember Password?</p><router-link to="/" @click="clearSession"><span class="text-[12px] font-bold">Login</span></router-link>
               </div>
             <div>
 
@@ -73,7 +73,7 @@
                   {{ responseMessage }}
                 </div>
                 <div class="flex gap-2">
-                  <p class="text-[12px] mt-[3px]">Remember Password?</p><router-link to="/"><span class="text-[12px] font-bold">Login</span></router-link>
+                  <p class="text-[12px] mt-[3px]">Remember Password?</p><router-link to="/" @click="clearSession"><span class="text-[12px] font-bold">Login</span></router-link>
                 </div>
               <div>
 
@@ -109,7 +109,10 @@ export default {
     };
   },
   methods: {
-
+    clearSession() {
+      sessionStorage.clear();
+      this.$router.push('/');
+    },
     ruleRequired(value) {
       return !!value || 'Password is required';
     },
@@ -126,16 +129,16 @@ export default {
 
       axios.post('http://localhost/Capstone-Project/backend/api/api.php', formData)
       .then(response => {
+        console.log(response.data);
         this.responseStatus = response.data.status;
         this.responseMessage = response.data.message;
 
-        // Corrected access to nested properties
-        this.responseEmail = response.data.info.email;
+        const responseEmail = response.data.info.email;
         this.responseCode = response.data.info.code;
         this.responseChangepass = response.data.info.isChangingPass;
 
         if (this.responseStatus !== 'fail') {
-          SessionStorage.set('email', JSON.stringify(this.responseEmail));
+          SessionStorage.set('email', JSON.stringify(responseEmail));
 
           SessionStorage.set('code', JSON.stringify(this.responseCode));
 

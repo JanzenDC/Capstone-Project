@@ -33,7 +33,6 @@
                 'status' => 'success',
                 'message' => 'Successfully logged in.',
                 'information' => [
-                    'uid' =>    $existingRecord['uid'],
                     'email' =>    $existingRecord['email'],
                     'password' => $existingRecord['password'],
                     'username' => $existingRecord['username'],

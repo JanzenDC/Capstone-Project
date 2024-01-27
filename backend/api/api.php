@@ -47,18 +47,17 @@
         $newOtpCode = $payload['code'];
         $expirationTime = date('Y-m-d H:i:s', strtotime('+2 minutes'));
         
-        $existingRecord = $this->db->where("uid", $user['uid'])->getOne('w_otp');
+        $existingRecord = $this->db->where("uid", $user['id'])->getOne('w_otp');
         
         if ($existingRecord) {
             $updateData = ['otpcode' => $newOtpCode, 'expiration_time' => $expirationTime];
-            $addotp = $this->db->where('uid', $user['uid'])->update('w_otp', $updateData);
+            $addotp = $this->db->where('uid', $user['id'])->update('w_otp', $updateData);
         } else {
-            $insertData = ['uid' => $user['uid'], 'otpcode' => $newOtpCode, 'expiration_time' => $expirationTime];
+            $insertData = ['uid' => $user['id'], 'otpcode' => $newOtpCode, 'expiration_time' => $expirationTime];
             $addotp = $this->db->insert('w_otp', $insertData);
         }
         
         if ($addotp) {
-
             $credentials = SendinBlue\Client\Configuration::getDefaultConfiguration()->setApiKey('api-key', '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');
             $apiInstance = new SendinBlue\Client\Api\TransactionalEmailsApi(
                 new GuzzleHttp\Client(),

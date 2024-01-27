@@ -124,8 +124,7 @@
 
 <script>
 import { useQuasar } from 'quasar';
-import axios from 'axios';
-import { SessionStorage } from 'quasar';
+import AuthService from '../javascript/AuthService';
 
 export default {
   setup() {
@@ -142,37 +141,17 @@ export default {
       isOnline: '',
     };
   },
-  mounted() {
-    this.loadUserData();
+  beforeRouteEnter(to, from, next) {
+    // Check if the user is logged in
+    if (AuthService.isLoggedIn()) {
+      // If logged in, redirect to the dashboard
+      next('/dashboard/main-dashboard');
+    } else {
+      // If not logged in, proceed to the login page
+      next();
+    }
   },
   methods: {
-    loadUserData() {
-      const userData = SessionStorage.getItem('information');
-      if (userData) {
-        try {
-          const userInformation = JSON.parse(userData);
-          this.isOnline = userInformation.isOnline;
-          if(this.isOnline == 1)
-          {
-            this.$router.push('/dashboard/main-dashboard');
-          }else if(this.isOnline == 0){
-            this.$router.push('/');
-            sessionStorage.clear();
-          }else{
-            this.$router.push('/');
-            sessionStorage.clear();
-          }
-        } catch (error) {
-          console.log('Error parsing user data:', error);
-          this.$router.push('/');
-          sessionStorage.clear();
-        }
-      } else {
-        // Handle the case when user data is not available
-        this.$router.push('/');
-        sessionStorage.clear();
-      }
-    },
     ruleRequired(value) {
       return !!value || 'Password is required';
     },
@@ -186,44 +165,20 @@ export default {
     },
 
     onSubmit() {
-      const formData = {
-        loginEmail: this.email,
-        loginPassword: this.password
-      };
-      axios.post('http://localhost/Capstone-Project/backend/api/login.php', formData)
-      .then((response) =>{
-        this.responseStatus = response.data.status;
-        this.responseMessage = response.data.message;
-        this.responseInformation = response.data.information;
-        if (this.responseStatus === "success") {
-            const existingInformation = JSON.parse(SessionStorage.getItem('information')) || {};
-
-            // Update or add new properties to the information object
-            existingInformation.uid = this.responseInformation.uid;
-            existingInformation.email = this.responseInformation.email;
-            existingInformation.password = this.responseInformation.password;
-            existingInformation.username = this.responseInformation.username;
-            existingInformation.pfp = this.responseInformation.pfp;
-            existingInformation.firstname = this.responseInformation.firstname;
-            existingInformation.middlename = this.responseInformation.middlename;
-            existingInformation.lastname = this.responseInformation.lastname;
-            existingInformation.gender = this.responseInformation.gender;
-            existingInformation.position = this.responseInformation.position;
-            existingInformation.mobilenumber = this.responseInformation.mobilenumber;
-            existingInformation.birthdate = this.responseInformation.birthdate;
-            existingInformation.age = this.responseInformation.age;
-            existingInformation.address = this.responseInformation.address;
-            existingInformation.otp_code = this.responseInformation.otp_code;
-            existingInformation.isOnline = this.responseInformation.isOnline;
-            existingInformation.status = this.responseInformation.status;
-            // Save the updated information object back to session storage
-            SessionStorage.set('information', JSON.stringify(existingInformation));
-            this.$router.push('/dashboard/main-dashboard');
-        }
-
-      }).catch(error => {
-        console.error('Error submitting form:', error);
-      });
+      AuthService.login(this.email, this.password)
+      .then(information => {
+          this.$router.push('/dashboard/main-dashboard');
+        })
+        .catch(error => {
+          // Handle login failure
+          console.error('Login failed:', error.message);
+          // Optionally, display an error message
+          this.$q.notify({
+            color: 'negative',
+            position: 'bottom',
+            message: 'Login failed. Please check your credentials.',
+          });
+        });
     },
   },
 

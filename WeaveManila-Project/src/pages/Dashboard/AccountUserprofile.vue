@@ -286,6 +286,8 @@
         changeImage: null,
         username: '',
         firstname: '',
+        lastname: '',
+        position: '',
         status: '',
         selectedAvatar: null,
         showModal: false,
@@ -340,8 +342,10 @@
             const userInformation = JSON.parse(userData);
             this.userProfileImage = userInformation.pfp;
             this.firstname = userInformation.firstname;
+            this.lastname = userInformation.lastname;
+            this.position = userInformation.position;
             this.email = userInformation.email;
-            this.uid = userInformation.uid;
+            this.uid = userInformation.id;
             this.changeImage = userInformation.pfp;
             this.status = userInformation.status;
             if(this.status == 0)
@@ -433,6 +437,7 @@
         };
           axios.put(`http://localhost/Capstone-Project/backend/api/Account_Settings/changeprofile.php/${this.uid}`, formData)
           .then((response) =>{
+            console.log(response.data);
             this.responseStatus = response.data.status;
             this.responseMessage = response.data.message;
             this.responseInformation = response.data.information;
@@ -461,9 +466,9 @@
         }
         console.log('File type:', typeof this.selectedFile);
         const formData = new FormData();
-        const uid = this.uid;
+        const id = this.uid;
         formData.append("file", this.selectedFile);
-        formData.append("uid", uid);
+        formData.append("id", id);
 
         axios
         .post(`http://localhost/Capstone-Project/backend/api/Account_Settings/uploadprofile.php`, formData)

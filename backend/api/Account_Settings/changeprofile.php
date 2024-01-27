@@ -41,7 +41,7 @@
             }
         }
 
-        $user = $this->db->where("uid", $ids)->getOne('w_users');
+        $user = $this->db->where("id", $ids)->getOne('w_users');
 
         if ($user === null) {
             $response = ['status' => 'fail', 'message' => 'Invalid target id.'];
@@ -53,7 +53,7 @@
             'profile_pic' => $payload['pfp']
         ];
 
-        $addData = $this->db->where('uid', $ids)->update('w_users', $updateData);
+        $addData = $this->db->where('id', $ids)->update('w_users', $updateData);
 
         if ($addData) {
             $response = [

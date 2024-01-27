@@ -180,7 +180,6 @@ export default {
     },
     loadUserData() {
       const userData = SessionStorage.getItem('information');
-
       if (userData) {
         try {
           const userInformation = JSON.parse(userData);

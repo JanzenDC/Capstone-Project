@@ -130,9 +130,6 @@
             exit;
         
         }else {
-            // Debugging statement for unrecognized type
-            var_dump('' . $payload['type']);
-
             $response = [
                 'status' => 'error',
                 'message' => 'Invalid type specified.',

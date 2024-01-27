@@ -169,11 +169,11 @@
           </div>
         </div>
           <p class="font-bold text-[16px]">Password Rules:</p>
-          <p class="mt-2">To create new password, you have to meet all the following</p>
-          <p class="mt-2">Your password must be at least 10 characters long.</p>
-          <p class="mt-2">Include upper and lowercase then special characters, such as !, @, #, $, etc.</p>
-          <p class="mt-2">Use at least one numerical digit.</p>
-          <p class="mt-2">Cannot be the same as previous password</p>
+          <p class="mt-2">● To create new password, you have to meet all the following</p>
+          <p class="mt-2">● Your password must be at least 10 characters long.</p>
+          <p class="mt-2">● Include upper and lowercase then special characters, such as !, @, #, $, etc.</p>
+          <p class="mt-2">● Use at least one numerical digit.</p>
+          <p class="mt-2">● Cannot be the same as previous password</p>
         <div class="flex justify-end w-full gap-2 mt-3">
           <router-link
             to="/dashboard/account-settings"
@@ -278,7 +278,7 @@ export default {
       if (userData) {
         try {
           const userInformation = JSON.parse(userData);
-          this.uid = userInformation.uid;
+          this.uid = userInformation.id;
           this.email = userInformation.email;
           this.username = userInformation.username;
           this.userProfileImage = userInformation.pfp;
@@ -342,7 +342,6 @@ export default {
       .then((response) =>{
         this.responseStatus = response.data.status;
         this.responseInformation = response.data.information;
-        console.log(response.data);
         if (this.responseStatus === "success") {
             const existingInformation = JSON.parse(SessionStorage.getItem('information')) || {};
             existingInformation.password = this.responseInformation.password;
@@ -351,7 +350,7 @@ export default {
                 caption: 'Your password has been changed successfully.',
                 color: 'green',
             });
-            this.currentPW = null;
+            this.currentPW = '';
             this.changePW = null;
             this.confirmPW = null;
             SessionStorage.set('information', JSON.stringify(existingInformation));

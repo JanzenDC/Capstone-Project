@@ -36,7 +36,7 @@
     
         // Generate a unique filename
         $uniqueFilename = time() . '_' . uniqid('', true) . '_' . basename($file['name']);
-        $uid = $_POST['uid'];
+        $id = $_POST['id'];
     
         // Example: Move the uploaded file to a specific directory
         $uploadDir = 'C:/xampp/htdocs/Capstone-Project/WeaveManila-Project/public/pfp/';
@@ -86,15 +86,14 @@
             }
     
             // Update the database with the new filename
-            $existingRecord = $this->db->where("uid", $uid)->getOne('w_users');
+            $existingRecord = $this->db->where("id", $id)->getOne('w_users');
             $updateData = ['profile_pic' => $uniqueFilename];
-            $updateData = $this->db->where('uid', $existingRecord['uid'])->update('w_users', $updateData);
+            $updateData = $this->db->where('id', $existingRecord['id'])->update('w_users', $updateData);
     
             $response = [
                 'status' => 'success',
                 'message' => 'File uploaded successfully.',
                 'information' => [
-                    'uid' => $uid,
                     'pfp' => $uniqueFilename,
                 ]
             ];

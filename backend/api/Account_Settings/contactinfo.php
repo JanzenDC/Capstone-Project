@@ -46,13 +46,13 @@
             $newOtpCode = $payload['code'];
             $expirationTime = date('Y-m-d H:i:s', strtotime('+2 minutes'));
             
-            $existingRecord = $this->db->where("uid", $user['uid'])->getOne('w_otp');
+            $existingRecord = $this->db->where("uid", $user['id'])->getOne('w_otp');
             
             if ($existingRecord) {
                 $updateData = ['otpcode' => $newOtpCode, 'expiration_time' => $expirationTime];
-                $addotp = $this->db->where('uid', $user['uid'])->update('w_otp', $updateData);
+                $addotp = $this->db->where('uid', $user['id'])->update('w_otp', $updateData);
             } else {
-                $insertData = ['uid' => $user['uid'], 'otpcode' => $newOtpCode, 'expiration_time' => $expirationTime];
+                $insertData = ['uid' => $user['id'], 'otpcode' => $newOtpCode, 'expiration_time' => $expirationTime];
                 $addotp = $this->db->insert('w_otp', $insertData);
             }
             
@@ -241,7 +241,7 @@
                 }
             }
     
-            $user = $this->db->where("uid", $ids)->getOne('w_users');
+            $user = $this->db->where("id", $ids)->getOne('w_users');
     
             if ($user === null) {
                 $response = ['status' => 'fail', 'message' => 'Invalid target id.'];
@@ -252,7 +252,7 @@
             $updateData = [
                 'mobile_number' => $payload['CPnumber'],
             ];
-            $addData = $this->db->where('uid', $ids)->update('w_users', $updateData);
+            $addData = $this->db->where('id', $ids)->update('w_users', $updateData);
             if($addData){
                 $response = [
                     'status' => 'success',

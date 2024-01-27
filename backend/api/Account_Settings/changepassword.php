@@ -44,14 +44,14 @@
             }
         }
 
-        $existingRecord = $this->db->where("uid", $ids)->getOne('w_users');
+        $existingRecord = $this->db->where("id", $ids)->getOne('w_users');
         $password = $payload['currentPass'];
         if ($existingRecord) {
             if(password_verify($password, $existingRecord['password'])){
                 $hashedpw = password_hash($payload['newpass'], PASSWORD_DEFAULT);
 
                 $updateData = ['password' => $hashedpw];
-                $updateData = $this->db->where('uid', $existingRecord['uid'])->update('w_users', $updateData);
+                $updateData = $this->db->where('id', $existingRecord['id'])->update('w_users', $updateData);
                 $response = [
                     'status' => 'success',
                     'message' => 'Password has been change successfully.',

@@ -249,13 +249,12 @@
           <q-input
             v-model="mobilenumber"
             label="Phone Number"
-            type="number"
+            type="tel"
             outlined
             dense
             class="custom-border-color mt-3"
             lazy-rules
-            :maxlength="12"
-            :rules="[val => val && val.length === 12 || 'Please enter exactly 12 characters']"
+            :rules="[val => !!val || 'Phone Number is required', val => /^09\d{9}$/g.test(val) || 'Invalid Phone Number']"
           />
             <div class="flex justify-end w-full gap-2">
             <router-link to="/dashboard/account-settings" class="bg-white rounded-full text-center p-2 text-[#9e896a] w-[74px] border-2 border-[#9e896a]">
@@ -287,7 +286,8 @@ export default {
       uid: '',
       email: '',
       status: '',
-
+      firstname: '',
+      position: '',
       userProfileImage: null,
       mobilenumber: '',
       arrowDirection: false,
@@ -346,12 +346,12 @@ export default {
         try {
           const userInformation = JSON.parse(userData);
           this.email = userInformation.email;
-          this.uid = userInformation.uid;
+          this.uid = userInformation.id;
           this.userProfileImage = userInformation.pfp;
           this.firstname = userInformation.firstname;
           this.middlename = userInformation.middlename;
           this.lastname = userInformation.lastname;
-
+          this.position = userInformation.position;
           this.mobilenumber = userInformation.mobilenumber;
           this.code = userInformation.otp_code;
           this.status = userInformation.status;
@@ -365,7 +365,7 @@ export default {
             sessionStorage.clear();
           }
         } catch (error) {
-          console.log('Error parsing user data:', error);
+          console.error('Error parsing user data:', error);
           // Provide user feedback or navigate to an error page
           this.$q.notify({
             type: 'negative',
@@ -427,6 +427,7 @@ export default {
       }
       axios.post(`http://localhost/Capstone-Project/backend/api/Account_Settings/contactinfo.php`, formData)
       .then((response) => {
+
         this.responseStatus = response.data.status;
         this.responseInformation = response.data.information;
         if (this.responseStatus === "success") {

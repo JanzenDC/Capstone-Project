@@ -43,7 +43,7 @@
                     'status' => 'success',
                     'message' => 'Successfully logged in.',
                     'information' => [
-                        'uid' =>    $existingRecord['uid'],
+                        'id' => $existingRecord['id'],
                         'email' =>    $existingRecord['email'],
                         'password' => $existingRecord['password'],
                         'username' => $existingRecord['username'],

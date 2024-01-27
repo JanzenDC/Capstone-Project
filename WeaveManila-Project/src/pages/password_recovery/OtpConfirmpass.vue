@@ -51,7 +51,7 @@
             </div>
             <div class="flex gap-2 mt-4">
               <p class="text-[12px] mt-[3px]">Remember Password?</p>
-              <router-link to="/"><span class="text-[12px] font-bold">Login</span></router-link>
+              <router-link to="/" @click="clearSession"><span class="text-[12px] font-bold">Login</span></router-link>
             </div>
             <div>
               <q-btn label="Confirm" type="submit" class="bg-[#9e896a] rounded-md w-full text-white"/>
@@ -102,7 +102,7 @@
             </div>
             <div class="flex gap-2 mt-4">
               <p class="text-[12px] mt-[3px]">Remember Password?</p>
-              <router-link to="/"><span class="text-[12px] font-bold">Login</span></router-link>
+              <router-link to="/" @click="clearSession"><span class="text-[12px] font-bold">Login</span></router-link>
             </div>
             <div>
               <q-btn label="Confirm" type="submit" class="bg-[#9e896a] rounded-md w-full text-white" :disable="passwordError !== ''" />
@@ -146,6 +146,10 @@ export default {
     });
   },
   methods: {
+  clearSession() {
+    sessionStorage.clear();
+    this.$router.push('/');
+  },
   togglePasswordVisibility() {
     this.showPassword = !this.showPassword;
   },

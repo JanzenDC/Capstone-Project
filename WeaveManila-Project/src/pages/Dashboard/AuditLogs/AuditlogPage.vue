@@ -126,7 +126,7 @@
           dense
           placeholder="Search..."
           />
-        <q-btn @click="openModifyModal" label="Modify" class="h-5 bg-[#907d60] text-white">
+        <q-btn @click="openModifyModal" label="Filter" class="h-5 bg-[#907d60] text-white">
         <q-icon
           :name="arrowDirection_1 ? 'arrow_drop_up' : 'arrow_drop_down'"
           class="text-[25px] cursor-pointer"
@@ -344,7 +344,6 @@ export default {
                   timestamp: time, // Add the formatted time property
                 };
               });
-              console.log(this.tableData);
             } else {
               console.error('Invalid API response structure:', response.data);
             }
@@ -356,7 +355,6 @@ export default {
         this.showDateArea = true;
       }
     },
-
     fetchData() {
     axios.get('http://localhost/Capstone-Project/backend/api/Audit_logs/auditlogs.php?type=7')
       .then(response => {
@@ -421,37 +419,34 @@ export default {
       switch (option) {
         case 'today':
           this.filterTableDataByDate(1);
-
-          this.timeOut();
           this.arrowDirection_1 = !this.arrowDirection_1;
           break;
         case 'last7days':
           this.filterTableDataByDate(2);
 
-          this.timeOut();
           this.arrowDirection_1 = !this.arrowDirection_1;
           break;
         case 'last30days':
           this.filterTableDataByDate(3);
 
-          this.timeOut();
+
           this.arrowDirection_1 = !this.arrowDirection_1;
           break;
         case 'thisYear':
           this.filterTableDataByDate(4);
 
-          this.timeOut();
+
           break;
         case 'lastYear':
           this.filterTableDataByDate(5);
 
-          this.timeOut();
+
           this.arrowDirection_1 = !this.arrowDirection_1;
           break;
         case 'customDate':
           this.filterTableDataByDate(6);
 
-          this.timeOut();
+
           this.arrowDirection_1 = !this.arrowDirection_1;
           break;
         default:

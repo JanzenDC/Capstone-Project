@@ -117,8 +117,272 @@
       <router-link to="/dashboard/account-settings">
         <p class="text-[15px]"><q-icon name="arrow_back_ios"/> <span class=" font-bold text-[#9e896a]">User Management</span></p>
       </router-link>
+      <div class="flex items-center gap-5">
+        <q-input v-model="search" outlined dense placeholder="Search" class="w-[400px]">
+          <template v-slot:prepend>
+            <q-icon name="search" />
+          </template>
+        </q-input>
+        <q-btn @click="addUserModal = true">
+          <i class="bi bi-plus-lg"></i>
+          Add User
+        </q-btn>
+      </div>
     </div>
+
+<!-- Modal -->
+
+    <q-dialog v-model="addUserModal" >
+      <q-card class="w-[600px]">
+        <q-card-section class="row items-center q-pb-none">
+          <div class="text-h6 font-bold">Add user</div>
+          <q-space />
+          <q-btn icon="close" flat round dense v-close-popup />
+        </q-card-section>
+
+        <q-card-section>
+          <q-form @submit="onSubmit">
+          <div class="text-h6 font-bold text-[#667085]">Personal Information</div>
+          <div class="grid grid-cols-2 gap-5">
+            <!-- Firstname -->
+            <div>
+              <p class="text-[15px]">First Name</p>
+              <q-input
+                v-model="fname"
+                label="First Name"
+                type="text"
+                outlined
+                dense
+                :no-error-icon="true"
+                :rules="[val => !!val || 'First Name is required']"
+              ></q-input>
+            </div>
+            <!-- Lastname -->
+            <div>
+              <p class="text-[15px]">Last Name</p>
+              <q-input
+                v-model="lname"
+                label="Last Name"
+                type="text"
+                outlined
+                dense
+                :no-error-icon="true"
+                :rules="[val => !!val || 'Last Name is required']"
+              ></q-input>
+            </div>
+            <!-- Birthdate -->
+            <div>
+              <p class="text-[15px]">Birthday</p>
+              <q-input
+                v-model="bdate"
+                label="Birthday"
+                type="date"
+                outlined
+                dense
+                :no-error-icon="true"
+                :rules="[val => !!val || 'Birthday is required']"
+              ></q-input>
+            </div>
+            <!-- Gender -->
+            <div>
+              Gender
+              <q-select
+                outlined
+                dense
+                v-model="gInput"
+                :options="options"
+                label="Gender"
+                :rules="[val => !!val || 'Gender is required']"
+              />
+            </div>
+            <!-- Civil Status -->
+            <div>
+              Civil Status
+              <q-select
+                outlined
+                dense
+                v-model="cInput"
+                :options="civilOptions"
+                label="Select option for civil status"
+                :rules="[val => !!val || 'Civil Status is required']"
+              />
+            </div>
+            <!-- Address -->
+            <div>
+              <p class="text-[15px]">Address</p>
+              <q-input
+                v-model="avalue"
+                label="Address"
+                type="text"
+                outlined
+                dense
+                :no-error-icon="true"
+                :rules="[val => !!val || 'Address is required']"
+              ></q-input>
+            </div>
+          </div>
+          <div class="text-h6 font-bold text-[#667085]">Contact Information</div>
+          <div class="grid grid-cols-2 gap-5">
+            <!-- Email -->
+            <div>
+              <p class="text-[15px]">Email Address</p>
+              <q-input
+                v-model="evalue"
+                label="Email Address"
+                type="email"
+                outlined
+                dense
+                :no-error-icon="true"
+                :rules="[val => !!val || 'Email Address is required',
+                          val => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val) || 'Invalid Email Address']"
+              ></q-input>
+            </div>
+            <!-- Contact/Phone -->
+            <div>
+              <p class="text-[15px]">Contact Number</p>
+              <q-input
+                v-model="cvalue"
+                label="Contact Number"
+                type="tel"
+                outlined
+                dense
+                :no-error-icon="true"
+                :rules="[val => !!val || 'Contact Number is required',
+                        val => /^09\d{9}$/.test(val) || 'Invalid Philippine contact number']"
+                pattern="09[0-9]{9}"
+              ></q-input>
+            </div>
+          </div>
+          <div class="text-h6 font-bold text-[#667085]">Security</div>
+          <div class="grid grid-cols-2 gap-5">
+            <!-- Password -->
+            <div>
+              <p class="text-[15px]">Password</p>
+                <q-input
+                  class="w-full"
+                  v-model="pvalue"
+                  label="Password"
+                  outlined
+                  dense
+                  :type="showPassword ? 'text' : 'password'"
+                  :no-error-icon="true"
+                  :rules="[val => !!val || 'Password is required',
+                            val => val.length >= 8 || 'Password must be at least 8 characters']"
+                >
+                <template v-slot:append>
+                  <span @click="togglePasswordVisibility">
+                    <i class="bi" :class="showPassword ? 'bi-eye-slash' : 'bi-eye'"></i>
+                  </span>
+                </template>
+                <template v-slot:after>
+                  <q-btn class="bg-[#667085] text-white text-[10px] w-[100px]" label="Generate Password" @click="generatePassword" size="xs"/>
+                </template>
+                </q-input>
+            </div>
+            <!-- Confirm Password -->
+            <div>
+              <p class="text-[15px]">Confirm Password</p>
+              <q-input
+                v-model="cpvalue"
+                label="Confirm Password"
+                type='password'
+                outlined
+                dense
+                :no-error-icon="true"
+                :rules="[val => !!val || 'Confirm Password is required',
+                          val => val === pvalue || 'Passwords do not match']"
+              >
+              </q-input>
+            </div>
+          </div>
+          <q-btn label="Submit" type="submit" />
+        </q-form>
+
+        </q-card-section>
+      </q-card>
+    </q-dialog>
+
     <q-separator class="mt-3 mb-3" />
+    <div class="q-pa-md">
+      <q-table
+        :rows="filteredTableData"
+        :columns="columns"
+        class="my-sticky-header-table"
+        :dense="$q.screen.lt.md"
+        flat bordered
+        :pagination="initialPagination"
+        row-key="yourUniqueRowKey"
+      >
+      <!-- User Components -->
+      <template v-slot:body-cell-user="props">
+        <q-td :props="props" class="flex items-center gap-4" >
+          <q-img :src="getUserImagePublicPath(props.row.user.image)" :alt="props.row.user.name" class="w-[34px] rounded-full min-[390px]:hidden md:flex"/>
+          <div class="min-[390px]:flex md:block min-[390px]:gap-2">
+            <p class="font-bold">
+            {{ props.row.user.name }}
+            </p>
+            {{ props.row.user.email }}
+          </div>
+        </q-td>
+      </template>
+      <!-- Status Components -->
+      <template v-slot:body-cell-statuss="props">
+        <q-td :props="props">
+          <span v-if="props.row.statuss === 1" class="text-green-600 p-2 rounded-full bg-green-300">
+            ● Active
+          </span>
+          <span v-else class="text-red-600 p-2 rounded-full bg-red-300">
+            ● Inactive
+          </span>
+        </q-td>
+      </template>
+
+      <!-- Action Components -->
+      <template v-slot:body-cell-action="props">
+      <q-td :props="props">
+        <q-btn
+          @click="openDropdown(props.row.id, props.row.user.name)"
+          class="font-bold text-[15px]"
+        >
+          ...
+        </q-btn>
+        <q-dialog v-model="showDropdown" persistent transition-show="scale" transition-hide="scale">
+          <q-card style="width: 300px">
+            <q-card-section>
+              <p class="text-h6">Set User Status</p>
+              <p class="q-mb-md">Choose the operational status for User ID {{ selectedUserId }} - {{ selectedUserName }}.</p>
+
+              <q-item clickable v-on:click="setStatus(1, selectedUserId)">
+                <q-item-section>
+                  <div class="flex text-[16px] gap-2">
+                    <q-icon name="check" color="positive" />
+                    Active
+                  </div>
+                </q-item-section>
+              </q-item>
+
+              <q-item clickable v-on:click="setStatus(0, selectedUserId)">
+                <q-item-section>
+                  <div class="flex text-[16px]">
+                    <q-icon name="close" color="negative" />
+                    <span class="q-ml-sm">Inactive</span>
+                  </div>
+                </q-item-section>
+              </q-item>
+            </q-card-section>
+
+            <!-- Add a close button -->
+            <q-card-actions align="right">
+              <q-btn flat color="primary" @click="showDropdown = false">Close</q-btn>
+            </q-card-actions>
+          </q-card>
+        </q-dialog>
+
+      </q-td>
+      </template>
+
+      </q-table>
+    </div>
   </div>
 </q-page>
 </template>
@@ -145,30 +409,208 @@ export default {
       lastname: '',
       position: '',
       arrowDirection: false,
-      status: '',
+      statuss: '',
       showModal: false,
       drawer: false,
       statusCheckTimer: null,
-    };
 
+      // Another Data here
+      showDropdown: false,
+      selectedUserId: null,
+      selectedUserName: null,
+      columns: [
+        { name: 'user', label: 'User', align: 'left', field: 'user' },
+        { name: 'position', label: 'Position', align: 'left', field: 'position', sortable: true },
+        { name: 'last_activity', label: 'Last Activity', align: 'left', field: 'last_activity', sortable: true },
+        { name: 'account_created', label: 'Account Created', align: 'left', field: 'account_created', sortable: true },
+        { name: 'statuss', label: 'Status', align: 'left', field: 'statuss', sortable: true },
+        { name: 'action', label: 'Action', align: 'left', field: 'action', sortable: true },
+      ],
+      tableData: [],
+      initialPagination: {
+        page: 1,
+        rowsPerPage: 10
+      },
+      openDropdownRow: -1,
+      search: '',
+      addUserModal: false,
+      // Add user data
+      fname: '',
+      lname: '',
+      bdate: '',
+      gInput: null, // Gender Input
+      cInput: null,
+      avalue: '', // Address Value
+      evalue: '', // Email Value
+      cvalue: '', // Contact Value
+      pvalue: '', //Password Value
+      cpvalue: '', //Confirm Password Value
+      options: [
+        'Male','Female','Rather not to say'
+      ],
+      civilOptions: [
+        'Single', 'Married'
+      ],
+      showPassword: false,
+    };
+  },
+  computed: {
+    filteredTableData() {
+      const searchTerm = this.search.toLowerCase();
+      return this.tableData.filter(item =>
+        item.user.name.toLowerCase().includes(searchTerm) ||
+        item.user.email.toLowerCase().includes(searchTerm)
+      );
+    },
   },
   mounted() {
-    this.loadUserData();
-    this.statusCheckTimer = setInterval(() => {
-      this.checkUserStatus();
-      }, 1 * 1000); // 5 minutes (in milliseconds)
-    },
+  this.loadUserData();
+  this.FetchUser();
+  this.statusCheckTimer = setInterval(() => {
+    this.checkUserStatus();
+    }, 1 * 1000); // 5 minutes (in milliseconds)
+  },
   beforeUnmount() {
     clearInterval(this.statusCheckTimer);
   },
   methods: {
+    FetchUser(){
+      axios.get('http://localhost/Capstone-Project/backend/api/Usermanagement/userdata.php?select=all')
+      .then(response => {
 
+        this.tableData = response.data.informations.rows.map(row => {
+          const time = new Date(row.account_created).toLocaleDateString('en-US', { year: 'numeric', month: 'numeric', day: 'numeric' });          const fullname = row.firstname + " " + row.lastname;
+          return {
+              id: row.id,
+              user: {
+                name: row.firstname + " " + row.lastname,
+                email: row.email,
+                image: row.profile_pic,
+              },
+              position: row.position,
+              last_activity: row.action,
+              account_created: time, // Add the formatted time property
+              statuss: row.status,
+            };
+        });
+      }).catch(error => {
+        console.error('Error fetching data:', error);
+      });
+    },
+    getUserImagePublicPath(image) {
+      if (image) {
+        // Use the correct path relative to the 'public' directory
+        return `/pfp/${image}`;
+      } else {
+        // Return a default path or handle it as per your requirement
+        return '/default_profile.png';
+      }
+    },
+    toggleDropdown(index) {
+      this.openDropdownRow = this.showDropdown ? index : -1; // Update the openDropdownRow
+    },
+    openDropdown(userId, userName) {
+      this.showDropdown = true;
+      this.selectedUserId = userId;
+      this.selectedUserName = userName;
+    },
+
+    setStatus(status, userId) {
+      this.showDropdown = false;
+      const formData = {
+        userId: userId,
+        status: status,
+        type: 1
+      }
+      axios.post(`http://localhost/Capstone-Project/backend/api/Usermanagement/userdata.php/`, formData)
+      .then(response => {
+        const Status = response.data.status;
+        const message = response.data.message;
+        if (Status === "success") {
+          this.$q.notify({
+              message: 'Status Updated!!',
+              caption: `${message}`,
+              color: 'green',
+          });
+          this.FetchUser();
+        }
+        if (Status === "fail") {
+          this.$q.notify({
+            color: 'negative',
+            message: `${message} Please try again.`,
+          });
+        }
+      }).catch(error => {
+            console.error('Error fetching data:', error);
+      });
+    },
+    generatePassword() {
+      const length = 12;
+      const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_-+=<>?/"; // Include special characters if needed
+      let password = "";
+      for (let i = 0; i < length; i++) {
+        const randomIndex = Math.floor(Math.random() * charset.length);
+        password += charset.charAt(randomIndex);
+      }
+      this.pvalue = password;
+      this.cpvalue = password;
+      this.showPassword = false;
+    },
+    togglePasswordVisibility() {
+      this.showPassword = !this.showPassword;
+    },
+    onSubmit() {
+      const formData = {
+        fname: this.fname,
+        lname: this.lname,
+        bdate: this.bdate,
+        gInput: this.gInput,
+        cInput: this.cInput,
+        avalue: this.avalue,
+        evalue: this.evalue,
+        cvalue: this.cvalue,
+        pvalue: this.pvalue,
+        cpvalue: this.cpvalue,
+        type: 2
+      };
+      axios.post(`http://localhost/Capstone-Project/backend/api/Usermanagement/userdata.php`, formData)
+      .then(response => {
+        const Status = response.data.status;
+        const Message = response.data.message;
+        if (Status === "success") {
+          this.$q.notify({
+              message: 'User Added!!',
+              caption: `${Message}`,
+              color: 'green',
+          });
+          this.fname = '';
+          this.lname = '';
+          this.bdate = ''; // Reset other form fields
+          this.gInput = '';
+          this.cInput = '';
+          this.avalue = '';
+          this.evalue = '';
+          this.cvalue = '';
+          this.pvalue = '';
+          this.cpvalue = '';
+          this.FetchUser();
+        }
+        if (Status === "fail") {
+          this.$q.notify({
+            color: 'negative',
+            message: `${Message} Please try again.`,
+          });
+        }
+      }).catch(error => {
+            console.error('Error Uploading data:', error);
+      });
+    },
     // Old Data
     checkUserStatus() {
         axios.get(`http://localhost/Capstone-Project/backend/api/verification.php?email=${this.email}`)
         .then(response => {
         const latestStatus = response.data.information.status;
-        console.log(latestStatus);
+
         // Update the local status and take appropriate action if it has changed
         if (this.status !== latestStatus) {
           this.status = latestStatus;
@@ -243,11 +685,6 @@ export default {
       this.arrowDirection = !this.arrowDirection;
       this.showModal = !this.showModal;
     },
-    updateSearch(newValue) {
-      this.searchInput = newValue;
-    },
-
-
     closeModal() {
       this.showSuccessModal = false;
     },
@@ -258,3 +695,35 @@ export default {
   },
 };
 </script>
+<style lang="sass">
+.my-sticky-header-table
+  /* height or max-height is important */
+  height: 350px
+
+  .q-table__top,
+
+  thead tr:first-child th
+    /* bg color is important for th; just specify one */
+    background-color: #667085
+    color: #fff
+    text-align: center
+    font-size: 13px
+    font-weight: bold
+
+  thead tr th
+    position: sticky
+    z-index: 1
+  thead tr:first-child th
+    top: 0
+
+  /* this is when the loading indicator appears */
+  &.q-table--loading thead tr:last-child th
+    /* height of all previous header rows */
+    top: 48px
+
+  /* prevent scrolling behind sticky top row on focus */
+  tbody
+    /* height of all previous header rows */
+    scroll-margin-top: 48px
+
+</style>
