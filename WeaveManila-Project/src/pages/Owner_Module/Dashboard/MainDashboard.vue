@@ -211,6 +211,9 @@ export default {
           this.lastname = userInformation.lastname;
           this.position = userInformation.position;
           this.status = userInformation.status;
+          if (this.position.toLowerCase() === 'owner') {
+            this.$router.push('/dashboard/main-dashboard');
+          }
           if(this.status == 0)
           {
             this.$q.notify({
