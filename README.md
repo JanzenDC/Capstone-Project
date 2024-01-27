@@ -1,5 +1,3 @@
-Great! Let's incorporate the features into the `README.md` file:
-
 ```markdown
 # WeaveManila - Capstone Project by Visionary Innovator
 
