@@ -5,7 +5,7 @@
       <div>
         <q-btn flat @click="drawer = !drawer" round dense icon="menu" />
         <q-img
-          src="../../../assets/favicon-128x128.png"
+          src="../../../../assets/favicon-128x128.png"
           alt="Description of the image"
           class="w-[60px] md:w-[60px] "
         />
@@ -292,7 +292,7 @@ export default {
     this.fetchData();
     this.statusCheckTimer = setInterval(() => {
       this.checkUserStatus();
-      }, 1 * 1000); // 5 minutes (in milliseconds)
+      }, 5 * 1000); // 5 minutes (in milliseconds)
     },
   beforeUnmount() {
     clearInterval(this.statusCheckTimer);
@@ -303,8 +303,27 @@ export default {
         axios.get(`http://localhost/Capstone-Project/backend/api/verification.php?email=${this.email}`)
         .then(response => {
         const latestStatus = response.data.information.status;
-
-        // Update the local status and take appropriate action if it has changed
+        const information = response.data.information;
+          this.information = {
+            id: information.id,
+            email: information.email,
+            username: information.username,
+            pfp: information.pfp,
+            firstname: information.firstname,
+            middlename: information.middlename,
+            lastname: information.lastname,
+            gender: information.gender,
+            position: information.position,
+            mobilenumber: information.mobilenumber,
+            birthdate: information.birthdate,
+            age: information.age,
+            address: information.address,
+            otp_code: information.otp_code,
+            isOnline: information.isOnline,
+            status: information.status,
+            password: information.password,
+          };
+          SessionStorage.set('information', JSON.stringify(this.information));
         if (this.status !== latestStatus) {
           this.status = latestStatus;
 

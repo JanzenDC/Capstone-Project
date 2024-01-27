@@ -22,16 +22,16 @@ const routes = [
     path: '/dashboard',
     component: () => import('layouts/DashboardLayout.vue'),
     children: [
-      { path: 'main-dashboard', component: () => import('pages/Dashboard/MainDashboard.vue') },
-      { path: 'account-settings', component: () => import('pages/Dashboard/AccountDashboard.vue') },
-      { path: 'account-basicinfo', component: () => import('pages/Dashboard/AccountBasicinfo.vue') },
-      { path: 'account-profilepic', component: () => import('pages/Dashboard/AccountUserprofile.vue') },
-      { path: 'account-contactinfo', component: () => import('pages/Dashboard/AccountContactInfo.vue') },
-      { path: 'account-changepass', component: () => import('pages/Dashboard/AccountSecurity.vue') },
+      { path: 'main-dashboard', component: () => import('pages/Owner_Module/Dashboard/MainDashboard.vue') },
+      { path: 'account-settings', component: () => import('pages/Owner_Module/Dashboard/AccountDashboard.vue') },
+      { path: 'account-basicinfo', component: () => import('pages/Owner_Module/Dashboard/AccountBasicinfo.vue') },
+      { path: 'account-profilepic', component: () => import('pages/Owner_Module/Dashboard/AccountUserprofile.vue') },
+      { path: 'account-contactinfo', component: () => import('pages/Owner_Module/Dashboard/AccountContactInfo.vue') },
+      { path: 'account-changepass', component: () => import('pages/Owner_Module/Dashboard/AccountSecurity.vue') },
       // Audit Logs
-      { path: 'auditlogs-section', component: () => import('pages/Dashboard/AuditLogs/AuditlogPage.vue') },
+      { path: 'auditlogs-section', component: () => import('pages/Owner_Module/Dashboard/AuditLogs/AuditlogPage.vue') },
       // User Management
-      { path: 'usermanagement-section', component: () => import('pages/Dashboard/UserManagement/UserManagement.vue') },
+      { path: 'usermanagement-section', component: () => import('pages/Owner_Module/Dashboard/UserManagement/UserManagement.vue') },
     ]
   },
   {
