@@ -30,14 +30,37 @@
         }
         if ($payload['select'] === 'all') {
             $sqlQuery = "
-            SELECT w_users.id, w_users.firstname, w_users.lastname, w_users.position, w_users.email, w_users.profile_pic, w_users.account_created, w_users.status, audit_logs.action
-            FROM w_users
-            JOIN (
-                SELECT uid, action
-                FROM audit_logs
-                WHERE id IN (SELECT MAX(id) FROM audit_logs GROUP BY uid)
-            ) AS audit_logs ON w_users.id = audit_logs.uid;
-        ";
+                        SELECT 
+                        w_users.id, 
+                        w_users.firstname, 
+                        w_users.lastname, 
+                        w_users.position, 
+                        w_users.email, 
+                        w_users.profile_pic, 
+                        w_users.account_created, 
+                        w_users.status, 
+                        w_users.password,          
+                        w_users.gender,            
+                        w_users.middlename,        
+                        w_users.mobile_number,      
+                        w_users.birthdate,          
+                        w_users.age,                
+                        w_users.address,            
+                        w_users.civil_status,      
+                            audit_logs.action
+                        FROM 
+                            w_users
+                        JOIN (
+                            SELECT 
+                                uid, 
+                                action
+                            FROM 
+                                audit_logs
+                            WHERE 
+                                id IN (SELECT MAX(id) FROM audit_logs GROUP BY uid)
+                        ) AS audit_logs ON w_users.id = audit_logs.uid;
+                    ";
+        
             
             $users = $this->db->rawQuery($sqlQuery);
             $response = [

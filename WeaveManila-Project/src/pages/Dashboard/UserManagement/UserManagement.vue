@@ -131,17 +131,284 @@
     </div>
 
 <!-- Modal -->
+  <q-dialog v-model="addUserModal" >
+    <q-card class="w-[600px]">
+      <q-card-section class="row items-center q-pb-none">
+        <div class="text-h6 font-bold">Add user</div>
+        <q-space />
+        <q-btn icon="close" flat round dense v-close-popup />
+      </q-card-section>
 
-    <q-dialog v-model="addUserModal" >
+      <q-card-section>
+        <q-form @submit="onSubmit">
+        <div class="text-h6 font-bold text-[#667085]">Personal Information</div>
+        <div class="grid grid-cols-2 gap-5">
+          <!-- Firstname -->
+          <div>
+            <p class="text-[15px]">First Name</p>
+            <q-input
+              v-model="fname"
+              label="First Name"
+              type="text"
+              outlined
+              dense
+              :no-error-icon="true"
+              :rules="[val => !!val || 'First Name is required']"
+            ></q-input>
+          </div>
+          <!-- Lastname -->
+          <div>
+            <p class="text-[15px]">Last Name</p>
+            <q-input
+              v-model="lname"
+              label="Last Name"
+              type="text"
+              outlined
+              dense
+              :no-error-icon="true"
+              :rules="[val => !!val || 'Last Name is required']"
+            ></q-input>
+          </div>
+          <!-- Birthdate -->
+          <div>
+            <p class="text-[15px]">Birthday</p>
+            <q-input
+              v-model="bdate"
+              label="Birthday"
+              type="date"
+              outlined
+              dense
+              :no-error-icon="true"
+              :rules="[val => !!val || 'Birthday is required']"
+            ></q-input>
+          </div>
+          <!-- Gender -->
+          <div>
+            Gender
+            <q-select
+              outlined
+              dense
+              v-model="gInput"
+              :options="options"
+              label="Gender"
+              :rules="[val => !!val || 'Gender is required']"
+            />
+          </div>
+          <!-- Civil Status -->
+          <div>
+            Civil Status
+            <q-select
+              outlined
+              dense
+              v-model="cInput"
+              :options="civilOptions"
+              label="Select option for civil status"
+              :rules="[val => !!val || 'Civil Status is required']"
+            />
+          </div>
+          <!-- Address -->
+          <div>
+            <p class="text-[15px]">Address</p>
+            <q-input
+              v-model="avalue"
+              label="Address"
+              type="text"
+              outlined
+              dense
+              :no-error-icon="true"
+              :rules="[val => !!val || 'Address is required']"
+            ></q-input>
+          </div>
+        </div>
+        <div class="text-h6 font-bold text-[#667085]">Contact Information</div>
+        <div class="grid grid-cols-2 gap-5">
+          <!-- Email -->
+          <div>
+            <p class="text-[15px]">Email Address</p>
+            <q-input
+              v-model="evalue"
+              label="Email Address"
+              type="email"
+              outlined
+              dense
+              :no-error-icon="true"
+              :rules="[val => !!val || 'Email Address is required',
+                        val => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val) || 'Invalid Email Address']"
+            ></q-input>
+          </div>
+          <!-- Contact/Phone -->
+          <div>
+            <p class="text-[15px]">Contact Number</p>
+            <q-input
+              v-model="cvalue"
+              label="Contact Number"
+              type="tel"
+              outlined
+              dense
+              :no-error-icon="true"
+              :rules="[val => !!val || 'Contact Number is required',
+                      val => /^09\d{9}$/.test(val) || 'Invalid Philippine contact number']"
+              pattern="09[0-9]{9}"
+            ></q-input>
+          </div>
+        </div>
+        <div class="text-h6 font-bold text-[#667085]">Security</div>
+        <div class="grid grid-cols-2 gap-5">
+          <!-- Password -->
+          <div>
+            <p class="text-[15px]">Password</p>
+              <q-input
+                class="w-full"
+                v-model="pvalue"
+                label="Password"
+                outlined
+                dense
+                :type="showPassword ? 'text' : 'password'"
+                :no-error-icon="true"
+                :rules="[val => !!val || 'Password is required',
+                          val => val.length >= 8 || 'Password must be at least 8 characters']"
+              >
+              <template v-slot:append>
+                <span @click="togglePasswordVisibility">
+                  <i class="bi" :class="showPassword ? 'bi-eye-slash' : 'bi-eye'"></i>
+                </span>
+              </template>
+              <template v-slot:after>
+                <q-btn class="bg-[#667085] text-white text-[10px] w-[100px]" label="Generate Password" @click="generatePassword" size="xs"/>
+              </template>
+              </q-input>
+          </div>
+          <!-- Confirm Password -->
+          <div>
+            <p class="text-[15px]">Confirm Password</p>
+            <q-input
+              v-model="cpvalue"
+              label="Confirm Password"
+              type='password'
+              outlined
+              dense
+              :no-error-icon="true"
+              :rules="[val => !!val || 'Confirm Password is required',
+                        val => val === pvalue || 'Passwords do not match']"
+            >
+            </q-input>
+          </div>
+        </div>
+        <q-btn label="Submit" type="submit" />
+      </q-form>
+
+      </q-card-section>
+    </q-card>
+  </q-dialog>
+
+    <q-separator class="mt-3 mb-3" />
+    <div class="q-pa-md">
+      <q-table
+        :rows="filteredTableData"
+        :columns="columns"
+        class="my-sticky-header-table"
+        :dense="$q.screen.lt.md"
+        flat bordered
+        :pagination="initialPagination"
+        row-key="yourUniqueRowKey"
+      >
+      <!-- User Components -->
+      <template v-slot:body-cell-user="props">
+        <q-td :props="props" class="flex items-center gap-4" >
+          <q-img :src="getUserImagePublicPath(props.row.user.image)" :alt="props.row.user.name" class="w-[34px] rounded-full min-[390px]:hidden md:flex"/>
+          <div class="min-[390px]:flex md:block min-[390px]:gap-2">
+            <p class="font-bold">
+            {{ props.row.user.name }}
+            </p>
+            {{ props.row.user.email }}
+          </div>
+        </q-td>
+      </template>
+      <!-- Status Components -->
+      <template v-slot:body-cell-statuss="props">
+        <q-td :props="props">
+          <span v-if="props.row.statuss === 1" class="text-green-600 p-2 rounded-full bg-green-300">
+            ● Active
+          </span>
+          <span v-else class="text-red-600 p-2 rounded-full bg-red-300">
+            ● Inactive
+          </span>
+        </q-td>
+      </template>
+
+      <!-- Action Components -->
+      <template v-slot:body-cell-action="props">
+      <q-td :props="props">
+        <q-btn
+          @click="openDropdown(props.row.id, props.row.user.name,   props.row.userInfo.firstname,
+          props.row.userInfo.lastname,
+          props.row.userInfo.birthday,
+          props.row.userInfo.gender,
+          props.row.userInfo.civil_staus,
+          props.row.userInfo.address,
+          props.row.userInfo.email,
+          props.row.userInfo.contact_number,
+          props.row.userInfo.password)"
+          class="font-bold text-[15px]"
+        >
+          ...
+        </q-btn>
+        <q-dialog v-model="showDropdown" persistent transition-show="scale" transition-hide="scale">
+          <q-card style="width: 300px">
+            <q-card-section>
+              <p class="text-h6">User Configuration</p>
+              <p class="q-mb-md">Choose the operational status for User ID {{ selectedUserId }} - {{ selectedUserName }}.</p>
+
+              <q-item clickable v-on:click="setStatus(1, selectedUserId)">
+                <q-item-section>
+                  <div class="flex text-[16px] gap-2 items-center">
+                    <q-icon name="check" color="positive" />
+                    Active
+                  </div>
+                </q-item-section>
+              </q-item>
+
+              <q-item clickable v-on:click="setStatus(0, selectedUserId)">
+                <q-item-section>
+                  <div class="flex text-[16px] items-center">
+                    <q-icon name="close" color="negative" />
+                    <span class="q-ml-sm">Inactive</span>
+                  </div>
+                </q-item-section>
+              </q-item>
+
+              <q-item clickable>
+                <q-item-section>
+                  <div class="flex text-[16px] items-center" @click="openEditDialog()">
+                    <q-icon name="edit_square" color="black" />
+                    <span class="q-ml-sm">Edit</span>
+                  </div>
+                </q-item-section>
+              </q-item>
+            </q-card-section>
+            <q-card-actions align="right">
+              <q-btn flat color="primary" @click="closeDialog">Close</q-btn>
+            </q-card-actions>
+          </q-card>
+        </q-dialog>
+
+
+      </q-td>
+      </template>
+
+      </q-table>
+    </div>
+
+    <q-dialog v-model="showEditArea" >
       <q-card class="w-[600px]">
         <q-card-section class="row items-center q-pb-none">
-          <div class="text-h6 font-bold">Add user</div>
+          <div class="text-h6 font-bold">Edit user</div>
           <q-space />
           <q-btn icon="close" flat round dense v-close-popup />
         </q-card-section>
 
         <q-card-section>
-          <q-form @submit="onSubmit">
+          <q-form @submit="onSubmitEdit">
           <div class="text-h6 font-bold text-[#667085]">Personal Information</div>
           <div class="grid grid-cols-2 gap-5">
             <!-- Firstname -->
@@ -295,94 +562,14 @@
               </q-input>
             </div>
           </div>
-          <q-btn label="Submit" type="submit" />
+          <div class="flex gap-2">
+            <q-btn label="Submit" type="submit" />
+            <q-btn flat color="primary" @click="closeEditDialog">Close</q-btn>
+          </div>
         </q-form>
-
         </q-card-section>
       </q-card>
     </q-dialog>
-
-    <q-separator class="mt-3 mb-3" />
-    <div class="q-pa-md">
-      <q-table
-        :rows="filteredTableData"
-        :columns="columns"
-        class="my-sticky-header-table"
-        :dense="$q.screen.lt.md"
-        flat bordered
-        :pagination="initialPagination"
-        row-key="yourUniqueRowKey"
-      >
-      <!-- User Components -->
-      <template v-slot:body-cell-user="props">
-        <q-td :props="props" class="flex items-center gap-4" >
-          <q-img :src="getUserImagePublicPath(props.row.user.image)" :alt="props.row.user.name" class="w-[34px] rounded-full min-[390px]:hidden md:flex"/>
-          <div class="min-[390px]:flex md:block min-[390px]:gap-2">
-            <p class="font-bold">
-            {{ props.row.user.name }}
-            </p>
-            {{ props.row.user.email }}
-          </div>
-        </q-td>
-      </template>
-      <!-- Status Components -->
-      <template v-slot:body-cell-statuss="props">
-        <q-td :props="props">
-          <span v-if="props.row.statuss === 1" class="text-green-600 p-2 rounded-full bg-green-300">
-            ● Active
-          </span>
-          <span v-else class="text-red-600 p-2 rounded-full bg-red-300">
-            ● Inactive
-          </span>
-        </q-td>
-      </template>
-
-      <!-- Action Components -->
-      <template v-slot:body-cell-action="props">
-      <q-td :props="props">
-        <q-btn
-          @click="openDropdown(props.row.id, props.row.user.name)"
-          class="font-bold text-[15px]"
-        >
-          ...
-        </q-btn>
-        <q-dialog v-model="showDropdown" persistent transition-show="scale" transition-hide="scale">
-          <q-card style="width: 300px">
-            <q-card-section>
-              <p class="text-h6">Set User Status</p>
-              <p class="q-mb-md">Choose the operational status for User ID {{ selectedUserId }} - {{ selectedUserName }}.</p>
-
-              <q-item clickable v-on:click="setStatus(1, selectedUserId)">
-                <q-item-section>
-                  <div class="flex text-[16px] gap-2">
-                    <q-icon name="check" color="positive" />
-                    Active
-                  </div>
-                </q-item-section>
-              </q-item>
-
-              <q-item clickable v-on:click="setStatus(0, selectedUserId)">
-                <q-item-section>
-                  <div class="flex text-[16px]">
-                    <q-icon name="close" color="negative" />
-                    <span class="q-ml-sm">Inactive</span>
-                  </div>
-                </q-item-section>
-              </q-item>
-            </q-card-section>
-
-            <!-- Add a close button -->
-            <q-card-actions align="right">
-              <q-btn flat color="primary" @click="showDropdown = false">Close</q-btn>
-            </q-card-actions>
-          </q-card>
-        </q-dialog>
-
-      </q-td>
-      </template>
-
-      </q-table>
-    </div>
   </div>
 </q-page>
 </template>
@@ -452,6 +639,7 @@ export default {
         'Single', 'Married'
       ],
       showPassword: false,
+      showEditArea: false,
     };
   },
   computed: {
@@ -477,11 +665,22 @@ export default {
     FetchUser(){
       axios.get('http://localhost/Capstone-Project/backend/api/Usermanagement/userdata.php?select=all')
       .then(response => {
-
+        console.log(response.data);
         this.tableData = response.data.informations.rows.map(row => {
           const time = new Date(row.account_created).toLocaleDateString('en-US', { year: 'numeric', month: 'numeric', day: 'numeric' });          const fullname = row.firstname + " " + row.lastname;
           return {
-              id: row.id,
+            id: row.id,
+              userInfo: {
+                firstname: row.firstname,
+                lastname: row.lastname,
+                birthday: row.birthdate,
+                gender: row.gender,
+                civil_staus: row.civil_staus,
+                address: row.address,
+                email: row.email,
+                contact_number: row.mobile_number,
+                password: row.password,
+              },
               user: {
                 name: row.firstname + " " + row.lastname,
                 email: row.email,
@@ -509,10 +708,22 @@ export default {
     toggleDropdown(index) {
       this.openDropdownRow = this.showDropdown ? index : -1; // Update the openDropdownRow
     },
-    openDropdown(userId, userName) {
+    openDropdown(userId, userName, firstname, lastname, birthday, gender, civil_status, address,email,contact_number,password) {
       this.showDropdown = true;
       this.selectedUserId = userId;
       this.selectedUserName = userName;
+
+      this.fname = firstname;
+      this.lname = lastname;
+      this.bdate = birthday;
+      this.gInput = gender;
+      this.cInput = civil_status;
+      this.avalue = address;
+      this.evalue = email;
+      this.cvalue = contact_number;
+      this.pvalue = password;
+      this.cpvalue = password;
+      console.log(this.fname);
     },
 
     setStatus(status, userId) {
@@ -604,6 +815,53 @@ export default {
       }).catch(error => {
             console.error('Error Uploading data:', error);
       });
+    },
+    onSubmitEdit(){
+      this.fname = '';
+      this.lname = '';
+      this.bdate = ''; // Reset other form fields
+      this.gInput = '';
+      this.cInput = '';
+      this.avalue = '';
+      this.evalue = '';
+      this.cvalue = '';
+      this.pvalue = '';
+      this.cpvalue = '';
+      this.showEditArea = false;
+    },
+    openEditDialog(){
+      this.showEditArea = true;
+      this.showDropdown = false;
+    },
+    closeDialog() {
+      this.selectedUserId = '';
+      this.fname = '';
+      this.lname = '';
+      this.bdate = '';
+      this.gInput = '';
+      this.cInput = '';
+      this.avalue = '';
+      this.evalue = '';
+      this.cvalue = '';
+      this.pvalue = '';
+      this.cpvalue = '';
+      // Add your logic to hide the edit area
+      this.showDropdown = false;
+    },
+    closeEditDialog() {
+      this.selectedUserId = '';
+      this.fname = '';
+      this.lname = '';
+      this.bdate = '';
+      this.gInput = '';
+      this.cInput = '';
+      this.avalue = '';
+      this.evalue = '';
+      this.cvalue = '';
+      this.pvalue = '';
+      this.cpvalue = '';
+      // Add your logic to hide the edit area
+      this.showEditArea = false;
     },
     // Old Data
     checkUserStatus() {
