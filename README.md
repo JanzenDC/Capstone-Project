@@ -1,9 +1,9 @@
-```markdown
+
 # WeaveManila - Capstone Project by Visionary Innovator
 
 ![Visionary Innovator Logo](![image](https://github.com/JanzenDC/Capstone-Project/assets/145821913/cd178b9c-5f00-4dde-920d-cc301d325e0c)
 )
-
+```markdown
 ## Table of Contents
 - [Introduction](#introduction)
 - [Features](#features)
@@ -81,5 +81,3 @@ If you have any questions or suggestions, feel free to reach out to us:
 
 Thank you for your interest in WeaveManila by Visionary Innovator!
 ```
-
-Replace the placeholder content with the actual details of your project, and ensure that you update any links, images, and contact information accordingly.
