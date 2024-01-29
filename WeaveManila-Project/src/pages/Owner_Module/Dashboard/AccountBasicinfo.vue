@@ -1,121 +1,134 @@
 <template>
-<q-header elevated class="bg-white w-full text-black h-[100px]  md:flex md:justify-between border-2">
-  <div class="md:w-[400px] p-4 md:flex min-[390px]:hidden">
-      <div>
-        <q-btn flat @click="drawer = !drawer" round dense icon="menu" />
+<q-drawer
+show-if-above
+v-model="drawer"
+side="left"
+bordered
+:width="300">
+  <ul class="p-2 flex flex-col h-full static">
+    <div @click="toggleDrawer" class="absolute -right-4 top-4 text-[18px] bg-white drop-shadow-lg rounded-full px-2 py-1 text-center cursor-pointer">
+      <q-icon name="arrow_back_ios_new"/>
+    </div>
+    <div class="flex">
+      <div class="w-1/4 items-center flex justify-center">
         <q-img
           src="../../../assets/favicon-128x128.png"
           alt="Description of the image"
-          class="w-[60px] md:w-[60px] "
+          class="w-[50px] md:w-[60px]"
         />
       </div>
-      <div class="w-[250px]">
-        <p class="text-[20px] text-[#8F8073] font-bold ">WEAVEMANILA INC.</p>
-        <p class="text-[12px] text-[#9e896a]">Production Monitoring & Inventory Management System</p>
-      </div>
-  </div>
-  <div class="flex items-center p-4 gap-2 min-[390px]:justify-between">
-    <q-btn flat @click="drawer = !drawer" round dense icon="menu" class="md:hidden"/>
-    <div class="flex items-center p-4 gap-2">
-    <q-icon name="notifications" class="text-[21px]"/>
-    <div>
-        <q-img
-          :src="getUserProfileImagePath()"
-          alt="Description of the image"
-          class="w-12 md:w-12 rounded-full border-black border"
-        />
+        <div class="text-[#281c0f] w-3/4">
+          <span class=" font-bold text-[20px]">WEAVEMANILA INC.</span><br>
+          <span class="text-[#281c0f] text-[12px]">Production Monitoring & Inventory Management System</span>
+
         </div>
-        <div>
-          {{ firstname }}
+    </div>
+
+
+
+    <li class="font-bold">Overview</li>
+      <li class="py-[10px] px-[20px]">
+        <div class="flex items-center">
+          <router-link to="/dashboard/main-dashboard">
+          <q-icon name="dashboard" class="mr-2"/> Dashboard
+          </router-link>
         </div>
-        <q-icon
-          :name="arrowDirection ? 'arrow_drop_up' : 'arrow_drop_down'"
-          class="text-[25px] cursor-pointer"
-          @click="toggleModal"
-        />
-      </div>
-    <div v-if="showModal" class="fixed right-5 top-[110px] transform bg-white p-3 border border-gray-300 z-50 rounded-md drop-shadow-lg w-[308px] h-[200px]">
-      <div class="flex justify-center">
-        <div>
-          <div class="flex justify-center mt-3 ">
+      </li>
+      <!-- Process Section -->
+      <li class="font-bold">Process</li>
+      <li class="py-[10px] px-[20px]" @click="toggleInventoryMenu">
+        <div class="flex items-center gap-2 justify-between">
+          <div><q-icon name="inventory"/> Inventory</div>
+          <div><q-icon name="expand_more"/> </div>
+        </div>
+        <ul v-if="inventoryMenuVisible">
+          <li class="py-[2px] px-[40px] mt-3">Purchase Order</li>
+          <li class="px-[40px] mt-3">Supplier List</li>
+        </ul>
+      </li>
+
+      <li class="py-[10px] px-[20px] ">
+        <div class="flex items-center gap-2">
+          <i class="bi bi-box-seam"></i> Product Monitoring
+        </div>
+      </li>
+      <li class="py-[10px] px-[20px]">
+        <div class="flex items-center">
+          <q-icon name="description" class="mr-2"/> Production Cost Report
+        </div>
+      </li>
+      <!-- Settings Section -->
+      <li class="font-bold">Settings</li>
+      <li class="py-[10px] px-[20px]">
+        <div class="flex items-center">
+          <router-link to="/dashboard/auditlogs-section">
+            <i class="bi bi-activity"></i> Audit Logs
+          </router-link>
+        </div>
+      </li>
+      <li class="py-[10px] px-[20px]">
+        <div class="flex items-center">
+          <router-link to="/dashboard/usermanagement-section">
+            <q-icon name="group" class="mr-2"/> User Management
+          </router-link>
+        </div>
+      </li>
+      <li class="py-[10px] px-[20px]">
+        <div class="flex items-center">
+          <router-link to="/dashboard/account-settings">
+            <q-icon name="manage_accounts" class="mr-2"/> Account Settings
+          </router-link>
+        </div>
+      </li>
+      <li class="mt-auto py-[10px]">
+        <div class="flex justify-between">
+          <div class="flex items-center">
             <q-img
               :src="getUserProfileImagePath()"
               alt="Description of the image"
-              class="w-[80px] rounded-full border-black border"
+              class="w-12 md:w-12 rounded-full"
             />
+            <div class="ml-2 overflow-hidden">
+              <div class="whitespace-nowrap overflow-hidden text-overflow-ellipsis font-bold">
+                {{ getLimitedFullname(fullnames, 25) }}
+              </div>
+              <div class="text-center">
+                {{ position }}
+              </div>
+            </div>
           </div>
-          <div class="font-bold">{{ firstname }} {{ lastname }}</div>
-          <div class="text-center">{{ position }}</div>
+          <div class="flex items-center">
+            <router-link @click="logout" to="/">
+              <q-icon name="logout" class="h-[18px] w-[20px] font-bold"/>
+            </router-link>
+          </div>
         </div>
-      </div>
-      <router-link to="/dashboard/account-settings">
-        <p class="flex justify-between text-[16px]">
-          Account Settings <q-icon name="manage_accounts" class="mr-2 text-[16px]"/>
-        </p>
-      </router-link>
-      <router-link @click="logout" to="/">
-        <p class="flex justify-between text-[16px]">
-          Logout <q-icon name="logout" class="mr-2 text-[16px]"/>
-        </p>
-      </router-link>
-    </div>
-  </div>
-</q-header>
-<q-drawer
-  show-if-above
-  v-model="drawer"
-  side="left"
-  bordered
-  :width="250">
-      <ul class="p-4">
-        <li class="font-bold">Overview</li>
-          <li class="py-[17px] px-[20px]">
-            <div class="flex items-center">
-              <router-link to="/dashboard/main-dashboard">
-              <q-icon name="dashboard" class="mr-2"/> Dashboard
-              </router-link>
-            </div>
-          </li>
-          <!-- Process Section -->
-          <li class="font-bold">Process</li>
-          <li class="py-[17px] px-[20px]">
-            <div class="flex items-center gap-2">
-              <q-icon name="inventory"/> Inventory
-            </div>
-          </li>
-          <li class="py-[17px] px-[20px] ">
-            <div class="flex items-center gap-2">
-              <i class="bi bi-box-seam"></i> Product Monitoring
-            </div>
-          </li>
-          <li class="py-[17px] px-[20px]">
-            <div class="flex items-center">
-              <q-icon name="description" class="mr-2"/> Production Cost Report
-            </div>
-          </li>
-          <!-- Settings Section -->
-          <li class="font-bold">Settings</li>
-          <li class="py-[17px] px-[20px]">
-            <div class="flex items-center">
-              <router-link to="/dashboard/auditlogs-section">
-                <i class="bi bi-activity"></i> Audit Logs
-              </router-link>
-            </div>
-          </li>
-          <li class="py-[17px] px-[20px]">
-            <div class="flex items-center">
-              <router-link to="/dashboard/usermanagement-section">
-                <q-icon name="group" class="mr-2"/> User Management
-              </router-link>
-            </div>
-          </li>
-      </ul>
+      </li>
+    </ul>
 </q-drawer>
 <q-page class="bg-[#f5f5f5] p-4">
-  <div class="bg-white h-[520px] rounded p-10 overflow-auto">
-    <router-link to="/dashboard/account-settings">
-      <p class="text-[15px]"><q-icon name="arrow_back_ios"/> <span class=" font-bold text-[#9e896a]">Basic Info</span></p>
-    </router-link>
+    <div class="flex justify-between items-center">
+      <div class="text-[30px]">
+        <div class="items-center flex">
+          <!-- First version of menu icon -->
+          <q-icon
+            name="menu"
+            v-if="showMenuIcon"
+            @click="toggleDrawer"
+            class="cursor-pointer"
+          />
+          <!-- Second version of menu icon for smaller screens -->
+          <q-icon
+            name="menu"
+            v-if="!showMenuIcon"
+            @click="toggleDrawer"
+            class="cursor-pointer min-[360px]:flex md:hidden"
+          />
+          <span class="font-bold">User Info</span>
+        </div>
+        <div class="text-[16px]">This section serves as a platform for managing user-related information.</div>
+      </div>
+    </div>
     <div class="md:w-[800px] h-[510px] mt-2 border border-[#dfc8c0] rounded p-5 text-[15px]">
       <q-form
         @submit="onSubmit"
@@ -192,7 +205,6 @@
           </div>
       </q-form>
     </div>
-  </div>
 </q-page>
 </template>
 
@@ -215,7 +227,7 @@ export default {
       email: '',
       userProfileImage: null,
       username: '',
-
+      fullnames: '',
       fname: '',
       lname: '',
 
@@ -232,6 +244,8 @@ export default {
       arrowDirection: false,
       showModal: false,
       drawer: false,
+      showMenuIcon: false,
+      inventoryMenuVisible: false,
       month: '',  // Newly added property for v-model binding
       monthsOptions: [
       'January', 'February', 'March', 'April',
@@ -313,7 +327,7 @@ export default {
           this.password = userInformation.password;
           this.fname = userInformation.firstname;
           this.lname = userInformation.lastname;
-
+          this.fullnames = this.firstname + " " + this.lastname;
           this.status = userInformation.status;
           if(this.status == 0)
           {
@@ -348,6 +362,19 @@ export default {
         this.$router.push('/');
         sessionStorage.clear();
       }
+    },
+    getLimitedFullname(fullname, maxLength) {
+      if (fullname.length > maxLength) {
+        return fullname.substring(0, maxLength) + '...';
+      }
+      return fullname;
+    },
+    toggleInventoryMenu() {
+      this.inventoryMenuVisible = !this.inventoryMenuVisible;
+    },
+    toggleDrawer() {
+      this.drawer = !this.drawer;
+      this.showMenuIcon = !this.showMenuIcon;
     },
     getMonthName(monthNumber) {
       const months = [

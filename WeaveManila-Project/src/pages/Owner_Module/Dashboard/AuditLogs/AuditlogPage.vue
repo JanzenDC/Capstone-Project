@@ -1,229 +1,243 @@
 <template>
-
-<q-header elevated class="bg-white w-full text-black h-[100px]  md:flex md:justify-between border-2">
-  <div class="md:w-[400px] p-4 md:flex min-[390px]:hidden">
-      <div>
-        <q-btn flat @click="drawer = !drawer" round dense icon="menu" />
+<q-drawer
+show-if-above
+v-model="drawer"
+side="left"
+bordered
+:width="300">
+  <ul class="p-2 flex flex-col h-full static">
+    <div @click="toggleDrawer" class="absolute -right-4 top-4 text-[18px] bg-white drop-shadow-lg rounded-full px-2 py-1 text-center cursor-pointer">
+      <q-icon name="arrow_back_ios_new"/>
+    </div>
+    <div class="flex">
+      <div class="w-1/4 items-center flex justify-center">
         <q-img
           src="../../../../assets/favicon-128x128.png"
           alt="Description of the image"
-          class="w-[60px] md:w-[60px] "
+          class="w-[50px] md:w-[60px]"
         />
       </div>
-      <div class="w-[250px]">
-        <p class="text-[20px] text-[#8F8073] font-bold ">WEAVEMANILA INC.</p>
-        <p class="text-[12px] text-[#9e896a]">Production Monitoring & Inventory Management System</p>
-      </div>
-  </div>
-  <div class="flex items-center p-4 gap-2 min-[390px]:justify-between">
-    <q-btn flat @click="drawer = !drawer" round dense icon="menu" class="md:hidden"/>
-    <div class="flex items-center p-4 gap-2">
-    <q-icon name="notifications" class="text-[21px]"/>
-    <div>
-        <q-img
-          :src="getUserProfileImagePath()"
-          alt="Description of the image"
-          class="w-12 md:w-12 rounded-full border-black border"
-        />
+        <div class="text-[#281c0f] w-3/4">
+          <span class=" font-bold text-[20px]">WEAVEMANILA INC.</span><br>
+          <span class="text-[#281c0f] text-[12px]">Production Monitoring & Inventory Management System</span>
+
         </div>
-        <div>
-          {{ firstname }}
+    </div>
+
+
+
+    <li class="font-bold">Overview</li>
+      <li class="py-[10px] px-[20px]">
+        <div class="flex items-center">
+          <router-link to="/dashboard/main-dashboard">
+          <q-icon name="dashboard" class="mr-2"/> Dashboard
+          </router-link>
         </div>
-        <q-icon
-          :name="arrowDirection ? 'arrow_drop_up' : 'arrow_drop_down'"
-          class="text-[25px] cursor-pointer"
-          @click="toggleModal"
-        />
-      </div>
-      <div v-if="showModal" class="fixed right-5 top-[110px] transform bg-white p-3 border border-gray-300 z-50 rounded-md drop-shadow-lg w-[308px] h-[200px]">
-      <div class="flex justify-center">
-        <div>
-          <div class="flex justify-center mt-3 ">
+      </li>
+      <!-- Process Section -->
+      <li class="font-bold">Process</li>
+      <li class="py-[10px] px-[20px]" @click="toggleInventoryMenu">
+        <div class="flex items-center gap-2 justify-between">
+          <div><q-icon name="inventory"/> Inventory</div>
+          <div><q-icon name="expand_more"/> </div>
+        </div>
+        <ul v-if="inventoryMenuVisible">
+          <li class="py-[2px] px-[40px] mt-3">Purchase Order</li>
+          <li class="px-[40px] mt-3">Supplier List</li>
+        </ul>
+      </li>
+
+      <li class="py-[10px] px-[20px] ">
+        <div class="flex items-center gap-2">
+          <i class="bi bi-box-seam"></i> Product Monitoring
+        </div>
+      </li>
+      <li class="py-[10px] px-[20px]">
+        <div class="flex items-center">
+          <q-icon name="description" class="mr-2"/> Production Cost Report
+        </div>
+      </li>
+      <!-- Settings Section -->
+      <li class="font-bold">Settings</li>
+      <li class="py-[10px] px-[20px]">
+        <div class="flex items-center">
+          <router-link to="/dashboard/auditlogs-section">
+            <i class="bi bi-activity mr-2"></i> Audit Logs
+          </router-link>
+        </div>
+      </li>
+      <li class="py-[10px] px-[20px]">
+        <div class="flex items-center">
+          <router-link to="/dashboard/usermanagement-section">
+            <q-icon name="group" class="mr-2"/> User Management
+          </router-link>
+        </div>
+      </li>
+      <li class="py-[10px] px-[20px]">
+        <div class="flex items-center">
+          <router-link to="/dashboard/account-settings">
+            <q-icon name="manage_accounts" class="mr-2"/> Account Settings
+          </router-link>
+        </div>
+      </li>
+      <li class="mt-auto py-[10px]">
+        <div class="flex justify-between">
+          <div class="flex items-center">
             <q-img
               :src="getUserProfileImagePath()"
               alt="Description of the image"
-              class="w-[80px] rounded-full border-black border"
+              class="w-12 md:w-12 rounded-full"
             />
+            <div class="ml-2 overflow-hidden">
+              <div class="whitespace-nowrap overflow-hidden text-overflow-ellipsis font-bold">
+                {{ getLimitedFullname(fullname, 25) }}
+              </div>
+              <div class="text-center">
+                {{ position }}
+              </div>
+            </div>
           </div>
-          <div class="font-bold">{{ firstname }} {{ lastname }}</div>
-          <div class="text-center">{{ position }}</div>
+          <div class="flex items-center">
+            <router-link @click="logout" to="/">
+              <q-icon name="logout" class="h-[18px] w-[20px] font-bold"/>
+            </router-link>
+          </div>
         </div>
-      </div>
-      <router-link to="/dashboard/account-settings">
-        <p class="flex justify-between text-[16px]">
-          Account Settings <q-icon name="manage_accounts" class="mr-2 text-[16px]"/>
-        </p>
-      </router-link>
-      <router-link @click="logout" to="/">
-        <p class="flex justify-between text-[16px]">
-          Logout <q-icon name="logout" class="mr-2 text-[16px]"/>
-        </p>
-      </router-link>
-    </div>
-  </div>
-</q-header>
-<q-drawer
-  show-if-above
-  v-model="drawer"
-  side="left"
-  bordered
-  :width="250">
-      <ul class="p-4">
-        <li class="font-bold">Overview</li>
-          <li class="py-[17px] px-[20px]">
-            <div class="flex items-center">
-              <router-link to="/dashboard/main-dashboard">
-              <q-icon name="dashboard" class="mr-2"/> Dashboard
-              </router-link>
-            </div>
-          </li>
-          <!-- Process Section -->
-          <li class="font-bold">Process</li>
-          <li class="py-[17px] px-[20px]">
-            <div class="flex items-center gap-2">
-              <q-icon name="inventory"/> Inventory
-            </div>
-          </li>
-          <li class="py-[17px] px-[20px] ">
-            <div class="flex items-center gap-2">
-              <i class="bi bi-box-seam"></i> Product Monitoring
-            </div>
-          </li>
-          <li class="py-[17px] px-[20px]">
-            <div class="flex items-center">
-              <q-icon name="description" class="mr-2"/> Production Cost Report
-            </div>
-          </li>
-          <!-- Settings Section -->
-          <li class="font-bold">Settings</li>
-          <li class="py-[17px] px-[20px]">
-            <div class="flex items-center">
-              <router-link to="/dashboard/auditlogs-section">
-                <i class="bi bi-activity"></i> Audit Logs
-              </router-link>
-            </div>
-          </li>
-          <li class="py-[17px] px-[20px]">
-            <div class="flex items-center">
-              <router-link to="/dashboard/usermanagement-section">
-                <q-icon name="group" class="mr-2"/> User Management
-              </router-link>
-            </div>
-          </li>
-      </ul>
+      </li>
+    </ul>
 </q-drawer>
+
 <q-page class="bg-[#f5f5f5] p-4">
-  <div class="bg-white md:h-[520px] rounded p-10 overflow-y-auto">
-    <div class="flex justify-between items-center">
-      <router-link to="/dashboard/account-settings">
-        <p class="text-[15px]"><q-icon name="arrow_back_ios"/> <span class=" font-bold text-[#9e896a]">AUDIT LOGS</span></p>
-      </router-link>
-      <div class="flex gap-2 items-center">
-          <q-input
-          v-model="searchInput"
-          filled
-          outlined
-          dense
-          placeholder="Search..."
-          />
-        <q-btn @click="openModifyModal" label="Filter" class="h-5 bg-[#907d60] text-white">
+  <div class="flex justify-between items-center">
+    <div class="text-[30px]">
+      <div class="items-center flex">
+        <!-- First version of menu icon -->
         <q-icon
-          :name="arrowDirection_1 ? 'arrow_drop_up' : 'arrow_drop_down'"
-          class="text-[25px] cursor-pointer"
+          name="menu"
+          v-if="showMenuIcon"
+          @click="toggleDrawer"
+          class="cursor-pointer"
         />
-        </q-btn>
+        <!-- Second version of menu icon for smaller screens -->
+        <q-icon
+          name="menu"
+          v-if="!showMenuIcon"
+          @click="toggleDrawer"
+          class="cursor-pointer min-[360px]:flex md:hidden"
+        />
+        <span class="font-bold">Audit Logs</span>
       </div>
-
-    </div>
-
-
-    <div class="fixed right-12 top-[200px] transform bg-white z-50 rounded-md border border-gray-500" style="max-width: 350px" v-if="showModifyModal">
-      <q-form @submit="onSubmitDate">
-        <div class="grid grid-cols-2 gap-2 border-b-[1px]">
-          <q-list dense class=" border-e-[1px]">
-            <q-item clickable v-ripple @click="selectOption('today')">
-              <q-item-section>Today</q-item-section>
-            </q-item>
-            <q-item clickable v-ripple @click="selectOption('last7days')">
-              <q-item-section>Last 7 Days</q-item-section>
-            </q-item>
-            <q-item clickable v-ripple @click="selectOption('last30days')">
-              <q-item-section>Last 30 Days</q-item-section>
-            </q-item>
-            <q-item clickable v-ripple @click="selectOption('thisYear')">
-              <q-item-section>This Year ({{ getCurrentYear() }})</q-item-section>
-            </q-item>
-            <q-item clickable v-ripple @click="selectOption('lastYear')">
-              <q-item-section>Last Year ({{ getLastYear() }})</q-item-section>
-            </q-item>
-            <q-item clickable v-ripple @click="openDateModal">
-              <q-item-section>Custom Date</q-item-section>
-            </q-item>
-          </q-list>
-
-          <div v-if="showDateArea" class="p-2">
-            <q-input v-model="startDate" label="Start Date" type="date" outlined required/>
-            <q-input v-model="endDate" label="End Date" type="date" outlined class="mt-2" required/>
-          </div>
-        </div>
-        <div class="flex gap-2 justify-between p-2">
-          <q-btn label="Clear" padding="xs" @click="selectDefault" />
-          <div class="gap-2 flex">
-            <q-btn label="Cancel" class="bg-[#907d60] text-white" padding="xs" @click="closeModifyModal" />
-            <q-btn label="Apply" class="bg-[#907d60] text-white" padding="xs" v-if="showDateArea" type="submit"/>
-          </div>
-        </div>
-      </q-form>
-    </div>
-
-
-    <q-separator class="mt-3 mb-3" />
-    <div class="q-pa-md">
-      <q-table
-      :rows="filteredTableData"
-      :columns="columns"
-      class="my-sticky-header-table"
-      :dense="$q.screen.lt.md"
-      flat bordered
-      :pagination="initialPagination"
-      row-key="yourUniqueRowKey"
-      >
-      <!-- User Column Template -->
-      <template v-slot:body-cell-user="props">
-        <q-td :props="props" class="flex items-center gap-4" >
-          <q-img :src="getUserImagePublicPath(props.row.user.image)" :alt="props.row.user.name" class="w-[34px] rounded-full min-[390px]:hidden md:flex"/>
-          <div class="min-[390px]:flex md:block min-[390px]:gap-2">
-            <p class="font-bold">
-            {{ props.row.user.name }}
-            </p>
-            {{ props.row.user.position }}
-          </div>
-        </q-td>
-      </template>
-
-      <!-- Action Column Template -->
-      <template v-slot:body-cell-action="props">
-        <q-td :props="props">
-          {{ props.row.action }}
-        </q-td>
-      </template>
-
-      <!-- Date Column Template -->
-      <template v-slot:body-cell-date="props">
-        <q-td :props="props">
-          {{ formatFullDate(props.row.date) }}
-        </q-td>
-      </template>
-
-      <!-- Timestamp Column Template -->
-      <template v-slot:body-cell-timestamp="props">
-        <q-td :props="props">
-          {{ props.row.timestamp }}
-        </q-td>
-      </template>
-      </q-table>
+      <div class="text-[16px]">This section serves as a record of events and actions within a system.</div>
     </div>
   </div>
+  <div class="flex items-end justify-end mt-10">
+    <div class="flex gap-2 items-center">
+        <q-input
+        v-model="searchInput"
+        outlined
+        dense
+        placeholder="Search..."
+        >
+        <template v-slot:prepend>
+          <q-icon name="search"/>
+        </template>
+        </q-input>
+      <q-btn @click="openModifyModal" label="Filter" class="h-5">
+      <q-icon
+        :name="arrowDirection_1 ? 'arrow_drop_up' : 'arrow_drop_down'"
+        class="text-[25px] cursor-pointer"
+      />
+      </q-btn>
+    </div>
+  </div>
+
+  <div class="fixed right-12 top-[200px] transform bg-white z-50 rounded-md border border-gray-500" style="max-width: 350px" v-if="showModifyModal">
+    <q-form @submit="onSubmitDate">
+      <div class="grid grid-cols-2 gap-2 border-b-[1px]">
+        <q-list dense class=" border-e-[1px]">
+          <q-item clickable v-ripple @click="selectOption('today')">
+            <q-item-section>Today</q-item-section>
+          </q-item>
+          <q-item clickable v-ripple @click="selectOption('last7days')">
+            <q-item-section>Last 7 Days</q-item-section>
+          </q-item>
+          <q-item clickable v-ripple @click="selectOption('last30days')">
+            <q-item-section>Last 30 Days</q-item-section>
+          </q-item>
+          <q-item clickable v-ripple @click="selectOption('thisYear')">
+            <q-item-section>This Year ({{ getCurrentYear() }})</q-item-section>
+          </q-item>
+          <q-item clickable v-ripple @click="selectOption('lastYear')">
+            <q-item-section>Last Year ({{ getLastYear() }})</q-item-section>
+          </q-item>
+          <q-item clickable v-ripple @click="openDateModal">
+            <q-item-section>Custom Date</q-item-section>
+          </q-item>
+        </q-list>
+
+        <div v-if="showDateArea" class="p-2">
+          <q-input v-model="startDate" label="Start Date" type="date" outlined required/>
+          <q-input v-model="endDate" label="End Date" type="date" outlined class="mt-2" required/>
+        </div>
+      </div>
+      <div class="flex gap-2 justify-between p-2">
+        <q-btn label="Clear" padding="xs" @click="selectDefault" />
+        <div class="gap-2 flex">
+          <q-btn label="Cancel" class="bg-[#907d60] text-white" padding="xs" @click="closeModifyModal" />
+          <q-btn label="Apply" class="bg-[#907d60] text-white" padding="xs" v-if="showDateArea" type="submit"/>
+        </div>
+      </div>
+    </q-form>
+  </div>
+
+
+  <q-separator class="mt-3 mb-3" />
+  <div class="q-pa-md">
+    <q-table
+    :rows="filteredTableData"
+    :columns="columns"
+    class="my-sticky-header-table"
+    :dense="$q.screen.lt.md"
+    flat bordered
+    :pagination="initialPagination"
+    row-key="yourUniqueRowKey"
+    >
+    <!-- User Column Template -->
+    <template v-slot:body-cell-user="props">
+      <q-td :props="props" class="flex items-center gap-4" >
+        <q-img :src="getUserImagePublicPath(props.row.user.image)" :alt="props.row.user.name" class="w-[34px] rounded-full min-[390px]:hidden md:flex"/>
+        <div class="min-[390px]:flex md:block min-[390px]:gap-2">
+          <p class="font-bold">
+          {{ props.row.user.name }}
+          </p>
+          {{ props.row.user.position }}
+        </div>
+      </q-td>
+    </template>
+
+    <!-- Action Column Template -->
+    <template v-slot:body-cell-action="props">
+      <q-td :props="props">
+        {{ props.row.action }}
+      </q-td>
+    </template>
+
+    <!-- Date Column Template -->
+    <template v-slot:body-cell-date="props">
+      <q-td :props="props">
+        {{ formatFullDate(props.row.date) }}
+      </q-td>
+    </template>
+
+    <!-- Timestamp Column Template -->
+    <template v-slot:body-cell-timestamp="props">
+      <q-td :props="props">
+        {{ props.row.timestamp }}
+      </q-td>
+    </template>
+    </q-table>
+  </div>
+
 </q-page>
 </template>
 
@@ -244,6 +258,7 @@ export default {
       email: '',
       userProfileImage: null,
       username: '',
+      fullname: '',
       firstname: '',
       middlename: '',
       lastname: '',
@@ -252,7 +267,9 @@ export default {
       status: '',
       showModal: false,
       drawer: false,
+      showMenuIcon: false,
       statusCheckTimer: null,
+      inventoryMenuVisible: false,
       // Additional here
       columns: [
         { name: 'user', label: 'User', align: 'left', field: 'user' },
@@ -431,6 +448,13 @@ export default {
     closeModifyModal() {
       this.showModifyModal = false;
     },
+    toggleInventoryMenu() {
+      this.inventoryMenuVisible = !this.inventoryMenuVisible;
+    },
+    toggleDrawer() {
+      this.drawer = !this.drawer;
+      this.showMenuIcon = !this.showMenuIcon;
+    },
     selectDefault(){
       this.fetchData();
     },
@@ -526,6 +550,7 @@ export default {
           this.lastname = userInformation.lastname;
           this.position = userInformation.position;
           this.status = userInformation.status;
+          this.fullname = this.firstname + " " + this.lastname;
           if(this.status == 0)
           {
             this.$q.notify({
@@ -551,6 +576,12 @@ export default {
         this.$router.push('/');
         sessionStorage.clear();
       }
+    },
+    getLimitedFullname(fullname, maxLength) {
+      if (fullname.length > maxLength) {
+        return fullname.substring(0, maxLength) + '...';
+      }
+      return fullname;
     },
     formatDate(dateString) {
       const options = { month: 'long', day: 'numeric', year: 'numeric' };

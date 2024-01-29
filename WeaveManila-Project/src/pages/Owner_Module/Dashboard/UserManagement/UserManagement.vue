@@ -1,305 +1,319 @@
 <template>
-<q-header elevated class="bg-white w-full text-black h-[100px]  md:flex md:justify-between border-2">
-  <div class="md:w-[400px] p-4 md:flex min-[390px]:hidden">
-      <div>
-        <q-btn flat @click="drawer = !drawer" round dense icon="menu" />
+<q-drawer
+show-if-above
+v-model="drawer"
+side="left"
+bordered
+:width="300">
+  <ul class="p-2 flex flex-col h-full static">
+    <div @click="toggleDrawer" class="absolute -right-4 top-4 text-[18px] bg-white drop-shadow-lg rounded-full px-2 py-1 text-center cursor-pointer">
+      <q-icon name="arrow_back_ios_new"/>
+    </div>
+    <div class="flex">
+      <div class="w-1/4 items-center flex justify-center">
         <q-img
           src="../../../../assets/favicon-128x128.png"
           alt="Description of the image"
-          class="w-[60px] md:w-[60px] "
+          class="w-[50px] md:w-[60px]"
         />
       </div>
-      <div class="w-[250px]">
-        <p class="text-[20px] text-[#8F8073] font-bold ">WEAVEMANILA INC.</p>
-        <p class="text-[12px] text-[#9e896a]">Production Monitoring & Inventory Management System</p>
-      </div>
-  </div>
-  <div class="flex items-center p-4 gap-2 min-[390px]:justify-between">
-    <q-btn flat @click="drawer = !drawer" round dense icon="menu" class="md:hidden"/>
-    <div class="flex items-center p-4 gap-2">
-    <q-icon name="notifications" class="text-[21px]"/>
-    <div>
-        <q-img
-          :src="getUserProfileImagePath()"
-          alt="Description of the image"
-          class="w-12 md:w-12 rounded-full border-black border"
-        />
+        <div class="text-[#281c0f] w-3/4">
+          <span class=" font-bold text-[20px]">WEAVEMANILA INC.</span><br>
+          <span class="text-[#281c0f] text-[12px]">Production Monitoring & Inventory Management System</span>
+
         </div>
-        <div>
-          {{ firstname }}
+    </div>
+
+
+
+    <li class="font-bold">Overview</li>
+      <li class="py-[10px] px-[20px]">
+        <div class="flex items-center">
+          <router-link to="/dashboard/main-dashboard">
+          <q-icon name="dashboard" class="mr-2"/> Dashboard
+          </router-link>
         </div>
-        <q-icon
-          :name="arrowDirection ? 'arrow_drop_up' : 'arrow_drop_down'"
-          class="text-[25px] cursor-pointer"
-          @click="toggleModal"
-        />
-      </div>
-      <div v-if="showModal" class="fixed right-5 top-[110px] transform bg-white p-3 border border-gray-300 z-50 rounded-md drop-shadow-lg w-[308px] h-[200px]">
-      <div class="flex justify-center">
-        <div>
-          <div class="flex justify-center mt-3 ">
+      </li>
+      <!-- Process Section -->
+      <li class="font-bold">Process</li>
+      <li class="py-[10px] px-[20px]" @click="toggleInventoryMenu">
+        <div class="flex items-center gap-2 justify-between">
+          <div><q-icon name="inventory"/> Inventory</div>
+          <div><q-icon name="expand_more"/> </div>
+        </div>
+        <ul v-if="inventoryMenuVisible">
+          <li class="py-[2px] px-[40px] mt-3">Purchase Order</li>
+          <li class="px-[40px] mt-3">Supplier List</li>
+        </ul>
+      </li>
+
+      <li class="py-[10px] px-[20px] ">
+        <div class="flex items-center gap-2">
+          <i class="bi bi-box-seam"></i> Product Monitoring
+        </div>
+      </li>
+      <li class="py-[10px] px-[20px]">
+        <div class="flex items-center">
+          <q-icon name="description" class="mr-2"/> Production Cost Report
+        </div>
+      </li>
+      <!-- Settings Section -->
+      <li class="font-bold">Settings</li>
+      <li class="py-[10px] px-[20px]">
+        <div class="flex items-center">
+          <router-link to="/dashboard/auditlogs-section">
+            <i class="bi bi-activity mr-2"></i> Audit Logs
+          </router-link>
+        </div>
+      </li>
+      <li class="py-[10px] px-[20px]">
+        <div class="flex items-center">
+          <router-link to="/dashboard/usermanagement-section">
+            <q-icon name="group" class="mr-2"/> User Management
+          </router-link>
+        </div>
+      </li>
+      <li class="py-[10px] px-[20px]">
+        <div class="flex items-center">
+          <router-link to="/dashboard/account-settings">
+            <q-icon name="manage_accounts" class="mr-2"/> Account Settings
+          </router-link>
+        </div>
+      </li>
+      <li class="mt-auto py-[10px]">
+        <div class="flex justify-between">
+          <div class="flex items-center">
             <q-img
               :src="getUserProfileImagePath()"
               alt="Description of the image"
-              class="w-[80px] rounded-full border-black border"
+              class="w-12 md:w-12 rounded-full"
             />
+            <div class="ml-2 overflow-hidden">
+              <div class="whitespace-nowrap overflow-hidden text-overflow-ellipsis font-bold">
+                {{ getLimitedFullname(fullnames, 25) }}
+              </div>
+              <div class="text-center">
+                {{ position }}
+              </div>
+            </div>
           </div>
-          <div class="font-bold">{{ firstname }} {{ lastname }}</div>
-          <div class="text-center">{{ position }}</div>
+          <div class="flex items-center">
+            <router-link @click="logout" to="/">
+              <q-icon name="logout" class="h-[18px] w-[20px] font-bold"/>
+            </router-link>
+          </div>
         </div>
-      </div>
-      <router-link to="/dashboard/account-settings">
-        <p class="flex justify-between text-[16px]">
-          Account Settings <q-icon name="manage_accounts" class="mr-2 text-[16px]"/>
-        </p>
-      </router-link>
-      <router-link @click="logout" to="/">
-        <p class="flex justify-between text-[16px]">
-          Logout <q-icon name="logout" class="mr-2 text-[16px]"/>
-        </p>
-      </router-link>
-    </div>
-  </div>
-</q-header>
-<q-drawer
-  show-if-above
-  v-model="drawer"
-  side="left"
-  bordered
-  :width="250">
-    <ul class="p-4">
-        <li class="font-bold">Overview</li>
-    <li class="py-[17px] px-[20px]">
-      <div class="flex items-center">
-        <router-link to="/dashboard/main-dashboard">
-        <q-icon name="dashboard" class="mr-2"/> Dashboard
-        </router-link>
-      </div>
-    </li>
-    <!-- Process Section -->
-    <li class="font-bold">Process</li>
-    <li class="py-[17px] px-[20px]">
-      <div class="flex items-center gap-2">
-        <q-icon name="inventory"/> Inventory
-      </div>
-    </li>
-    <li class="py-[17px] px-[20px] ">
-      <div class="flex items-center gap-2">
-        <i class="bi bi-box-seam"></i> Product Monitoring
-      </div>
-    </li>
-    <li class="py-[17px] px-[20px]">
-      <div class="flex items-center">
-        <q-icon name="description" class="mr-2"/> Production Cost Report
-      </div>
-    </li>
-    <!-- Settings Section -->
-    <li class="font-bold">Settings</li>
-    <li class="py-[17px] px-[20px]">
-      <div class="flex items-center">
-        <router-link to="/dashboard/auditlogs-section">
-          <i class="bi bi-activity"></i> Audit Logs
-        </router-link>
-      </div>
-    </li>
-    <li class="py-[17px] px-[20px]">
-      <div class="flex items-center">
-        <router-link to="/dashboard/usermanagement-section">
-          <q-icon name="group" class="mr-2"/> User Management
-        </router-link>
-      </div>
-    </li>
+      </li>
     </ul>
 </q-drawer>
 <q-page class="bg-[#f5f5f5] p-4">
-  <div class="bg-white md:h-[520px] rounded p-10 overflow-y-auto">
-    <div class="flex justify-between items-center">
-      <router-link to="/dashboard/account-settings">
-        <p class="text-[15px]"><q-icon name="arrow_back_ios"/> <span class=" font-bold text-[#9e896a]">User Management</span></p>
-      </router-link>
-      <div class="flex items-center gap-5">
-        <q-input v-model="search" outlined dense placeholder="Search" class="w-[400px]">
-          <template v-slot:prepend>
-            <q-icon name="search" />
-          </template>
-        </q-input>
-        <q-btn @click="addUserModal = true">
-          <i class="bi bi-plus-lg"></i>
-          Add User
-        </q-btn>
+  <div class="flex justify-between items-center">
+    <div class="text-[30px]">
+      <div class="items-center flex">
+        <!-- First version of menu icon -->
+        <q-icon
+          name="menu"
+          v-if="showMenuIcon"
+          @click="toggleDrawer"
+          class="cursor-pointer"
+        />
+        <!-- Second version of menu icon for smaller screens -->
+        <q-icon
+          name="menu"
+          v-if="!showMenuIcon"
+          @click="toggleDrawer"
+          class="cursor-pointer min-[360px]:flex md:hidden"
+        />
+        <span class="font-bold">User Management</span>
       </div>
+      <div class="text-[16px]">This section managing accounts, updating and adding a user in the system </div>
     </div>
+  </div>
+  <div class="flex items-end justify-end mt-10">
+    <div class="flex items-center gap-5">
+      <q-input v-model="search" outlined dense placeholder="Search" class="w-[400px]">
+        <template v-slot:prepend>
+          <q-icon name="search" />
+        </template>
+      </q-input>
+      <q-btn @click="addUserModal = true">
+        <i class="bi bi-plus-lg"></i>
+        Add User
+      </q-btn>
+    </div>
+  </div>
+
 
 <!-- Modal -->
-  <q-dialog v-model="addUserModal" >
-    <q-card class="w-[600px]">
-      <q-card-section class="row items-center q-pb-none">
-        <div class="text-h6 font-bold">Add user</div>
-        <q-space />
-        <q-btn icon="close" flat round dense v-close-popup />
-      </q-card-section>
+<q-dialog v-model="addUserModal" >
+  <q-card class="w-[600px]">
+    <q-card-section class="row items-center q-pb-none">
+      <div class="text-h6 font-bold">Add user</div>
+      <q-space />
+      <q-btn icon="close" flat round dense v-close-popup />
+    </q-card-section>
 
-      <q-card-section>
-        <q-form @submit="onSubmit">
-        <div class="text-h6 font-bold text-[#667085]">Personal Information</div>
-        <div class="grid grid-cols-2 gap-5">
-          <!-- Firstname -->
-          <div>
-            <p class="text-[15px]">First Name</p>
-            <q-input
-              v-model="fname"
-              label="First Name"
-              type="text"
-              outlined
-              dense
-              :no-error-icon="true"
-              :rules="[val => !!val || 'First Name is required']"
-            ></q-input>
-          </div>
-          <!-- Lastname -->
-          <div>
-            <p class="text-[15px]">Last Name</p>
-            <q-input
-              v-model="lname"
-              label="Last Name"
-              type="text"
-              outlined
-              dense
-              :no-error-icon="true"
-              :rules="[val => !!val || 'Last Name is required']"
-            ></q-input>
-          </div>
-          <!-- Birthdate -->
-          <div>
-            <p class="text-[15px]">Birthday</p>
-            <q-input
-              v-model="bdate"
-              label="Birthday"
-              type="date"
-              outlined
-              dense
-              :no-error-icon="true"
-              :rules="[val => !!val || 'Birthday is required']"
-            ></q-input>
-          </div>
-          <!-- Gender -->
-          <div>
-            Gender
-            <q-select
-              outlined
-              dense
-              v-model="gInput"
-              :options="options"
-              label="Gender"
-              :rules="[val => !!val || 'Gender is required']"
-            />
-          </div>
-          <!-- Civil Status -->
-          <div>
-            Civil Status
-            <q-select
-              outlined
-              dense
-              v-model="cInput"
-              :options="civilOptions"
-              label="Select option for civil status"
-              :rules="[val => !!val || 'Civil Status is required']"
-            />
-          </div>
-          <!-- Address -->
-          <div>
-            <p class="text-[15px]">Address</p>
-            <q-input
-              v-model="avalue"
-              label="Address"
-              type="text"
-              outlined
-              dense
-              :no-error-icon="true"
-              :rules="[val => !!val || 'Address is required']"
-            ></q-input>
-          </div>
+    <q-card-section>
+      <q-form @submit="onSubmit">
+      <div class="text-h6 font-bold text-[#667085]">Personal Information</div>
+      <div class="grid grid-cols-2 gap-5">
+        <!-- Firstname -->
+        <div>
+          <p class="text-[15px]">First Name</p>
+          <q-input
+            v-model="fname"
+            label="First Name"
+            type="text"
+            outlined
+            dense
+            :no-error-icon="true"
+            :rules="[val => !!val || 'First Name is required']"
+          ></q-input>
         </div>
-        <div class="text-h6 font-bold text-[#667085]">Contact Information</div>
-        <div class="grid grid-cols-2 gap-5">
-          <!-- Email -->
-          <div>
-            <p class="text-[15px]">Email Address</p>
-            <q-input
-              v-model="evalue"
-              label="Email Address"
-              type="email"
-              outlined
-              dense
-              :no-error-icon="true"
-              :rules="[val => !!val || 'Email Address is required',
-                        val => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val) || 'Invalid Email Address']"
-            ></q-input>
-          </div>
-          <!-- Contact/Phone -->
-          <div>
-            <p class="text-[15px]">Contact Number</p>
-            <q-input
-              v-model="cvalue"
-              label="Contact Number"
-              type="tel"
-              outlined
-              dense
-              :no-error-icon="true"
-              :rules="[val => !!val || 'Contact Number is required',
-                      val => /^09\d{9}$/.test(val) || 'Invalid Philippine contact number']"
-              pattern="09[0-9]{9}"
-            ></q-input>
-          </div>
+        <!-- Lastname -->
+        <div>
+          <p class="text-[15px]">Last Name</p>
+          <q-input
+            v-model="lname"
+            label="Last Name"
+            type="text"
+            outlined
+            dense
+            :no-error-icon="true"
+            :rules="[val => !!val || 'Last Name is required']"
+          ></q-input>
         </div>
-        <div class="text-h6 font-bold text-[#667085]">Security</div>
-        <div class="grid grid-cols-2 gap-5">
-          <!-- Password -->
-          <div>
-            <p class="text-[15px]">Password</p>
-              <q-input
-                class="w-full"
-                v-model="pvalue"
-                label="Password"
-                outlined
-                dense
-                :type="showPassword ? 'text' : 'password'"
-                :no-error-icon="true"
-                :rules="[val => !!val || 'Password is required',
-                          val => val.length >= 8 || 'Password must be at least 8 characters']"
-              >
-              <template v-slot:append>
-                <span @click="togglePasswordVisibility">
-                  <i class="bi" :class="showPassword ? 'bi-eye-slash' : 'bi-eye'"></i>
-                </span>
-              </template>
-              <template v-slot:after>
-                <q-btn class="bg-[#667085] text-white text-[10px] w-[100px]" label="Generate Password" @click="generatePassword" size="xs"/>
-              </template>
-              </q-input>
-          </div>
-          <!-- Confirm Password -->
-          <div>
-            <p class="text-[15px]">Confirm Password</p>
+        <!-- Birthdate -->
+        <div>
+          <p class="text-[15px]">Birthday</p>
+          <q-input
+            v-model="bdate"
+            label="Birthday"
+            type="date"
+            outlined
+            dense
+            :no-error-icon="true"
+            :rules="[val => !!val || 'Birthday is required']"
+          ></q-input>
+        </div>
+        <!-- Gender -->
+        <div>
+          Gender
+          <q-select
+            outlined
+            dense
+            v-model="gInput"
+            :options="options"
+            label="Gender"
+            :rules="[val => !!val || 'Gender is required']"
+          />
+        </div>
+        <!-- Civil Status -->
+        <div>
+          Civil Status
+          <q-select
+            outlined
+            dense
+            v-model="cInput"
+            :options="civilOptions"
+            label="Select option for civil status"
+            :rules="[val => !!val || 'Civil Status is required']"
+          />
+        </div>
+        <!-- Address -->
+        <div>
+          <p class="text-[15px]">Address</p>
+          <q-input
+            v-model="avalue"
+            label="Address"
+            type="text"
+            outlined
+            dense
+            :no-error-icon="true"
+            :rules="[val => !!val || 'Address is required']"
+          ></q-input>
+        </div>
+      </div>
+      <div class="text-h6 font-bold text-[#667085]">Contact Information</div>
+      <div class="grid grid-cols-2 gap-5">
+        <!-- Email -->
+        <div>
+          <p class="text-[15px]">Email Address</p>
+          <q-input
+            v-model="evalue"
+            label="Email Address"
+            type="email"
+            outlined
+            dense
+            :no-error-icon="true"
+            :rules="[val => !!val || 'Email Address is required',
+                      val => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val) || 'Invalid Email Address']"
+          ></q-input>
+        </div>
+        <!-- Contact/Phone -->
+        <div>
+          <p class="text-[15px]">Contact Number</p>
+          <q-input
+            v-model="cvalue"
+            label="Contact Number"
+            type="tel"
+            outlined
+            dense
+            :no-error-icon="true"
+            :rules="[val => !!val || 'Contact Number is required',
+                    val => /^09\d{9}$/.test(val) || 'Invalid Philippine contact number']"
+            pattern="09[0-9]{9}"
+          ></q-input>
+        </div>
+      </div>
+      <div class="text-h6 font-bold text-[#667085]">Security</div>
+      <div class="grid grid-cols-2 gap-5">
+        <!-- Password -->
+        <div>
+          <p class="text-[15px]">Password</p>
             <q-input
-              v-model="cpvalue"
-              label="Confirm Password"
-              type='password'
+              class="w-full"
+              v-model="pvalue"
+              label="Password"
               outlined
               dense
+              :type="showPassword ? 'text' : 'password'"
               :no-error-icon="true"
-              :rules="[val => !!val || 'Confirm Password is required',
-                        val => val === pvalue || 'Passwords do not match']"
+              :rules="[val => !!val || 'Password is required',
+                        val => val.length >= 8 || 'Password must be at least 8 characters']"
             >
+            <template v-slot:append>
+              <span @click="togglePasswordVisibility">
+                <i class="bi" :class="showPassword ? 'bi-eye-slash' : 'bi-eye'"></i>
+              </span>
+            </template>
+            <template v-slot:after>
+              <q-btn class="bg-[#667085] text-white text-[10px] w-[100px]" label="Generate Password" @click="generatePassword" size="xs"/>
+            </template>
             </q-input>
-          </div>
         </div>
-        <q-btn label="Submit" type="submit" />
-      </q-form>
+        <!-- Confirm Password -->
+        <div>
+          <p class="text-[15px]">Confirm Password</p>
+          <q-input
+            v-model="cpvalue"
+            label="Confirm Password"
+            type='password'
+            outlined
+            dense
+            :no-error-icon="true"
+            :rules="[val => !!val || 'Confirm Password is required',
+                      val => val === pvalue || 'Passwords do not match']"
+          >
+          </q-input>
+        </div>
+      </div>
+      <q-btn label="Submit" type="submit" />
+    </q-form>
 
-      </q-card-section>
-    </q-card>
-  </q-dialog>
+    </q-card-section>
+  </q-card>
+</q-dialog>
 
     <q-separator class="mt-3 mb-3" />
     <div class="q-pa-md">
@@ -404,7 +418,7 @@
         <q-card-section class="row items-center q-pb-none">
           <div class="text-h6 font-bold">Edit user</div>
           <q-space />
-          <q-btn icon="close" flat round dense v-close-popup />
+          <q-btn icon="close" flat round dense v-close-popup @click="closeEditDialog"/>
         </q-card-section>
 
         <q-card-section>
@@ -528,7 +542,7 @@
         </q-card-section>
       </q-card>
     </q-dialog>
-  </div>
+
 </q-page>
 </template>
 
@@ -549,6 +563,7 @@ export default {
       email: '',
       userProfileImage: null,
       username: '',
+      fullnames: '',
       firstname: '',
       middlename: '',
       lastname: '',
@@ -557,6 +572,8 @@ export default {
       statuss: '',
       showModal: false,
       drawer: false,
+      showMenuIcon: false,
+      inventoryMenuVisible: false,
       statusCheckTimer: null,
 
       // Another Data here
@@ -721,7 +738,6 @@ export default {
       }
       this.pvalue = password;
       this.cpvalue = password;
-      this.showPassword = false;
     },
     togglePasswordVisibility() {
       this.showPassword = !this.showPassword;
@@ -897,6 +913,13 @@ export default {
             console.error('Error fetching data:', error);
       });
     },
+    toggleInventoryMenu() {
+      this.inventoryMenuVisible = !this.inventoryMenuVisible;
+    },
+    toggleDrawer() {
+      this.drawer = !this.drawer;
+      this.showMenuIcon = !this.showMenuIcon;
+    },
     loadUserData() {
       const userData = SessionStorage.getItem('information');
 
@@ -911,6 +934,7 @@ export default {
           this.lastname = userInformation.lastname;
           this.position = userInformation.position;
           this.status = userInformation.status;
+          this.fullnames = this.firstname + " " + this.lastname;
           if(this.status == 0)
           {
             this.$q.notify({
@@ -936,6 +960,12 @@ export default {
         this.$router.push('/');
         sessionStorage.clear();
       }
+    },
+    getLimitedFullname(fullname, maxLength) {
+      if (fullname.length > maxLength) {
+        return fullname.substring(0, maxLength) + '...';
+      }
+      return fullname;
     },
     formatDate(dateString) {
       const options = { month: 'long', day: 'numeric', year: 'numeric' };

@@ -79,10 +79,12 @@
 		<!-- Process Section -->
 		<li class="font-bold">Process</li>
 		<li class="py-[17px] px-[20px]">
-			<div class="flex items-center gap-2">
-			  <q-icon name="inventory"/> Inventory
+			<div class="flex items-center gap-2 justify-between">
+        <div><q-icon name="inventory"/> Inventory</div>
+			  <div><q-icon name="expand_more"/> </div>
 			</div>
 		</li>
+    
 		<li class="py-[17px] px-[20px] ">
 			<div class="flex items-center gap-2">
 			  <i class="bi bi-box-seam"></i> Product Monitoring
@@ -166,8 +168,27 @@ export default {
         axios.get(`http://localhost/Capstone-Project/backend/api/verification.php?email=${this.email}`)
         .then(response => {
         const latestStatus = response.data.information.status;
-        console.log(latestStatus);
-        // Update the local status and take appropriate action if it has changed
+        const information = response.data.information;
+          this.information = {
+            id: information.id,
+            email: information.email,
+            username: information.username,
+            pfp: information.pfp,
+            firstname: information.firstname,
+            middlename: information.middlename,
+            lastname: information.lastname,
+            gender: information.gender,
+            position: information.position,
+            mobilenumber: information.mobilenumber,
+            birthdate: information.birthdate,
+            age: information.age,
+            address: information.address,
+            otp_code: information.otp_code,
+            isOnline: information.isOnline,
+            status: information.status,
+            password: information.password,
+          };
+          SessionStorage.set('information', JSON.stringify(this.information));
         if (this.status !== latestStatus) {
           this.status = latestStatus;
 
