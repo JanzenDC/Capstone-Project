@@ -1,271 +1,153 @@
 <template>
-<q-header elevated class="bg-white w-full text-black h-[100px]  md:flex md:justify-between border-2">
-  <div class="md:w-[400px] p-4 md:flex min-[390px]:hidden">
-      <div>
-        <q-btn flat @click="drawer = !drawer" round dense icon="menu" />
-        <q-img
-          src="../../../assets/favicon-128x128.png"
-          alt="Description of the image"
-          class="w-[60px] md:w-[60px] "
-        />
-      </div>
-      <div class="w-[250px]">
-        <p class="text-[20px] text-[#8F8073] font-bold ">WEAVEMANILA INC.</p>
-        <p class="text-[12px] text-[#9e896a]">Production Monitoring & Inventory Management System</p>
-      </div>
-  </div>
-  <div class="flex items-center p-4 gap-2 min-[390px]:justify-between">
-    <q-btn flat @click="drawer = !drawer" round dense icon="menu" class="md:hidden"/>
-    <div class="flex items-center p-4 gap-2">
-    <q-icon name="notifications" class="text-[21px]"/>
-    <div>
-        <q-img
-          :src="getUserProfileImagePath()"
-          alt="Description of the image"
-          class="w-12 md:w-12 rounded-full border-black border"
-        />
+<div class="md:w-full md:h-[390px] mt-2 border border-[#dfc8c0] rounded p-5 text-[15px]">
+
+      <p class="text-[#9e896a] font-bold">Email</p>
+      <q-input outlined bottom-slots v-model="email" label="Email" disable>
+        <template v-slot:after>
+          <q-icon name="edit" @click="small = true"/>
+        </template>
+      </q-input>
+      <q-dialog
+        v-model="small"
+      >
+        <q-card style="width: 350px">
+          <q-card-section>
+            <div class="text-h6">Change Email</div>
+          </q-card-section>
+
+          <q-card-section class="q-pt-none p-4">
+            <q-form @submit="onChangeEmail">
+              Kindly provide your current email address.
+              <q-input
+                v-model="currentEmail"
+                label="Current Email Address"
+                type="email"
+                filled
+                class="mt-3"
+                :no-error-icon="true"
+                :rules="[ruleEmail]"
+              ></q-input>
+              <q-btn label="Send Code" type="submit" class="bg-[#9e896a] rounded-md w-full text-white mt-4"/>
+            </q-form>
+          </q-card-section>
+
+          <q-card-actions align="right" class="bg-white text-teal">
+            <q-btn flat label="Cancel" @click="cancelButtonClick" v-close-popup />
+          </q-card-actions>
+        </q-card>
+      </q-dialog>
+
+      <!-- Validating -->
+      <q-dialog
+        v-model="otpDialog"
+      >
+        <q-card style="width: 350px">
+          <q-card-section>
+            <div class="text-h6">Otp Verification</div>
+          </q-card-section>
+
+          <q-card-section class="q-pt-none p-4">
+            <div class="text-3xl flex justify-start items-center gap-2">
+              <q-icon name="check_circle" color="green" />
+              <p class="text-[15px]">Confirm Email Address</p>
+            </div>
+            <q-form @submit="onValidating">
+              <div class="text-3xl flex justify-start items-center gap-2">
+                <q-icon name="radio_button_unchecked" color="red" />
+                <p class="text-[15px]">Validating OTP</p>
+              </div>
+              <q-input
+                v-model="otpVal"
+                label="OTP Code"
+                type="number"
+                filled
+                class="mt-3"
+                :no-error-icon="true"
+                :rules="[validateOtp]"
+              ></q-input>
+              <q-btn label="Submit" type="submit" class="bg-[#9e896a] rounded-md w-full text-white mt-4"/>
+            </q-form>
+          </q-card-section>
+
+          <q-card-actions align="right" class="bg-white text-teal">
+            <q-btn flat label="Cancel" @click="cancelButtonClick" v-close-popup />
+          </q-card-actions>
+        </q-card>
+      </q-dialog>
+
+      <!-- Changing Email -->
+      <q-dialog
+        v-model="changeEmail"
+      >
+        <q-card style="width: 500px">
+          <q-card-section>
+            <div class="text-h6">Change Email</div>
+          </q-card-section>
+
+          <q-card-section class="q-pt-none p-4">
+            <div class="text-3xl flex justify-start items-center gap-2">
+              <q-icon name="check_circle" color="green" />
+              <p class="text-[15px]">Confirm Email Address</p>
+            </div>
+            <div class="text-3xl flex justify-start items-center gap-2">
+              <q-icon name="check_circle" color="green" />
+              <p class="text-[15px]">Validating OTP</p>
+            </div>
+            <div class="text-3xl flex justify-start items-center gap-2">
+              <q-icon name="radio_button_unchecked" color="red" />
+              <p class="text-[15px]">Change Email</p>
+            </div>
+            <q-form @submit="onNewEmail">
+              Please enter your new email address.
+              <q-input
+                v-model="newEmail"
+                filled
+                label="New Email Address"
+                type="email"
+                :rules="[val => !!val || 'Email is required', val => /.+@.+\..+/.test(val) || 'Invalid email']"
+                lazy-rules
+              />
+
+              <!-- Re-enter new email for confirmation -->
+              <q-input
+                v-model="confirmNewEmail"
+                filled
+                label="Confirm New Email Address"
+                type="email"
+                :rules="[val => !!val || 'Confirmation email is required', val => val === newEmail || 'Email addresses do not match']"
+                lazy-rules
+              />
+              <q-btn label="Confirm" type="submit" class="bg-[#9e896a] rounded-md w-full text-white mt-4"/>
+
+            </q-form>
+          </q-card-section>
+
+          <q-card-actions align="right" class="bg-white text-teal">
+            <q-btn flat label="Cancel" @click="cancelButtonClick" v-close-popup />
+          </q-card-actions>
+        </q-card>
+      </q-dialog>
+    <q-form @submit="onSubmit">
+      <p class="text-[#9e896a] font-bold">Phone</p>
+      <q-input
+        v-model="mobilenumber"
+        label="Phone Number"
+        type="tel"
+        outlined
+        dense
+        class="custom-border-color mt-3"
+        lazy-rules
+        :rules="[val => !!val || 'Phone Number is required', val => /^09\d{9}$/g.test(val) || 'Invalid Phone Number']"
+      />
+        <div class="flex justify-end w-full gap-2">
+        <div v-close-popup to="/dashboard/account-settings" class="bg-white rounded-full text-center p-2 text-[#9e896a] w-[74px] border-2 border-[#9e896a]">
+          Cancel
         </div>
-        <div>
-          {{ firstname }}
-        </div>
-        <q-icon
-          :name="arrowDirection ? 'arrow_drop_up' : 'arrow_drop_down'"
-          class="text-[25px] cursor-pointer"
-          @click="toggleModal"
-        />
+        <q-btn label="Save" type="submit" class="bg-[#9e896a] rounded-full  text-white"/>
       </div>
-    <div v-if="showModal" class="fixed right-5 top-[110px] transform bg-white p-3 border border-gray-300 z-50 rounded-md drop-shadow-lg w-[308px] h-[200px]">
-      <div class="flex justify-center">
-        <div>
-          <div class="flex justify-center mt-3 ">
-            <q-img
-              :src="getUserProfileImagePath()"
-              alt="Description of the image"
-              class="w-[80px] rounded-full border-black border"
-            />
-          </div>
-          <div class="font-bold">{{ firstname }} {{ lastname }}</div>
-          <div class="text-center">{{ position }}</div>
-        </div>
-      </div>
-      <router-link to="/dashboard/account-settings">
-        <p class="flex justify-between text-[16px]">
-          Account Settings <q-icon name="manage_accounts" class="mr-2 text-[16px]"/>
-        </p>
-      </router-link>
-      <router-link @click="logout" to="/">
-        <p class="flex justify-between text-[16px]">
-          Logout <q-icon name="logout" class="mr-2 text-[16px]"/>
-        </p>
-      </router-link>
-    </div>
-  </div>
-</q-header>
-<q-drawer
-  show-if-above
-  v-model="drawer"
-  side="left"
-  bordered
-  :width="250">
-      <ul class="p-4">
-        <li class="font-bold">Overview</li>
-          <li class="py-[17px] px-[20px]">
-            <div class="flex items-center">
-              <router-link to="/dashboard/main-dashboard">
-              <q-icon name="dashboard" class="mr-2"/> Dashboard
-              </router-link>
-            </div>
-          </li>
-          <!-- Process Section -->
-          <li class="font-bold">Process</li>
-          <li class="py-[17px] px-[20px]">
-            <div class="flex items-center gap-2">
-              <q-icon name="inventory"/> Inventory
-            </div>
-          </li>
-          <li class="py-[17px] px-[20px] ">
-            <div class="flex items-center gap-2">
-              <i class="bi bi-box-seam"></i> Product Monitoring
-            </div>
-          </li>
-          <li class="py-[17px] px-[20px]">
-            <div class="flex items-center">
-              <q-icon name="description" class="mr-2"/> Production Cost Report
-            </div>
-          </li>
-          <!-- Settings Section -->
-          <li class="font-bold">Settings</li>
-          <li class="py-[17px] px-[20px]">
-            <div class="flex items-center">
-              <router-link to="/dashboard/auditlogs-section">
-                <i class="bi bi-activity"></i> Audit Logs
-              </router-link>
-            </div>
-          </li>
-          <li class="py-[17px] px-[20px]">
-            <div class="flex items-center">
-              <router-link to="/dashboard/usermanagement-section">
-                <q-icon name="group" class="mr-2"/> User Management
-              </router-link>
-            </div>
-          </li>
-      </ul>
-  </q-drawer>
-<q-page class="bg-[#f5f5f5] p-4">
-  <div class="bg-white h-[520px] rounded p-10 overflow-auto">
-    <router-link to="/dashboard/account-settings">
-      <p class="text-[15px]"><q-icon name="arrow_back_ios"/> <span class=" font-bold text-[#9e896a]">Basic Info</span></p>
-    </router-link>
-    <div class="md:w-[500px] md:h-[390px] mt-2 border border-[#dfc8c0] rounded p-5 text-[15px]">
+    </q-form>
+</div>
 
-          <p class="text-[#9e896a] font-bold">Email</p>
-          <q-input outlined bottom-slots v-model="email" label="Email" disable>
-            <template v-slot:after>
-              <q-icon name="edit" @click="small = true"/>
-            </template>
-          </q-input>
-          <q-dialog
-            v-model="small"
-          >
-            <q-card style="width: 350px">
-              <q-card-section>
-                <div class="text-h6">Change Email</div>
-              </q-card-section>
-
-              <q-card-section class="q-pt-none p-4">
-                <q-form @submit="onChangeEmail">
-                  Kindly provide your current email address.
-                  <q-input
-                    v-model="currentEmail"
-                    label="Current Email Address"
-                    type="email"
-                    filled
-                    class="mt-3"
-                    :no-error-icon="true"
-                    :rules="[ruleEmail]"
-                  ></q-input>
-                  <q-btn label="Send Code" type="submit" class="bg-[#9e896a] rounded-md w-full text-white mt-4"/>
-                </q-form>
-              </q-card-section>
-
-              <q-card-actions align="right" class="bg-white text-teal">
-                <q-btn flat label="Cancel" @click="cancelButtonClick" v-close-popup />
-              </q-card-actions>
-            </q-card>
-          </q-dialog>
-
-          <!-- Validating -->
-          <q-dialog
-            v-model="otpDialog"
-          >
-            <q-card style="width: 350px">
-              <q-card-section>
-                <div class="text-h6">Otp Verification</div>
-              </q-card-section>
-
-              <q-card-section class="q-pt-none p-4">
-                <div class="text-3xl flex justify-start items-center gap-2">
-                  <q-icon name="check_circle" color="green" />
-                  <p class="text-[15px]">Confirm Email Address</p>
-                </div>
-                <q-form @submit="onValidating">
-                  <div class="text-3xl flex justify-start items-center gap-2">
-                    <q-icon name="radio_button_unchecked" color="red" />
-                    <p class="text-[15px]">Validating OTP</p>
-                  </div>
-                  <q-input
-                    v-model="otpVal"
-                    label="OTP Code"
-                    type="number"
-                    filled
-                    class="mt-3"
-                    :no-error-icon="true"
-                    :rules="[validateOtp]"
-                  ></q-input>
-                  <q-btn label="Submit" type="submit" class="bg-[#9e896a] rounded-md w-full text-white mt-4"/>
-                </q-form>
-              </q-card-section>
-
-              <q-card-actions align="right" class="bg-white text-teal">
-                <q-btn flat label="Cancel" @click="cancelButtonClick" v-close-popup />
-              </q-card-actions>
-            </q-card>
-          </q-dialog>
-
-          <!-- Changing Email -->
-          <q-dialog
-            v-model="changeEmail"
-          >
-            <q-card style="width: 500px">
-              <q-card-section>
-                <div class="text-h6">Change Email</div>
-              </q-card-section>
-
-              <q-card-section class="q-pt-none p-4">
-                <div class="text-3xl flex justify-start items-center gap-2">
-                  <q-icon name="check_circle" color="green" />
-                  <p class="text-[15px]">Confirm Email Address</p>
-                </div>
-                <div class="text-3xl flex justify-start items-center gap-2">
-                  <q-icon name="check_circle" color="green" />
-                  <p class="text-[15px]">Validating OTP</p>
-                </div>
-                <div class="text-3xl flex justify-start items-center gap-2">
-                  <q-icon name="radio_button_unchecked" color="red" />
-                  <p class="text-[15px]">Change Email</p>
-                </div>
-                <q-form @submit="onNewEmail">
-                  Please enter your new email address.
-                  <q-input
-                    v-model="newEmail"
-                    filled
-                    label="New Email Address"
-                    type="email"
-                    :rules="[val => !!val || 'Email is required', val => /.+@.+\..+/.test(val) || 'Invalid email']"
-                    lazy-rules
-                  />
-
-                  <!-- Re-enter new email for confirmation -->
-                  <q-input
-                    v-model="confirmNewEmail"
-                    filled
-                    label="Confirm New Email Address"
-                    type="email"
-                    :rules="[val => !!val || 'Confirmation email is required', val => val === newEmail || 'Email addresses do not match']"
-                    lazy-rules
-                  />
-                  <q-btn label="Confirm" type="submit" class="bg-[#9e896a] rounded-md w-full text-white mt-4"/>
-
-                </q-form>
-              </q-card-section>
-
-              <q-card-actions align="right" class="bg-white text-teal">
-                <q-btn flat label="Cancel" @click="cancelButtonClick" v-close-popup />
-              </q-card-actions>
-            </q-card>
-          </q-dialog>
-        <q-form @submit="onSubmit">
-          <p class="text-[#9e896a] font-bold">Phone</p>
-          <q-input
-            v-model="mobilenumber"
-            label="Phone Number"
-            type="tel"
-            outlined
-            dense
-            class="custom-border-color mt-3"
-            lazy-rules
-            :rules="[val => !!val || 'Phone Number is required', val => /^09\d{9}$/g.test(val) || 'Invalid Phone Number']"
-          />
-            <div class="flex justify-end w-full gap-2">
-            <router-link to="/dashboard/account-settings" class="bg-white rounded-full text-center p-2 text-[#9e896a] w-[74px] border-2 border-[#9e896a]">
-              Cancel
-            </router-link>
-            <q-btn label="Save" type="submit" class="bg-[#9e896a] rounded-full  text-white"/>
-          </div>
-        </q-form>
-    </div>
-  </div>
-</q-page>
 </template>
 
 <script>
@@ -292,7 +174,10 @@ export default {
       mobilenumber: '',
       arrowDirection: false,
       showModal: false,
+      fullnames: '',
       drawer: false,
+      showMenuIcon: false,
+      inventoryMenuVisible: false,
       small: false,
       otpDialog: false,
       changeEmail: false,
@@ -374,6 +259,7 @@ export default {
           this.mobilenumber = userInformation.mobilenumber;
           this.code = userInformation.otp_code;
           this.status = userInformation.status;
+          this.fullnames = this.firstname + " " + this.lastname;
           if(this.status == 0)
           {
             this.$q.notify({
@@ -398,6 +284,19 @@ export default {
         this.$router.push('/');
         sessionStorage.clear();
       }
+    },
+    getLimitedFullname(fullname, maxLength) {
+      if (fullname.length > maxLength) {
+        return fullname.substring(0, maxLength) + '...';
+      }
+      return fullname;
+    },
+    toggleInventoryMenu() {
+      this.inventoryMenuVisible = !this.inventoryMenuVisible;
+    },
+    toggleDrawer() {
+      this.drawer = !this.drawer;
+      this.showMenuIcon = !this.showMenuIcon;
     },
     cancelButtonClick() {
       // Reset the values when the Cancel button is clicked

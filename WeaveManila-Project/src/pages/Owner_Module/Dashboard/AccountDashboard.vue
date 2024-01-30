@@ -111,14 +111,12 @@ bordered
     <div class="flex justify-between items-center">
       <div class="text-[30px]">
         <div class="items-center flex">
-          <!-- First version of menu icon -->
           <q-icon
             name="menu"
             v-if="showMenuIcon"
             @click="toggleDrawer"
             class="cursor-pointer"
           />
-          <!-- Second version of menu icon for smaller screens -->
           <q-icon
             name="menu"
             v-if="!showMenuIcon"
@@ -128,10 +126,9 @@ bordered
           <span class="font-bold">Account Settings</span>
         </div>
       </div>
-      </div>
+    </div>
     <div class="w-full md:flex md:justify-center mt-3">
-      <div>
-
+    <div>
         <!-- User Area -->
         <div class="p-4 md:w-[600px] h-[150px] border border-[#ddb7ab] rounded-[15px] drop-shadow-md flex md:justify-between
         min-[390px]:justify-center">
@@ -144,11 +141,9 @@ bordered
                   class="w-[100px] rounded-full min-[390px]:w-[80px] "
                 />
                 <div class="absolute right-12 bottom-0">
-                  <router-link to="/dashboard/account-profilepic">
-                    <div class="rounded-full py-2 px-3 bg-[#ddb7ab] md:hidden">
+                    <div class="rounded-full py-2 px-3 bg-[#ddb7ab] md:hidden" @click="editProfile = true">
                       <q-icon name="photo_camera"/>
                     </div>
-                  </router-link>
                 </div>
               </div>
 
@@ -159,21 +154,34 @@ bordered
             </div>
           </div>
             <div class="w-[84px] flex items-center justify-center min-[390px]:hidden md:flex ">
-              <router-link to="/dashboard/account-profilepic" class="text-center w-full border border-[#9e896a] rounded-full ">
-                <span class=" p-1   text-[#9e896a]"><q-icon name="edit"/> Edit</span>
-              </router-link>
+              <q-btn @click="editProfile = true" unelevated rounded outline size="sm" class="rounded-full w-full text-[#9e896a] text-[12px]">
+                <q-icon name="edit"/> Edit
+              </q-btn>
             </div>
         </div>
+        <q-dialog v-model="editProfile">
+          <q-card>
+            <q-card-section class="row items-center q-pb-none">
+              <div class="text-h6">Change Avatar</div>
+              <q-space />
+              <q-btn icon="close" flat round dense v-close-popup />
 
+            </q-card-section>
+            <q-separator />
+            <q-card-section>
+              <UserProfile />
+            </q-card-section>
+          </q-card>
+        </q-dialog>
 
         <!-- Personal Information -->
         <div class="mt-3 md:w-[600px] p-5 border border-[#ddb7ab] rounded-[15px] drop-shadow-md">
           <div class="flex justify-between -mt-8">
             <h1 class="md:text-[19px] font-bold">Personal Information</h1>
             <div class="w-[84px] flex items-center justify-center ">
-              <router-link to="/dashboard/account-basicinfo" class="text-center w-full border border-[#9e896a] rounded-full">
-                <span class=" p-1   text-[#9e896a]"><q-icon name="edit"/> Edit</span>
-              </router-link>
+              <q-btn @click="editBasicInfo = true" unelevated rounded outline size="sm" class="rounded-full w-full text-[#9e896a] text-[12px]">
+                <q-icon name="edit"/> Edit
+              </q-btn>
             </div>
           </div>
           <div class="grid grid-cols-2 gap-10 -mt-4">
@@ -197,14 +205,29 @@ bordered
             </div>
           </div>
         </div>
+        <q-dialog v-model="editBasicInfo">
+          <q-card>
+            <q-card-section class="row items-center q-pb-none">
+              <div class="text-h6">Personal Information</div>
+              <q-space />
+              <q-btn icon="close" flat round dense v-close-popup />
+
+            </q-card-section>
+            <q-separator />
+            <q-card-section>
+              <BasicInfo />
+            </q-card-section>
+          </q-card>
+        </q-dialog>
+
         <!-- Contact Information -->
         <div class="mt-3 md:w-[600px] p-5 border border-[#ddb7ab] rounded-[15px] drop-shadow-md">
           <div class="flex justify-between -mt-8">
             <h1 class="md:text-[19px] font-bold">Contact Information</h1>
             <div class="w-[84px] flex items-center justify-center ">
-              <router-link to="/dashboard/account-contactinfo" class="text-center w-full border border-[#9e896a] rounded-full">
-                <span class=" p-1   text-[#9e896a]"><q-icon name="edit"/> Edit</span>
-              </router-link>
+              <q-btn @click="editContactInfo = true" unelevated rounded outline size="sm" class="rounded-full w-full text-[#9e896a] text-[12px]">
+                <q-icon name="edit"/> Edit
+              </q-btn>
             </div>
           </div>
           <div class="md:grid md:grid-cols-2 md:gap-10 -mt-4">
@@ -216,14 +239,29 @@ bordered
             </div>
           </div>
         </div>
+        <q-dialog v-model="editContactInfo" >
+          <q-card class="w-[500px]">
+            <q-card-section class="row items-center q-pb-none">
+              <div class="text-h6">Contact Information</div>
+              <q-space />
+              <q-btn icon="close" flat round dense v-close-popup />
+
+            </q-card-section>
+            <q-separator />
+            <q-card-section>
+              <ContactInfo />
+            </q-card-section>
+          </q-card>
+        </q-dialog>
+
         <!-- Password Information -->
         <div class="mt-3 md:w-[600px] p-5 border border-[#ddb7ab] rounded-[15px] drop-shadow-md">
           <div class="flex justify-between -mt-8">
             <h1 class="md:text-[19px] font-bold">Security</h1>
             <div class="w-[84px] flex items-center justify-center ">
-              <router-link to="/dashboard/account-changepass" class="text-center w-full border border-[#9e896a] rounded-full">
-                <span class=" p-1   text-[#9e896a]"><q-icon name="edit"/> Edit</span>
-              </router-link>
+              <q-btn @click="editPasswordInfo = true" unelevated rounded outline size="sm" class="rounded-full w-full text-[#9e896a] text-[12px]">
+                <q-icon name="edit"/> Edit
+              </q-btn>
             </div>
           </div>
           <div class="grid grid-cols-2 gap-10 -mt-4">
@@ -232,6 +270,21 @@ bordered
             </div>
           </div>
         </div>
+        <q-dialog v-model="editPasswordInfo" >
+          <q-card class="w-[800px]">
+            <q-card-section class="row items-center q-pb-none">
+              <div class="text-h6">Security</div>
+              <q-space />
+              <q-btn icon="close" flat round dense v-close-popup />
+
+            </q-card-section>
+            <q-separator />
+            <q-card-section>
+              <PasswordInfo />
+            </q-card-section>
+          </q-card>
+        </q-dialog>
+
       </div>
     </div>
   </div>
@@ -239,16 +292,24 @@ bordered
 </template>
 
 <script>
-import { useQuasar } from 'quasar';
+// import { useQuasar } from 'quasar';
 import { SessionStorage } from 'quasar';
 import axios from 'axios';
+import UserProfile from './AccountUserprofile.vue';
+import BasicInfo from './AccountBasicinfo.vue';
+import ContactInfo from './AccountContactInfo.vue';
+import PasswordInfo from './AccountSecurity.vue';
 
 export default {
-  setup() {
-    const $q = useQuasar();
+  components: {
+    UserProfile,
+    BasicInfo,
+    ContactInfo,
+    PasswordInfo,
   },
   data() {
     return {
+      id: '',
       email: '',
       userProfileImage: null,
       username: '',
@@ -269,13 +330,17 @@ export default {
       showMenuIcon: false,
       inventoryMenuVisible: false,
       statusCheckTimer: null,
+      editProfile: false,
+      editBasicInfo: false,
+      editContactInfo: false,
+      editPasswordInfo:false,
     };
   },
   mounted() {
     this.loadUserData();
     this.statusCheckTimer = setInterval(() => {
     this.checkUserStatus();
-    }, 5 * 1000); // 5 minutes (in milliseconds)
+    }, 1 * 1000); // 5 minutes (in milliseconds)
   },
   beforeUnmount() {
     clearInterval(this.statusCheckTimer);
@@ -342,8 +407,8 @@ export default {
           this.password = userInformation.password ? '*'.repeat(Math.min(8, userInformation.password.length)) : '';
           this.address = userInformation.address;
           this.status = userInformation.status;
+          this.id = userInformation.id;
           this.fullnames = this.firstname + " " + this.lastname;
-          console.log(this.password);
           if(this.status == 0)
           {
             this.$q.notify({
