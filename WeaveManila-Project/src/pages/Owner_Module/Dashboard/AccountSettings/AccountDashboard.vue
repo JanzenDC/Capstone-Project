@@ -6,20 +6,21 @@ side="left"
 bordered
 :width="drawerWidth">
   <ul class="p-2 flex flex-col h-full static" v-if="drawerWidth !== 80">
+
     <div @click="toggleDrawer" class="absolute -right-4 top-4 text-[18px] bg-white drop-shadow-lg rounded-full px-2 py-1 text-center cursor-pointer">
       <q-icon :name="drawerIcon"/>
     </div>
     <div class="flex">
       <div class="w-1/4 items-center flex justify-center" >
         <q-img
-          src="../../../assets/favicon-128x128.png"
+          src="../../../../assets/favicon-128x128.png"
           alt="Description of the image"
           class="w-[50px] md:w-[60px]"
         />
       </div>
       <div class=" items-center flex justify-center" v-if="drawerWidth <= 80">
         <q-img
-          src="../../../assets/favicon-128x128.png"
+          src="../../../../assets/favicon-128x128.png"
           alt="Description of the image"
           class="w-[150px] md:w-[60px]"
         />
@@ -120,7 +121,7 @@ bordered
     <div class="flex">
       <div class=" items-center flex justify-center" v-if="drawerWidth <= 80">
         <q-img
-          src="../../../assets/favicon-128x128.png"
+          src="../../../../assets/favicon-128x128.png"
           alt="Description of the image"
           class="w-[150px] md:w-[60px]"
         />
@@ -174,6 +175,7 @@ bordered
             </router-link>
           </div>
       </li>
+
   </ul>
 </q-drawer>
 <q-page class="bg-[#f5f5f5] p-4">

@@ -1,5 +1,4 @@
 <template>
-
 <div class="h-[510px] mt-2 border border-[#dfc8c0] rounded p-5 text-[15px] md:w-full">
   <q-form
     @submit="onSubmit"
