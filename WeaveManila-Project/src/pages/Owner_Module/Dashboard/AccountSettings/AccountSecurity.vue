@@ -76,6 +76,8 @@ import axios from 'axios';
 export default {
   setup() {
     const $q = useQuasar();
+
+    return { $q };
   },
   data() {
     return {

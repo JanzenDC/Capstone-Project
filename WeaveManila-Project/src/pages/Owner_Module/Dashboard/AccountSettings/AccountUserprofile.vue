@@ -133,12 +133,12 @@
         </div>
       </div>
       <div class="flex justify-end w-full gap-2 mt-3">
-        <router-link
-          to="/dashboard/account-settings"
+        <div
+          v-close-popup
           class="bg-white rounded-full text-center p-2 text-[#9e896a] w-[74px] border-2 border-[#9e896a]"
         >
           Cancel
-        </router-link>
+        </div>
         <q-btn label="Save" type="submit" class="bg-[#9e896a] rounded-full text-white" />
       </div>
     </q-form>

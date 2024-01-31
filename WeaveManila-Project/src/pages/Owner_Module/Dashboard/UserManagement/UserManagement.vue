@@ -122,7 +122,7 @@ bordered
         <q-img
           src="../../../../assets/favicon-128x128.png"
           alt="Description of the image"
-          class="w-[150px] md:w-[60px]"
+          class="min-[390px]:w-[60px] md:w-[60px]"
         />
       </div>
     </div>
@@ -199,9 +199,9 @@ bordered
       <div class="text-[16px]">This section managing accounts, updating and adding a user in the system </div>
     </div>
   </div>
-  <div class="flex items-end justify-end mt-10">
+  <div class="flex md:items-end md:justify-end mt-10">
     <div class="flex items-center gap-5">
-      <q-input v-model="search" outlined dense placeholder="Search" class="w-[400px]">
+      <q-input v-model="search" outlined dense placeholder="Search" class="md:w-[400px]">
         <template v-slot:prepend>
           <q-icon name="search" />
         </template>

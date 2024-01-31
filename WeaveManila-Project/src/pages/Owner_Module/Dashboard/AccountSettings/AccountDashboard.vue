@@ -123,7 +123,7 @@ bordered
         <q-img
           src="../../../../assets/favicon-128x128.png"
           alt="Description of the image"
-          class="w-[150px] md:w-[60px]"
+          class="min-[390px]:w-[60px] md:w-[60px]"
         />
       </div>
     </div>
@@ -195,7 +195,7 @@ bordered
     <div class="w-full md:flex md:justify-center mt-3 overflow-y-auto overflow-x-hidden h-[500px]">
     <div>
         <!-- User Area -->
-        <div class="p-4 md:w-[600px] h-[130px] border border-[#ddb7ab] rounded-[15px] drop-shadow-md flex md:justify-between
+        <div class="p-4 md:w-[600px] min-[390px]:h-[160px] border border-[#ddb7ab] rounded-[15px] drop-shadow-md flex md:justify-between
         min-[390px]:justify-center">
           <div class="md:flex items-center gap-2">
             <div>
