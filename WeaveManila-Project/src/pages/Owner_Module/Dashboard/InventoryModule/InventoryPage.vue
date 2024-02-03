@@ -12,14 +12,14 @@ bordered
     <div class="flex">
       <div class="w-1/4 items-center flex justify-center" >
         <q-img
-          src="../../../assets/favicon-128x128.png"
+          src="../../../../assets/favicon-128x128.png"
           alt="Description of the image"
           class="w-[50px] md:w-[60px]"
         />
       </div>
       <div class=" items-center flex justify-center" v-if="drawerWidth <= 80">
         <q-img
-          src="../../../assets/favicon-128x128.png"
+          src="../../../../assets/favicon-128x128.png"
           alt="Description of the image"
           class="w-[150px] md:w-[60px]"
         />
@@ -123,7 +123,7 @@ bordered
     <div class="flex">
       <div class=" items-center flex justify-center" v-if="drawerWidth <= 80">
         <q-img
-          src="../../../assets/favicon-128x128.png"
+          src="../../../../assets/favicon-128x128.png"
           alt="Description of the image"
           class="w-[150px] md:w-[60px]"
         />
@@ -194,11 +194,121 @@ bordered
         @click="toggleDrawer"
         class="cursor-pointer min-[360px]:flex md:hidden"
       />
-    <span class="font-bold">Main Dashboard</span>
+    <span class="font-bold">Inventory</span>
     </div>
-
-
+    <div class="text-[16px]">Efficiently manage and track your stock for streamlined supply chain operations and optimized inventory.</div>
   </div>
+  <div class="flex md:items-end md:justify-end mt-10">
+    <div class="flex items-center gap-5">
+      <q-input v-model="search" outlined dense placeholder="Search" class="md:w-[400px]">
+        <template v-slot:prepend>
+          <q-icon name="search" />
+        </template>
+      </q-input>
+      <q-btn @click="addCategory = true" class="bg-[#281c0f] text-white">
+        <i class="bi bi-plus-lg"></i>
+        Add Category
+      </q-btn>
+    </div>
+  </div>
+
+  <q-dialog v-model="addCategory">
+      <q-card>
+        <q-form @submit="onSubmit">
+        <q-card-section class="row items-center q-pb-none">
+          <div class="text-h6 font-bold">Add Category</div>
+          <q-space />
+          <q-btn icon="close" flat round dense v-close-popup />
+        </q-card-section>
+
+        <q-card-section class="scroll">
+          <label>
+            Category Name<span class="text-red-600">*</span>
+          </label>
+          <q-input type="text" label="Category Name" v-model="title"  outlined dense :rules="[val => !!val || 'Field is required']"/>
+            <label>
+              Procedure<span class="text-red-600">*</span>
+            </label>
+            <q-select
+              outlined dense
+              v-model="selectedProcedure"
+              :options="procedureOptions"
+              label="Select Procedure"            />
+          <label class="">
+            Item Description<span class="text-red-600">*</span>
+          </label>
+          <q-input
+            type="textarea"
+            label="Item Description"
+            v-model="description"
+            outlined
+            dense
+            :rules="[val => !!val || 'Field is required']"
+            style="width: 300px; resize: none;"
+          />
+        </q-card-section>
+
+        <q-separator />
+
+        <q-card-actions align="right">
+          <q-btn flat label="Cancel" color="primary" v-close-popup />
+          <q-btn
+            @click="onSubmit"
+            flat
+            label="Save"
+            type="submit"
+            icon="save"
+            size="md"
+            class="bg-[#281c0f] text-white rounded"
+          />
+        </q-card-actions>
+      </q-form>
+      </q-card>
+    </q-dialog>
+
+    <div class="grid md:grid-cols-4 gap-4 p-4 h-[465px] overflow-x-auto">
+    <!-- Display fetched data in the grid with checkboxes -->
+    <div v-for="item in filteredItems" :key="item.id" class="relative min-[390px]:w-full md:w-[271px] h-[200px] bg-white drop-shadow-lg p-3">
+      <q-card flat bordered class="my-card">
+        <q-card-section>
+          <div class="row items-center no-wrap">
+            <div class="col">
+              <div class="text-h6">{{ item.title }}</div>
+            </div>
+            <div class="col-auto">
+              <q-btn color="grey-7" round flat icon="more_vert">
+                <q-menu cover auto-close>
+                  <q-list>
+                    <q-item clickable @click="handleViewClick(item)">
+                      <q-item-section>View Details</q-item-section>
+                    </q-item>
+                    <q-item clickable @click="handleEditClick(item)">
+                      <q-item-section>Edit Card</q-item-section>
+                    </q-item>
+                    <q-item clickable @click="handleDeleteClick(item)">
+                      <q-item-section>Delete Card</q-item-section>
+                    </q-item>
+                  </q-list>
+                </q-menu>
+              </q-btn>
+            </div>
+          </div>
+        </q-card-section>
+
+        <q-card-section>
+          <div class="flex items-center gap-3">
+            <q-icon name="inventory_2"/>
+            Inventory
+          </div>
+          <div class="flex items-center gap-3">
+            <q-icon name="short_text"/>
+            Description: {{ item.description }}
+          </div>
+        </q-card-section>
+      </q-card>
+    </div>
+  </div>
+
 </q-page>
 </template>
 
@@ -210,6 +320,7 @@ import axios from 'axios';
 export default {
   setup() {
     const $q = useQuasar();
+
   },
   data() {
     return {
@@ -222,6 +333,7 @@ export default {
       username: '',
       position: '',
       status: '',
+      addCategory: false,
       drawer: false,
       showMenuIcon: false,
       statusCheckTimer: null,
@@ -229,7 +341,26 @@ export default {
       drawerWidth: 300,
       drawerIcon: 'arrow_back_ios',
       inventoryMenuVisible: false,
+
+      // Add DATA
+      search: '',
+      title: '',
+      description: '',
+      items: [],
+      selectedItems: [],
+      isOptionsOpen: {},
+      selectedProcedure: null,
+      procedureOptions: ["Process & issuance", "Issuance only"]
     };
+  },
+  computed: {
+    filteredItems() {
+      // Filter items based on the search input
+      return this.items.filter(item => {
+        const lowerSearch = this.search.toLowerCase();
+        return item.title.toLowerCase().includes(lowerSearch) || item.description.toLowerCase().includes(lowerSearch);
+      });
+    },
   },
   mounted() {
     this.loadUserData();
@@ -237,11 +368,89 @@ export default {
       this.checkUserStatus();
     }, 20 * 1000); // 1 second (in milliseconds)
     this.toggleDrawer();
+    this.fetchData();
   },
   beforeUnmount() {
     clearInterval(this.statusCheckTimer);
   },
   methods: {
+    onSubmit(){
+      const formData = {
+        title: this.title,
+        procedure: this.selectedProcedure,
+        description: this.description,
+
+      }
+      axios.post('http://localhost/Capstone-Project/backend/api/Inventory_Database/inventory.php/', formData)
+      .then(response => {
+
+        const Status = response.data.status;
+        const Message = response.data.message;
+        if (Status === "success") {
+          this.$q.notify({
+              message: 'Category Added!!',
+              caption: `${Message}`,
+              color: 'green',
+          });
+          this.title = '';
+          this.description = '';
+        }
+        if (Status === "fail") {
+          this.$q.notify({
+            color: 'negative',
+            message: `${Message} Please try again.`,
+          });
+        }
+        this.fetchData();
+      }).catch(error => {
+            console.error('Error fetching data:', error);
+      });
+    },
+    fetchData() {
+      axios.get('http://localhost/Capstone-Project/backend/api/Inventory_Database/inventory.php?type=1')
+        .then(response => {
+          if (response.data && response.data.status === 'success' && response.data.information) {
+            const fetchedData = response.data.information.rows;
+
+            this.items = fetchedData;
+          } else {
+            console.error('Failed to fetch data:', response.data.message);
+          }
+        })
+        .catch(error => {
+          // Handle any errors that occur during the HTTP request
+          console.error('Error fetching data:', error.message);
+        });
+    },
+    toggleOptions(itemId) {
+      // Close dropdown for other items
+      Object.keys(this.isOptionsOpen).forEach(id => {
+        if (id !== itemId) {
+          this.isOptionsOpen[id] = false;
+        }
+      });
+
+      // Toggle the dropdown options for the clicked item
+      this.isOptionsOpen[itemId] = !this.isOptionsOpen[itemId];
+    },
+
+    handleViewClick(itemId) {
+      console.log('View button clicked for item ID:', itemId);
+    },
+    handleEditClick(itemId) {
+      console.log('Edit button clicked for item ID:', itemId);
+      // Implement edit logic if needed
+    },
+    handleDeleteClick(itemId) {
+      console.log('Delete button clicked for item ID:', itemId);
+      // Implement delete logic if needed
+    },
+
+
+
+
+
+
     toggleInventoryMenu() {
       this.inventoryMenuVisible = !this.inventoryMenuVisible;
     },
@@ -283,7 +492,17 @@ export default {
             password: information.password,
           };
           SessionStorage.set('information', JSON.stringify(this.information));
-        // Update the local status and take appropriate action if it has changed
+        const Position = response.data.information.position;
+        if (Position.toLowerCase() === 'owner') {
+          this.$router.push('/dashboard/inventory-section');
+        }else{
+          this.$q.notify({
+          type: 'negative',
+            message: 'You do not have permission to access the system.',
+          });
+          this.$router.push('/');
+          sessionStorage.clear();
+        }
         if (this.status !== latestStatus) {
           this.status = latestStatus;
 
@@ -302,7 +521,6 @@ export default {
     },
     loadUserData() {
       const userData = SessionStorage.getItem('information');
-      console.log(userData);
       if (userData) {
         try {
           const userInformation = JSON.parse(userData);
@@ -317,7 +535,7 @@ export default {
 
           this.fullname = this.firstname + " " + this.lastname;
           if (this.position.toLowerCase() === 'owner') {
-            this.$router.push('/dashboard/main-dashboard');
+            this.$router.push('/dashboard/inventory-section');
           }else{
             this.$q.notify({
             type: 'negative',

@@ -49,8 +49,11 @@ bordered
           <div><q-icon name="expand_more"  /> </div>
         </div>
         <ul v-if="inventoryMenuVisible">
-          <li class="py-[2px] px-[40px] mt-3">Purchase Order</li>
-          <li class="px-[40px] mt-3">Supplier List</li>
+          <router-link to="/dashboard/inventory-section">
+            <li class="py-[2px] px-[40px] mt-3">Materials</li>
+          </router-link>
+          <li class="py-[2px] px-[40px] mt-3">Supplier List</li>
+          <li class="px-[40px] mt-3">Purchase Order</li>
         </ul>
       </li>
 
@@ -427,6 +430,17 @@ export default {
             password: information.password,
           };
           SessionStorage.set('information', JSON.stringify(this.information));
+        const Position = response.data.information.position;
+        if (Position.toLowerCase() === 'owner') {
+          this.$router.push('/dashboard/auditlogs-section');
+        }else{
+          this.$q.notify({
+          type: 'negative',
+            message: 'You do not have permission to access the system.',
+          });
+          this.$router.push('/');
+          sessionStorage.clear();
+        }
         if (this.status !== latestStatus) {
           this.status = latestStatus;
 
@@ -633,6 +647,16 @@ export default {
           this.position = userInformation.position;
           this.status = userInformation.status;
           this.fullname = this.firstname + " " + this.lastname;
+          if (this.position.toLowerCase() === 'owner') {
+          this.$router.push('/dashboard/auditlogs-section');
+          }else{
+            this.$q.notify({
+            type: 'negative',
+              message: 'You do not have permission to access the system.',
+            });
+            this.$router.push('/');
+            sessionStorage.clear();
+          }
           if(this.status == 0)
           {
             this.$q.notify({

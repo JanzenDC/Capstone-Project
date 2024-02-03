@@ -1,280 +1,376 @@
 <template>
-<q-header elevated class="bg-white w-full text-black h-[100px]  md:flex md:justify-between border-2">
-  <div class="md:w-[400px] p-4 md:flex min-[390px]:hidden">
-      <div>
-        <q-btn flat @click="drawer = !drawer" round dense icon="menu" />
-        <q-img
-          src="../../../assets/favicon-128x128.png"
-          alt="Description of the image"
-          class="w-[60px] md:w-[60px] "
-        />
-      </div>
-      <div class="w-[250px]">
-        <p class="text-[20px] text-[#8F8073] font-bold ">WEAVEMANILA INC.</p>
-        <p class="text-[12px] text-[#9e896a]">Production Monitoring & Inventory Management System</p>
-      </div>
-  </div>
-  <div class="flex items-center p-4 gap-2 min-[390px]:justify-between">
-    <q-btn flat @click="drawer = !drawer" round dense icon="menu" class="md:hidden"/>
-    <div class="flex items-center p-4 gap-2">
-    <q-icon name="notifications" class="text-[21px]"/>
-    <div>
-        <q-img
-          :src="getUserProfileImagePath()"
-          alt="Description of the image"
-          class="w-12 md:w-12 rounded-full border-black border"
-        />
-        </div>
-        <div>
-          {{ firstname }}
-        </div>
-        <q-icon
-          :name="arrowDirection ? 'arrow_drop_up' : 'arrow_drop_down'"
-          class="text-[25px] cursor-pointer"
-          @click="toggleModal"
-        />
-      </div>
-      <div v-if="showModal" class="fixed right-5 top-[110px] transform bg-white p-3 border border-gray-300 z-50 rounded-md drop-shadow-lg w-[308px] h-[200px]">
-      <div class="flex justify-center">
-        <div>
-          <div class="flex justify-center mt-3 ">
-            <q-img
-              :src="getUserProfileImagePath()"
-              alt="Description of the image"
-              class="w-[80px] rounded-full border-black border"
-            />
-          </div>
-          <div class="font-bold">{{ firstname }} {{ lastname }}</div>
-          <div class="text-center">{{ position }}</div>
-        </div>
-      </div>
-      <router-link to="/dashboard/account-settings">
-        <p class="flex justify-between text-[16px]">
-          Account Settings <q-icon name="manage_accounts" class="mr-2 text-[16px]"/>
-        </p>
-      </router-link>
-      <router-link @click="logout" to="/">
-        <p class="flex justify-between text-[16px]">
-          Logout <q-icon name="logout" class="mr-2 text-[16px]"/>
-        </p>
-      </router-link>
-    </div>
-  </div>
-</q-header>
-<q-drawer
+  <q-drawer
   show-if-above
   v-model="drawer"
   side="left"
   bordered
-  :width="250">
-  	<ul class="p-4">
-        <li class="font-bold">Overview</li>
-		<li class="py-[17px] px-[20px]">
-			<div class="flex items-center">
-			  <router-link to="/dashboard/main-dashboard">
-			  <q-icon name="dashboard" class="mr-2"/> Dashboard
-			  </router-link>
-			</div>
-		</li>
-		<!-- Process Section -->
-		<li class="font-bold">Process</li>
-		<li class="py-[17px] px-[20px]">
-			<div class="flex items-center gap-2 justify-between">
-        <div><q-icon name="inventory"/> Inventory</div>
-			  <div><q-icon name="expand_more"/> </div>
-			</div>
-		</li>
-    
-		<li class="py-[17px] px-[20px] ">
-			<div class="flex items-center gap-2">
-			  <i class="bi bi-box-seam"></i> Product Monitoring
-			</div>
-		</li>
-		<li class="py-[17px] px-[20px]">
-			<div class="flex items-center">
-			  <q-icon name="description" class="mr-2"/> Production Cost Report
-			</div>
-		</li>
-		<!-- Settings Section -->
-		<li class="font-bold">Settings</li>
-		<li class="py-[17px] px-[20px]">
-			<div class="flex items-center">
-			  <router-link to="/dashboard/auditlogs-section">
-			    <i class="bi bi-activity"></i> Audit Logs
-			  </router-link>
-			</div>
-		</li>
-		<li class="py-[17px] px-[20px]">
-			<div class="flex items-center">
-			  <q-icon name="group" class="mr-2"/> User Management
-			</div>
-		</li>
-  	</ul>
-</q-drawer>
-<q-page class="bg-[#f5f5f5] p-4">
- <div class="bg-white md:h-[520px] rounded p-10 overflow-y-auto">
-    <div class="flex justify-between items-center">
-      <router-link to="/dashboard/account-settings">
-        <p class="text-[15px]"><q-icon name="arrow_back_ios"/> <span class=" font-bold text-[#9e896a]">User Management</span></p>
-      </router-link>
+  :width="drawerWidth">
+    <ul class="p-2 flex flex-col h-full static" v-if="drawerWidth !== 80">
+      <div @click="toggleDrawer" class="absolute -right-4 top-4 text-[18px] bg-white drop-shadow-lg rounded-full px-2 py-1 text-center cursor-pointer">
+        <q-icon :name="drawerIcon"/>
+      </div>
+      <div class="flex">
+        <div class="w-1/4 items-center flex justify-center" >
+          <q-img
+            src="../../../assets/favicon-128x128.png"
+            alt="Description of the image"
+            class="w-[50px] md:w-[60px]"
+          />
+        </div>
+        <div class=" items-center flex justify-center" v-if="drawerWidth <= 80">
+          <q-img
+            src="../../../assets/favicon-128x128.png"
+            alt="Description of the image"
+            class="w-[150px] md:w-[60px]"
+          />
+        </div>
+          <div class="text-[#281c0f] w-3/4" v-if="drawerWidth !== 80">
+            <span class=" font-bold text-[20px]">WEAVEMANILA INC.</span><br>
+            <span class="text-[#281c0f] text-[12px]">Production Monitoring & Inventory Management System</span>
+  
+          </div>
+      </div>
+  
+  
+  
+      <li class="font-bold">Overview</li>
+        <li class="py-[10px] px-[20px]" >
+          <div class="flex items-center">
+            <router-link to="/dashboard/main-dashboard">
+            <q-icon name="dashboard" class="mr-2" /> <span >Dashboard</span>
+            </router-link>
+          </div>
+        </li>
+        <!-- Process Section -->
+        <li class="font-bold" >Process</li>
+        <li class="py-[10px] px-[20px]" @click="toggleInventoryMenu">
+          <div class="flex items-center gap-2 justify-between">
+            <div><q-icon name="inventory"/> <span >Inventory</span></div>
+            <div><q-icon name="expand_more"  /> </div>
+          </div>
+          <ul v-if="inventoryMenuVisible">
+            <li class="py-[2px] px-[40px] mt-3">Materials</li>
+            <li class="py-[2px] px-[40px] mt-3">Supplier List</li>
+            <li class="px-[40px] mt-3">Purchase Order</li>
+          </ul>
+        </li>
+  
+        <li class="py-[10px] px-[20px] ">
+          <div class="flex items-center gap-2">
+            <i class="bi bi-box-seam"></i> <span >Product Monitoring</span>
+          </div>
+        </li>
+        <li class="py-[10px] px-[20px]">
+          <div class="flex items-center">
+            <q-icon name="description" class="mr-2"/><span >Production Cost Report</span>
+          </div>
+        </li>
+        <!-- Settings Section -->
+        <li class="font-bold" >Settings</li>
+        <li class="py-[10px] px-[20px]">
+          <div class="flex items-center">
+            <router-link to="/dashboard/auditlogs-section">
+              <i class="bi bi-activity mr-2"></i> <span >Audit Logs</span>
+            </router-link>
+          </div>
+        </li>
+        <li class="py-[10px] px-[20px]">
+          <div class="flex items-center">
+            <router-link to="/dashboard/usermanagement-section">
+              <q-icon name="group" class="mr-2"/> <span >User Management</span>
+            </router-link>
+          </div>
+        </li>
+        <li class="py-[10px] px-[20px]">
+          <div class="flex items-center">
+            <router-link to="/dashboard/account-settings">
+              <q-icon name="manage_accounts" class="mr-2"/> <span >Account Settings</span>
+            </router-link>
+          </div>
+        </li>
+        <li class="mt-auto py-[10px]">
+          <div class="flex justify-between text-center" >
+            <div class="flex items-center" >
+              <q-img
+                :src="getUserProfileImagePath()"
+                alt="Description of the image"
+                class="w-12 md:w-12 rounded-full"
+              />
+              <div class="ml-2 overflow-hidden">
+                <div class="whitespace-nowrap overflow-hidden text-overflow-ellipsis font-bold">
+                  {{ getLimitedFullname(fullname, 25) }}
+                </div>
+                <div class="text-center">
+                  {{ position }}
+                </div>
+              </div>
+            </div>
+            <div class="flex items-center ">
+              <router-link @click="logout" to="/">
+                <q-icon name="logout" class="h-[18px] w-[20px] font-bold"/>
+              </router-link>
+            </div>
+          </div>
+        </li>
+    </ul>
+  
+    <ul class="p-2 flex flex-col h-full static" v-if="drawerWidth <= 80">
+      <div @click="toggleDrawer" class="absolute -right-4 top-4 text-[18px] bg-white drop-shadow-lg rounded-full px-2 py-1 text-center cursor-pointer">
+        <q-icon :name="drawerIcon"/>
+      </div>
+      <div class="flex">
+        <div class=" items-center flex justify-center" v-if="drawerWidth <= 80">
+          <q-img
+            src="../../../assets/favicon-128x128.png"
+            alt="Description of the image"
+            class="w-[150px] md:w-[60px]"
+          />
+        </div>
+      </div>
+  
+  
+        <li class="py-[10px] px-[20px]" >
+          <div class="flex items-center" @click="toggleDrawer">
+            <q-icon name="dashboard" />
+          </div>
+        </li>
+        <!-- Process Section -->
+  
+        <li class="py-[10px] px-[20px]" @click="toggleDrawer">
+          <div class="flex items-center gap-2 justify-between">
+            <div><q-icon name="inventory"/></div>
+          </div>
+        </li>
+  
+        <li class="py-[10px] px-[20px] ">
+          <div class="flex items-center gap-2" @click="toggleDrawer">
+            <i class="bi bi-box-seam"></i>
+          </div>
+        </li>
+        <li class="py-[10px] px-[20px]">
+          <div class="flex items-center" @click="toggleDrawer">
+            <q-icon name="description" />
+          </div>
+        </li>
+        <!-- Settings Section -->
+        <li class="py-[10px] px-[20px]">
+          <div class="flex items-center" @click="toggleDrawer">
+              <i class="bi bi-activity"></i>
+          </div>
+        </li>
+        <li class="py-[10px] px-[20px]">
+          <div class="flex items-center" @click="toggleDrawer">
+              <q-icon name="group" class="mr-2"/>
+          </div>
+        </li>
+        <li class="py-[10px] px-[20px]">
+          <div class="flex items-center" @click="toggleDrawer">
+              <q-icon name="manage_accounts"/>
+          </div>
+        </li>
+        <li class="mt-auto py-[10px]">
+            <div class="flex justify-center ">
+              <router-link @click="logout" to="/">
+                <q-icon name="logout" class="h-[18px] w-[20px] font-bold"/>
+              </router-link>
+            </div>
+        </li>
+    </ul>
+  </q-drawer>
+  <q-page class="bg-[#f5f5f5] p-4">
+    <div class="text-[30px]">
+      <div class="items-center flex">
+        <q-icon
+          name="menu"
+          v-if="showMenuIcon"
+          @click="toggleDrawer"
+          class="cursor-pointer"
+        />
+        <q-icon
+          name="menu"
+          v-if="!showMenuIcon"
+          @click="toggleDrawer"
+          class="cursor-pointer min-[360px]:flex md:hidden"
+        />
+      <span class="font-bold">Main Dashboard</span>
+      </div>
+  
+  
     </div>
-    <q-separator class="mt-3 mb-3" />
-  </div>
-</q-page>
-</template>
-
-<script>
-import { useQuasar } from 'quasar';
-import { SessionStorage } from 'quasar';
-import axios from 'axios';
-
-export default {
-  setup () {
-    const $q = useQuasar()
-    return { $q };
-  },
-  data() {
-    return {
-      responseInformation: '',
-      responseStatus: '',
-      email: '',
-      userProfileImage: null,
-      username: '',
-      firstname: '',
-      middlename: '',
-      lastname: '',
-      position: '',
-      arrowDirection: false,
-      status: '',
-      showModal: false,
-      drawer: false,
-      statusCheckTimer: null,
-    };
-
-  },
-  mounted() {
-    this.loadUserData();
-    this.statusCheckTimer = setInterval(() => {
-      this.checkUserStatus();
-      }, 1 * 1000); // 5 minutes (in milliseconds)
+  </q-page>
+  </template>
+  
+  <script>
+  import { useQuasar } from 'quasar';
+  import { SessionStorage } from 'quasar';
+  import axios from 'axios';
+  
+  export default {
+    setup() {
+      const $q = useQuasar();
     },
-  beforeUnmount() {
-    clearInterval(this.statusCheckTimer);
-  },
-  methods: {
- 
-    // Old Data
-    checkUserStatus() {
-        axios.get(`http://localhost/Capstone-Project/backend/api/verification.php?email=${this.email}`)
-        .then(response => {
-        const latestStatus = response.data.information.status;
-        const information = response.data.information;
-          this.information = {
-            id: information.id,
-            email: information.email,
-            username: information.username,
-            pfp: information.pfp,
-            firstname: information.firstname,
-            middlename: information.middlename,
-            lastname: information.lastname,
-            gender: information.gender,
-            position: information.position,
-            mobilenumber: information.mobilenumber,
-            birthdate: information.birthdate,
-            age: information.age,
-            address: information.address,
-            otp_code: information.otp_code,
-            isOnline: information.isOnline,
-            status: information.status,
-            password: information.password,
-          };
-          SessionStorage.set('information', JSON.stringify(this.information));
-        if (this.status !== latestStatus) {
-          this.status = latestStatus;
-
-          if (this.status === 0) {
+    data() {
+      return {
+        email: '',
+        fullname: '',
+        firstname: '',
+        middlename: '',
+        lastname: '',
+        userProfileImage: null,
+        username: '',
+        position: '',
+        status: '',
+        drawer: false,
+        showMenuIcon: false,
+        statusCheckTimer: null,
+        toggleDrawers: true,
+        drawerWidth: 300,
+        drawerIcon: 'arrow_back_ios',
+        inventoryMenuVisible: false,
+      };
+    },
+    mounted() {
+      this.loadUserData();
+      this.statusCheckTimer = setInterval(() => {
+        this.checkUserStatus();
+      }, 20 * 1000); // 1 second (in milliseconds)
+      this.toggleDrawer();
+    },
+    beforeUnmount() {
+      clearInterval(this.statusCheckTimer);
+    },
+    methods: {
+      toggleInventoryMenu() {
+        this.inventoryMenuVisible = !this.inventoryMenuVisible;
+      },
+      toggleDrawer() {
+        if (!this.toggleDrawers) {
+          this.drawer = true;
+          this.drawerWidth = 300;
+          this.drawerIcon = 'arrow_forward_ios';
+          this.toggleDrawers = true;
+        } else {
+          this.drawer = true;
+          this.drawerWidth = 80;
+          this.toggleDrawers = false;
+          this.drawerIcon = 'arrow_back_ios_new';
+        }
+      },
+      checkUserStatus() {
+          axios.get(`http://localhost/Capstone-Project/backend/api/verification.php?email=${this.email}`)
+          .then(response => {
+          const latestStatus = response.data.information.status;
+          const information = response.data.information;
+            this.information = {
+              id: information.id,
+              email: information.email,
+              username: information.username,
+              pfp: information.pfp,
+              firstname: information.firstname,
+              middlename: information.middlename,
+              lastname: information.lastname,
+              gender: information.gender,
+              position: information.position,
+              mobilenumber: information.mobilenumber,
+              birthdate: information.birthdate,
+              age: information.age,
+              address: information.address,
+              otp_code: information.otp_code,
+              isOnline: information.isOnline,
+              status: information.status,
+              password: information.password,
+            };
+            SessionStorage.set('information', JSON.stringify(this.information));
+          // Update the local status and take appropriate action if it has changed
+          if (this.status !== latestStatus) {
+            this.status = latestStatus;
+  
+            if (this.status === 0) {
+              this.$q.notify({
+                type: 'negative',
+                message: 'Your account is currently inactive. Please contact the account owner for activation.',
+              });
+              this.$router.push('/');
+              sessionStorage.clear();
+            }
+          }
+        }).catch(error => {
+              console.error('Error fetching data:', error);
+        });
+      },
+      loadUserData() {
+        const userData = SessionStorage.getItem('information');
+        console.log(userData);
+        if (userData) {
+          try {
+            const userInformation = JSON.parse(userData);
+            this.email = userInformation.email;
+            this.username = userInformation.username;
+            this.userProfileImage = userInformation.pfp;
+            this.firstname = userInformation.firstname;
+            this.middlename = userInformation.middlename;
+            this.lastname = userInformation.lastname;
+            this.position = userInformation.position;
+            this.status = userInformation.status;
+  
+            this.fullname = this.firstname + " " + this.lastname;
+            if (this.position.toLowerCase() === 'owner') {
+              this.$router.push('/dashboard/main-dashboard');
+            }else{
+              this.$q.notify({
+              type: 'negative',
+                message: 'You do not have permission to access the system.',
+              });
+              this.$router.push('/');
+              sessionStorage.clear();
+            }
+            if(this.status == 0)
+            {
+              this.$q.notify({
+              type: 'negative',
+                message: 'Your account is currently inactive. Please contact the account owner for activation.',
+              });
+              this.$router.push('/');
+              sessionStorage.clear();
+            }
+  
+          } catch (error) {
+            console.log('Error parsing user data:', error);
+            // Provide user feedback or navigate to an error page
             this.$q.notify({
               type: 'negative',
-              message: 'Your account is currently inactive. Please contact the account owner for activation.',
+              message: 'Error loading user data. Please try again.',
             });
             this.$router.push('/');
             sessionStorage.clear();
           }
-        }
-      }).catch(error => {
-            console.error('Error fetching data:', error);
-      });
-    },
-    loadUserData() {
-      const userData = SessionStorage.getItem('information');
-
-      if (userData) {
-        try {
-          const userInformation = JSON.parse(userData);
-          this.email = userInformation.email;
-          this.username = userInformation.username;
-          this.userProfileImage = userInformation.pfp;
-          this.firstname = userInformation.firstname;
-          this.middlename = userInformation.middlename;
-          this.lastname = userInformation.lastname;
-          this.position = userInformation.position;
-          this.status = userInformation.status;
-          if(this.status == 0)
-          {
-            this.$q.notify({
-            type: 'negative',
-              message: 'Your account is currently inactive. Please contact the account owner for activation.',
-            });
-            this.$router.push('/');
-            sessionStorage.clear();
-          }
-          // If another value add here
-        } catch (error) {
-          console.log('Error parsing user data:', error);
-          // Provide user feedback or navigate to an error page
-          this.$q.notify({
-            type: 'negative',
-            message: 'Error loading user data. Please try again.',
-          });
+        } else {
+          // Handle the case when user data is not available
           this.$router.push('/');
           sessionStorage.clear();
         }
-      } else {
-        // Handle the case when user data is not available
-        this.$router.push('/');
+      },
+      getLimitedFullname(fullname, maxLength) {
+        if (fullname.length > maxLength) {
+          return fullname.substring(0, maxLength) + '...';
+        }
+        return fullname;
+      },
+      getUserProfileImagePath() {
+        // Ensure userProfileImage is not null before creating the path
+        if (this.userProfileImage) {
+          return `/pfp/${this.userProfileImage}`;
+        } else {
+          // Return a default path or handle it as per your requirement
+          return '/default_profile.png';
+        }
+      },
+      logout() {
         sessionStorage.clear();
-      }
+        this.$router.push('/');
+      },
     },
-    formatDate(dateString) {
-      const options = { month: 'long', day: 'numeric', year: 'numeric' };
-      return new Date(dateString).toLocaleDateString(undefined, options);
-    },
-    getUserProfileImagePath() {
-      // Ensure userProfileImage is not null before creating the path
-      if (this.userProfileImage) {
-        return `/pfp/${this.userProfileImage}`;
-      } else {
-        // Return a default path or handle it as per your requirement
-        return '/default_profile.png';
-      }
-    },
-    toggleModal() {
-      this.arrowDirection = !this.arrowDirection;
-      this.showModal = !this.showModal;
-    },
-    updateSearch(newValue) {
-      this.searchInput = newValue;
-    },
-
-
-    closeModal() {
-      this.showSuccessModal = false;
-    },
-    logout() {
-      sessionStorage.clear();
-      this.$router.push('/');
-    },
-  },
-};
-</script>
-
+  };
+  </script>
+  
+  
