@@ -264,12 +264,44 @@ bordered
         </q-card-actions>
       </q-form>
       </q-card>
-    </q-dialog>
+  </q-dialog>
 
-    <div class="grid md:grid-cols-4 gap-4 p-4 h-[465px] overflow-x-auto">
+  <q-dialog v-model="OpenDelete">
+      <q-card>
+        <q-card-section class="row items-center q-pb-none">
+          <div class="py-1 px-2 border text-[24px]"><q-icon name="delete"/></div>
+          <q-space />
+          <q-btn icon="close" flat round dense v-close-popup />
+        </q-card-section>
+
+        <q-card-section>
+          <div class="text-h6 font-bold">Delete Card</div>
+          <p>Are you sure you want to delete this card? This</p>
+          <p>action cannot be undone.</p>
+        </q-card-section>
+
+        <q-card-actions class="flex justify-center items-center">
+          <div class="w-1/2 p-1">
+            <q-btn flat label="Cancel" outline v-close-popup class="w-full border"/>
+          </div>
+          <div class="w-1/2 p-1">
+            <q-btn
+              @click="onDelete"
+              flat
+              label="Delete"
+              type="submit"
+              size="md"
+              class="bg-red-600 text-white rounded w-full"
+            />
+          </div>
+        </q-card-actions>
+      </q-card>
+  </q-dialog>
+
+    <div class="min-[390px]:mt-3 md:grid md:grid-cols-4 gap-4 md:p-4 h-[465px] overflow-y-auto overflow-x-hidden" >
     <!-- Display fetched data in the grid with checkboxes -->
-    <div v-for="item in filteredItems" :key="item.id" class="relative min-[390px]:w-full md:w-[271px] h-[200px] bg-white drop-shadow-lg p-3">
-      <q-card flat bordered class="my-card">
+    <div v-for="item in filteredItems" :key="item.id" class=" min-[390px]:mt-3 relative min-[390px]:w-full md:w-[231px] bg-white drop-shadow-lg p-3">
+      <q-card flat bordered >
         <q-card-section>
           <div class="row items-center no-wrap">
             <div class="col">
@@ -350,7 +382,11 @@ export default {
       selectedItems: [],
       isOptionsOpen: {},
       selectedProcedure: null,
-      procedureOptions: ["Process & issuance", "Issuance only"]
+      procedureOptions: ["Process & issuance", "Issuance only"],
+
+      OpenDelete: false,
+      targetDelete: '',
+
     };
   },
   computed: {
@@ -435,18 +471,40 @@ export default {
     },
 
     handleViewClick(itemId) {
-      console.log('View button clicked for item ID:', itemId);
+      console.log('View button clicked for item ID:', itemId.id);
     },
     handleEditClick(itemId) {
-      console.log('Edit button clicked for item ID:', itemId);
-      // Implement edit logic if needed
+      console.log('Edit button clicked for item ID:', itemId.id);
     },
     handleDeleteClick(itemId) {
-      console.log('Delete button clicked for item ID:', itemId);
-      // Implement delete logic if needed
+      this.targetDelete = itemId.id;
+      this.OpenDelete = true;
     },
 
-
+// Execution
+    onDelete(){
+      axios.delete(`http://localhost/Capstone-Project/backend/api/Inventory_Database/inventory.php/${this.targetDelete}`)
+      .then(response => {
+        const Status = response.data.status;
+        const Message = response.data.message;
+        if (Status === "success") {
+          this.$q.notify({
+              message: 'Category deleted successfully!!',
+              color: 'green',
+          });
+        }
+        if (Status === "fail") {
+          this.$q.notify({
+            color: 'negative',
+            message: `${Message} Please try again.`,
+          });
+        }
+        this.OpenDelete = false;
+        this.fetchData();
+      }).catch(error => {
+            console.error('Error fetching data:', error);
+      });
+    },
 
 
 

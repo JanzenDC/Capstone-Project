@@ -91,10 +91,39 @@
     }
     
 
-    public function httpDelete($payload)
+    public function httpDelete($ids, $payload)
     {
-
+        // Check if $ids is a valid array of IDs
+        if (empty($ids)) {
+            $response = ['status' => 'fail', 'message' => 'Invalid or empty IDs array.'];
+            echo json_encode($response);
+            exit;
+        }
+    
+        $existingIDs = $this->db->where('id', $ids)->getOne('w_category');
+    
+        if (!$existingIDs) {
+            $response = ['status' => 'fail', 'message' => 'IDs not found in the database.'];
+            echo json_encode($response);
+            exit;
+        }
+    
+        // Proceed with deletion
+        $selectedData = $this->db->where('id', $ids)->delete('w_category');
+        if ($selectedData) {
+            $response = [
+                'status' => 'success',
+                'message' => 'Deleted Successfully.',
+            ];
+            echo json_encode($response);
+            exit;
+        } else {
+            $response = ['status' => 'fail', 'message' => 'IDs not found in the database.'];
+            echo json_encode($response);
+            exit;
+        }
     }
+    
     
 
          
@@ -139,7 +168,7 @@ if (isset($_SERVER['REQUEST_METHOD'])) {
             $api->httpPut($ids, $received_data);
             break;
         case 'DELETE':
-            $api->httpDelete($ids,$received_data);
+            $api->httpDelete($ids, $received_data);
             break;
     }
   

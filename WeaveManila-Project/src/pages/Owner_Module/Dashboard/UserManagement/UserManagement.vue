@@ -877,7 +877,6 @@ export default {
         cvalue: this.cvalue,
         type: 3
       };
-      console.log(formData);
       axios.put(`http://localhost/Capstone-Project/backend/api/Usermanagement/userdata.php/${this.selectedUserId}`, formData)
       .then(response => {
         const Status = response.data.status;
