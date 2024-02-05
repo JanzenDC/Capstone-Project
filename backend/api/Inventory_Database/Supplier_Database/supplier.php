@@ -48,7 +48,43 @@
     
     public function httpPost($payload)
     {
+        $requiredFields = ['supplier_Name', 'supplier_Address', 'supplier_ContactName', 'supplier_Cp', 'supplier_Email'];
+        foreach ($requiredFields as $field) {
+            if (!isset($payload[$field])) {
+                $response = ['status' => 'fail', 'message' => 'Missing required field: ' . $field];
+                echo json_encode($response);
+                exit;
+            }   
+        }
+        if (!filter_var($payload['supplier_Email'], FILTER_VALIDATE_EMAIL)) {
+            $response = ['status' => 'fail', 'message' => 'Invalid email format'];
+            echo json_encode($response);
+            exit;
+        }
 
+        if (!is_numeric($payload['supplier_Cp'])) {
+            $response = ['status' => 'fail', 'message' => 'Supplier_Cp must be a numeric value'];
+            echo json_encode($response);
+            exit;
+        }
+
+        $data = [
+            'supplier_name' => $payload['supplier_Name'],
+            'contact_person' => $payload['supplier_ContactName'],
+            'address' => $payload['supplier_Address'],
+            'contact' => $payload['supplier_Cp'],
+            'email' => $payload['supplier_Email'],
+        ];
+        $id = $this->db->insert('w_supplierlist', $data);
+        if ($id) {
+            $response = ['status' => 'success', 'message' => 'Successfully Add in the database'];
+            echo json_encode($response);
+            exit;
+        }else{
+            $response = ['status' => 'fail', 'message' => 'Failed to insert data into the database'];
+            echo json_encode($response);
+            exit;
+        }
     }
     
     

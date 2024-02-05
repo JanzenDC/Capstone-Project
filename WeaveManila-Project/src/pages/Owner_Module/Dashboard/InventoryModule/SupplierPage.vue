@@ -49,7 +49,7 @@ bordered
           <div><q-icon name="expand_more"  /> </div>
         </div>
         <ul v-if="inventoryMenuVisible">
-          <router-link to="/dashboard/supplier-section">
+          <router-link to="/dashboard/inventory-section">
             <li class="py-[2px] px-[40px] mt-3">Materials</li>
           </router-link>
           <router-link to="/dashboard/supplier-section">
@@ -214,7 +214,7 @@ bordered
             <i class="bi bi-plus-lg"></i>
             Add Supplier
           </q-btn>
-          <q-btn v-if="selected.length > 0" @click="Remove" class="bg-red-600 text-white">
+          <q-btn v-if="selected.length > 0" @click="handleDeleteClick" class="bg-red-600 text-white">
             <q-icon name="delete"/>
             Remove
           </q-btn>
@@ -222,61 +222,100 @@ bordered
       </div>
 
 <!-- Add supplier Modal -->
-<q-dialog v-model="addSupplier">
-      <q-card class="w-[388px]">
-        <q-form @submit="onSubmit">
+      <q-dialog v-model="addSupplier">
+          <q-card class="w-[388px]">
+            <q-form @submit="onSubmit">
+            <q-card-section class="row items-center q-pb-none">
+              <div class="text-h6 font-bold">Add Supplier</div>
+              <q-space />
+              <q-btn icon="close" flat round dense v-close-popup />
+            </q-card-section>
+
+            <q-card-section>
+              <label> <!--Supplier Name-->
+                Supplier Name<span class="text-red-600">*</span>
+              </label>
+              <q-input type="text" label="Supplier Name" v-model="suppName" required lazy-rules :no-error-icon="true" outlined dense :rules="[val => !!val || 'Field is required']"/>
+
+              <label> <!--Supplier Address-->
+                Supplier Address<span class="text-red-600">*</span>
+              </label>
+              <q-input type="text" label="Supplier Address" v-model="suppAddress" required lazy-rules :no-error-icon="true" outlined dense :rules="[val => !!val || 'Field is required']"/>
+
+              <label>
+                Contact Person<span class="text-red-600">*</span>
+              </label>
+              <q-input type="text" label="Contact Person" v-model="suppContactName" required lazy-rules :no-error-icon="true" outlined dense :rules="[val => !!val || 'Field is required']"/>
+
+              <label>
+                Contact Number<span class="text-red-600">*</span>
+              </label>
+              <q-input type="tel" label="Contact Number" v-model="suppCp" lazy-rules required :no-error-icon="true" outlined dense :rules="[val => !!val || 'Phone Number is required', val => /^09\d{9}$/g.test(val) || 'Invalid Phone Number']"/>
+
+              <label>
+                Email<span class="text-red-600">*</span>
+              </label>
+              <q-input
+                  type="email"
+                  label="Email"
+                  v-model="suppEmail"
+                  :no-error-icon="true"
+                  outlined
+                  dense
+                  lazy-rules
+                  required
+                  :rules="[ruleEmail]"
+                />
+            </q-card-section>
+
+            <q-separator />
+
+            <q-card-actions align="right">
+              <q-btn flat label="Cancel" color="primary" v-close-popup />
+              <q-btn
+                flat
+                label="Save"
+                type="submit"
+                icon="save"
+                size="md"
+                class="bg-[#281c0f] text-white rounded"
+              />
+            </q-card-actions>
+          </q-form>
+          </q-card>
+      </q-dialog>
+<!-- Delete/Remove Dialog Modal -->
+<q-dialog v-model="OpenDelete">
+      <q-card>
         <q-card-section class="row items-center q-pb-none">
-          <div class="text-h6 font-bold">Add Supplier</div>
+          <div class="py-1 px-2 border text-[24px]"><q-icon name="delete"/></div>
           <q-space />
           <q-btn icon="close" flat round dense v-close-popup />
         </q-card-section>
 
-        <q-card-section class="scroll">
-          <label> <!--Supplier Name-->
-            Supplier Name<span class="text-red-600">*</span>
-          </label>
-          <q-input type="text" label="Supplier Name" v-model="suppName"  outlined dense :rules="[val => !!val || 'Field is required']"/>
-
-          <label> <!--Supplier Address-->
-            Supplier Address<span class="text-red-600">*</span>
-          </label>
-          <q-input type="text" label="Supplier Address" v-model="suppAddress"  outlined dense :rules="[val => !!val || 'Field is required']"/>
-
-          <label>
-            Contact Person<span class="text-red-600">*</span>
-          </label>
-          <q-input type="text" label="Contact Person" v-model="suppName"  outlined dense :rules="[val => !!val || 'Field is required']"/>
-
-          <label>
-            Contact Number<span class="text-red-600">*</span>
-          </label>
-          <q-input type="tel" label="Contact Number" v-model="suppCp"  outlined dense :rules="[val => !!val || 'Phone Number is required', val => /^09\d{9}$/g.test(val) || 'Invalid Phone Number']"/>
-
-          <label>
-            Email<span class="text-red-600">*</span>
-          </label>
-          <q-input type="Email" label="Email" v-model="suppEmail"  outlined dense :rules="[val => !!val || 'Field is required']"/>
-
+        <q-card-section>
+          <div class="text-h6 font-bold">Delete Card</div>
+          <p>Are you sure you want to delete this supplier? This</p>
+          <p>action cannot be undone.</p>
         </q-card-section>
 
-        <q-separator />
-
-        <q-card-actions align="right">
-          <q-btn flat label="Cancel" color="primary" v-close-popup />
-          <q-btn
-            @click="onSubmit"
-            flat
-            label="Save"
-            type="submit"
-            icon="save"
-            size="md"
-            class="bg-[#281c0f] text-white rounded"
-          />
+        <q-card-actions class="flex justify-center items-center">
+          <div class="w-1/2 p-1">
+            <q-btn flat label="Cancel" outline v-close-popup class="w-full border" @click="handleCancel"/>
+          </div>
+          <div class="w-1/2 p-1">
+            <q-btn
+              @click="Remove"
+              flat
+              label="Delete"
+              type="submit"
+              size="md"
+              class="bg-red-600 text-white rounded w-full"
+            />
+          </div>
         </q-card-actions>
-      </q-form>
       </q-card>
   </q-dialog>
-
 
       <div class="py-5">
         <q-table
@@ -317,8 +356,6 @@ bordered
   export default {
     setup() {
         const $q = useQuasar();
-
-        return { $q };
     },
     data() {
       return {
@@ -355,6 +392,13 @@ bordered
       rows : [],
       selected: [],
       search: '',
+      OpenDelete: false,
+      // Supplier Data
+      suppName: '',
+      suppAddress: '',
+      suppContactName: '',
+      suppCp: '',
+      suppEmail: '',
       };
     },
     computed: {
@@ -415,22 +459,83 @@ bordered
       extractSelectedIds() {
         return this.selected.map(item => item.supplierID);
       },
+      // Removing Data
+      handleCancel(){
+        this.selected = [];
+      },
+      handleDeleteClick() {
+        this.OpenDelete = true;
+      },
       Remove() {
         const selectedIds = this.extractSelectedIds();
         axios.delete(`http://localhost/Capstone-Project/backend/api/Inventory_Database/Supplier_Database/supplier.php/${this.id}`, {
           data: { selectedIds: selectedIds },
         }).then((response) => {
-          console.log(response.data);
-          // Handle response as needed
+          this.OpenDelete = false;
+          const Status = response.data.status;
+          const Message = response.data.message;
+          if (Status === "success") {
+            this.$q.notify({
+                message: 'Supplier Removed!!',
+                caption: `${Message}`,
+                color: 'green',
+            });
+            this.fetchData();
+          }
+          if (Status === "fail") {
+            this.$q.notify({
+              color: 'negative',
+              message: `${Message} Please try again.`,
+            });
+          }
         }).catch(error => {
           console.error('Error fetching data:', error);
         });
 
         this.selected = [];
       },
-
-
-
+      // Adding Data
+      onSubmit() {
+          const formData = {
+            supplier_Name: this.suppName,
+            supplier_Address: this.suppAddress,
+            supplier_ContactName: this.suppContactName,
+            supplier_Cp: this.suppCp,
+            supplier_Email: this.suppEmail,
+          }
+          axios.post('http://localhost/Capstone-Project/backend/api/Inventory_Database/Supplier_Database/supplier.php/', formData)
+          .then(response => {
+            const Status = response.data.status;
+            const Message = response.data.message;
+            if (Status === "success") {
+              this.$q.notify({
+                  message: 'Supplier Added!!',
+                  caption: `${Message}`,
+                  color: 'green',
+              });
+              this.suppName = '';
+              this.suppAddress = '';
+              this.suppContactName = '';
+              this.suppCp = '';
+              this.suppEmail = '';
+              this.addSupplier = false;
+              this.fetchData();
+            }
+            if (Status === "fail") {
+              this.$q.notify({
+                color: 'negative',
+                message: `${Message} Please try again.`,
+              });
+            }
+          }).catch(error => {
+            console.error('Error fetching data:', error);
+        });
+      },
+      ruleEmail(value) {
+        // Basic email validation using a regular expression
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(value) || 'Please enter a valid email address';
+      },
 
 
       // Old data

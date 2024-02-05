@@ -235,7 +235,9 @@ bordered
               outlined dense
               v-model="selectedProcedure"
               :options="procedureOptions"
-              label="Select Procedure"            />
+              label="Select Procedure"
+              :rules="[val => !!val || 'Field is required']"
+            />
           <label class="">
             Item Description<span class="text-red-600">*</span>
           </label>
@@ -255,7 +257,6 @@ bordered
         <q-card-actions align="right">
           <q-btn flat label="Cancel" color="primary" v-close-popup />
           <q-btn
-            @click="onSubmit"
             flat
             label="Save"
             type="submit"
@@ -405,7 +406,6 @@ export default {
     this.statusCheckTimer = setInterval(() => {
       this.checkUserStatus();
     }, 20 * 1000); // 1 second (in milliseconds)
-    this.toggleDrawer();
     this.fetchData();
   },
   beforeUnmount() {
@@ -432,6 +432,7 @@ export default {
           });
           this.title = '';
           this.description = '';
+          this.fetchData();
         }
         if (Status === "fail") {
           this.$q.notify({
@@ -439,7 +440,7 @@ export default {
             message: `${Message} Please try again.`,
           });
         }
-        this.fetchData();
+
       }).catch(error => {
             console.error('Error fetching data:', error);
       });
