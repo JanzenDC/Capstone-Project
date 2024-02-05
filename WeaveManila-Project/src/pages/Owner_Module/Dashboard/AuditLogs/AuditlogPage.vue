@@ -223,7 +223,6 @@ bordered
       </q-btn>
     </div>
   </div>
-
   <div class="fixed right-12 top-[200px] transform bg-white z-50 rounded-md border border-gray-500" style="max-width: 350px" v-if="showModifyModal">
     <q-form @submit="onSubmitDate">
       <div class="grid grid-cols-2 gap-2 border-b-[1px]">
