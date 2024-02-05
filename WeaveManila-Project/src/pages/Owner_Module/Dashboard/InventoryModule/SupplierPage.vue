@@ -294,7 +294,7 @@ bordered
       </q-card-section>
 
       <q-card-section>
-        <div class="text-h6 font-bold">Delete Card</div>
+        <div class="text-h6 font-bold">Delete Supplier</div>
         <p>Are you sure you want to delete this supplier? This</p>
         <p>action cannot be undone.</p>
       </q-card-section>

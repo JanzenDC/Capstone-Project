@@ -432,6 +432,8 @@ export default {
           });
           this.title = '';
           this.description = '';
+          this.procedureOptions = [];
+          this.addCategory = false;
           this.fetchData();
         }
         if (Status === "fail") {
