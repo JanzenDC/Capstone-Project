@@ -181,172 +181,172 @@ bordered
       </li>
   </ul>
 </q-drawer>
-  <q-page class="bg-[#f5f5f5] p-4">
-    <div class="text-[30px]">
-      <div class="items-center flex">
-        <q-icon
-          name="menu"
-          v-if="showMenuIcon"
-          @click="toggleDrawer"
-          class="cursor-pointer"
-        />
-        <q-icon
-          name="menu"
-          v-if="!showMenuIcon"
-          @click="toggleDrawer"
-          class="cursor-pointer max-[1020px]:flex min-[1020px]:hidden"
-        />
-      <span class="font-bold text-[#634832]">Supplier List</span>
-      </div>
-      <div class="text-[16px] text-[#967259]">Description for the supplier list goes here</div>
+<q-page class="bg-[#f5f5f5] p-4">
+  <div class="text-[30px]">
+    <div class="items-center flex">
+      <q-icon
+        name="menu"
+        v-if="showMenuIcon"
+        @click="toggleDrawer"
+        class="cursor-pointer"
+      />
+      <q-icon
+        name="menu"
+        v-if="!showMenuIcon"
+        @click="toggleDrawer"
+        class="cursor-pointer max-[1020px]:flex min-[1020px]:hidden"
+      />
+    <span class="font-bold text-[#634832]">Supplier List</span>
     </div>
+    <div class="text-[16px] text-[#967259]">Description for the supplier list goes here</div>
+  </div>
 
-    <div class="bg-white px-4 py-3 mt-10">
+  <div class="bg-white px-4 py-3 mt-10">
 
-      <div class="md:flex md:items-end md:justify-end ">
-        <div class="grid-cols-2 grid gap-2 md:flex items-center md:gap-5">
-          <q-input v-model="search" outlined dense placeholder="Search" class="md:w-[400px] ">
-            <template v-slot:prepend>
-              <q-icon name="search" />
-            </template>
-          </q-input>
-          <q-btn @click="addSupplier = true" class="bg-[#281c0f] text-white">
-            <i class="bi bi-plus-lg"></i>
-            Add Supplier
-          </q-btn>
-          <q-btn v-if="selected.length > 0" @click="handleDeleteClick" class="bg-red-600 text-white">
-            <q-icon name="delete"/>
-            Remove
-          </q-btn>
-        </div>
+    <div class="md:flex md:items-end md:justify-end ">
+      <div class="grid-cols-2 grid gap-2 md:flex items-center md:gap-5">
+        <q-input v-model="search" outlined dense placeholder="Search" class="md:w-[400px] ">
+          <template v-slot:prepend>
+            <q-icon name="search" />
+          </template>
+        </q-input>
+        <q-btn @click="addSupplier = true" class="bg-[#281c0f] text-white">
+          <i class="bi bi-plus-lg"></i>
+          Add Supplier
+        </q-btn>
+        <q-btn v-if="selected.length > 0" @click="handleDeleteClick" class="bg-red-600 text-white">
+          <q-icon name="delete"/>
+          Remove
+        </q-btn>
       </div>
+    </div>
 
 <!-- Add supplier Modal -->
-      <q-dialog v-model="addSupplier">
-          <q-card class="w-[388px]">
-            <q-form @submit="onSubmit">
-            <q-card-section class="row items-center q-pb-none">
-              <div class="text-h6 font-bold">Add Supplier</div>
-              <q-space />
-              <q-btn icon="close" flat round dense v-close-popup />
-            </q-card-section>
+    <q-dialog v-model="addSupplier">
+        <q-card class="w-[388px]">
+          <q-form @submit="onSubmit">
+          <q-card-section class="row items-center q-pb-none">
+            <div class="text-h6 font-bold">Add Supplier</div>
+            <q-space />
+            <q-btn icon="close" flat round dense v-close-popup />
+          </q-card-section>
 
-            <q-card-section>
-              <label> <!--Supplier Name-->
-                Supplier Name<span class="text-red-600">*</span>
-              </label>
-              <q-input type="text" label="Supplier Name" v-model="suppName" required lazy-rules :no-error-icon="true" outlined dense :rules="[val => !!val || 'Field is required']"/>
+          <q-card-section>
+            <label> <!--Supplier Name-->
+              Supplier Name<span class="text-red-600">*</span>
+            </label>
+            <q-input type="text" label="Supplier Name" v-model="suppName" required lazy-rules :no-error-icon="true" outlined dense :rules="[val => !!val || 'Field is required']"/>
 
-              <label> <!--Supplier Address-->
-                Supplier Address<span class="text-red-600">*</span>
-              </label>
-              <q-input type="text" label="Supplier Address" v-model="suppAddress" required lazy-rules :no-error-icon="true" outlined dense :rules="[val => !!val || 'Field is required']"/>
+            <label> <!--Supplier Address-->
+              Supplier Address<span class="text-red-600">*</span>
+            </label>
+            <q-input type="text" label="Supplier Address" v-model="suppAddress" required lazy-rules :no-error-icon="true" outlined dense :rules="[val => !!val || 'Field is required']"/>
 
-              <label>
-                Contact Person<span class="text-red-600">*</span>
-              </label>
-              <q-input type="text" label="Contact Person" v-model="suppContactName" required lazy-rules :no-error-icon="true" outlined dense :rules="[val => !!val || 'Field is required']"/>
+            <label>
+              Contact Person<span class="text-red-600">*</span>
+            </label>
+            <q-input type="text" label="Contact Person" v-model="suppContactName" required lazy-rules :no-error-icon="true" outlined dense :rules="[val => !!val || 'Field is required']"/>
 
-              <label>
-                Contact Number<span class="text-red-600">*</span>
-              </label>
-              <q-input type="tel" label="Contact Number" v-model="suppCp" lazy-rules required :no-error-icon="true" outlined dense :rules="[val => !!val || 'Phone Number is required', val => /^09\d{9}$/g.test(val) || 'Invalid Phone Number']"/>
+            <label>
+              Contact Number<span class="text-red-600">*</span>
+            </label>
+            <q-input type="tel" label="Contact Number" v-model="suppCp" lazy-rules required :no-error-icon="true" outlined dense :rules="[val => !!val || 'Phone Number is required', val => /^09\d{9}$/g.test(val) || 'Invalid Phone Number']"/>
 
-              <label>
-                Email<span class="text-red-600">*</span>
-              </label>
-              <q-input
-                  type="email"
-                  label="Email"
-                  v-model="suppEmail"
-                  :no-error-icon="true"
-                  outlined
-                  dense
-                  lazy-rules
-                  required
-                  :rules="[ruleEmail]"
-                />
-            </q-card-section>
-
-            <q-separator />
-
-            <q-card-actions align="right">
-              <q-btn flat label="Cancel" color="primary" v-close-popup />
-              <q-btn
-                flat
-                label="Save"
-                type="submit"
-                icon="save"
-                size="md"
-                class="bg-[#281c0f] text-white rounded"
+            <label>
+              Email<span class="text-red-600">*</span>
+            </label>
+            <q-input
+                type="email"
+                label="Email"
+                v-model="suppEmail"
+                :no-error-icon="true"
+                outlined
+                dense
+                lazy-rules
+                required
+                :rules="[ruleEmail]"
               />
-            </q-card-actions>
-          </q-form>
-          </q-card>
-      </q-dialog>
+          </q-card-section>
+
+          <q-separator />
+
+          <q-card-actions align="right">
+            <q-btn flat label="Cancel" color="primary" v-close-popup />
+            <q-btn
+              flat
+              label="Save"
+              type="submit"
+              icon="save"
+              size="md"
+              class="bg-[#281c0f] text-white rounded"
+            />
+          </q-card-actions>
+        </q-form>
+        </q-card>
+    </q-dialog>
 <!-- Delete/Remove Dialog Modal -->
 <q-dialog v-model="OpenDelete">
-      <q-card>
-        <q-card-section class="row items-center q-pb-none">
-          <div class="py-1 px-2 border text-[24px]"><q-icon name="delete"/></div>
-          <q-space />
-          <q-btn icon="close" flat round dense v-close-popup />
-        </q-card-section>
+    <q-card>
+      <q-card-section class="row items-center q-pb-none">
+        <div class="py-1 px-2 border text-[24px]"><q-icon name="delete"/></div>
+        <q-space />
+        <q-btn icon="close" flat round dense v-close-popup />
+      </q-card-section>
 
-        <q-card-section>
-          <div class="text-h6 font-bold">Delete Card</div>
-          <p>Are you sure you want to delete this supplier? This</p>
-          <p>action cannot be undone.</p>
-        </q-card-section>
+      <q-card-section>
+        <div class="text-h6 font-bold">Delete Card</div>
+        <p>Are you sure you want to delete this supplier? This</p>
+        <p>action cannot be undone.</p>
+      </q-card-section>
 
-        <q-card-actions class="flex justify-center items-center">
-          <div class="w-1/2 p-1">
-            <q-btn flat label="Cancel" outline v-close-popup class="w-full border" @click="handleCancel"/>
-          </div>
-          <div class="w-1/2 p-1">
-            <q-btn
-              @click="Remove"
-              flat
-              label="Delete"
-              type="submit"
-              size="md"
-              class="bg-red-600 text-white rounded w-full"
-            />
-          </div>
-        </q-card-actions>
-      </q-card>
-  </q-dialog>
+      <q-card-actions class="flex justify-center items-center">
+        <div class="w-1/2 p-1">
+          <q-btn flat label="Cancel" outline v-close-popup class="w-full border" @click="handleCancel"/>
+        </div>
+        <div class="w-1/2 p-1">
+          <q-btn
+            @click="Remove"
+            flat
+            label="Delete"
+            type="submit"
+            size="md"
+            class="bg-red-600 text-white rounded w-full"
+          />
+        </div>
+      </q-card-actions>
+    </q-card>
+</q-dialog>
 
-      <div class="py-5">
-        <q-table
-          class="my-sticky-header-table"
-          flat bordered
-          :rows="filteredTableData"
-          :columns="columns"
-          row-key="supplierID"
-          :selected-rows-label="getSelectedString"
-          selection="multiple"
-          v-model:selected="selected"
-        >
-        <template v-slot:body-cell-selection="props">
-          <q-td :props="props">
-            <q-checkbox
-              v-model="props.selected"
-              :val="props.row.supplierID"
-              @input="handleCheckboxChange(props.row.supplierID)"
-            />
-          </q-td>
-        </template>
-        </q-table>
-      </div>
-
-
-
+    <div class="py-5">
+      <q-table
+        class="my-sticky-header-table"
+        flat bordered
+        :rows="filteredTableData"
+        :columns="columns"
+        row-key="supplierID"
+        :selected-rows-label="getSelectedString"
+        selection="multiple"
+        v-model:selected="selected"
+      >
+      <template v-slot:body-cell-selection="props">
+        <q-td :props="props">
+          <q-checkbox
+            v-model="props.selected"
+            :val="props.row.supplierID"
+            @input="handleCheckboxChange(props.row.supplierID)"
+          />
+        </q-td>
+      </template>
+      </q-table>
     </div>
 
 
-  </q-page>
-  </template>
+
+  </div>
+
+
+</q-page>
+</template>
 
   <script>
   import { useQuasar } from 'quasar';
