@@ -210,10 +210,32 @@ bordered
             <q-icon name="search" />
           </template>
         </q-input>
+        <q-btn-dropdown icon="filter_alt" label="Filter">
+          <q-list>
+            <q-item clickable v-close-popup @click="onItemClick">
+              <q-item-section>
+                <q-item-label>Active</q-item-label>
+              </q-item-section>
+            </q-item>
+
+            <q-item clickable v-close-popup @click="onItemClick">
+              <q-item-section>
+                <q-item-label>All</q-item-label>
+              </q-item-section>
+            </q-item>
+
+            <q-item clickable v-close-popup @click="onItemClick">
+              <q-item-section>
+                <q-item-label>Delete</q-item-label>
+              </q-item-section>
+            </q-item>
+          </q-list>
+        </q-btn-dropdown>
         <q-btn @click="addSupplier = true" class="bg-[#281c0f] text-white">
           <i class="bi bi-plus-lg"></i>
           Add Supplier
         </q-btn>
+
         <q-btn v-if="selected.length > 0" @click="handleDeleteClick" class="bg-red-600 text-white">
           <q-icon name="delete"/>
           Remove
@@ -326,6 +348,7 @@ bordered
         row-key="supplierID"
         :selected-rows-label="getSelectedString"
         selection="multiple"
+        :pagination="initialPagination"
         v-model:selected="selected"
       >
       <template v-slot:body-cell-selection="props">
@@ -379,15 +402,18 @@ bordered
         inventoryMenuVisible: false,
 
         // Add DATA
+        initialPagination: {
+          page: 1,
+          rowsPerPage: 10
+        },
         addSupplier: false,
         columns : [
-
-        {name: 'supplier', label: 'Supplier', field: 'supplier'},
-        {name: 'contact_person', label: 'Contact Person', field: 'contact_person'},
-        {name: 'address', label: 'Address', field: 'address'},
-        {name: 'contact', label: 'Contact', field: 'contact'},
-        {name: 'email', label: 'Email', field: 'email'},
-        {name: 'actions', label: 'Actions', field: 'actions'},
+        {name: 'supplier', label: 'Supplier', field: 'supplier', sortable: true},
+        {name: 'contact_person', label: 'Contact Person', field: 'contact_person', sortable: true},
+        {name: 'address', label: 'Address', field: 'address', sortable: true},
+        {name: 'contact', label: 'Contact', field: 'contact', sortable: true},
+        {name: 'email', label: 'Email', field: 'email', sortable: true},
+        {name: 'actions', label: 'Actions', field: 'actions', sortable: true},
       ],
       rows : [],
       selected: [],
@@ -604,7 +630,9 @@ bordered
             }
           }
         }).catch(error => {
-              console.error('Error fetching data:', error);
+          this.$router.push('/');
+          sessionStorage.clear();
+          console.error('Error fetching data:', error);
         });
       },
       loadUserData() {
