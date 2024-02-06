@@ -194,7 +194,7 @@ bordered
         name="menu"
         v-if="!showMenuIcon"
         @click="toggleDrawer"
-        class="cursor-pointer min-[360px]:flex md:hidden"
+        class="cursor-pointer max-[1020px]:flex min-[1020px]:hidden"
       />
     <span class="font-bold">Main Dashboard</span>
     </div>

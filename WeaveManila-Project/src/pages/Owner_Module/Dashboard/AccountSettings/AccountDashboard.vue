@@ -189,8 +189,15 @@ bordered
       <div class="text-[30px] flex items-center min-[360px]:gap-5">
         <q-icon
           name="menu"
+          v-if="showMenuIcon"
           @click="toggleDrawer"
-          class="cursor-pointer text-[20px] min-[360px]:flex md:hidden "
+          class="cursor-pointer"
+        />
+        <q-icon
+          name="menu"
+          v-if="!showMenuIcon"
+          @click="toggleDrawer"
+          class="cursor-pointer max-[1020px]:flex min-[1020px]:hidden"
         />
           <span class="font-bold">Account Settings</span>
       </div>
