@@ -303,8 +303,8 @@ bordered
 
     <div class="min-[390px]:mt-3 md:grid md:grid-cols-4 gap-4 md:p-4 h-[465px] overflow-y-auto overflow-x-hidden" >
     <!-- Display fetched data in the grid with checkboxes -->
-    <div v-for="item in filteredItems" :key="item.id" class=" min-[390px]:mt-3 relative min-[390px]:w-full md:w-[231px] bg-white drop-shadow-lg p-3">
-      <q-card flat bordered >
+    <div v-for="item in filteredItems" :key="item.id" style="border: #b09582 2px solid " class=" min-[390px]:mt-3 relative min-[390px]:w-full md:w-[231px] bg-white drop-shadow-lg border-[#b09582] rounded">
+      <q-card flat>
         <q-card-section>
           <div class="row items-center no-wrap">
             <div class="col">
@@ -332,11 +332,11 @@ bordered
 
         <q-card-section>
           <div class="flex items-center gap-3">
-            <q-icon name="inventory_2"/>
+            <q-icon name="inventory_2" class="text-[#b09582]"/>
             Inventory
           </div>
           <div class="flex items-center gap-3">
-            <q-icon name="short_text"/>
+            <q-icon name="short_text" class="text-[#b09582]"/>
             Description: {{ item.description }}
           </div>
         </q-card-section>
@@ -476,7 +476,12 @@ export default {
     },
 
     handleViewClick(itemId) {
-      console.log('View button clicked for item ID:', itemId.id);
+      axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/inventory.php?id=${itemId.id}`)
+      .then(response => {
+
+      }).catch(error => {
+            console.error('Error fetching data:', error);
+      });
     },
     handleEditClick(itemId) {
       console.log('Edit button clicked for item ID:', itemId.id);

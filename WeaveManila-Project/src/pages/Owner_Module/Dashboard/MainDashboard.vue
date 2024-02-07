@@ -304,7 +304,7 @@ export default {
     },
     loadUserData() {
       const userData = SessionStorage.getItem('information');
-      console.log(userData);
+
       if (userData) {
         try {
           const userInformation = JSON.parse(userData);
@@ -319,25 +319,27 @@ export default {
 
           this.fullname = this.firstname + " " + this.lastname;
           if (this.position.toLowerCase() === 'owner') {
+
             this.$router.push('/dashboard/main-dashboard');
-          }else{
+          } else {
+
             this.$q.notify({
-            type: 'negative',
+              type: 'negative',
               message: 'You do not have permission to access the system.',
             });
             this.$router.push('/');
             sessionStorage.clear();
           }
-          if(this.status == 0)
-          {
+
+          if (this.status == 0) {
+            
             this.$q.notify({
-            type: 'negative',
+              type: 'negative',
               message: 'Your account is currently inactive. Please contact the account owner for activation.',
             });
             this.$router.push('/');
             sessionStorage.clear();
           }
-
         } catch (error) {
           console.log('Error parsing user data:', error);
           // Provide user feedback or navigate to an error page

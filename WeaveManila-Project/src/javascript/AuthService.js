@@ -37,8 +37,8 @@ const AuthService = {
             password: information.password,
           };
           SessionStorage.set('information', JSON.stringify(this.information));
-
           return this.information;
+
         } else {
           throw new Error('Invalid credentials');
         }

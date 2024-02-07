@@ -3,7 +3,7 @@
     <q-img
       src="../assets/images/login_images.jpg"
       alt="Description of the image"
-      class="min-[390px]:right-[30px] min-[390px]:top-[88px] w-[328px] md:w-[550px] absolute md:top-[50px] md:right-[250px] rounded-[32px]"
+      class=" min-[390px]:right-[30px] min-[390px]:top-[88px] w-[328px] md:w-[550px] absolute md:top-[50px] md:right-[250px] rounded-[32px]"
     />
     <div class="bg-[#9e896a]  md:bg-white md:w-[800px] p-4 h-64 md:h-screen">
       <q-img

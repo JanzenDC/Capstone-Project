@@ -22,23 +22,55 @@
 
     public function httpGet($payload)
     {
-        if ($payload['type'] === '1') {
-            $categoryData = $this->db->get('w_category');
-            if ($categoryData) {
+        if ($payload['type']) {
+            if($payload['type'] == '1'){
+                $categoryData = $this->db->get('w_category');
+                if ($categoryData) {
+                    $response = [
+                        'status' => 'success',
+                        'message' => 'Fetch Successfully.',
+                        'information' => [
+                            'rows' => $categoryData,
+                        ],
+                    ];
+                } else {
+                    $response = [
+                        'status' => 'error',
+                        'message' => 'Failed to fetch data.',
+                    ];
+                }
+                echo json_encode($response);
+                exit;
+            }
+        }
+        else if ($payload['id'])
+        {
+            if (empty($payload['id'])) {
+                $response = ['status' => 'fail', 'message' => 'Invalid or empty IDs array.'];
+                echo json_encode($response);
+                exit;
+            }
+            $getData = $this->db->where('')->getOne('');
+            if($getData){
                 $response = [
                     'status' => 'success',
-                    'message' => 'Fetch Successfully.',
-                    'information' => [
-                        'rows' => $categoryData,
+                    'categoryData' => [
+                        
                     ],
                 ];
-            } else {
+            }else{
                 $response = [
                     'status' => 'error',
-                    'message' => 'Failed to fetch data.',
+                    'message' => 'Invalid data.',
                 ];
+                echo json_encode($response);
+                exit;
             }
-    
+        }else{
+            $response = [
+                'status' => 'error',
+                'message' => 'Invalid payload.',
+            ];
             echo json_encode($response);
             exit;
         }
