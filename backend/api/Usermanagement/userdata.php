@@ -18,7 +18,7 @@
     public function __construct()
     {
 
-        $this->db = new MysqliDB('localhost', 'root', '', 'weavemanila');
+        $this->db = new MysqliDB('localhost', 'root', '', 'weavemanila_main');
     }
 
     public function httpGet($payload)
@@ -31,25 +31,25 @@
         if ($payload['select'] === 'all') {
             $sqlQuery = "
                         SELECT 
-                        w_users.id, 
-                        w_users.firstname, 
-                        w_users.lastname, 
-                        w_users.position, 
-                        w_users.email, 
-                        w_users.profile_pic, 
-                        w_users.account_created, 
-                        w_users.status, 
-                        w_users.password,          
-                        w_users.gender,            
-                        w_users.middlename,        
-                        w_users.mobile_number,      
-                        w_users.birthdate,          
-                        w_users.age,                
-                        w_users.address,            
-                        w_users.civil_status,      
+                        personel_tbl.personelID, 
+                        personel_tbl.firstname, 
+                        personel_tbl.lastname, 
+                        personel_tbl.position, 
+                        personel_tbl.email, 
+                        personel_tbl.profile_pic, 
+                        personel_tbl.account_created, 
+                        personel_tbl.status, 
+                        personel_tbl.password,          
+                        personel_tbl.gender,            
+                        personel_tbl.middlename,        
+                        personel_tbl.mobile_number,      
+                        personel_tbl.birthdate,          
+                        personel_tbl.age,                
+                        personel_tbl.address,            
+                        personel_tbl.civil_status,      
                         audit_logs.action
                         FROM 
-                            w_users
+                            personel_tbl
                         JOIN (
                             SELECT 
                                 uid, 
@@ -58,7 +58,7 @@
                                 audit_logs
                             WHERE 
                                 id IN (SELECT MAX(id) FROM audit_logs GROUP BY uid)
-                        ) AS audit_logs ON w_users.id = audit_logs.uid;
+                        ) AS audit_logs ON personel_tbl.personelID = audit_logs.uid;
                     ";
         
             
@@ -97,11 +97,11 @@
                     exit;
                 }
             }
-            $existingRecord = $this->db->where("id", $payload['userId'])->getOne('w_users');
+            $existingRecord = $this->db->where("personelID", $payload['userId'])->getOne('personel_tbl');
             if($existingRecord)
             {
                 $updateData = ['status' => $payload['status']];
-                $updateStatus = $this->db->where('id', $existingRecord['id'])->update('w_users', $updateData);
+                $updateStatus = $this->db->where('personelID', $existingRecord['personelID'])->update('personel_tbl', $updateData);
                 $response = [
                     'status' => 'success',
                     'message' => 'The status for the user has been successfully set.',
@@ -134,7 +134,7 @@
                 echo json_encode($response);
                 exit;
             }
-            $existingEmail = $this->db->where('email', $email)->getOne('w_users');
+            $existingEmail = $this->db->where('email', $email)->getOne('personel_tbl');
             if($existingEmail){
                 $response = ['status' => 'fail', 'message' => 'Email already exist in the database.'];
                 echo json_encode($response);
@@ -154,7 +154,7 @@
                     'profile_pic' => 'default_pfp.png',
                     'status' => 0,
                 ];
-                $id = $this->db->insert('w_users', $data);
+                $id = $this->db->insert('personel_tbl', $data);
                 
                 // Check if the insertion was successful
                 if ($id) {
@@ -266,7 +266,7 @@
                 echo json_encode($response);
                 exit;
             }
-            $existingEmail = $this->db->where('id', $ids)->getOne('w_users');
+            $existingEmail = $this->db->where('personelID', $ids)->getOne('personel_tbl');
             if($existingEmail){
                 $mobileNumber = isset($payload['cvalue']) ? intval($payload['cvalue']) : null;
                 $updateData = [
@@ -279,7 +279,7 @@
                     'address' => $payload['avalue'],
                     'mobile_number' => $mobileNumber
                 ];
-                $addData = $this->db->where('id', $ids)->update('w_users', $updateData);
+                $addData = $this->db->where('personelID', $ids)->update('personel_tbl', $updateData);
                 if($addData){
                     $response = [
                         'status' => 'success',

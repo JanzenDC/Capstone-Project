@@ -15,6 +15,7 @@ const AuthService = {
     return axios.post('http://localhost/Capstone-Project/backend/api/login.php', formData)
       .then(response => {
         const status = response.data.status;
+        console.log(response.data);
         if (status === 'success') {
           const information = response.data.information;
           this.information = {

@@ -176,7 +176,6 @@ export default {
       showModal: false,
       fullnames: '',
       drawer: false,
-      showMenuIcon: false,
       inventoryMenuVisible: false,
       small: false,
       otpDialog: false,
@@ -294,10 +293,6 @@ export default {
     toggleInventoryMenu() {
       this.inventoryMenuVisible = !this.inventoryMenuVisible;
     },
-    toggleDrawer() {
-      this.drawer = !this.drawer;
-      this.showMenuIcon = !this.showMenuIcon;
-    },
     cancelButtonClick() {
       // Reset the values when the Cancel button is clicked
       this.otpVal = null;
@@ -359,9 +354,8 @@ export default {
           const existingInformation = JSON.parse(SessionStorage.getItem('information')) || {};
           existingInformation.email = this.responseInformation.email;
           SessionStorage.set('information', JSON.stringify(existingInformation));
-
           this.loadUserData();
-          this.$router.push('/dashboard/account-contactinfo');
+            window.location.reload();
         }
         if (this.responseStatus === "fail") {
           this.$q.notify({
@@ -389,7 +383,7 @@ export default {
           this.otpDialog = false;
           this.changeEmail = true;
           this.loadUserData();
-          this.$router.push('/dashboard/account-contactinfo');
+          window.location.reload();
         }
         if (this.responseStatus === "fail") {
           // Notify when the status is "fail" with the response message
@@ -429,7 +423,7 @@ export default {
               });
               SessionStorage.set('information', JSON.stringify(existingInformation));
               this.loadUserData();
-              this.$router.push('/dashboard/account-contactinfo');
+              window.location.reload();
           }
         }).catch(error => {
           console.error('Error submitting form:', error);
@@ -450,10 +444,11 @@ export default {
       axios.put(`http://localhost/Capstone-Project/backend/api/Account_Settings/contactinfo.php/${this.uid}`, formData)
       .then((response) =>{
         this.responseStatus = response.data.status;
-        this.responseInformation = response.data.information;
+        const responseInformation = response.data.information;
+        console.log(response.data)
         if (this.responseStatus === "success") {
             const existingInformation = JSON.parse(SessionStorage.getItem('information')) || {};
-            existingInformation.mobilenumber = this.responseInformation.mobilenumber;
+            existingInformation.mobilenumber = responseInformation.mobilenumber;
             this.$q.notify({
                 message: 'Contact Information Updated!',
                 caption: 'Your contact iformation has been changed successfully.',
@@ -462,8 +457,7 @@ export default {
 
             SessionStorage.set('information', JSON.stringify(existingInformation));
             this.loadUserData();
-            this.$router.push('/dashboard/account-contactinfo');
-
+            window.location.reload();
         }
       }).catch(error => {
         console.error('Error submitting form:', error);

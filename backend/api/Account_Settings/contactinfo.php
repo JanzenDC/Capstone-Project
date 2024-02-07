@@ -17,7 +17,7 @@
     public function __construct()
     {
 
-        $this->db = new MysqliDB('localhost', 'root', '', 'weavemanila');
+        $this->db = new MysqliDB('localhost', 'root', '', 'weavemanila_main');
     }
     public function httpGet($payload)
     {
@@ -36,7 +36,7 @@
                 }
             }
             $userInput = $payload['Email'];
-            $user = $this->db->where("email", $userInput)->getOne('w_users');
+            $user = $this->db->where("email", $userInput)->getOne('personel_tbl');
     
             if ($user === null) {
                 $response = ['status' => 'fail', 'message' => 'Invalid Email.'];
@@ -46,13 +46,13 @@
             $newOtpCode = $payload['code'];
             $expirationTime = date('Y-m-d H:i:s', strtotime('+2 minutes'));
             
-            $existingRecord = $this->db->where("uid", $user['id'])->getOne('w_otp');
+            $existingRecord = $this->db->where("uid", $user['personelID'])->getOne('w_otp');
             
             if ($existingRecord) {
                 $updateData = ['otpcode' => $newOtpCode, 'expiration_time' => $expirationTime];
-                $addotp = $this->db->where('uid', $user['id'])->update('w_otp', $updateData);
+                $addotp = $this->db->where('uid', $user['personelID'])->update('w_otp', $updateData);
             } else {
-                $insertData = ['uid' => $user['id'], 'otpcode' => $newOtpCode, 'expiration_time' => $expirationTime];
+                $insertData = ['uid' => $user['personelID'], 'otpcode' => $newOtpCode, 'expiration_time' => $expirationTime];
                 $addotp = $this->db->insert('w_otp', $insertData);
             }
             
@@ -173,7 +173,7 @@
                     echo json_encode($response);
                     exit;
                 } else {
-                    $userEmailAuth = $this->db->where("email", $payload['userEmail'])->getOne('w_users');
+                    $userEmailAuth = $this->db->where("email", $payload['userEmail'])->getOne('personel_tbl');
                     $response = [
                         'status' => 'success',
                         'message' => 'OTP record updated for the user.',
@@ -199,7 +199,7 @@
             }
 
             //User OTP in database
-            $existingRecord = $this->db->where("email", $payload['oldEmail'])->getOne('w_users');
+            $existingRecord = $this->db->where("email", $payload['oldEmail'])->getOne('personel_tbl');
         
             if ($existingRecord === null) {
                 $response = ['status' => 'fail', 'message' => 'Email not found in the database.'];
@@ -207,7 +207,7 @@
                 exit;
             } else {
                 $updateData = ['email' => $payload['newEmail']];
-                $addotp = $this->db->where('email', $existingRecord['email'])->update('w_users', $updateData);                
+                $addotp = $this->db->where('email', $existingRecord['email'])->update('personel_tbl', $updateData);                
                 $response = [
                     'status' => 'success',
                     'message' => 'Email change completed successfully',
@@ -231,42 +231,41 @@
     
     public function httpPut($ids, $payload)
     {   
-        if($payload['CPnumber']){
-            $requiredFields = ['CPnumber'];
-            foreach ($requiredFields as $field) {
-                if (!isset($payload[$field])) {
-                    $response = ['status' => 'fail', 'message' => 'Missing required field: ' . $field];
-                    echo json_encode($response);
-                    exit;
-                }
-            }
-    
-            $user = $this->db->where("id", $ids)->getOne('w_users');
-    
-            if ($user === null) {
-                $response = ['status' => 'fail', 'message' => 'Invalid target id.'];
+        $requiredFields = ['CPnumber'];
+        foreach ($requiredFields as $field) {
+            if (!isset($payload[$field])) {
+                $response = ['status' => 'fail', 'message' => 'Missing required field: ' . $field];
                 echo json_encode($response);
                 exit;
             }
-            // Update Data in SQL
-            $updateData = [
-                'mobile_number' => $payload['CPnumber'],
+        }
+
+        $user = $this->db->where("personelID", $ids)->getOne('personel_tbl');
+
+        if ($user === null) {
+            $response = ['status' => 'fail', 'message' => 'Invalid target id.'];
+            echo json_encode($response);
+            exit;
+        }
+        // Update Data in SQL
+        $updateDatas = [
+            'mobile_number' => $payload['CPnumber'],
+        ];
+        $addData = $this->db->where('personelID', $ids)->update('personel_tbl', $updateDatas);
+        if($addData){
+            $response = [
+                'status' => 'success',
+                'message' => 'Update Successfully.',
+                'information' => [
+                    'mobilenumber' => $payload['CPnumber'],
+                ]
             ];
-            $addData = $this->db->where('id', $ids)->update('w_users', $updateData);
-            if($addData){
-                $response = [
-                    'status' => 'success',
-                    'message' => 'Update Successfully.',
-                    'information' => [
-                        'mobilenumber' => $payload['CPnumber'],
-                    ]
-                ];
-                echo json_encode($response);
-            } else {
-                $response = ['status' => 'fail', 'message' => 'Failed to update user record.'];
-                echo json_encode($response);
-                exit;
-            }
+            echo json_encode($response);
+            exit;
+        } else {
+            $response = ['status' => 'fail', 'message' => 'Failed to update user record.'];
+            echo json_encode($response);
+            exit;
         }
     }
 

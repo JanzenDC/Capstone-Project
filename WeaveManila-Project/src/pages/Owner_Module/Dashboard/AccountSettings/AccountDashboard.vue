@@ -412,6 +412,7 @@ export default {
       editBasicInfo: false,
       editContactInfo: false,
       editPasswordInfo:false,
+      showMenuIcon: false,
     };
   },
   mounted() {

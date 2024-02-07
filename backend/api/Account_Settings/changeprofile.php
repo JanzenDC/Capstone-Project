@@ -17,7 +17,7 @@
     public function __construct()
     {
 
-        $this->db = new MysqliDB('localhost', 'root', '', 'weavemanila');
+        $this->db = new MysqliDB('localhost', 'root', '', 'weavemanila_main');
     }
     public function httpGet($payload)
     {
@@ -41,7 +41,7 @@
             }
         }
 
-        $user = $this->db->where("id", $ids)->getOne('w_users');
+        $user = $this->db->where("personelID", $ids)->getOne('personel_tbl');
 
         if ($user === null) {
             $response = ['status' => 'fail', 'message' => 'Invalid target id.'];
@@ -53,7 +53,7 @@
             'profile_pic' => $payload['pfp']
         ];
 
-        $addData = $this->db->where('id', $ids)->update('w_users', $updateData);
+        $addData = $this->db->where('personelID', $ids)->update('personel_tbl', $updateData);
 
         if ($addData) {
             $response = [

@@ -113,7 +113,6 @@ export default {
       arrowDirection: false,
       showModal: false,
       drawer: false,
-      showMenuIcon: false,
       inventoryMenuVisible: false,
       month: '',  // Newly added property for v-model binding
       monthsOptions: [
@@ -129,7 +128,6 @@ export default {
     this.statusCheckTimer = setInterval(() => {
     this.checkUserStatus();
     }, 5 * 1000); // 5 minutes (in milliseconds)
-    this.toggleDrawer();
   },
   beforeUnmount() {
     clearInterval(this.statusCheckTimer);
@@ -241,10 +239,6 @@ export default {
     },
     toggleInventoryMenu() {
       this.inventoryMenuVisible = !this.inventoryMenuVisible;
-    },
-    toggleDrawer() {
-      this.drawer = !this.drawer;
-      this.showMenuIcon = !this.showMenuIcon;
     },
     getMonthName(monthNumber) {
       const months = [

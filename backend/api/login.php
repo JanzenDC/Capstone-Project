@@ -17,7 +17,7 @@
     public function __construct()
     {
 
-        $this->db = new MysqliDB('localhost', 'root', '', 'weavemanila');
+        $this->db = new MysqliDB('localhost', 'root', '', 'weavemanila_main');
     }
     public function httpGet($payload)
     {
@@ -43,7 +43,7 @@
                     'status' => 'success',
                     'message' => 'Successfully logged in.',
                     'information' => [
-                        'id' => $existingRecord['id'],
+                        'id' => $existingRecord['personelID'],
                         'email' =>    $existingRecord['email'],
                         'password' => $existingRecord['password'],
                         'username' => $existingRecord['username'],

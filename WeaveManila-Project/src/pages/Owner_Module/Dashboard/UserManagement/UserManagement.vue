@@ -722,7 +722,7 @@ export default {
         this.tableData = response.data.informations.rows.map(row => {
           const time = new Date(row.account_created).toLocaleDateString('en-US', { year: 'numeric', month: 'numeric', day: 'numeric' });          const fullname = row.firstname + " " + row.lastname;
           return {
-            id: row.id,
+            id: row.personelID,
 
               userInfo: {
                 firstname: row.firstname,

@@ -17,7 +17,7 @@
     public function __construct()
     {
 
-        $this->db = new MysqliDB('localhost', 'root', '', 'weavemanila');
+        $this->db = new MysqliDB('localhost', 'root', '', 'weavemanila_main');
     }
     public function httpGet($payload)
     {
@@ -65,7 +65,7 @@
         $monthNumber = $months[$payload['Month']] ?? null;
         $genderCode = $genders[$payload['Gender']] ?? null;
 
-        $user = $this->db->where("email", $ids)->getOne('w_users');
+        $user = $this->db->where("email", $ids)->getOne('personel_tbl');
 
         if ($user === null) {
             $response = ['status' => 'fail', 'message' => 'Invalid Email.'];
@@ -79,7 +79,7 @@
             'birthdate' => sprintf('%04d-%02d-%02d', $payload['Year'], $monthNumber, $payload['Day']),
             'gender' => $genderCode,
         ];
-        $addData = $this->db->where('email', $ids)->update('w_users', $updateData);
+        $addData = $this->db->where('email', $ids)->update('personel_tbl', $updateData);
         if($addData){
             $response = [
                 'status' => 'success',

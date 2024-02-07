@@ -17,7 +17,7 @@
     public function __construct()
     {
 
-        $this->db = new MysqliDB('localhost', 'root', '', 'weavemanila');
+        $this->db = new MysqliDB('localhost', 'root', '', 'weavemanila_main');
     }
     public function httpGet($payload)
     {
@@ -86,9 +86,9 @@
             }
     
             // Update the database with the new filename
-            $existingRecord = $this->db->where("id", $id)->getOne('w_users');
-            $updateData = ['profile_pic' => $uniqueFilename];
-            $updateData = $this->db->where('id', $existingRecord['id'])->update('w_users', $updateData);
+            $existingRecord = $this->db->where("personelID", $id)->getOne('personel_tbl');
+            $updateDatas = ['profile_pic' => $uniqueFilename];
+            $updateData = $this->db->where('personelID', $existingRecord['personelID'])->update('personel_tbl', $updateDatas);
     
             $response = [
                 'status' => 'success',

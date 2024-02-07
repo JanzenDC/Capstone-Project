@@ -353,6 +353,7 @@
         const formData = {
           pfp: this.selectedAvatar,
         };
+        console.log(formData);
           axios.put(`http://localhost/Capstone-Project/backend/api/Account_Settings/changeprofile.php/${this.id}`, formData)
           .then((response) =>{
             this.responseStatus = response.data.status;
