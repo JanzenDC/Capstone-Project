@@ -17,7 +17,7 @@
     public function __construct()
     {
 
-        $this->db = new MysqliDB('localhost', 'root', '', 'weavemanila');
+        $this->db = new MysqliDB('localhost', 'root', '', 'weavemanila_main');
     }
 
     public function httpGet($payload)
@@ -27,7 +27,7 @@
             echo json_encode($response);
             exit;
         }
-        $existingRecord = $this->db->where('email', $payload['email'])->getOne('w_users');
+        $existingRecord = $this->db->where('email', $payload['email'])->getOne('personel_tbl');
         if ($existingRecord){
             $response = [
                 'status' => 'success',

@@ -35,7 +35,7 @@
             }
         }
         
-        $existingRecord = $this->db->where("email", $payload['loginEmail'])->getOne('w_users');
+        $existingRecord = $this->db->where("email", $payload['loginEmail'])->getOne('personel_tbl');
         $password = $payload['loginPassword'];
         if ($existingRecord) {
             if(password_verify($password, $existingRecord['password'])){

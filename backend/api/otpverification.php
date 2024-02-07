@@ -17,7 +17,7 @@
     public function __construct()
     {
 
-        $this->db = new MysqliDB('localhost', 'root', '', 'weavemanila');
+        $this->db = new MysqliDB('localhost', 'root', '', 'weavemanila_main');
     }
     public function httpGet($payload)
     {
@@ -26,44 +26,53 @@
     
     public function httpPost($payload)
     {
-        $requiredFields = ['otpCode'];
+        $requiredFields = ['otpCode', 'email'];
         foreach ($requiredFields as $field) {
             if (!isset($payload[$field])) {
                 $response = ['status' => 'fail', 'message' => 'Missing required field: ' . $field];
                 echo json_encode($response);
                 exit;
             }
-            if (!is_numeric($payload[$field])) {
+            if (!is_numeric($payload['otpCode'])) {
                 $response = ['status' => 'fail', 'message' => "You've input an invalid code format."];
                 echo json_encode($response);
                 exit;
             }
         }
-        //User OTP in database
-        $user = $this->db->where("otpcode", $payload['otpCode'])->getOne('w_otp');
-    
-        if ($user === null) {
-            $response = ['status' => 'fail', 'message' => 'Invalid OTP code.'];
-            echo json_encode($response);
-            exit;
-        } else {
-            $expirationTime = strtotime($user['expiration_time']);
-            $currentTime = time();
-    
-            if ($expirationTime < $currentTime) {
-                $response = ['status' => 'fail', 'message' => 'OTP code has been expired.'];
+
+        $existdata = $this->db->where('email', $payload['email'])->getOne('personel_tbl');
+
+        if ($existdata) {
+            $user = $this->db->where("uid", $existdata['personelID'])->getOne('w_otp');
+            if ($user === null) {
+                $response = ['status' => 'fail', 'message' => 'Invalid OTP code.'];
                 echo json_encode($response);
                 exit;
             } else {
-                $userEmailAuth = $this->db->where("email", $payload['userEmail'])->getOne('w_users');
-                $response = [
-                    'status' => 'success',
-                    'message' => 'OTP is valid.'
-                ];
-                echo json_encode($response);
-                exit;
+                $expirationTime = strtotime($user['expiration_time']);
+                $currentTime = time();
+        
+                if ($expirationTime < $currentTime) {
+                    $response = ['status' => 'fail', 'message' => 'OTP code has been expired.'];
+                    echo json_encode($response);
+                    exit;
+                } else {
+                    $userEmailAuth = $this->db->where("email", $payload['userEmail'])->getOne('personel_tbl');
+                    $response = [
+                        'status' => 'success',
+                        'message' => 'OTP is valid.'
+                    ];
+                    echo json_encode($response);
+                    exit;
+                }
             }
+        } else {
+            // If no data found for the provided email
+            $response = ['status' => 'fail', 'message' => 'There is a problem looking up for your email.'];
+            echo json_encode($response);
+            exit;
         }
+    
     }    
     
     

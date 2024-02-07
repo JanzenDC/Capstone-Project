@@ -141,7 +141,6 @@ export default {
   mounted() {
     this.$nextTick(() => {
       this.loadUserData();
-      this.startResendTimer(); // Start the resend timer when the component is mounted
       this.isResendDisabled = true; // Disable the resend button during the countdown
     });
   },
@@ -155,15 +154,12 @@ export default {
   },
   loadUserData() {
     const userData = SessionStorage.getItem('email');
-    console.log("User Data from Session Storage:", userData);
-
     const isChangingPass = SessionStorage.getItem('isChangingPass');
 
     if (userData) {
       try {
         const user = JSON.parse(userData);
         this.email = user;
-        console.log("Email set to:", this.email);
 
         if (isChangingPass === '0') {
           this.$router.push('/forgot/reset');

@@ -17,7 +17,7 @@
     public function __construct()
     {
 
-        $this->db = new MysqliDB('localhost', 'root', '', 'weavemanila');
+        $this->db = new MysqliDB('localhost', 'root', '', 'weavemanila_main');
     }
     public function httpGet($payload)
     {
@@ -34,7 +34,7 @@
                 exit;
             }
         }
-        $user = $this->db->where("email", $payload['email'])->getOne('w_users');
+        $user = $this->db->where("email", $payload['email'])->getOne('personel_tbl');
 
         if ($user === null) {
             $response = ['status' => 'fail', 'message' => 'Email does not exist.'];
@@ -47,13 +47,13 @@
         $newOtpCode = $payload['code'];
         $expirationTime = date('Y-m-d H:i:s', strtotime('+2 minutes'));
         
-        $existingRecord = $this->db->where("uid", $user['id'])->getOne('w_otp');
+        $existingRecord = $this->db->where("uid", $user['personelID'])->getOne('w_otp');
         
         if ($existingRecord) {
             $updateData = ['otpcode' => $newOtpCode, 'expiration_time' => $expirationTime];
-            $addotp = $this->db->where('uid', $user['id'])->update('w_otp', $updateData);
+            $addotp = $this->db->where('uid', $user['personelID'])->update('w_otp', $updateData);
         } else {
-            $insertData = ['uid' => $user['id'], 'otpcode' => $newOtpCode, 'expiration_time' => $expirationTime];
+            $insertData = ['uid' => $user['personelID'], 'otpcode' => $newOtpCode, 'expiration_time' => $expirationTime];
             $addotp = $this->db->insert('w_otp', $insertData);
         }
         

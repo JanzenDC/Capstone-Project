@@ -17,7 +17,7 @@
     public function __construct()
     {
 
-        $this->db = new MysqliDB('localhost', 'root', '', 'weavemanila');
+        $this->db = new MysqliDB('localhost', 'root', '', 'weavemanila_main');
     }
     public function httpGet($payload)
     {
@@ -35,13 +35,13 @@
             }
         }
         
-        $existingRecord = $this->db->where("email", $payload['email'])->getOne('w_users');
+        $existingRecord = $this->db->where("email", $payload['email'])->getOne('personel_tbl');
         
         if ($existingRecord) {
             $hashedpw = password_hash($payload['newPassword'], PASSWORD_DEFAULT);
             $updateData = ['password' => $hashedpw];
             
-            $addPword = $this->db->where('email', $existingRecord['email'])->update('w_users', $updateData);
+            $addPword = $this->db->where('email', $existingRecord['email'])->update('personel_tbl', $updateData);
             $response = [
                 'status' => 'success',
                 'message' => 'Password have been changed.',

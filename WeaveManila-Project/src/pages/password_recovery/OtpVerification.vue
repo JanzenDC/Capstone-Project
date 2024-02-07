@@ -158,7 +158,6 @@ export default {
     },
     loadUserData() {
       const userData = SessionStorage.getItem('email');
-      console.log("User Data from Session Storage:", userData);
 
       const isChangingPass = SessionStorage.getItem('isChangingPass');
 
@@ -166,8 +165,6 @@ export default {
         try {
           const user = JSON.parse(userData);
           this.email = user;
-          console.log("Email set to:", this.email);
-
           if (isChangingPass === '0') {
             this.$router.push('/forgot/reset');
           }
@@ -193,7 +190,8 @@ export default {
     verifyCode() {
 
       const formData = {
-        otpCode: this.otpCode
+        otpCode: this.otpCode,
+        email: this.email
       };
 
       axios.post('http://localhost/Capstone-Project/backend/api/otpverification.php', formData)

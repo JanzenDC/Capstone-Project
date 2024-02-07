@@ -303,7 +303,7 @@ bordered
 
     <div class="min-[390px]:mt-3 md:grid md:grid-cols-4 gap-4 md:p-4 h-[465px] overflow-y-auto overflow-x-hidden" >
     <!-- Display fetched data in the grid with checkboxes -->
-    <div v-for="item in filteredItems" :key="item.id" style="border: #b09582 2px solid " class=" min-[390px]:mt-3 relative min-[390px]:w-full md:w-[231px] bg-white drop-shadow-lg border-[#b09582] rounded">
+    <div v-for="item in filteredItems" :key="item.id" style="border: #b09582 2px solid " class=" min-[390px]:mt-3 relative min-[390px]:w-full md:w-[231px] bg-white drop-shadow-lg border-[#b09582] rounded md:h-[180px]">
       <q-card flat>
         <q-card-section>
           <div class="row items-center no-wrap">
@@ -476,6 +476,7 @@ export default {
     },
 
     handleViewClick(itemId) {
+      console.log(itemId.id);
       axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/inventory.php?id=${itemId.id}`)
       .then(response => {
 
