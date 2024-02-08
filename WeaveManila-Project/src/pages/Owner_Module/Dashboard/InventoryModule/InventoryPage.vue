@@ -301,7 +301,7 @@ bordered
       </q-card>
   </q-dialog>
 
-    <div class="min-[390px]:mt-3 md:grid md:grid-cols-4 gap-4 md:p-4 h-[465px] overflow-y-auto overflow-x-hidden" >
+    <div class="max-[390px]:mt-3 md:grid md:grid-cols-4 gap-4 md:p-4 h-[465px] overflow-y-auto overflow-x-hidden" >
     <!-- Display fetched data in the grid with checkboxes -->
     <div v-for="item in filteredItems" :key="item.id" style="border: #b09582 2px solid " class=" min-[390px]:mt-3 relative min-[390px]:w-full md:w-[231px] bg-white drop-shadow-lg border-[#b09582] rounded md:h-[180px]">
       <q-card flat>
@@ -333,7 +333,7 @@ bordered
         <q-card-section>
           <div class="flex items-center gap-3">
             <q-icon name="inventory_2" class="text-[#b09582]"/>
-            Inventory
+            Inventory {{ getItemCount(item.categoryID) }}
           </div>
           <div class="flex items-center gap-3">
             <q-icon name="short_text" class="text-[#b09582]"/>
@@ -382,6 +382,7 @@ export default {
       title: '',
       description: '',
       items: [],
+      countData: {},
       selectedItems: [],
       isOptionsOpen: {},
       selectedProcedure: null,
@@ -452,7 +453,7 @@ export default {
         .then(response => {
           if (response.data && response.data.status === 'success' && response.data.information) {
             const fetchedData = response.data.information.rows;
-
+            const countData = response.data.information.itemCountData;
             this.items = fetchedData;
           } else {
             console.error('Failed to fetch data:', response.data.message);
@@ -474,10 +475,12 @@ export default {
       // Toggle the dropdown options for the clicked item
       this.isOptionsOpen[itemId] = !this.isOptionsOpen[itemId];
     },
-
+    getItemCount(categoryID) {
+      return this.countData[categoryID] || 0;
+    },
     handleViewClick(itemId) {
-      console.log(itemId.id);
-      axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/inventory.php?id=${itemId.id}`)
+      console.log(itemId.categoryID);
+      axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/inventory.php?id=${itemId.categoryID}`)
       .then(response => {
 
       }).catch(error => {
@@ -485,10 +488,10 @@ export default {
       });
     },
     handleEditClick(itemId) {
-      console.log('Edit button clicked for item ID:', itemId.id);
+      console.log('Edit button clicked for item ID:', itemId.categoryID);
     },
     handleDeleteClick(itemId) {
-      this.targetDelete = itemId.id;
+      this.targetDelete = itemId.categoryID;
       this.OpenDelete = true;
     },
 

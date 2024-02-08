@@ -24,13 +24,29 @@
     {
         if ($payload['type']) {
             if($payload['type'] == '1'){
-                $categoryData = $this->db->get('w_category');
+                $sqlQuery = "
+                SELECT w_category.categoryID,
+                w_category.title, 
+                w_category.description, 
+                w_category.procedure, 
+                COUNT(mpo_tbl.mpoID) AS itemCount
+                FROM w_category
+                LEFT JOIN mpo_tbl ON w_category.categoryID = mpo_tbl.categoryID
+                GROUP BY w_category.categoryID;
+                
+                ";
+                $categoryData = $this->db->rawQuery($sqlQuery);
+                $countData = [];
+                foreach ($categoryData as $row) {
+                    $countData[$row['categoryID']] = $row['itemCount'];
+                }
                 if ($categoryData) {
                     $response = [
                         'status' => 'success',
                         'message' => 'Fetch Successfully.',
                         'information' => [
-                            'rows' => $categoryData,
+                            'rows' => $categoryData, // fetching all data
+                            'itemCountData' => $countData, //query here the count data
                         ],
                     ];
                 } else {
@@ -50,10 +66,11 @@
                 echo json_encode($response);
                 exit;
             }
-            $getData = $this->db->where('')->getOne('');
+            $getData = $this->db->where('mpoID')->getOne('mpo_tbl');
             if($getData){
                 $response = [
                     'status' => 'success',
+                    'message' => 'Data has been fetch succesfully',
                     'categoryData' => [
                         
                     ],
@@ -132,7 +149,7 @@
             exit;
         }
     
-        $existingIDs = $this->db->where('id', $ids)->getOne('w_category');
+        $existingIDs = $this->db->where('categoryID', $ids)->getOne('w_category');
     
         if (!$existingIDs) {
             $response = ['status' => 'fail', 'message' => 'IDs not found in the database.'];
@@ -141,7 +158,7 @@
         }
     
         // Proceed with deletion
-        $selectedData = $this->db->where('id', $ids)->delete('w_category');
+        $selectedData = $this->db->where('categoryID', $ids)->delete('w_category');
         if ($selectedData) {
             $response = [
                 'status' => 'success',
