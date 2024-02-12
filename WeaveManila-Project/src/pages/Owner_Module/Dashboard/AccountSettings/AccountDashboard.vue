@@ -53,10 +53,7 @@ bordered
           <router-link to="/dashboard/inventory-section">
             <li class="py-[2px] px-[40px] mt-3">Materials</li>
           </router-link>
-          <router-link to="/dashboard/supplier-section">
-            <li class="py-[2px] px-[40px] mt-3">Supplier List</li>
-          </router-link>
-          <li class="px-[40px] mt-3">Purchase Order</li>
+          <li class="px-[40px] mt-3">Material Purchase Order</li>
         </ul>
       </li>
 
@@ -184,7 +181,7 @@ bordered
   </ul>
 </q-drawer>
 <q-page class="bg-[#f5f5f5] p-4">
-  <div class="h-[620px] rounded p-4 px-7">
+  <div class="h-[580px] rounded p-4 px-7">
     <div class="">
       <div class="text-[30px] flex items-center min-[360px]:gap-5">
         <q-icon
@@ -203,7 +200,7 @@ bordered
       </div>
       <div class="text-[16px]">Setup you account, edit profile details & change password</div>
     </div>
-    <div class="w-full md:flex md:justify-center mt-3 overflow-y-auto overflow-x-hidden h-[500px]">
+    <div class="w-full md:flex md:justify-center mt-3 overflow-y-auto overflow-x-hidden h-[480px]">
     <div>
         <!-- User Area -->
         <div class="p-4 md:w-[600px] min-[390px]:h-[160px] border border-[#ddb7ab] rounded-[15px] drop-shadow-md flex md:justify-between

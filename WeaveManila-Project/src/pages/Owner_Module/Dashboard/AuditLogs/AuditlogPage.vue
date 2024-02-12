@@ -52,10 +52,7 @@ bordered
           <router-link to="/dashboard/inventory-section">
             <li class="py-[2px] px-[40px] mt-3">Materials</li>
           </router-link>
-          <router-link to="/dashboard/supplier-section">
-            <li class="py-[2px] px-[40px] mt-3">Supplier List</li>
-          </router-link>
-          <li class="px-[40px] mt-3">Purchase Order</li>
+          <li class="px-[40px] mt-3">Material Purchase Order</li>
         </ul>
       </li>
 
@@ -350,9 +347,9 @@ export default {
       // Additional here
       columns: [
         { name: 'user', label: 'User', align: 'left', field: 'user' },
-        { name: 'action', label: 'Action', align: 'left', field: 'action', sortable: true },
-        { name: 'date', label: 'Date', align: 'left', field: 'date', sortable: true },
-        { name: 'timestamp', label: 'Timestamp', align: 'left', field: 'timestamp', sortable: true },
+        { name: 'action', label: 'Action', align: 'center', field: 'action', sortable: true },
+        { name: 'date', label: 'Date', align: 'center', field: 'date', sortable: true },
+        { name: 'timestamp', label: 'Timestamp', align: 'center', field: 'timestamp', sortable: true },
       ],
       tableData: [],
       searchInput: '',
@@ -461,7 +458,6 @@ export default {
     filterTableDataByDate(days) {
       this.showDateArea = false;
       this.tableData = [];
-
       if (days === 1 || days === 2 || days === 3 || days === 4 || days === 5) {
         axios.get(`http://localhost/Capstone-Project/backend/api/Audit_logs/auditlogs.php?type=${days}`)
           .then(response => {

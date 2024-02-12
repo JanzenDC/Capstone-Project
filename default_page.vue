@@ -49,8 +49,12 @@
             <div><q-icon name="expand_more"  /> </div>
           </div>
           <ul v-if="inventoryMenuVisible">
-            <li class="py-[2px] px-[40px] mt-3">Materials</li>
-            <li class="py-[2px] px-[40px] mt-3">Supplier List</li>
+            <router-link to="/dashboard/inventory-section">
+              <li class="py-[2px] px-[40px] mt-3">Materials</li>
+            </router-link>
+            <router-link to="/dashboard/supplier-section">
+              <li class="py-[2px] px-[40px] mt-3">Supplier List</li>
+            </router-link>
             <li class="px-[40px] mt-3">Purchase Order</li>
           </ul>
         </li>
@@ -190,7 +194,7 @@
           name="menu"
           v-if="!showMenuIcon"
           @click="toggleDrawer"
-          class="cursor-pointer min-[360px]:flex md:hidden"
+          class="cursor-pointer max-[1020px]:flex min-[1020px]:hidden"
         />
       <span class="font-bold">Main Dashboard</span>
       </div>
@@ -233,8 +237,7 @@
       this.loadUserData();
       this.statusCheckTimer = setInterval(() => {
         this.checkUserStatus();
-      }, 20 * 1000); // 1 second (in milliseconds)
-      this.toggleDrawer();
+      }, 20 * 1000);
     },
     beforeUnmount() {
       clearInterval(this.statusCheckTimer);
@@ -300,7 +303,7 @@
       },
       loadUserData() {
         const userData = SessionStorage.getItem('information');
-        console.log(userData);
+  
         if (userData) {
           try {
             const userInformation = JSON.parse(userData);
@@ -315,25 +318,27 @@
   
             this.fullname = this.firstname + " " + this.lastname;
             if (this.position.toLowerCase() === 'owner') {
+  
               this.$router.push('/dashboard/main-dashboard');
-            }else{
+            } else {
+  
               this.$q.notify({
-              type: 'negative',
+                type: 'negative',
                 message: 'You do not have permission to access the system.',
               });
               this.$router.push('/');
               sessionStorage.clear();
             }
-            if(this.status == 0)
-            {
+  
+            if (this.status == 0) {
+              
               this.$q.notify({
-              type: 'negative',
+                type: 'negative',
                 message: 'Your account is currently inactive. Please contact the account owner for activation.',
               });
               this.$router.push('/');
               sessionStorage.clear();
             }
-  
           } catch (error) {
             console.log('Error parsing user data:', error);
             // Provide user feedback or navigate to an error page

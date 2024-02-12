@@ -52,10 +52,7 @@ bordered
           <router-link to="/dashboard/inventory-section">
             <li class="py-[2px] px-[40px] mt-3">Materials</li>
           </router-link>
-          <router-link to="/dashboard/supplier-section">
-            <li class="py-[2px] px-[40px] mt-3">Supplier List</li>
-          </router-link>
-          <li class="px-[40px] mt-3">Purchase Order</li>
+          <li class="px-[40px] mt-3">Material Purchase Order</li>
         </ul>
       </li>
 

@@ -35,6 +35,12 @@ const routes = [
       // Inventory Module
       { path: 'inventory-section', component: () => import('pages/Owner_Module/Dashboard/InventoryModule/InventoryPage.vue') },
       { path: 'supplier-section', component: () => import('pages/Owner_Module/Dashboard/InventoryModule/SupplierPage.vue') },
+      // Inventory Pages
+      { path: 'inventory-viewpage', component: () => import('pages/Owner_Module/Dashboard/InventoryModule/InventoryPages/ViewDetails.vue') },
+      { path: 'inventory-viewlist', component: () => import('pages/Owner_Module/Dashboard/InventoryModule/InventoryPages/ViewItemlist.vue') },
+
+
+
 
     ]
   },

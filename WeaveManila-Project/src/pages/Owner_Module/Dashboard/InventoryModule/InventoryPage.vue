@@ -52,10 +52,7 @@ bordered
           <router-link to="/dashboard/inventory-section">
             <li class="py-[2px] px-[40px] mt-3">Materials</li>
           </router-link>
-          <router-link to="/dashboard/supplier-section">
-            <li class="py-[2px] px-[40px] mt-3">Supplier List</li>
-          </router-link>
-          <li class="px-[40px] mt-3">Purchase Order</li>
+          <li class="px-[40px] mt-3">Material Purchase Order</li>
         </ul>
       </li>
 
@@ -301,9 +298,9 @@ bordered
       </q-card>
   </q-dialog>
 
-    <div class="max-[390px]:mt-3 md:grid md:grid-cols-4 gap-4 md:p-4 h-[465px] overflow-y-auto overflow-x-hidden" >
+    <div class="max-[390px]:mt-3 md:grid md:grid-cols-4 gap-4 md:p-4 h-[435px] overflow-y-auto overflow-x-hidden" >
     <!-- Display fetched data in the grid with checkboxes -->
-    <div v-for="item in filteredItems" :key="item.id" style="border: #b09582 2px solid " class=" min-[390px]:mt-3 relative min-[390px]:w-full md:w-[231px] bg-white drop-shadow-lg border-[#b09582] rounded md:h-[180px]">
+    <div v-for="item in filteredItems" :key="item.id" style="border: #b09582 2px solid " class=" min-[390px]:mt-3 relative min-[390px]:w-full md:w-[231px] bg-white drop-shadow-lg border-[#b09582] rounded ">
       <q-card flat>
         <q-card-section>
           <div class="row items-center no-wrap">
@@ -331,14 +328,21 @@ bordered
         </q-card-section>
 
         <q-card-section>
-          <div class="flex items-center gap-3">
+          <div class="items-center flex gap-3">
             <q-icon name="inventory_2" class="text-[#b09582]"/>
-            Inventory {{ getItemCount(item.categoryID) }}
+            <div class="grid grid-cols-2 gap-4">
+              <p>Inventory</p>
+              {{ getItemCount(item.categoryID) }}
+            </div>
           </div>
-          <div class="flex items-center gap-3">
+          <div class="flex items-center gap-2">
             <q-icon name="short_text" class="text-[#b09582]"/>
-            Description: {{ item.description }}
+            <p>Description:</p>
+            <p class="overflow-hidden whitespace-nowrap overflow-ellipsis w-[86px]">{{ item.description }}asd adasdas</p>
           </div>
+
+
+
         </q-card-section>
       </q-card>
     </div>
@@ -408,11 +412,15 @@ export default {
       this.checkUserStatus();
     }, 20 * 1000); // 1 second (in milliseconds)
     this.fetchData();
+    this.clearInventoryData();
   },
   beforeUnmount() {
     clearInterval(this.statusCheckTimer);
   },
   methods: {
+    clearInventoryData() {
+      sessionStorage.removeItem('inventoryData');
+    },
     onSubmit(){
       const formData = {
         title: this.title,
@@ -449,11 +457,13 @@ export default {
       });
     },
     fetchData() {
+
       axios.get('http://localhost/Capstone-Project/backend/api/Inventory_Database/inventory.php?type=1')
         .then(response => {
           if (response.data && response.data.status === 'success' && response.data.information) {
             const fetchedData = response.data.information.rows;
             const countData = response.data.information.itemCountData;
+            this.countData = countData;
             this.items = fetchedData;
           } else {
             console.error('Failed to fetch data:', response.data.message);
@@ -479,10 +489,26 @@ export default {
       return this.countData[categoryID] || 0;
     },
     handleViewClick(itemId) {
-      console.log(itemId.categoryID);
-      axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/inventory.php?id=${itemId.categoryID}`)
+
+      axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/inventory.php?type&id=${itemId.categoryID}`)
       .then(response => {
 
+        const Status = response.data.status;
+        const Message = response.data.message;
+        if (Status === "success") {
+          const inventoryData = {
+            InventoryId: itemId.categoryID,
+            InventoryName: itemId.title,
+          }
+          SessionStorage.set('inventoryData', JSON.stringify(inventoryData));
+          this.$router.push('/dashboard/inventory-viewpage');
+        }
+        if (Status === "fail") {
+          this.$q.notify({
+            color: 'negative',
+            message: `${Message} Please try again.`,
+          });
+        }
       }).catch(error => {
             console.error('Error fetching data:', error);
       });
