@@ -5,10 +5,7 @@ v-model="drawer"
 side="left"
 bordered
 :width="drawerWidth">
-  <ul class="p-2 flex flex-col h-full static" v-if="drawerWidth !== 80">
-    <div @click="toggleDrawer" class="absolute -right-4 top-4 text-[18px] bg-white drop-shadow-lg rounded-full px-2 py-1 text-center cursor-pointer">
-      <q-icon :name="drawerIcon"/>
-    </div>
+  <ul class=" p-2 flex flex-col h-full static" v-if="drawerWidth !== 80">
     <div class="flex">
       <div class="w-1/4 items-center flex justify-center" >
         <q-img
@@ -24,16 +21,20 @@ bordered
           class="w-[150px] md:w-[60px]"
         />
       </div>
-        <div class="text-[#281c0f] w-3/4" v-if="drawerWidth !== 80">
-          <span class=" font-bold text-[20px]">WEAVEMANILA INC.</span><br>
-          <span class="text-[#281c0f] text-[12px]">Production Monitoring & Inventory Management System</span>
+      <div class="text-[#281c0f] text-[18px] w-3/4 flex justify-center items-center gap-1" v-if="drawerWidth !== 80">
+      <div>
+        <span class="font-bold ">WEAVEMANILA INC.</span><br>
+      </div>
+      <div>
+        <q-icon name="keyboard_double_arrow_right" class="text-[30px] cursor-pointer" @click="toggleDrawer" />
+      </div>
+    </div>
 
-        </div>
     </div>
 
 
 
-    <li class="font-bold">Overview</li>
+    <li class="font-bold mt-5">Menu</li>
       <li class="py-[10px] px-[20px]" >
         <div class="flex items-center">
           <router-link to="/dashboard/main-dashboard">
@@ -41,8 +42,7 @@ bordered
           </router-link>
         </div>
       </li>
-      <!-- Process Section -->
-      <li class="font-bold" >Process</li>
+
       <li class="py-[10px] px-[20px]" @click="toggleInventoryMenu">
         <div class="flex items-center gap-2 justify-between">
           <div><q-icon name="inventory"/> <span >Inventory</span></div>
@@ -52,10 +52,9 @@ bordered
           <router-link to="/dashboard/inventory-section">
             <li class="py-[2px] px-[40px] mt-3">Materials</li>
           </router-link>
-          <router-link to="/dashboard/supplier-section">
-            <li class="py-[2px] px-[40px] mt-3">Supplier List</li>
+          <router-link to="/dashboard/mpo-section">
+            <li class="px-[40px] mt-3"> Material Purchase Order</li>
           </router-link>
-          <li class="px-[40px] mt-3">Purchase Order</li>
         </ul>
       </li>
 
@@ -66,11 +65,11 @@ bordered
       </li>
       <li class="py-[10px] px-[20px]">
         <div class="flex items-center">
-          <q-icon name="description" class="mr-2"/><span >Production Cost Report</span>
+          <q-icon name="assignment_add" class="mr-2"/><span>Report</span>
         </div>
       </li>
       <!-- Settings Section -->
-      <li class="font-bold" >Settings</li>
+      <li class="font-bold" >Admin</li>
       <li class="py-[10px] px-[20px]">
         <div class="flex items-center">
           <router-link to="/dashboard/auditlogs-section">
@@ -92,7 +91,9 @@ bordered
           </router-link>
         </div>
       </li>
+
       <li class="mt-auto py-[10px]">
+        <q-separator />
         <div class="flex justify-between text-center" >
           <div class="flex items-center" >
             <q-img
@@ -119,20 +120,14 @@ bordered
   </ul>
 
   <ul class="p-2 flex flex-col h-full static" v-if="drawerWidth <= 80">
-    <div @click="toggleDrawer" class="absolute -right-4 top-4 text-[18px] bg-white drop-shadow-lg rounded-full px-2 py-1 text-center cursor-pointer">
-      <q-icon :name="drawerIcon"/>
-    </div>
-    <div class="flex">
-      <div class=" items-center flex justify-center" v-if="drawerWidth <= 80">
-        <q-img
-          src="../../../../assets/favicon-128x128.png"
-          alt="Description of the image"
-          class="w-[150px] md:w-[60px]"
-        />
+
+    <div class="flex justify-center items-center text-[40px]">
+      <div class=" items-center flex justify-center cursor-pointer" v-if="drawerWidth <= 80">
+        <q-icon name="keyboard_double_arrow_right" @click="toggleDrawer"/>
       </div>
     </div>
 
-
+      <li class="mt-5 text-center">Menu</li>
       <li class="py-[10px] px-[20px]" >
         <div class="flex items-center" @click="toggleDrawer">
           <q-icon name="dashboard" />
@@ -156,7 +151,7 @@ bordered
           <q-icon name="description" />
         </div>
       </li>
-      <!-- Settings Section -->
+      <li class="text-center">Admin</li>
       <li class="py-[10px] px-[20px]">
         <div class="flex items-center" @click="toggleDrawer">
             <i class="bi bi-activity"></i>
@@ -181,8 +176,8 @@ bordered
       </li>
   </ul>
 </q-drawer>
-<q-page class="bg-[#f5f5f5] p-4">
-  <div class="text-[30px]">
+<q-page class="bg-[#f5f5f5]">
+  <div class="text-[30px] bg-white p-2">
     <div class="items-center flex">
       <q-icon
         name="menu"
@@ -196,184 +191,200 @@ bordered
         @click="toggleDrawer"
         class="cursor-pointer max-[1020px]:flex min-[1020px]:hidden"
       />
-    <span class="font-bold text-[#634832]">Supplier List</span>
+    <span class="font-bold ">Supplier List</span>
     </div>
-    <div class="text-[16px] text-[#967259]">Description for the supplier list goes here</div>
+    <div class="text-[16px]"><span class="text-[#b8b8b8]">Inventory / </span>Supplier List</div>
   </div>
 
-  <div class="bg-white px-4 py-3 mt-10">
 
-    <div class="md:flex md:items-end md:justify-end ">
-      <div class="grid-cols-2 grid gap-2 md:flex items-center md:gap-5">
-        <q-input v-model="search" outlined dense placeholder="Search" class="md:w-[400px] ">
-          <template v-slot:prepend>
-            <q-icon name="search" />
-          </template>
-        </q-input>
-        <q-btn-dropdown icon="filter_alt" label="Filter">
-          <q-list>
-            <q-item clickable v-close-popup @click="onItemClick">
-              <q-item-section>
-                <q-item-label>Active</q-item-label>
-              </q-item-section>
-            </q-item>
+  <div class="p-4">
+    <div class="flex mt-3">
+      <router-link to="/dashboard/mpo-section">
+        <div class="flex  w-[155px] text-[#b8b8b8] border-l-2 border-t-2 border-e-2 h-[44px] py-3 px-5 gap-[8px] rounded items-center text-[14px]">
+          <q-icon name="list"/>
+          <p>Purchase list</p>
+        </div>
+      </router-link>
+      <router-link to="/dashboard/supplier-section">
+        <div class="flex w-[155px] bg-white h-[44px] py-3 px-5 gap-[8px] rounded items-center text-[14px]">
+            <q-icon name="group"/>
+            <p>Supplier List</p>
+          </div>
+      </router-link>
+    </div>
+    <div class="bg-white px-4 py-3">
 
-            <q-item clickable v-close-popup @click="onItemClick">
-              <q-item-section>
-                <q-item-label>All</q-item-label>
-              </q-item-section>
-            </q-item>
+      <div class="md:flex md:items-end md:justify-end ">
+        <div class="grid-cols-2 grid gap-2 md:flex items-center md:gap-5">
+          <q-input v-model="search" outlined dense placeholder="Search" class="md:w-[400px] ">
+            <template v-slot:prepend>
+              <q-icon name="search" />
+            </template>
+          </q-input>
+          <q-btn-dropdown icon="filter_alt" label="Filter">
+            <q-list>
+              <q-item clickable v-close-popup @click="onItemClick">
+                <q-item-section>
+                  <q-item-label>Active</q-item-label>
+                </q-item-section>
+              </q-item>
 
-            <q-item clickable v-close-popup @click="onItemClick">
-              <q-item-section>
-                <q-item-label>Delete</q-item-label>
-              </q-item-section>
-            </q-item>
-          </q-list>
-        </q-btn-dropdown>
-        <q-btn @click="addSupplier = true" class="bg-[#281c0f] text-white">
-          <i class="bi bi-plus-lg"></i>
-          Add Supplier
-        </q-btn>
+              <q-item clickable v-close-popup @click="onItemClick">
+                <q-item-section>
+                  <q-item-label>All</q-item-label>
+                </q-item-section>
+              </q-item>
 
-        <q-btn v-if="selected.length > 0" @click="handleDeleteClick" class="bg-red-600 text-white">
-          <q-icon name="delete"/>
-          Remove
-        </q-btn>
+              <q-item clickable v-close-popup @click="onItemClick">
+                <q-item-section>
+                  <q-item-label>Delete</q-item-label>
+                </q-item-section>
+              </q-item>
+            </q-list>
+          </q-btn-dropdown>
+          <q-btn @click="addSupplier = true" class="bg-[#281c0f] text-white">
+            <i class="bi bi-plus-lg"></i>
+            Add Supplier
+          </q-btn>
+
+          <q-btn v-if="selected.length > 0" @click="handleDeleteClick" class="bg-red-600 text-white">
+            <q-icon name="delete"/>
+            Remove
+          </q-btn>
+        </div>
       </div>
-    </div>
 
-<!-- Add supplier Modal -->
-    <q-dialog v-model="addSupplier">
-        <q-card class="w-[388px]">
-          <q-form @submit="onSubmit">
-          <q-card-section class="row items-center q-pb-none">
-            <div class="text-h6 font-bold">Add Supplier</div>
-            <q-space />
-            <q-btn icon="close" flat round dense v-close-popup />
-          </q-card-section>
+  <!-- Add supplier Modal -->
+      <q-dialog v-model="addSupplier">
+          <q-card class="w-[388px]">
+            <q-form @submit="onSubmit">
+            <q-card-section class="row items-center q-pb-none">
+              <div class="text-h6 font-bold">Add Supplier</div>
+              <q-space />
+              <q-btn icon="close" flat round dense v-close-popup />
+            </q-card-section>
 
-          <q-card-section>
-            <label> <!--Supplier Name-->
-              Supplier Name<span class="text-red-600">*</span>
-            </label>
-            <q-input type="text" label="Supplier Name" v-model="suppName" required lazy-rules :no-error-icon="true" outlined dense :rules="[val => !!val || 'Field is required']"/>
+            <q-card-section>
+              <label> <!--Supplier Name-->
+                Supplier Name<span class="text-red-600">*</span>
+              </label>
+              <q-input type="text" label="Supplier Name" v-model="suppName" required lazy-rules :no-error-icon="true" outlined dense :rules="[val => !!val || 'Field is required']"/>
 
-            <label> <!--Supplier Address-->
-              Supplier Address<span class="text-red-600">*</span>
-            </label>
-            <q-input type="text" label="Supplier Address" v-model="suppAddress" required lazy-rules :no-error-icon="true" outlined dense :rules="[val => !!val || 'Field is required']"/>
+              <label> <!--Supplier Address-->
+                Supplier Address<span class="text-red-600">*</span>
+              </label>
+              <q-input type="text" label="Supplier Address" v-model="suppAddress" required lazy-rules :no-error-icon="true" outlined dense :rules="[val => !!val || 'Field is required']"/>
 
-            <label>
-              Contact Person<span class="text-red-600">*</span>
-            </label>
-            <q-input type="text" label="Contact Person" v-model="suppContactName" required lazy-rules :no-error-icon="true" outlined dense :rules="[val => !!val || 'Field is required']"/>
+              <label>
+                Contact Person<span class="text-red-600">*</span>
+              </label>
+              <q-input type="text" label="Contact Person" v-model="suppContactName" required lazy-rules :no-error-icon="true" outlined dense :rules="[val => !!val || 'Field is required']"/>
 
-            <label>
-              Contact Number<span class="text-red-600">*</span>
-            </label>
-            <q-input type="tel" label="Contact Number" v-model="suppCp" lazy-rules required :no-error-icon="true" outlined dense :rules="[val => !!val || 'Phone Number is required', val => /^09\d{9}$/g.test(val) || 'Invalid Phone Number']"/>
+              <label>
+                Contact Number<span class="text-red-600">*</span>
+              </label>
+              <q-input type="tel" label="Contact Number" v-model="suppCp" lazy-rules required :no-error-icon="true" outlined dense :rules="[val => !!val || 'Phone Number is required', val => /^09\d{9}$/g.test(val) || 'Invalid Phone Number']"/>
 
-            <label>
-              Email<span class="text-red-600">*</span>
-            </label>
-            <q-input
-                type="email"
-                label="Email"
-                v-model="suppEmail"
-                :no-error-icon="true"
-                outlined
-                dense
-                lazy-rules
-                required
-                :rules="[ruleEmail]"
-              />
-          </q-card-section>
+              <label>
+                Email<span class="text-red-600">*</span>
+              </label>
+              <q-input
+                  type="email"
+                  label="Email"
+                  v-model="suppEmail"
+                  :no-error-icon="true"
+                  outlined
+                  dense
+                  lazy-rules
+                  required
+                  :rules="[ruleEmail]"
+                />
+            </q-card-section>
 
-          <q-separator />
+            <q-separator />
 
-          <q-card-actions align="right">
-            <q-btn flat label="Cancel" color="primary" v-close-popup />
-            <q-btn
-              flat
-              label="Save"
-              type="submit"
-              icon="save"
-              size="md"
-              class="bg-[#281c0f] text-white rounded"
-            />
-          </q-card-actions>
-        </q-form>
-        </q-card>
-    </q-dialog>
-<!-- Delete/Remove Dialog Modal -->
-    <q-dialog v-model="OpenDelete">
-        <q-card>
-          <q-card-section class="row items-center q-pb-none">
-            <div class="py-1 px-2 border text-[24px]"><q-icon name="delete"/></div>
-            <q-space />
-            <q-btn icon="close" flat round dense v-close-popup />
-          </q-card-section>
-
-          <q-card-section>
-            <div class="text-h6 font-bold">Delete Supplier</div>
-            <p>Are you sure you want to delete this supplier? This</p>
-            <p>action cannot be undone.</p>
-          </q-card-section>
-
-          <q-card-actions class="flex justify-center items-center">
-            <div class="w-1/2 p-1">
-              <q-btn flat label="Cancel" outline v-close-popup class="w-full border" @click="handleCancel"/>
-            </div>
-            <div class="w-1/2 p-1">
+            <q-card-actions align="right">
+              <q-btn flat label="Cancel" color="primary" v-close-popup />
               <q-btn
-                @click="Remove"
                 flat
-                label="Delete"
+                label="Save"
                 type="submit"
+                icon="save"
                 size="md"
-                class="bg-red-600 text-white rounded w-full"
+                class="bg-[#281c0f] text-white rounded"
               />
-            </div>
-          </q-card-actions>
-        </q-card>
-    </q-dialog>
+            </q-card-actions>
+          </q-form>
+          </q-card>
+      </q-dialog>
+  <!-- Delete/Remove Dialog Modal -->
+      <q-dialog v-model="OpenDelete">
+          <q-card>
+            <q-card-section class="row items-center q-pb-none">
+              <div class="py-1 px-2 border text-[24px]"><q-icon name="delete"/></div>
+              <q-space />
+              <q-btn icon="close" flat round dense v-close-popup />
+            </q-card-section>
 
-    <div class="py-5">
-      <q-table
-        class="my-sticky-header-table"
-        flat bordered
-        :rows="filteredTableData"
-        :columns="columns"
-        row-key="supplierID"
-        :selected-rows-label="getSelectedString"
-        selection="multiple"
-        :pagination="initialPagination"
-        v-model:selected="selected"
-      >
-      <template v-slot:body-cell-selection="props">
-        <q-td :props="props">
-          <q-checkbox
-            v-model="props.selected"
-            :val="props.row.supplierID"
-            @input="handleCheckboxChange(props.row.supplierID)"
-          />
-        </q-td>
-      </template>
+            <q-card-section>
+              <div class="text-h6 font-bold">Delete Supplier</div>
+              <p>Are you sure you want to delete this supplier? This</p>
+              <p>action cannot be undone.</p>
+            </q-card-section>
 
-      <template v-slot:body-cell-actions="props
-      ">
-        <q-td :props="props" class="text-center">
-        <q-icon name="more_vert"/>
-        </q-td>
-      </template>
-      </q-table>
+            <q-card-actions class="flex justify-center items-center">
+              <div class="w-1/2 p-1">
+                <q-btn flat label="Cancel" outline v-close-popup class="w-full border" @click="handleCancel"/>
+              </div>
+              <div class="w-1/2 p-1">
+                <q-btn
+                  @click="Remove"
+                  flat
+                  label="Delete"
+                  type="submit"
+                  size="md"
+                  class="bg-red-600 text-white rounded w-full"
+                />
+              </div>
+            </q-card-actions>
+          </q-card>
+      </q-dialog>
+
+      <div class="py-5">
+        <q-table
+          class="my-sticky-header-table"
+          flat bordered
+          :rows="filteredTableData"
+          :columns="columns"
+          row-key="supplierID"
+          :selected-rows-label="getSelectedString"
+          selection="multiple"
+          :pagination="initialPagination"
+          v-model:selected="selected"
+        >
+        <template v-slot:body-cell-selection="props">
+          <q-td :props="props">
+            <q-checkbox
+              v-model="props.selected"
+              :val="props.row.supplierID"
+              @input="handleCheckboxChange(props.row.supplierID)"
+            />
+          </q-td>
+        </template>
+
+        <template v-slot:body-cell-actions="props
+        ">
+          <q-td :props="props" class="text-center">
+          <q-icon name="more_vert"/>
+          </q-td>
+        </template>
+        </q-table>
+      </div>
+
+
+
     </div>
-
-
-
   </div>
-
 
 </q-page>
 </template>
@@ -719,17 +730,15 @@ bordered
 <style lang="sass">
 .my-sticky-header-table
   /* height or max-height is important */
-  height: 370px
+  height: 330px
 
   .q-table__top,
 
   thead tr:first-child th
     /* bg color is important for th; just specify one */
-    background-color: #967259
-    color: #fff
+    background-color: #fff
     text-align: center
     font-size: 13px
-    font-weight: bold
 
   thead tr th
     position: sticky

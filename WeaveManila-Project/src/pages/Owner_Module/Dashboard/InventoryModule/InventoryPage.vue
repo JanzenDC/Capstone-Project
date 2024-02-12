@@ -52,7 +52,9 @@ bordered
           <router-link to="/dashboard/inventory-section">
             <li class="py-[2px] px-[40px] mt-3">Materials</li>
           </router-link>
-          <li class="px-[40px] mt-3">Material Purchase Order</li>
+          <router-link to="/dashboard/mpo-section">
+            <li class="px-[40px] mt-3"> Material Purchase Order</li>
+          </router-link>
         </ul>
       </li>
 
@@ -486,7 +488,6 @@ export default {
       return this.countData[categoryID] || 0;
     },
     handleViewClick(itemId) {
-
       axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/inventory.php?type&id=${itemId.categoryID}`)
       .then(response => {
 
