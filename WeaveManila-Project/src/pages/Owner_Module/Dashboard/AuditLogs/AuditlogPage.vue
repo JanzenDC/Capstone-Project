@@ -5,10 +5,7 @@ v-model="drawer"
 side="left"
 bordered
 :width="drawerWidth">
-  <ul class="p-2 flex flex-col h-full static" v-if="drawerWidth !== 80">
-    <div @click="toggleDrawer" class="absolute -right-4 top-4 text-[18px] bg-white drop-shadow-lg rounded-full px-2 py-1 text-center cursor-pointer">
-      <q-icon :name="drawerIcon"/>
-    </div>
+  <ul class=" p-2 flex flex-col h-full static" v-if="drawerWidth !== 80">
     <div class="flex">
       <div class="w-1/4 items-center flex justify-center" >
         <q-img
@@ -24,16 +21,20 @@ bordered
           class="w-[150px] md:w-[60px]"
         />
       </div>
-        <div class="text-[#281c0f] w-3/4" v-if="drawerWidth !== 80">
-          <span class=" font-bold text-[20px]">WEAVEMANILA INC.</span><br>
-          <span class="text-[#281c0f] text-[12px]">Production Monitoring & Inventory Management System</span>
+      <div class="text-[#281c0f] text-[18px] w-3/4 flex justify-center items-center gap-1" v-if="drawerWidth !== 80">
+      <div>
+        <span class="font-bold ">WEAVEMANILA INC.</span><br>
+      </div>
+      <div>
+        <q-icon name="keyboard_double_arrow_right" class="text-[30px] cursor-pointer" @click="toggleDrawer" />
+      </div>
+    </div>
 
-        </div>
     </div>
 
 
 
-    <li class="font-bold">Overview</li>
+    <li class="font-bold mt-5">Menu</li>
       <li class="py-[10px] px-[20px]" >
         <div class="flex items-center">
           <router-link to="/dashboard/main-dashboard">
@@ -41,8 +42,7 @@ bordered
           </router-link>
         </div>
       </li>
-      <!-- Process Section -->
-      <li class="font-bold" >Process</li>
+
       <li class="py-[10px] px-[20px]" @click="toggleInventoryMenu">
         <div class="flex items-center gap-2 justify-between">
           <div><q-icon name="inventory"/> <span >Inventory</span></div>
@@ -63,11 +63,11 @@ bordered
       </li>
       <li class="py-[10px] px-[20px]">
         <div class="flex items-center">
-          <q-icon name="description" class="mr-2"/><span >Production Cost Report</span>
+          <q-icon name="assignment_add" class="mr-2"/><span>Report</span>
         </div>
       </li>
       <!-- Settings Section -->
-      <li class="font-bold" >Settings</li>
+      <li class="font-bold" >Admin</li>
       <li class="py-[10px] px-[20px]">
         <div class="flex items-center">
           <router-link to="/dashboard/auditlogs-section">
@@ -89,7 +89,9 @@ bordered
           </router-link>
         </div>
       </li>
+
       <li class="mt-auto py-[10px]">
+        <q-separator />
         <div class="flex justify-between text-center" >
           <div class="flex items-center" >
             <q-img
@@ -116,20 +118,14 @@ bordered
   </ul>
 
   <ul class="p-2 flex flex-col h-full static" v-if="drawerWidth <= 80">
-    <div @click="toggleDrawer" class="absolute -right-4 top-4 text-[18px] bg-white drop-shadow-lg rounded-full px-2 py-1 text-center cursor-pointer">
-      <q-icon :name="drawerIcon"/>
-    </div>
-    <div class="flex">
-      <div class=" items-center flex justify-center" v-if="drawerWidth <= 80">
-        <q-img
-          src="../../../../assets/favicon-128x128.png"
-          alt="Description of the image"
-          class="min-[390px]:w-[60px] md:w-[60px]"
-        />
+
+    <div class="flex justify-center items-center text-[40px]">
+      <div class=" items-center flex justify-center cursor-pointer" v-if="drawerWidth <= 80">
+        <q-icon name="keyboard_double_arrow_right" @click="toggleDrawer"/>
       </div>
     </div>
 
-
+      <li class="mt-5 text-center">Menu</li>
       <li class="py-[10px] px-[20px]" >
         <div class="flex items-center" @click="toggleDrawer">
           <q-icon name="dashboard" />
@@ -153,7 +149,7 @@ bordered
           <q-icon name="description" />
         </div>
       </li>
-      <!-- Settings Section -->
+      <li class="text-center">Admin</li>
       <li class="py-[10px] px-[20px]">
         <div class="flex items-center" @click="toggleDrawer">
             <i class="bi bi-activity"></i>
@@ -179,8 +175,8 @@ bordered
   </ul>
 </q-drawer>
 
-<q-page class="bg-[#f5f5f5] p-4">
-  <div class="flex justify-between items-center">
+<q-page class="bg-[#f5f5f5] ">
+  <div class="flex justify-between items-center p-2 bg-white">
     <div class="text-[30px]">
       <div class="items-center flex">
         <!-- First version of menu icon -->
@@ -202,113 +198,112 @@ bordered
       <div class="text-[16px]">This section serves as a record of events and actions within a system.</div>
     </div>
   </div>
-  <div class="flex items-end justify-end mt-10">
-    <div class="flex gap-2 items-center">
-        <q-input
-        v-model="searchInput"
-        outlined
-        dense
-        placeholder="Search..."
-        >
-        <template v-slot:prepend>
-          <q-icon name="search"/>
-        </template>
-        </q-input>
-      <q-btn @click="openModifyModal" label="Filter" class="h-5">
-      <q-icon
-        :name="arrowDirection_1 ? 'arrow_drop_up' : 'arrow_drop_down'"
-        class="text-[25px] cursor-pointer"
-      />
-      </q-btn>
+  <div class="p-4">
+    <div class="flex items-end justify-end mt-6">
+      <div class="flex gap-2 items-center">
+          <q-input
+          v-model="searchInput"
+          outlined
+          dense
+          placeholder="Search..."
+          >
+          <template v-slot:prepend>
+            <q-icon name="search"/>
+          </template>
+          </q-input>
+        <q-btn @click="openModifyModal" label="Filter" class="h-5">
+        <q-icon
+          :name="arrowDirection_1 ? 'arrow_drop_up' : 'arrow_drop_down'"
+          class="text-[25px] cursor-pointer"
+        />
+        </q-btn>
+      </div>
+    </div>
+    <div class="fixed right-12 top-[200px] transform bg-white z-50 rounded-md border border-gray-500" style="max-width: 350px" v-if="showModifyModal">
+      <q-form @submit="onSubmitDate">
+        <div class="grid grid-cols-2 gap-2 border-b-[1px]">
+          <q-list dense class=" border-e-[1px]">
+            <q-item clickable v-ripple @click="selectOption('today')">
+              <q-item-section>Today</q-item-section>
+            </q-item>
+            <q-item clickable v-ripple @click="selectOption('last7days')">
+              <q-item-section>Last 7 Days</q-item-section>
+            </q-item>
+            <q-item clickable v-ripple @click="selectOption('last30days')">
+              <q-item-section>Last 30 Days</q-item-section>
+            </q-item>
+            <q-item clickable v-ripple @click="selectOption('thisYear')">
+              <q-item-section>This Year ({{ getCurrentYear() }})</q-item-section>
+            </q-item>
+            <q-item clickable v-ripple @click="selectOption('lastYear')">
+              <q-item-section>Last Year ({{ getLastYear() }})</q-item-section>
+            </q-item>
+            <q-item clickable v-ripple @click="openDateModal">
+              <q-item-section>Custom Date</q-item-section>
+            </q-item>
+          </q-list>
+
+          <div v-if="showDateArea" class="p-2">
+            <q-input v-model="startDate" label="Start Date" type="date" outlined required/>
+            <q-input v-model="endDate" label="End Date" type="date" outlined class="mt-2" required/>
+          </div>
+        </div>
+        <div class="flex gap-2 justify-between p-2">
+          <q-btn label="Clear" padding="xs" @click="selectDefault" />
+          <div class="gap-2 flex">
+            <q-btn label="Cancel" class="bg-[#907d60] text-white" padding="xs" @click="closeModifyModal" />
+            <q-btn label="Apply" class="bg-[#907d60] text-white" padding="xs" v-if="showDateArea" type="submit"/>
+          </div>
+        </div>
+      </q-form>
+    </div>
+    <q-separator class="mt-3 mb-3" />
+    <div class="q-pa-md">
+      <q-table
+      :rows="filteredTableData"
+      :columns="columns"
+      class="my-sticky-header-table"
+      :dense="$q.screen.lt.md"
+      flat bordered
+      :pagination="initialPagination"
+      row-key="yourUniqueRowKey"
+      >
+      <!-- User Column Template -->
+      <template v-slot:body-cell-user="props">
+        <q-td :props="props" class="flex items-center gap-4" >
+          <q-img :src="getUserImagePublicPath(props.row.user.image)" :alt="props.row.user.name" class="w-[34px] rounded-full min-[390px]:hidden md:flex"/>
+          <div class="min-[390px]:flex md:block min-[390px]:gap-2">
+            <p class="font-bold">
+            {{ props.row.user.name }}
+            </p>
+            {{ props.row.user.position }}
+          </div>
+        </q-td>
+      </template>
+
+      <!-- Action Column Template -->
+      <template v-slot:body-cell-action="props">
+        <q-td :props="props">
+          {{ props.row.action }}
+        </q-td>
+      </template>
+
+      <!-- Date Column Template -->
+      <template v-slot:body-cell-date="props">
+        <q-td :props="props">
+          {{ formatFullDate(props.row.date) }}
+        </q-td>
+      </template>
+
+      <!-- Timestamp Column Template -->
+      <template v-slot:body-cell-timestamp="props">
+        <q-td :props="props">
+          {{ props.row.timestamp }}
+        </q-td>
+      </template>
+      </q-table>
     </div>
   </div>
-  <div class="fixed right-12 top-[200px] transform bg-white z-50 rounded-md border border-gray-500" style="max-width: 350px" v-if="showModifyModal">
-    <q-form @submit="onSubmitDate">
-      <div class="grid grid-cols-2 gap-2 border-b-[1px]">
-        <q-list dense class=" border-e-[1px]">
-          <q-item clickable v-ripple @click="selectOption('today')">
-            <q-item-section>Today</q-item-section>
-          </q-item>
-          <q-item clickable v-ripple @click="selectOption('last7days')">
-            <q-item-section>Last 7 Days</q-item-section>
-          </q-item>
-          <q-item clickable v-ripple @click="selectOption('last30days')">
-            <q-item-section>Last 30 Days</q-item-section>
-          </q-item>
-          <q-item clickable v-ripple @click="selectOption('thisYear')">
-            <q-item-section>This Year ({{ getCurrentYear() }})</q-item-section>
-          </q-item>
-          <q-item clickable v-ripple @click="selectOption('lastYear')">
-            <q-item-section>Last Year ({{ getLastYear() }})</q-item-section>
-          </q-item>
-          <q-item clickable v-ripple @click="openDateModal">
-            <q-item-section>Custom Date</q-item-section>
-          </q-item>
-        </q-list>
-
-        <div v-if="showDateArea" class="p-2">
-          <q-input v-model="startDate" label="Start Date" type="date" outlined required/>
-          <q-input v-model="endDate" label="End Date" type="date" outlined class="mt-2" required/>
-        </div>
-      </div>
-      <div class="flex gap-2 justify-between p-2">
-        <q-btn label="Clear" padding="xs" @click="selectDefault" />
-        <div class="gap-2 flex">
-          <q-btn label="Cancel" class="bg-[#907d60] text-white" padding="xs" @click="closeModifyModal" />
-          <q-btn label="Apply" class="bg-[#907d60] text-white" padding="xs" v-if="showDateArea" type="submit"/>
-        </div>
-      </div>
-    </q-form>
-  </div>
-
-
-  <q-separator class="mt-3 mb-3" />
-  <div class="q-pa-md">
-    <q-table
-    :rows="filteredTableData"
-    :columns="columns"
-    class="my-sticky-header-table"
-    :dense="$q.screen.lt.md"
-    flat bordered
-    :pagination="initialPagination"
-    row-key="yourUniqueRowKey"
-    >
-    <!-- User Column Template -->
-    <template v-slot:body-cell-user="props">
-      <q-td :props="props" class="flex items-center gap-4" >
-        <q-img :src="getUserImagePublicPath(props.row.user.image)" :alt="props.row.user.name" class="w-[34px] rounded-full min-[390px]:hidden md:flex"/>
-        <div class="min-[390px]:flex md:block min-[390px]:gap-2">
-          <p class="font-bold">
-          {{ props.row.user.name }}
-          </p>
-          {{ props.row.user.position }}
-        </div>
-      </q-td>
-    </template>
-
-    <!-- Action Column Template -->
-    <template v-slot:body-cell-action="props">
-      <q-td :props="props">
-        {{ props.row.action }}
-      </q-td>
-    </template>
-
-    <!-- Date Column Template -->
-    <template v-slot:body-cell-date="props">
-      <q-td :props="props">
-        {{ formatFullDate(props.row.date) }}
-      </q-td>
-    </template>
-
-    <!-- Timestamp Column Template -->
-    <template v-slot:body-cell-timestamp="props">
-      <q-td :props="props">
-        {{ props.row.timestamp }}
-      </q-td>
-    </template>
-    </q-table>
-  </div>
-
 </q-page>
 </template>
 
@@ -721,7 +716,7 @@ export default {
 <style lang="sass">
 .my-sticky-header-table
   /* height or max-height is important */
-  height: 400px
+  height: 370px
 
   .q-table__top,
 

@@ -5,10 +5,7 @@ v-model="drawer"
 side="left"
 bordered
 :width="drawerWidth">
-  <ul class="p-2 flex flex-col h-full static" v-if="drawerWidth !== 80">
-    <div @click="toggleDrawer" class="absolute -right-4 top-4 text-[18px] bg-white drop-shadow-lg rounded-full px-2 py-1 text-center cursor-pointer">
-      <q-icon :name="drawerIcon"/>
-    </div>
+  <ul class=" p-2 flex flex-col h-full static" v-if="drawerWidth !== 80">
     <div class="flex">
       <div class="w-1/4 items-center flex justify-center" >
         <q-img
@@ -24,16 +21,20 @@ bordered
           class="w-[150px] md:w-[60px]"
         />
       </div>
-        <div class="text-[#281c0f] w-3/4" v-if="drawerWidth !== 80">
-          <span class=" font-bold text-[20px]">WEAVEMANILA INC.</span><br>
-          <span class="text-[#281c0f] text-[12px]">Production Monitoring & Inventory Management System</span>
+      <div class="text-[#281c0f] text-[18px] w-3/4 flex justify-center items-center gap-1" v-if="drawerWidth !== 80">
+      <div>
+        <span class="font-bold ">WEAVEMANILA INC.</span><br>
+      </div>
+      <div>
+        <q-icon name="keyboard_double_arrow_right" class="text-[30px] cursor-pointer" @click="toggleDrawer" />
+      </div>
+    </div>
 
-        </div>
     </div>
 
 
 
-    <li class="font-bold">Overview</li>
+    <li class="font-bold mt-5">Menu</li>
       <li class="py-[10px] px-[20px]" >
         <div class="flex items-center">
           <router-link to="/dashboard/main-dashboard">
@@ -41,8 +42,7 @@ bordered
           </router-link>
         </div>
       </li>
-      <!-- Process Section -->
-      <li class="font-bold" >Process</li>
+
       <li class="py-[10px] px-[20px]" @click="toggleInventoryMenu">
         <div class="flex items-center gap-2 justify-between">
           <div><q-icon name="inventory"/> <span >Inventory</span></div>
@@ -63,11 +63,11 @@ bordered
       </li>
       <li class="py-[10px] px-[20px]">
         <div class="flex items-center">
-          <q-icon name="description" class="mr-2"/><span >Production Cost Report</span>
+          <q-icon name="assignment_add" class="mr-2"/><span>Report</span>
         </div>
       </li>
       <!-- Settings Section -->
-      <li class="font-bold" >Settings</li>
+      <li class="font-bold" >Admin</li>
       <li class="py-[10px] px-[20px]">
         <div class="flex items-center">
           <router-link to="/dashboard/auditlogs-section">
@@ -89,7 +89,9 @@ bordered
           </router-link>
         </div>
       </li>
+
       <li class="mt-auto py-[10px]">
+        <q-separator />
         <div class="flex justify-between text-center" >
           <div class="flex items-center" >
             <q-img
@@ -116,20 +118,14 @@ bordered
   </ul>
 
   <ul class="p-2 flex flex-col h-full static" v-if="drawerWidth <= 80">
-    <div @click="toggleDrawer" class="absolute -right-4 top-4 text-[18px] bg-white drop-shadow-lg rounded-full px-2 py-1 text-center cursor-pointer">
-      <q-icon :name="drawerIcon"/>
-    </div>
-    <div class="flex">
-      <div class=" items-center flex justify-center" v-if="drawerWidth <= 80">
-        <q-img
-          src="../../../assets/favicon-128x128.png"
-          alt="Description of the image"
-          class="w-[150px] md:w-[60px]"
-        />
+
+    <div class="flex justify-center items-center text-[40px]">
+      <div class=" items-center flex justify-center cursor-pointer" v-if="drawerWidth <= 80">
+        <q-icon name="keyboard_double_arrow_right" @click="toggleDrawer"/>
       </div>
     </div>
 
-
+      <li class="mt-5 text-center">Menu</li>
       <li class="py-[10px] px-[20px]" >
         <div class="flex items-center" @click="toggleDrawer">
           <q-icon name="dashboard" />
@@ -153,7 +149,7 @@ bordered
           <q-icon name="description" />
         </div>
       </li>
-      <!-- Settings Section -->
+      <li class="text-center">Admin</li>
       <li class="py-[10px] px-[20px]">
         <div class="flex items-center" @click="toggleDrawer">
             <i class="bi bi-activity"></i>
@@ -178,8 +174,8 @@ bordered
       </li>
   </ul>
 </q-drawer>
-<q-page class="bg-[#f5f5f5] p-4">
-  <div class="text-[30px]">
+<q-page class="bg-[#f5f5f5] ">
+  <div class="text-[30px] bg-white p-4">
     <div class="items-center flex">
       <q-icon
         name="menu"

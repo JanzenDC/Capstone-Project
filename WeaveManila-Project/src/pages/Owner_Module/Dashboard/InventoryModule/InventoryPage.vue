@@ -5,10 +5,7 @@ v-model="drawer"
 side="left"
 bordered
 :width="drawerWidth">
-  <ul class="p-2 flex flex-col h-full static" v-if="drawerWidth !== 80">
-    <div @click="toggleDrawer" class="absolute -right-4 top-4 text-[18px] bg-white drop-shadow-lg rounded-full px-2 py-1 text-center cursor-pointer">
-      <q-icon :name="drawerIcon"/>
-    </div>
+  <ul class=" p-2 flex flex-col h-full static" v-if="drawerWidth !== 80">
     <div class="flex">
       <div class="w-1/4 items-center flex justify-center" >
         <q-img
@@ -24,16 +21,20 @@ bordered
           class="w-[150px] md:w-[60px]"
         />
       </div>
-        <div class="text-[#281c0f] w-3/4" v-if="drawerWidth !== 80">
-          <span class=" font-bold text-[20px]">WEAVEMANILA INC.</span><br>
-          <span class="text-[#281c0f] text-[12px]">Production Monitoring & Inventory Management System</span>
+      <div class="text-[#281c0f] text-[18px] w-3/4 flex justify-center items-center gap-1" v-if="drawerWidth !== 80">
+      <div>
+        <span class="font-bold ">WEAVEMANILA INC.</span><br>
+      </div>
+      <div>
+        <q-icon name="keyboard_double_arrow_right" class="text-[30px] cursor-pointer" @click="toggleDrawer" />
+      </div>
+    </div>
 
-        </div>
     </div>
 
 
 
-    <li class="font-bold">Overview</li>
+    <li class="font-bold mt-5">Menu</li>
       <li class="py-[10px] px-[20px]" >
         <div class="flex items-center">
           <router-link to="/dashboard/main-dashboard">
@@ -41,8 +42,7 @@ bordered
           </router-link>
         </div>
       </li>
-      <!-- Process Section -->
-      <li class="font-bold" >Process</li>
+
       <li class="py-[10px] px-[20px]" @click="toggleInventoryMenu">
         <div class="flex items-center gap-2 justify-between">
           <div><q-icon name="inventory"/> <span >Inventory</span></div>
@@ -63,11 +63,11 @@ bordered
       </li>
       <li class="py-[10px] px-[20px]">
         <div class="flex items-center">
-          <q-icon name="description" class="mr-2"/><span >Production Cost Report</span>
+          <q-icon name="assignment_add" class="mr-2"/><span>Report</span>
         </div>
       </li>
       <!-- Settings Section -->
-      <li class="font-bold" >Settings</li>
+      <li class="font-bold" >Admin</li>
       <li class="py-[10px] px-[20px]">
         <div class="flex items-center">
           <router-link to="/dashboard/auditlogs-section">
@@ -89,7 +89,9 @@ bordered
           </router-link>
         </div>
       </li>
+
       <li class="mt-auto py-[10px]">
+        <q-separator />
         <div class="flex justify-between text-center" >
           <div class="flex items-center" >
             <q-img
@@ -116,20 +118,14 @@ bordered
   </ul>
 
   <ul class="p-2 flex flex-col h-full static" v-if="drawerWidth <= 80">
-    <div @click="toggleDrawer" class="absolute -right-4 top-4 text-[18px] bg-white drop-shadow-lg rounded-full px-2 py-1 text-center cursor-pointer">
-      <q-icon :name="drawerIcon"/>
-    </div>
-    <div class="flex">
-      <div class=" items-center flex justify-center" v-if="drawerWidth <= 80">
-        <q-img
-          src="../../../../assets/favicon-128x128.png"
-          alt="Description of the image"
-          class="w-[150px] md:w-[60px]"
-        />
+
+    <div class="flex justify-center items-center text-[40px]">
+      <div class=" items-center flex justify-center cursor-pointer" v-if="drawerWidth <= 80">
+        <q-icon name="keyboard_double_arrow_right" @click="toggleDrawer"/>
       </div>
     </div>
 
-
+      <li class="mt-5 text-center">Menu</li>
       <li class="py-[10px] px-[20px]" >
         <div class="flex items-center" @click="toggleDrawer">
           <q-icon name="dashboard" />
@@ -153,7 +149,7 @@ bordered
           <q-icon name="description" />
         </div>
       </li>
-      <!-- Settings Section -->
+      <li class="text-center">Admin</li>
       <li class="py-[10px] px-[20px]">
         <div class="flex items-center" @click="toggleDrawer">
             <i class="bi bi-activity"></i>
@@ -178,9 +174,9 @@ bordered
       </li>
   </ul>
 </q-drawer>
-<q-page class="bg-[#f5f5f5] p-4">
-  <div class="text-[30px]">
-    <div class="items-center flex">
+<q-page class="bg-[#f5f5f5] ">
+  <div class="text-[30px] bg-white p-2">
+    <div class="items-center flex ">
       <q-icon
         name="menu"
         v-if="showMenuIcon"
@@ -197,157 +193,158 @@ bordered
     </div>
     <div class="text-[16px]">Efficiently manage and track your stock for streamlined supply chain operations and optimized inventory.</div>
   </div>
-  <div class="flex md:items-end md:justify-end mt-10">
-    <div class="flex items-center gap-5">
-      <q-input v-model="search" outlined dense placeholder="Search" class="md:w-[400px]">
-        <template v-slot:prepend>
-          <q-icon name="search" />
-        </template>
-      </q-input>
-      <q-btn @click="addCategory = true" class="bg-[#281c0f] text-white">
-        <i class="bi bi-plus-lg"></i>
-        Add Category
-      </q-btn>
+  <div class="p-4">
+    <div class="flex md:items-end md:justify-end mt-6 ">
+      <div class="flex items-center gap-5">
+        <q-input v-model="search" outlined dense placeholder="Search" class="md:w-[400px]">
+          <template v-slot:prepend>
+            <q-icon name="search" />
+          </template>
+        </q-input>
+        <q-btn @click="addCategory = true" class="bg-[#281c0f] text-white">
+          <i class="bi bi-plus-lg"></i>
+          Add Category
+        </q-btn>
+      </div>
     </div>
-  </div>
 
-  <q-dialog v-model="addCategory">
-      <q-card>
-        <q-form @submit="onSubmit">
-        <q-card-section class="row items-center q-pb-none">
-          <div class="text-h6 font-bold">Add Category</div>
-          <q-space />
-          <q-btn icon="close" flat round dense v-close-popup />
-        </q-card-section>
+    <q-dialog v-model="addCategory">
+        <q-card>
+          <q-form @submit="onSubmit">
+          <q-card-section class="row items-center q-pb-none">
+            <div class="text-h6 font-bold">Add Category</div>
+            <q-space />
+            <q-btn icon="close" flat round dense v-close-popup />
+          </q-card-section>
 
-        <q-card-section class="scroll">
-          <label>
-            Category Name<span class="text-red-600">*</span>
-          </label>
-          <q-input type="text" label="Category Name" v-model="title"  outlined dense :rules="[val => !!val || 'Field is required']"/>
+          <q-card-section class="scroll">
             <label>
-              Procedure<span class="text-red-600">*</span>
+              Category Name<span class="text-red-600">*</span>
             </label>
-            <q-select
-              outlined dense
-              v-model="selectedProcedure"
-              :options="procedureOptions"
-              label="Select Procedure"
+            <q-input type="text" label="Category Name" v-model="title"  outlined dense :rules="[val => !!val || 'Field is required']"/>
+              <label>
+                Procedure<span class="text-red-600">*</span>
+              </label>
+              <q-select
+                outlined dense
+                v-model="selectedProcedure"
+                :options="procedureOptions"
+                label="Select Procedure"
+                :rules="[val => !!val || 'Field is required']"
+              />
+            <label class="">
+              Item Description<span class="text-red-600">*</span>
+            </label>
+            <q-input
+              type="textarea"
+              label="Item Description"
+              v-model="description"
+              outlined
+              dense
               :rules="[val => !!val || 'Field is required']"
+              style="width: 300px; resize: none;"
             />
-          <label class="">
-            Item Description<span class="text-red-600">*</span>
-          </label>
-          <q-input
-            type="textarea"
-            label="Item Description"
-            v-model="description"
-            outlined
-            dense
-            :rules="[val => !!val || 'Field is required']"
-            style="width: 300px; resize: none;"
-          />
-        </q-card-section>
+          </q-card-section>
 
-        <q-separator />
+          <q-separator />
 
-        <q-card-actions align="right">
-          <q-btn flat label="Cancel" color="primary" v-close-popup />
-          <q-btn
-            flat
-            label="Save"
-            type="submit"
-            icon="save"
-            size="md"
-            class="bg-[#281c0f] text-white rounded"
-          />
-        </q-card-actions>
-      </q-form>
-      </q-card>
-  </q-dialog>
-
-  <q-dialog v-model="OpenDelete">
-      <q-card>
-        <q-card-section class="row items-center q-pb-none">
-          <div class="py-1 px-2 border text-[24px]"><q-icon name="delete"/></div>
-          <q-space />
-          <q-btn icon="close" flat round dense v-close-popup />
-        </q-card-section>
-
-        <q-card-section>
-          <div class="text-h6 font-bold">Delete Card</div>
-          <p>Are you sure you want to delete this card? This</p>
-          <p>action cannot be undone.</p>
-        </q-card-section>
-
-        <q-card-actions class="flex justify-center items-center">
-          <div class="w-1/2 p-1">
-            <q-btn flat label="Cancel" outline v-close-popup class="w-full border"/>
-          </div>
-          <div class="w-1/2 p-1">
+          <q-card-actions align="right">
+            <q-btn flat label="Cancel" color="primary" v-close-popup />
             <q-btn
-              @click="onDelete"
               flat
-              label="Delete"
+              label="Save"
               type="submit"
+              icon="save"
               size="md"
-              class="bg-red-600 text-white rounded w-full"
+              class="bg-[#281c0f] text-white rounded"
             />
-          </div>
-        </q-card-actions>
-      </q-card>
-  </q-dialog>
+          </q-card-actions>
+        </q-form>
+        </q-card>
+    </q-dialog>
 
-    <div class="max-[390px]:mt-3 md:grid md:grid-cols-4 gap-4 md:p-4 h-[435px] overflow-y-auto overflow-x-hidden" >
-    <!-- Display fetched data in the grid with checkboxes -->
-    <div v-for="item in filteredItems" :key="item.id" style="border: #b09582 2px solid " class=" min-[390px]:mt-3 relative min-[390px]:w-full md:w-[231px] bg-white drop-shadow-lg border-[#b09582] rounded ">
-      <q-card flat>
-        <q-card-section>
-          <div class="row items-center no-wrap">
-            <div class="col">
-              <div class="text-h6">{{ item.title }}</div>
+    <q-dialog v-model="OpenDelete">
+        <q-card>
+          <q-card-section class="row items-center q-pb-none">
+            <div class="py-1 px-2 border text-[24px]"><q-icon name="delete"/></div>
+            <q-space />
+            <q-btn icon="close" flat round dense v-close-popup />
+          </q-card-section>
+
+          <q-card-section>
+            <div class="text-h6 font-bold">Delete Card</div>
+            <p>Are you sure you want to delete this card? This</p>
+            <p>action cannot be undone.</p>
+          </q-card-section>
+
+          <q-card-actions class="flex justify-center items-center">
+            <div class="w-1/2 p-1">
+              <q-btn flat label="Cancel" outline v-close-popup class="w-full border"/>
             </div>
-            <div class="col-auto">
-              <q-btn color="grey-7" round flat icon="more_vert">
-                <q-menu cover auto-close>
-                  <q-list>
-                    <q-item clickable @click="handleViewClick(item)">
-                      <q-item-section>View Details</q-item-section>
-                    </q-item>
-                    <q-item clickable @click="handleEditClick(item)">
-                      <q-item-section>Edit Card</q-item-section>
-                    </q-item>
-                    <q-item clickable @click="handleDeleteClick(item)">
-                      <q-item-section>Delete Card</q-item-section>
-                    </q-item>
-                  </q-list>
-                </q-menu>
-              </q-btn>
+            <div class="w-1/2 p-1">
+              <q-btn
+                @click="onDelete"
+                flat
+                label="Delete"
+                type="submit"
+                size="md"
+                class="bg-red-600 text-white rounded w-full"
+              />
             </div>
-          </div>
-        </q-card-section>
+          </q-card-actions>
+        </q-card>
+    </q-dialog>
 
-        <q-card-section>
-          <div class="items-center flex gap-3">
-            <q-icon name="inventory_2" class="text-[#b09582]"/>
-            <div class="grid grid-cols-2 gap-4">
-              <p>Inventory</p>
-              {{ getItemCount(item.categoryID) }}
+      <div class="max-[390px]:mt-3 md:grid md:grid-cols-4 gap-4 md:p-4 h-[435px] overflow-y-auto overflow-x-hidden" >
+      <!-- Display fetched data in the grid with checkboxes -->
+      <div v-for="item in filteredItems" :key="item.id" style="border: #b09582 2px solid " class=" min-[390px]:mt-3 relative min-[390px]:w-full md:w-[231px] bg-white drop-shadow-lg border-[#b09582] rounded ">
+        <q-card flat>
+          <q-card-section>
+            <div class="row items-center no-wrap">
+              <div class="col">
+                <div class="text-h6">{{ item.title }}</div>
+              </div>
+              <div class="col-auto">
+                <q-btn color="grey-7" round flat icon="more_vert">
+                  <q-menu cover auto-close>
+                    <q-list>
+                      <q-item clickable @click="handleViewClick(item)">
+                        <q-item-section>View Details</q-item-section>
+                      </q-item>
+                      <q-item clickable @click="handleEditClick(item)">
+                        <q-item-section>Edit Card</q-item-section>
+                      </q-item>
+                      <q-item clickable @click="handleDeleteClick(item)">
+                        <q-item-section>Delete Card</q-item-section>
+                      </q-item>
+                    </q-list>
+                  </q-menu>
+                </q-btn>
+              </div>
             </div>
-          </div>
-          <div class="flex items-center gap-2">
-            <q-icon name="short_text" class="text-[#b09582]"/>
-            <p>Description:</p>
-            <p class="overflow-hidden whitespace-nowrap overflow-ellipsis w-[86px]">{{ item.description }}asd adasdas</p>
-          </div>
+          </q-card-section>
+
+          <q-card-section>
+            <div class="items-center flex gap-3">
+              <q-icon name="inventory_2" class="text-[#b09582]"/>
+              <div class="grid grid-cols-2 gap-4">
+                <p>Inventory</p>
+                {{ getItemCount(item.categoryID) }}
+              </div>
+            </div>
+            <div class="flex items-center gap-2">
+              <q-icon name="short_text" class="text-[#b09582]"/>
+              <p>Description:</p>
+              <p class="overflow-hidden whitespace-nowrap overflow-ellipsis w-[86px]">{{ item.description }}asd adasdas</p>
+            </div>
 
 
 
-        </q-card-section>
-      </q-card>
+          </q-card-section>
+        </q-card>
+      </div>
     </div>
   </div>
-
 </q-page>
 </template>
 
