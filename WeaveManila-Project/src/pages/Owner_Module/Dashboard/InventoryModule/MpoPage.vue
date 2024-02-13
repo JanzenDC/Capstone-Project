@@ -238,7 +238,7 @@ bordered
             </q-btn-dropdown>
             <q-btn square icon="print"/>
             <q-btn square icon="cached" @click="refreshData"/>
-            <q-btn square label="Create MPO" icon="add" class="bg-[#634832] text-white" @click="firstStep = true"/>
+            <q-btn square label="Create MPO" icon="add" class="bg-[#634832] text-white" @click="secondStep = true"/>
           </div>
         </div>
       <q-table
@@ -441,55 +441,137 @@ bordered
       <q-card-section class="flex items-center gap-2">
         <q-icon name="assignment_add" class="text-h6"/>
         <div class="text-h6">Material Purchase Order Form</div>
-      </q-card-section>
-        <q-separator />
-          <q-card-section class="q-pt-none mt-3 ">
-            <div class="flex justify-center items-center w-3/4 mx-auto">
-                    <div class="flex items-center">
-                        <div class="text-center items-center">
-                          <div class="flex items-center justify-center">
-                            <span class="w-8 h-8 items-center text-center flex justify-center rounded-full bg-[#634832] text-white">1</span>
-                          </div>
-                          <div>
-                            Purchase Details
-                          </div>
-                        </div>
-                        <div class="w-10 h-px bg-gray-300 mx-2"></div>
-                    </div>
-                    <div class="flex items-center">
-                        <div class="text-center items-center">
-                          <div class="flex items-center justify-center">
-                            <span class="w-8 h-8 items-center text-center flex justify-center rounded-full bg-[#634832] text-white">2</span>
-                          </div>
-                          <div>
-                            Item Details
-                          </div>
-                        </div>
-                        <div class="w-10 h-px bg-gray-300 mx-2"></div>
-                    </div>
-                    <div class="flex items-center">
-                        <div class="text-center items-center">
-                          <div class="flex items-center justify-center">
-                            <span class="w-8 h-8 items-center text-center flex justify-center rounded-full bg-gray-300 text-gray-600">3</span>
-                          </div>
-                          <div>
-                            Signature
-                          </div>
-                        </div>
-                        <div class="w-10 h-px bg-gray-300 mx-2"></div>
-                    </div>
-                    <div class="flex items-center">
-                        <div class="text-center items-center">
-                          <div class="flex items-center justify-center">
-                            <span class="w-8 h-8 items-center text-center flex justify-center rounded-full bg-gray-300 text-gray-600">4</span>
-                          </div>
-                          <div>
-                            Summary
-                          </div>
-                        </div>
-                    </div>
+    </q-card-section>
+      <q-separator />
+        <q-card-section class="q-pt-none mt-3 ">
+          <div class="flex justify-center items-center w-3/4 mx-auto">
+            <div class="flex items-center">
+                <div class="text-center items-center">
+                  <div class="flex items-center justify-center">
+                    <span class="w-8 h-8 items-center text-center flex justify-center rounded-full bg-[#634832] text-white">1</span>
+                  </div>
+                  <div>
+                    Purchase Details
+                  </div>
                 </div>
-          </q-card-section>
+                <div class="w-10 h-px bg-gray-300 mx-2"></div>
+            </div>
+            <div class="flex items-center">
+                <div class="text-center items-center">
+                  <div class="flex items-center justify-center">
+                    <span class="w-8 h-8 items-center text-center flex justify-center rounded-full bg-[#634832] text-white">2</span>
+                  </div>
+                  <div>
+                    Item Details
+                  </div>
+                </div>
+                <div class="w-10 h-px bg-gray-300 mx-2"></div>
+            </div>
+            <div class="flex items-center">
+                <div class="text-center items-center">
+                  <div class="flex items-center justify-center">
+                    <span class="w-8 h-8 items-center text-center flex justify-center rounded-full bg-gray-300 text-gray-600">3</span>
+                  </div>
+                  <div>
+                    Signature
+                  </div>
+                </div>
+                <div class="w-10 h-px bg-gray-300 mx-2"></div>
+            </div>
+            <div class="flex items-center">
+                <div class="text-center items-center">
+                  <div class="flex items-center justify-center">
+                    <span class="w-8 h-8 items-center text-center flex justify-center rounded-full bg-gray-300 text-gray-600">4</span>
+                  </div>
+                  <div>
+                    Summary
+                  </div>
+                </div>
+            </div>
+          </div>
+          <div class="q-pa-md">
+            <div class="mb-3 flex items-center justify-end">
+              <q-btn label="Add Product" icon="add" class="bg-[#634832] text-white" @click="addProduct" size="sm"/>
+            </div>
+
+            <q-table
+              dense bordered
+              :rows="datarows"
+              :columns="datacolumns"
+              row-key="name"
+              :pagination="initialPagination"
+              no-data-label="Please provide the necessary data to continue."
+              class="my-sticky-header-table-second"
+            >
+
+            <template v-slot:body="props">
+              <q-tr :props="props">
+                <q-td key="sproduct" :props="props">
+                  {{ props.row.sproduct }}
+                  <q-popup-edit v-model="props.row.sproduct" title="Update Product" buttons v-slot="scope">
+                    <q-input type="text" v-model="scope.value" dense autofocus />
+                  </q-popup-edit>
+                </q-td>
+                <q-td key="sdescription" :props="props">
+                  {{ props.row.sdescription }}
+                  <q-popup-edit v-model="props.row.sdescription" title="Update Description" buttons v-slot="scope">
+                    <q-input type="text" v-model="scope.value" dense autofocus />
+                  </q-popup-edit>
+                </q-td>
+                <q-td key="squantity" :props="props">
+                  {{ props.row.squantity }}
+                  <q-popup-edit v-model="props.row.squantity" title="Update Quantity" buttons v-slot="scope">
+                    <q-input type="number" v-model="scope.value" dense autofocus />
+                  </q-popup-edit>
+                </q-td>
+                <q-td key="sunit" :props="props">
+                  {{ props.row.sunit }}
+                  <q-popup-edit v-model="props.row.sunit" title="Update Unit" buttons v-slot="scope">
+                    <q-input type="text" v-model="scope.value" dense autofocus />
+                  </q-popup-edit>
+                </q-td>
+                <q-td key="sunitprice" :props="props">
+                  {{ props.row.sunitprice }}
+                  <q-popup-edit v-model="props.row.sunitprice" title="Update Unit Price" buttons v-slot="scope">
+                    <q-input type="number" v-model="scope.value" dense autofocus />
+                  </q-popup-edit>
+                </q-td>
+                <q-td key="stotal" :props="props">
+
+                  ₱ {{ computeTotal(props.row) }}
+                </q-td>
+                <q-td key="sactions" :props="props">
+                  <q-icon name="delete" @click="deleteRow(props.row.id)"/>
+                </q-td>
+              </q-tr>
+            </template>
+            </q-table>
+            <div class="flex justify-end items-center mt-2">
+              <div class="grid grid-cols-2 gap-1">
+                  <q-input dense outlined v-model="total_in_table" class='hidden'/> <!--Total in table-->
+                  Delivery Charge
+                  <q-input dense outlined v-model="deliver_charge" >
+                  </q-input> <!--base on user input-->
+                  Discount
+                  <q-input dense outlined v-model="discount">
+                    <template v-slot:append>
+                      <q-icon name="percent" />
+                    </template>
+                  </q-input> <!--substraction automatic 10%-->
+                  Vat
+                  <q-input dense outlined v-model="vat">
+                    <template v-slot:append>
+                      <q-icon name="percent" />
+                    </template>
+                  </q-input><!--substraction automatic 12%-->
+                  Other Costs
+                  <q-input dense outlined v-model="other_cost" /> <!--base on user input-->
+                  Total Amount
+                  <q-input dense outlined v-model="total_amount" disable/> <!--total amount from table and computation from deliver_charge+other_cost+total from the table-discount-vat-->
+              </div>
+            </div>
+          </div>
+        </q-card-section>
 
         <q-card-actions class="bg-white text-teal flex absolute w-full justify-between bottom-0">
           <q-btn flat label="Previous" icon="arrow_back_ios" v-close-popup @click="handleFirstPrevious"/>
@@ -560,18 +642,51 @@ export default {
       cleaning: '',
       drying: '',
       weighting: '',
+
+      // Second Process Data
+      datacolumns: [
+        { name: 'sproduct', align: 'left', label: 'Product', field: 'sproduct', sortable: true },
+        { name: 'sdescription', align: 'left', label: 'Description', field: 'sdescription', sortable: true },
+        { name: 'squantity', align: 'left', label: 'Quantity', field: 'squantity', sortable: true },
+        { name: 'sunit', align: 'left', label: 'Unit', field: 'sunit', sortable: true },
+        { name: 'sunitprice', align: 'left', label: 'Unit Price', field: 'sunitprice', sortable: true },
+        { name: 'stotal', align: 'left', label: 'Total', field: 'stotal', sortable: true },
+        { name: 'sactions', align: 'left', label: 'Actions', field: 'sactions', sortable: true },
+      ],
+      datarows: [],
+      initialPagination: {
+        page: 1,
+        rowsPerPage: 2
+      },
+      deliver_charge: 0,
+      discount: 10,
+      vat: 12,
+      other_cost: 0,
+      total_amount: 0,
+      total_in_table: 0,
     };
   },
   mounted() {
     this.loadUserData();
     this.fetchMPOdata();
-
     this.statusCheckTimer = setInterval(() => {
       this.checkUserStatus();
     }, 20 * 1000); // 1 second (in milliseconds)
 
     this.fetchCategoryData();
     this.fetchSupplierData();
+  },
+  watch: {
+    datarows: {
+      handler: function(newRows, oldRows) {
+        this.updateTotalAmount();
+      },
+      deep: true // This ensures that changes to nested properties in datarows are detected
+    },
+    deliver_charge: 'updateTotalAmount',
+    discount: 'updateTotalAmount',
+    vat: 'updateTotalAmount',
+    other_cost: 'updateTotalAmount'
   },
   computed: {
     SelectionRules() {
@@ -589,11 +704,7 @@ export default {
         !this.delivery_date_val ||
         !this.delivery_add_val ||
         !this.selectedSupplier ||
-        !this.supplier_address ||
-        !this.segregation ||
-        !this.cleaning ||
-        !this.drying ||
-        !this.weighting
+        !this.supplier_address
       ) {
         return true;
       }
@@ -604,6 +715,55 @@ export default {
     clearInterval(this.statusCheckTimer);
   },
   methods: {
+    updateTotalAmount() {
+      // Compute the total from the table
+      const totalFromTable = this.datarows.reduce((acc, row) => {
+        const quantity = parseFloat(row.squantity) || 0;
+        const unitPrice = parseFloat(row.sunitprice) || 0;
+        return acc + (quantity * unitPrice);
+      }, 0);
+
+      // Compute the total amount
+      const deliveryCharge = parseFloat(this.deliver_charge) || 0;
+      const otherCost = parseFloat(this.other_cost) || 0;
+      const discountPercentage = parseFloat(this.discount) / 100;
+      const vatPercentage = parseFloat(this.vat) / 100;
+
+      const discountAmount = discountPercentage * totalFromTable;
+      const vatAmount = vatPercentage * totalFromTable;
+
+
+      this.total_amount = totalFromTable - discountAmount + vatAmount + deliveryCharge - otherCost;
+    },
+    addProduct() {
+      let maxId = 0;
+      this.datarows.forEach(row => {
+        if (row.id > maxId) {
+          maxId = row.id;
+        }
+      });
+      const newId = maxId + 1;
+      this.datarows.push({
+        id: newId,
+        sproduct: '',
+        sdescription: '',
+        squantity: '',
+        sunit: '',
+        sunitprice: '',
+        stotal: '',
+      });
+    },
+    deleteRow(id) {
+      this.datarows = this.datarows.filter(row => row.id !== id);
+      console.log(id);
+    },
+    computeTotal(row) {
+      const total = parseFloat(row.squantity) * parseFloat(row.sunitprice);
+      // Ensure that total is not NaN, otherwise set it to 0
+      row.stotal = isNaN(total) ? 0 : total;
+      // Return the calculated total
+      return row.stotal;
+    },
     handleCancel(){
       this.mpo_ref= '';
       this.date_purchased= '';
@@ -851,7 +1011,6 @@ export default {
   height: 360px
 
   .q-table__top,
-
   thead tr:first-child th
     /* bg color is important for th; just specify one */
     font-size: 13px
@@ -860,7 +1019,6 @@ export default {
   thead tr th
     position: sticky
     z-index: 1
-  thead tr:first-child th
     top: 0
 
   /* this is when the loading indicator appears */
@@ -872,4 +1030,19 @@ export default {
   tbody
     /* height of all previous header rows */
     scroll-margin-top: 48px
+
+.my-sticky-header-table-second
+  /* height or max-height is important */
+  height: 100px
+
+  .q-table__top,
+  thead tr:first-child th
+    /* bg color is important for th; just specify one */
+    font-size: 13px
+    background-color: #fff
+
+  thead tr th
+    position: sticky
+    z-index: 1
+    top: 0
 </style>
