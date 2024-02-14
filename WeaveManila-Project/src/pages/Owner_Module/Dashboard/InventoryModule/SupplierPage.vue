@@ -52,7 +52,7 @@ bordered
           <router-link to="/dashboard/inventory-section">
             <li class="py-[2px] px-[40px] mt-3">Materials</li>
           </router-link>
-          <router-link to="/dashboard/mpo-section">
+          <router-link to="/dashboard/mpoform-section">
             <li class="px-[40px] mt-3"> Material Purchase Order</li>
           </router-link>
         </ul>
@@ -199,6 +199,12 @@ bordered
 
   <div class="p-4">
     <div class="flex mt-3">
+      <router-link to="/dashboard/mpoform-section">
+        <div class="flex w-[155px] text-[#b8b8b8] border-t-2 border-l-2 border-e-2 h-[44px] py-3 px-5 gap-[8px] rounded items-center text-[14px]">
+          <q-icon name="note_add"/>
+          <p>MPO Form</p>
+        </div>
+      </router-link>
       <router-link to="/dashboard/mpo-section">
         <div class="flex  w-[155px] text-[#b8b8b8] border-l-2 border-t-2 border-e-2 h-[44px] py-3 px-5 gap-[8px] rounded items-center text-[14px]">
           <q-icon name="list"/>

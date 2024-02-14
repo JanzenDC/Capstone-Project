@@ -32,9 +32,10 @@ const routes = [
       { path: 'auditlogs-section', component: () => import('pages/Owner_Module/Dashboard/AuditLogs/AuditlogPage.vue') },
       // User Management
       { path: 'usermanagement-section', component: () => import('pages/Owner_Module/Dashboard/UserManagement/UserManagement.vue') },
-      
+
       // Inventory Module
       { path: 'inventory-section', component: () => import('pages/Owner_Module/Dashboard/InventoryModule/InventoryPage.vue') },
+      { path: 'mpoform-section', component: () => import('pages/Owner_Module/Dashboard/InventoryModule/MpoForm.vue') },
       { path: 'mpo-section', component: () => import('pages/Owner_Module/Dashboard/InventoryModule/MpoPage.vue') },
       { path: 'supplier-section', component: () => import('pages/Owner_Module/Dashboard/InventoryModule/SupplierPage.vue') },
 

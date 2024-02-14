@@ -52,7 +52,7 @@ bordered
           <router-link to="/dashboard/inventory-section">
             <li class="py-[2px] px-[40px] mt-3">Materials</li>
           </router-link>
-          <router-link to="/dashboard/mpo-section">
+          <router-link to="/dashboard/mpoform-section">
             <li class="px-[40px] mt-3"> Material Purchase Order</li>
           </router-link>
         </ul>
@@ -198,6 +198,12 @@ bordered
 
   <div class="p-4">
     <div class="flex mt-3">
+      <router-link to="/dashboard/mpoform-section">
+        <div class="flex w-[155px] text-[#b8b8b8] border-t-2 border-l-2 border-e-2 h-[44px] py-3 px-5 gap-[8px] rounded items-center text-[14px]">
+          <q-icon name="note_add"/>
+          <p>MPO Form</p>
+        </div>
+      </router-link>
       <router-link to="/dashboard/mpo-section">
         <div class="flex bg-white w-[155px] border-r-2 h-[44px] py-3 px-5 gap-[8px] rounded items-center text-[14px]">
           <q-icon name="list"/>
@@ -238,7 +244,6 @@ bordered
             </q-btn-dropdown>
             <q-btn square icon="print"/>
             <q-btn square icon="cached" @click="refreshData"/>
-            <q-btn square label="Create MPO" icon="add" class="bg-[#634832] text-white" @click="secondStep = true"/>
           </div>
         </div>
       <q-table
@@ -280,305 +285,8 @@ bordered
 
   </div>
 
-<!-- First STEP -->
-    <q-dialog v-model="firstStep" full-width full-height>
-      <q-card>
-          <q-card-section class="flex items-center gap-2">
-            <q-icon name="assignment_add" class="text-h6"/>
-            <div class="text-h6">Material Purchase Order Form</div>
-          </q-card-section>
-          <q-separator />
 
-          <q-card-section class="q-pt-none mt-3 ">
-            <div class="flex justify-center items-center w-3/4 mx-auto">
-                <div class="flex items-center">
-                    <div class="text-center items-center">
-                      <div class="flex items-center justify-center">
-                        <span class="w-8 h-8 items-center text-center flex justify-center rounded-full bg-[#634832] text-white">1</span>
-                      </div>
-                      <div>
-                        Purchase Details
-                      </div>
-                    </div>
-                    <div class="w-10 h-px bg-gray-300 mx-2"></div>
-                </div>
-                <div class="flex items-center">
-                    <div class="text-center items-center">
-                      <div class="flex items-center justify-center">
-                        <span class="w-8 h-8 items-center text-center flex justify-center rounded-full bg-gray-300 text-gray-600">2</span>
-                      </div>
-                      <div>
-                        Item Details
-                      </div>
-                    </div>
-                    <div class="w-10 h-px bg-gray-300 mx-2"></div>
-                </div>
-                <div class="flex items-center">
-                    <div class="text-center items-center">
-                      <div class="flex items-center justify-center">
-                        <span class="w-8 h-8 items-center text-center flex justify-center rounded-full bg-gray-300 text-gray-600">3</span>
-                      </div>
-                      <div>
-                        Signature
-                      </div>
-                    </div>
-                    <div class="w-10 h-px bg-gray-300 mx-2"></div>
-                </div>
-                <div class="flex items-center">
-                    <div class="text-center items-center">
-                      <div class="flex items-center justify-center">
-                        <span class="w-8 h-8 items-center text-center flex justify-center rounded-full bg-gray-300 text-gray-600">4</span>
-                      </div>
-                      <div>
-                        Summary
-                      </div>
-                    </div>
-                </div>
-            </div>
 
-            <div>
-              <div class="flex items-center gap-4 mt-3">
-                <div>
-                  <label>MPO Ref. No</label>
-                  <q-input dense outlined v-model="mpo_ref" class="w-[296px]" lazy-rules :rules="[ val => val && val.length > 0 || 'Please input something']"/>
-                </div>
-                <div>
-                  <label>Date Purchased</label>
-                  <q-input dense outlined v-model="date_purchased" type="date" class="w-[296px]" lazy-rules :rules="[ val => val && val.length > 0 || 'Please input something']"/>
-                </div>
-                <div>
-                    <label>Category</label>
-                    <q-select
-                      v-model="selectedCategory"
-                      :options="categories"
-                      emit-value
-                      map-options
-                      outlined
-                      dense
-                      class="w-[296px]"
-                      lazy-rules
-                      :rules="SelectionRules"
-                    />
-                </div>
-              </div>
-
-              <div class="flex items-center gap-4 ">
-                <div>
-                  <label>Client Ref. NO.</label>
-                  <q-input dense outlined v-model="client_ref" class="w-[296px]" lazy-rules :rules="[ val => val && val.length > 0 || 'Please input something']"/>
-                </div>
-                <div>
-                  <label>W.O Ref. No.</label>
-                  <q-input dense outlined v-model="wo_purchased" class="w-[296px]" lazy-rules :rules="[ val => val && val.length > 0 || 'Please input something']"/>
-                </div>
-                <div>
-                  <label>Delivery Date</label>
-                  <q-input dense outlined v-model="delivery_date_val" type="date" class="w-[296px]" lazy-rules :rules="[ val => val && val.length > 0 || 'Please input something']"/>
-                </div>
-                <div>
-                  <label>Delivery Address</label>
-                  <q-input dense outlined v-model="delivery_add_val"  class="w-[296px]"         lazy-rules :rules="[ val => val && val.length > 0 || 'Please type something']"/>
-                </div>
-              </div>
-
-              <div>
-                <p class="text-h7 font-bold ">TO:</p>
-                <div class="flex items-center gap-4">
-                  <div>
-                      <label>Supplier</label>
-                      <q-select
-                        v-model="selectedSupplier"
-                        :options="supplier_list"
-                        emit-value
-                        map-options
-                        outlined
-                        dense
-                        class="w-[296px]"
-                        lazy-rules :rules="SelectionRules"
-                      />
-                  </div>
-                  <div>
-                    <label>Supplier Address</label>
-                    <q-input dense outlined v-model="supplier_address" class="w-[920px]" lazy-rules :rules="[ val => val && val.length > 0 || 'Please input something']"/>
-                  </div>
-                </div>
-              </div>
-
-              <div>
-                <p class="text-h7 font-bold ">Process:</p>
-                <div class="flex items-center gap-4">
-                  <div>
-                    <label>Segregation</label>
-                    <q-input dense outlined v-model="segregation" class="w-[296px]" lazy-rules :rules="[ val => val && val.length > 0 || 'Please input something']"/>
-                  </div>
-                  <div>
-                    <label>Cleaning</label>
-                    <q-input dense outlined v-model="cleaning" class="w-[296px]" lazy-rules :rules="[ val => val && val.length > 0 || 'Please input something']"/>
-                  </div>
-                  <div>
-                    <label>Drying</label>
-                    <q-input dense outlined v-model="drying" class="w-[296px]" lazy-rules :rules="[ val => val && val.length > 0 || 'Please input something']"/>
-                  </div>
-                  <div>
-                    <label>Weighting</label>
-                    <q-input dense outlined v-model="weighting" class="w-[296px]" lazy-rules :rules="[ val => val && val.length > 0 || 'Please input something']"/>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </q-card-section>
-
-        <q-card-actions class="bg-white text-teal flex  w-full justify-between">
-          <q-btn flat label="Cancel" v-close-popup @click="handleCancel"/>
-          <q-btn flat label="Next" class="bg-[#634832] text-white" icon-right="arrow_forward_ios" @click="handleNext" :disable="shouldDisableNextButton"/>
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
-
-<!-- Second STEP -->
-    <q-dialog v-model="secondStep" full-width full-height>
-      <q-card class="column relative">
-      <q-card-section class="flex items-center gap-2">
-        <q-icon name="assignment_add" class="text-h6"/>
-        <div class="text-h6">Material Purchase Order Form</div>
-    </q-card-section>
-      <q-separator />
-        <q-card-section class="q-pt-none mt-3 ">
-          <div class="flex justify-center items-center w-3/4 mx-auto">
-            <div class="flex items-center">
-                <div class="text-center items-center">
-                  <div class="flex items-center justify-center">
-                    <span class="w-8 h-8 items-center text-center flex justify-center rounded-full bg-[#634832] text-white">1</span>
-                  </div>
-                  <div>
-                    Purchase Details
-                  </div>
-                </div>
-                <div class="w-10 h-px bg-gray-300 mx-2"></div>
-            </div>
-            <div class="flex items-center">
-                <div class="text-center items-center">
-                  <div class="flex items-center justify-center">
-                    <span class="w-8 h-8 items-center text-center flex justify-center rounded-full bg-[#634832] text-white">2</span>
-                  </div>
-                  <div>
-                    Item Details
-                  </div>
-                </div>
-                <div class="w-10 h-px bg-gray-300 mx-2"></div>
-            </div>
-            <div class="flex items-center">
-                <div class="text-center items-center">
-                  <div class="flex items-center justify-center">
-                    <span class="w-8 h-8 items-center text-center flex justify-center rounded-full bg-gray-300 text-gray-600">3</span>
-                  </div>
-                  <div>
-                    Signature
-                  </div>
-                </div>
-                <div class="w-10 h-px bg-gray-300 mx-2"></div>
-            </div>
-            <div class="flex items-center">
-                <div class="text-center items-center">
-                  <div class="flex items-center justify-center">
-                    <span class="w-8 h-8 items-center text-center flex justify-center rounded-full bg-gray-300 text-gray-600">4</span>
-                  </div>
-                  <div>
-                    Summary
-                  </div>
-                </div>
-            </div>
-          </div>
-          <div class="q-pa-md">
-            <div class="mb-3 flex items-center justify-end">
-              <q-btn label="Add Product" icon="add" class="bg-[#634832] text-white" @click="addProduct" size="sm"/>
-            </div>
-
-            <q-table
-              dense bordered
-              :rows="datarows"
-              :columns="datacolumns"
-              row-key="name"
-              :pagination="initialPagination"
-              no-data-label="Please provide the necessary data to continue."
-              class="my-sticky-header-table-second"
-            >
-
-            <template v-slot:body="props">
-              <q-tr :props="props">
-                <q-td key="sproduct" :props="props">
-                  {{ props.row.sproduct }}
-                  <q-popup-edit v-model="props.row.sproduct" title="Update Product" buttons v-slot="scope">
-                    <q-input type="text" v-model="scope.value" dense autofocus />
-                  </q-popup-edit>
-                </q-td>
-                <q-td key="sdescription" :props="props">
-                  {{ props.row.sdescription }}
-                  <q-popup-edit v-model="props.row.sdescription" title="Update Description" buttons v-slot="scope">
-                    <q-input type="text" v-model="scope.value" dense autofocus />
-                  </q-popup-edit>
-                </q-td>
-                <q-td key="squantity" :props="props">
-                  {{ props.row.squantity }}
-                  <q-popup-edit v-model="props.row.squantity" title="Update Quantity" buttons v-slot="scope">
-                    <q-input type="number" v-model="scope.value" dense autofocus />
-                  </q-popup-edit>
-                </q-td>
-                <q-td key="sunit" :props="props">
-                  {{ props.row.sunit }}
-                  <q-popup-edit v-model="props.row.sunit" title="Update Unit" buttons v-slot="scope">
-                    <q-input type="text" v-model="scope.value" dense autofocus />
-                  </q-popup-edit>
-                </q-td>
-                <q-td key="sunitprice" :props="props">
-                  {{ props.row.sunitprice }}
-                  <q-popup-edit v-model="props.row.sunitprice" title="Update Unit Price" buttons v-slot="scope">
-                    <q-input type="number" v-model="scope.value" dense autofocus />
-                  </q-popup-edit>
-                </q-td>
-                <q-td key="stotal" :props="props">
-
-                  ₱ {{ computeTotal(props.row) }}
-                </q-td>
-                <q-td key="sactions" :props="props">
-                  <q-icon name="delete" @click="deleteRow(props.row.id)"/>
-                </q-td>
-              </q-tr>
-            </template>
-            </q-table>
-            <div class="flex justify-end items-center mt-2">
-              <div class="grid grid-cols-2 gap-1">
-                  <q-input dense outlined v-model="total_in_table" class='hidden'/> <!--Total in table-->
-                  Delivery Charge
-                  <q-input dense outlined v-model="deliver_charge" >
-                  </q-input> <!--base on user input-->
-                  Discount
-                  <q-input dense outlined v-model="discount">
-                    <template v-slot:append>
-                      <q-icon name="percent" />
-                    </template>
-                  </q-input> <!--substraction automatic 10%-->
-                  Vat
-                  <q-input dense outlined v-model="vat">
-                    <template v-slot:append>
-                      <q-icon name="percent" />
-                    </template>
-                  </q-input><!--substraction automatic 12%-->
-                  Other Costs
-                  <q-input dense outlined v-model="other_cost" /> <!--base on user input-->
-                  Total Amount
-                  <q-input dense outlined v-model="total_amount" disable/> <!--total amount from table and computation from deliver_charge+other_cost+total from the table-discount-vat-->
-              </div>
-            </div>
-          </div>
-        </q-card-section>
-
-        <q-card-actions class="bg-white text-teal flex absolute w-full justify-between bottom-0">
-          <q-btn flat label="Previous" icon="arrow_back_ios" v-close-popup @click="handleFirstPrevious"/>
-          <q-btn flat label="Next" class="bg-[#634832] text-white" icon-right="arrow_forward_ios"/>
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
 </q-page>
 </template>
 
@@ -624,46 +332,7 @@ export default {
       rows: [],
       selected: [],
 
-      // First Process Data
-      mpo_ref: '',
-      date_purchased: '',
-      selectedCategory: '',
-      categories: [],
-      client_ref: '',
-      wo_purchased: '',
-      delivery_date_val: '',
-      delivery_add_val: '',
 
-      selectedSupplier: '',
-      supplier_list: [],
-      supplier_address: '',
-
-      segregation: '',
-      cleaning: '',
-      drying: '',
-      weighting: '',
-
-      // Second Process Data
-      datacolumns: [
-        { name: 'sproduct', align: 'left', label: 'Product', field: 'sproduct', sortable: true },
-        { name: 'sdescription', align: 'left', label: 'Description', field: 'sdescription', sortable: true },
-        { name: 'squantity', align: 'left', label: 'Quantity', field: 'squantity', sortable: true },
-        { name: 'sunit', align: 'left', label: 'Unit', field: 'sunit', sortable: true },
-        { name: 'sunitprice', align: 'left', label: 'Unit Price', field: 'sunitprice', sortable: true },
-        { name: 'stotal', align: 'left', label: 'Total', field: 'stotal', sortable: true },
-        { name: 'sactions', align: 'left', label: 'Actions', field: 'sactions', sortable: true },
-      ],
-      datarows: [],
-      initialPagination: {
-        page: 1,
-        rowsPerPage: 2
-      },
-      deliver_charge: 0,
-      discount: 10,
-      vat: 12,
-      other_cost: 0,
-      total_amount: 0,
-      total_in_table: 0,
     };
   },
   mounted() {
@@ -672,150 +341,11 @@ export default {
     this.statusCheckTimer = setInterval(() => {
       this.checkUserStatus();
     }, 20 * 1000); // 1 second (in milliseconds)
-
-    this.fetchCategoryData();
-    this.fetchSupplierData();
-  },
-  watch: {
-    datarows: {
-      handler: function(newRows, oldRows) {
-        this.updateTotalAmount();
-      },
-      deep: true // This ensures that changes to nested properties in datarows are detected
-    },
-    deliver_charge: 'updateTotalAmount',
-    discount: 'updateTotalAmount',
-    vat: 'updateTotalAmount',
-    other_cost: 'updateTotalAmount'
-  },
-  computed: {
-    SelectionRules() {
-      return [
-        (val) => !!val || 'Please select a category'
-      ];
-    },
-    shouldDisableNextButton() {
-      if (
-        !this.mpo_ref ||
-        !this.date_purchased ||
-        !this.selectedCategory ||
-        !this.client_ref ||
-        !this.wo_purchased ||
-        !this.delivery_date_val ||
-        !this.delivery_add_val ||
-        !this.selectedSupplier ||
-        !this.supplier_address
-      ) {
-        return true;
-      }
-      return false;
-    }
   },
   beforeUnmount() {
     clearInterval(this.statusCheckTimer);
   },
   methods: {
-    updateTotalAmount() {
-      // Compute the total from the table
-      const totalFromTable = this.datarows.reduce((acc, row) => {
-        const quantity = parseFloat(row.squantity) || 0;
-        const unitPrice = parseFloat(row.sunitprice) || 0;
-        return acc + (quantity * unitPrice);
-      }, 0);
-
-      // Compute the total amount
-      const deliveryCharge = parseFloat(this.deliver_charge) || 0;
-      const otherCost = parseFloat(this.other_cost) || 0;
-      const discountPercentage = parseFloat(this.discount) / 100;
-      const vatPercentage = parseFloat(this.vat) / 100;
-
-      const discountAmount = discountPercentage * totalFromTable;
-      const vatAmount = vatPercentage * totalFromTable;
-
-
-      this.total_amount = totalFromTable - discountAmount + vatAmount + deliveryCharge - otherCost;
-    },
-    addProduct() {
-      let maxId = 0;
-      this.datarows.forEach(row => {
-        if (row.id > maxId) {
-          maxId = row.id;
-        }
-      });
-      const newId = maxId + 1;
-      this.datarows.push({
-        id: newId,
-        sproduct: '',
-        sdescription: '',
-        squantity: '',
-        sunit: '',
-        sunitprice: '',
-        stotal: '',
-      });
-    },
-    deleteRow(id) {
-      this.datarows = this.datarows.filter(row => row.id !== id);
-      console.log(id);
-    },
-    computeTotal(row) {
-      const total = parseFloat(row.squantity) * parseFloat(row.sunitprice);
-      // Ensure that total is not NaN, otherwise set it to 0
-      row.stotal = isNaN(total) ? 0 : total;
-      // Return the calculated total
-      return row.stotal;
-    },
-    handleCancel(){
-      this.mpo_ref= '';
-      this.date_purchased= '';
-      this.selectedCategory= '';
-      this.client_ref= '';
-      this.wo_purchased= '';
-      this.delivery_date_val= '';
-      this.delivery_add_val= '';
-
-      this.selectedSupplier='';
-      this.supplier_address= '';
-
-      this. segregation= '';
-      this.cleaning= '';
-      this.drying= '';
-      this.weighting= '';
-    },
-    fetchCategoryData(){
-      axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/MPO_Queries/mpo_data.php?get=category`)
-      .then(response => {
-          this.categories = response.data.categoryData.map(category => ({
-            value: category.categoryID,
-            label: category.title
-          }));
-      })
-      .catch(error => {
-        // Handle any errors that occur during the HTTP request
-        console.error('Error fetching data:', error.message);
-      });
-    },
-    fetchSupplierData(){
-      axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/MPO_Queries/mpo_data.php?get=supplier`)
-      .then(response => {
-          this.supplier_list = response.data.categoryData.map(supplier => ({
-            value: supplier.supplierID,
-            label: supplier.supplier_name
-          }));
-      })
-      .catch(error => {
-        // Handle any errors that occur during the HTTP request
-        console.error('Error fetching data:', error.message);
-      });
-    },
-    handleNext()
-    {
-      this.firstStep = false;
-      this.secondStep = true;
-    },
-    handleFirstPrevious(){
-      this.firstStep = true;
-      this.secondStep = false;
-    },
     refreshData(){
       this.fetchMPOdata();
     },
