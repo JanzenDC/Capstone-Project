@@ -34,11 +34,6 @@
             mpo_tbl.delivery_date,
             mpo_tbl.delivery_address,
             mpo_tbl.supplier_address,
-            mpo_tbl.item,
-            mpo_tbl.product_description,
-            mpo_tbl.quantity,
-            mpo_tbl.unit,
-            mpo_tbl.unit_price,
             mpo_tbl.total,
             mpo_tbl.delivery_charge,
             mpo_tbl.discount,
@@ -47,7 +42,6 @@
             mpo_tbl.notes_instructions,
             mpo_tbl.prepared_by,
             mpo_tbl.approved_by,
-            mpo_tbl.status,
             w_supplierlist.supplierID,
             w_supplierlist.supplier_name
             FROM mpo_tbl
@@ -150,6 +144,7 @@
 
     public function httpPost($payload)
     {
+
         $mpodata = $this->db->get('mpo_tbl');
         $maxMPOID = 0;
         foreach ($mpodata as $row) {
@@ -159,59 +154,98 @@
             }
         }
         $nextMPOID = $maxMPOID + 1;
+        $getUser = $this->db->where('email', $payload['personnel_Email'])->getOne('personel_tbl');
+        if($getUser){
+            $selectedCategory = $payload['selectedCategory'];
+            $category = $this->db->where('title',  $selectedCategory)->getOne('w_category');
 
-        $category = $this->db->where('title', $payload['selectedCategory'])->getOne('w_category');
-        if($category){
-            $supplierfetch = $this->db->where('supplier_name', $payload['selectedSupplier'])->getOne('w_supplierlist');
-            $isertData = [
-                'mpoID' => $nextMPOID,
-                'company_address' => $payload['company_address'],
-                'date_purchased' => $payload['date_purchased'],
-                'categoryID' => $category['categoryID'],
-                'client_ref_no' => $payload['company_address'],
-                'company_address' => $payload['wo_purchased'],
-                'company_address' => $payload['delivery_date_val'],
-                'company_address' => $payload['delivery_add_val'],
-                'supplierID' => $supplierfetch['supplierID'],
-                'supplier_address' => $payload['supplier_address'],
-                'delivery_charge' => $payload['deliver_charge'],
-                'discount' => $payload['discount'],
-                'vat' => $payload['vat'], //need data
-                'other_costs' => $payload['other_cost'],
-                'total_amount' => $payload['total_amount'],
-                'total_subtotal' => $payload['total_in_table'],
-                'notes_instructions' => $payload['notes_instructions'],
-                'prepared_by' => $payload['prepared_name'],
-                'approved_by' => $payload['approvedby_name'],
-            ];
-            $dataHolder = $this->db->insert('mpo_tbl', $isertData);
-            if($dataHolder){
-                $response = [
-                    'status' => 'success',
-                    'message' => 'Data has been insert successfully',
-                    'datas' => $dataHolder,
-                ];
-                echo json_encode($response);
-                exit;
+            if($category){
+                $supplierfetch = $this->db->where('supplier_name', $payload['selectedSupplier'])->getOne('w_supplierlist');
+                if($supplierfetch){
+                    $isertData = [
+                        'mpoID' => $nextMPOID,
+                        'categoryID' => $category['categoryID'],
+                        'supplierID' => $supplierfetch['supplierID'],
+                        'personelID' => $getUser['personelID'],
+                        'company_address' => $payload['company_address'],
+                        'mpo_ref_no' => $payload['mpo_ref'],
+                        'date_purchased' => $payload['date_purchased'],     
+                        'client_ref_no' => $payload['client_ref'],
+                        'w_o_ref_no' => $payload['wo_purchased'],
+                        'delivery_date' => $payload['delivery_date_val'],
+                        'delivery_address' => $payload['delivery_add_val'],   
+                        'supplier_address' => $payload['supplier_address'],
+                        'delivery_charge' => $payload['deliver_charge'],
+                        'discount' => $payload['discount'],
+                        'vat' => $payload['vat'], //need data
+                        'other_costs' => $payload['other_cost'],
+                        'total_amount' => $payload['total_amount'],
+                        'notes_instructions' => $payload['notes_instructions'],
+                        'prepared_by' => $payload['prepareSig'],
+                        'approved_by' => $payload['approveSig'],
+                    ];
+                    $dataHolder = $this->db->insert('mpo_tbl', $isertData);
+    
+                    if ($dataHolder) {
+                        $insertedProducts = [];
+                        foreach ($payload['products'] as $product) {
+                            
+                            $discount = isset($product['sdiscount']) ? floatval($product['sdiscount']) : 0;
+
+                            // Prepare product data for insertion
+                            $productData = [
+                                'mpoID' => $nextMPOID,
+                                'item_name' => $product['sproduct'],
+                                'description' => $product['sdescription'],
+                                'quantity' => $product['squantity'],
+                                'unit' => $product['sunit'],
+                                'unit_price' => $product['sunitprice'],
+                                'discounts' => $discount,
+                                'subtotal' => $product['stotal'],
+                            ];
+                            $test = $this->db->insert('mpo_base', $productData);
+                            $insertedProducts[] = $productData;
+
+                        }
+                        $response = [
+                            'status' => $productData,
+                        ];
+                        echo json_encode($response);
+                        exit;
+                    } else {
+                        $response = [
+                            'status' => 'fail',
+                            'message' => 'Fail to insert data into MPO_TBL.',
+                        ];
+                        echo json_encode($response);
+                        exit;
+                    }
+                } else {
+                    $response = [
+                        'status' => 'fail',
+                        'message' => 'Fail there is no supplier data.',
+                    ];
+                    echo json_encode($response);
+                    exit;
+                }
+
+                
             }else{
                 $response = [
                     'status' => 'fail',
-                    'message' => 'Fail to insert data.',
+                    'message' => 'There is no category.',
                 ];
                 echo json_encode($response);
-                exit;   
+                exit;      
             }
-
         }else{
             $response = [
                 'status' => 'fail',
-                'message' => 'There is no category.',
+                'message' => 'There is no email.',
             ];
             echo json_encode($response);
             exit;      
         }
-
-
     }
 
 

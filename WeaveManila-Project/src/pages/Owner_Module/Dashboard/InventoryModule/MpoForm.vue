@@ -661,6 +661,7 @@ export default {
     },
     selectedCategory: {
       handler() {
+        console.log(this.selectedCategory);
         this.rawMaterialsFetch();
       },
       immediate: true // to call it on component mount
@@ -679,9 +680,10 @@ export default {
   methods: {
     sendingForm() {
       const formData = {
+        personnel_Email: this.email,
         company_address: this.company_address,
         uploadPhoto: this.uploadPhoto,
-        mpo_ref: this.mpo_ref,
+        mpo_ref: this.MpoIDValue,
         date_purchased: this.date_purchased,
         selectedCategory: this.selectedCategory,
         client_ref: this.client_ref,
@@ -703,9 +705,25 @@ export default {
         notes_instructions: this.notes_instructions,
         prepareSig: this.prepared_name,
         approveSig: this.approvedby_name,
+        products: [],
       };
+      console.log(formData);
+      this.datarows.forEach(row => {
+          const product = {
+              sproduct: row.sproduct,
+              sdescription: row.sdescription,
+              squantity: row.squantity,
+              sunit: row.sunit,
+              sunitprice: row.sunitprice,
+              sdiscount: row.sdiscount,
+              stotal: row.stotal,
+          };
+          formData.products.push(product);
+      });
+
       axios.post('http://localhost/Capstone-Project/backend/api/Inventory_Database/MPO_Queries/mpo_data.php/',formData)
       .then(response => {
+        console.log(response.data);
         const Status = response.data.status;
         const Message = response.data.message;
         if (Status === "success") {
@@ -714,7 +732,7 @@ export default {
                 color: 'green',
                 type: 'positive',
             });
-            this.handleCancel();
+            // this.handleCancel();
           }
           if (Status === "fail") {
             this.$q.notify({
@@ -769,7 +787,7 @@ export default {
     rawMaterialsFetch() {
       axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/MPO_Queries/mpo_select.php?getRawMats=${this.selectedCategory}`)
         .then((response) => {
-          this.rawMaterialsOptions = response.data.categoryData.map(material => material.product_description);
+          this.rawMaterialsOptions = response.data.categoryData.map(material => material.item_name);
         })
         .catch(error => {
           console.error('Error fetching data:', error.message);

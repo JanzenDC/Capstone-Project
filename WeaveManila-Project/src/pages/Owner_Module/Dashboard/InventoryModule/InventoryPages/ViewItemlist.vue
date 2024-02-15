@@ -407,7 +407,7 @@ bordered
               mpo_number: row.mpo_ref_no,
               date_purchased: row.date_purchased,
               supplier: row.supplier_name,
-              item: row.item,
+              item: row.product_description,
               balance: row.quantity,
               total: row.total,
               status: status,

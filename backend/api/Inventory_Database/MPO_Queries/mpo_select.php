@@ -24,24 +24,44 @@
     {
         if($payload['getRawMats']){
             $categoryData = $this->db->where('title', $payload['getRawMats'])->getOne('w_category');
+            $categoryDatas = $categoryData['categoryID'];
             if($categoryData){
-                $mpodata = $this->db->where('categoryID', $categoryData['categoryID'])->get('mpo_tbl');
-                if($mpodata){
+                    $sqlQuery = 'SELECT mpo_tbl.mpoID,
+                    mpo_tbl.personelID,
+                    mpo_tbl.supplierID,
+                    mpo_tbl.categoryID,
+                    mpo_tbl.mpo_ref_no,
+                    mpo_tbl.date_purchased,
+                    mpo_tbl.client_ref_no,
+                    mpo_tbl.w_o_ref_no,
+                    mpo_tbl.delivery_date,
+                    mpo_tbl.delivery_address,
+                    mpo_tbl.supplier_address,
+                    mpo_tbl.total,
+                    mpo_tbl.delivery_charge,
+                    mpo_tbl.discount,
+                    mpo_tbl.other_costs,
+                    mpo_tbl.total_amount,
+                    mpo_tbl.notes_instructions,
+                    mpo_tbl.prepared_by,
+                    mpo_tbl.approved_by,
+                    mpo_base.item_name,
+                    mpo_base.description,
+                    mpo_base.quantity,
+                    mpo_base.unit,
+                    mpo_base.unit_price,
+                    mpo_base.subtotal
+                    FROM mpo_tbl
+                    LEFT JOIN mpo_base ON mpo_tbl.mpoID = mpo_base.mpoID
+                    WHERE mpo_tbl.categoryID = ?';
+                    $queryResult = $this->db->rawQuery($sqlQuery, array($categoryDatas));
                     $response = [
                         'status' => 'success',
                         'message' => 'Data has been fetch succesfully',
-                        'categoryData' => $mpodata,
+                        'categoryData' => $queryResult,
                     ];
                     echo json_encode($response);
                     exit;
-                }else{
-                    $response = [
-                        'status' => 'fail',
-                        'message' => 'Failed to fetch data.',
-                    ];
-                    echo json_encode($response);
-                    exit;
-                }
             }else{
                 $response = [
                     'status' => 'fail',
