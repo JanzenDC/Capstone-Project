@@ -501,174 +501,185 @@ bordered
     >
       <q-card>
         <q-card-section>
-          <div class="text-h6">MPO Form</div>
+          <div class="text-h6 flex items-center">
+            <q-icon name="assignment_add" class="w-[48px] h-[48px]"/>
+            MPO {{ MpoIDValue }}
+          </div>
         </q-card-section>
 
-        <q-card-section class="overflow-y-auto overflow-x-hidden h-[480px]">
-          <div id="content" class="p-10">
-            <div  class="flex">
-              <div class="w-1/2">
-                  <div class="p-10 text-center mt-[100px]">
-                      <p class="text-5xl font-bold ">WEAVEMANILA INC.</p>
-                      <p class="text-h6 mt-8">{{ company_address }}</p>
-                  </div>
+        <q-card-section class="overflow-y-auto overflow-x-hidden h-[480px] flex justify-center items-center">
+          <div class="border-[#634832] border">
+            <div id="content" class="p-5 w-[936px] ">
+              <div class="flex">
+                <div class="w-1/2">
+                    <div class="p-10 text-center">
+                        <q-img
+                          :src="previewLogo || defaultImage()"
+                          alt="Description of the image"
+                          class="w-[150px] h-[150px]"
+                        />
+                        <p class="text-[36px] font-bold text-[#634832]">WEAVEMANILA INC.</p>
+                        <p class="text-[14px] mt-8">{{ company_address }}</p>
+                    </div>
+                </div>
+                <div class="w-1/2  p-10 flex justify-center items-center">
+                    <div class="w-[410px] ">
+                        <div class="text-h5 font-bold text-center text-[#634832]">MATERIAL PURCHASE ORDER</div>
+                        <div class="mt-4">
+                            <div class="grid grid-cols-2 ">
+                                <div class="p-2">Date Purchase</div>
+                                <div class="border-[#634832] border p-2 text-center font-bold">{{ date_purchased }}</div>
+                            </div>
+                            <div class="grid grid-cols-2 ">
+                                <div class="p-2">MPO NO.</div>
+                                <div class="border-[#634832] border p-2 text-center font-bold">{{ mpo_ref }}</div>
+                            </div>
+                            <div class="grid grid-cols-2 ">
+                                <div class="p-2">CLIENT REFERENCE NO.</div>
+                                <div class="border-[#634832] border p-2 text-center font-bold">{{ client_ref }}</div>
+                            </div>
+                            <div class="grid grid-cols-2 ">
+                                <div class="p-2">W.O REFERENCE NO.</div>
+                                <div class="border-[#634832] border p-2 text-center font-bold">{{ wo_purchased }}</div>
+                            </div>
+                            <div class="grid grid-cols-2 ">
+                                <div class="p-2">DELIVERY DATE</div>
+                                <div class="border-[#634832] border p-2 text-center font-bold">{{ delivery_date_val }}</div>
+                            </div>
+                            <div class="grid grid-cols-2 ">
+                                <div class="p-2">DELIVERY ADDRESS</div>
+                                <div class="border-[#634832] border p-2 text-center font-bold">{{ delivery_add_val }}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
               </div>
-              <div class="w-1/2  p-10 flex justify-center items-center">
-                  <div class="w-[400px] ">
-                      <div class="text-h5 font-bold text-center">MATERIAL PURCHASE ORDER</div>
-                      <div class="mt-4">
-                          <div class="grid grid-cols-2 ">
-                              <div class="p-2">Date Purchase</div>
-                              <div class="border-[#634832] border p-2 text-center">{{ date_purchased }}</div>
-                          </div>
-                          <div class="grid grid-cols-2 ">
-                              <div class="p-2">MPO NO.</div>
-                              <div class="border-[#634832] border p-2 text-center">{{ mpo_ref }}</div>
-                          </div>
-                          <div class="grid grid-cols-2 ">
-                              <div class="p-2">CLIENT REFERENCE NO.</div>
-                              <div class="border-[#634832] border p-2 text-center">{{ client_ref }}</div>
-                          </div>
-                          <div class="grid grid-cols-2 ">
-                              <div class="p-2">W.O REFERENCE NO.</div>
-                              <div class="border-[#634832] border p-2 text-center">{{ wo_purchased }}</div>
-                          </div>
-                          <div class="grid grid-cols-2 ">
-                              <div class="p-2">DELIVERY DATE</div>
-                              <div class="border-[#634832] border p-2 text-center">{{ delivery_date_val }}</div>
-                          </div>
-                          <div class="grid grid-cols-2 ">
-                              <div class="p-2">DELIVERY ADDRESS</div>
-                              <div class="border-[#634832] border p-2 text-center">{{ delivery_add_val }}</div>
-                          </div>
-                      </div>
-                  </div>
-              </div>
-            </div>
-            <div class="w-full p-2 flex justify-center items-center">
-                <table class="w-full">
-                    <thead class="bg-[#f6f8fa] text-left border">
-                        <tr>
-                            <th class="px-4 py-2 w-[500px]">To</th>
-                            <th class="px-4 py-2">Process</th>
+              <div class="w-full p-2 flex justify-center items-center">
+                  <table class="w-full">
+                      <thead class="bg-[#f6f8fa] text-left border">
+                          <tr>
+                              <th class="px-4 py-2 w-[500px]">To</th>
+                              <th class="px-4 py-2">Process</th>
 
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr class="border-b border">
-                            <td class="px-4 py-2 border-l border">{{ selectedSupplier }}</td>
-                            <td class="px-4 py-2 border-l border-r border grid grid-cols-2">
-                              <p>
-                                Segregation
-                              </p>
-                              <label>{{ segregation }}</label>
-                            </td>
-                        </tr>
-                        <tr class="">
-                            <td class="border-l "></td>
-                            <td class="px-4 py-2 border-l border-r border grid grid-cols-2">
-                              <p>
-                                Cleaning
-                              </p>
-                              <label>{{ cleaning }}</label>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="px-4 py-2 border-l ">{{ supplier_address }}</td>
-                            <td class="px-4 py-2 border-l border-r border-t border grid grid-cols-2">
-                              <p>
-                                Drying
-                              </p>
-                              <label>{{ drying }}</label>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="px-4 py-2 border-b border-l"></td>
-                            <td class="px-4 py-2 border grid grid-cols-2">
-                              <p>
-                                Weighting
-                              </p>
-                              <label>{{ weighting }}</label>
-                            </td>
-                        </tr>
-                    </tbody>
+                          </tr>
+                      </thead>
+                      <tbody>
+                          <tr class="border-b border">
+                              <td class="px-4 py-2 border-l border">{{ selectedSupplier }}</td>
+                              <td class="px-4 py-2 border-l border-r border grid grid-cols-2">
+                                <p>
+                                  Segregation
+                                </p>
+                                <label>{{ segregation }}</label>
+                              </td>
+                          </tr>
+                          <tr class="">
+                              <td class="border-l "></td>
+                              <td class="px-4 py-2 border-l border-r border grid grid-cols-2">
+                                <p>
+                                  Cleaning
+                                </p>
+                                <label>{{ cleaning }}</label>
+                              </td>
+                          </tr>
+                          <tr>
+                              <td class="px-4 py-2 border-l ">{{ supplier_address }}</td>
+                              <td class="px-4 py-2 border-l border-r border-t border grid grid-cols-2">
+                                <p>
+                                  Drying
+                                </p>
+                                <label>{{ drying }}</label>
+                              </td>
+                          </tr>
+                          <tr>
+                              <td class="px-4 py-2 border-b border-l"></td>
+                              <td class="px-4 py-2 border grid grid-cols-2">
+                                <p>
+                                  Weighting
+                                </p>
+                                <label>{{ weighting }}</label>
+                              </td>
+                          </tr>
+                      </tbody>
+                  </table>
+              </div>
+              <div class="w-full p-2 flex justify-center items-center mt-6">
+                <table class="w-full">
+                  <thead class="bg-[#f6f8fa] text-left">
+                    <tr>
+                      <th class="px-4 py-2 ">ID</th>
+                      <th class="px-4 py-2">Product</th>
+                      <th class="px-4 py-2">Description</th>
+                      <th class="px-4 py-2">Quantity</th>
+                      <th class="px-4 py-2">Unit</th>
+                      <th class="px-4 py-2">Unit Price</th>
+                      <th class="px-4 py-2">Discount</th>
+                      <th class="px-4 py-2">Sub Total</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr v-for="(row, index) in datarows" :key="index">
+                      <td class="px-4 py-2">{{ index + 1 }}</td>
+                      <td class="px-4 py-2">{{ row.sproduct }}</td>
+                      <td class="px-4 py-2">{{ row.sdescription }}</td>
+                      <td class="px-4 py-2">{{ row.squantity }}</td>
+                      <td class="px-4 py-2">{{ row.sunit }}</td>
+                      <td class="px-4 py-2">₱{{ row.sunitprice }}</td>
+                      <td class="px-4 py-2">10</td>
+                      <td class="px-4 py-2">₱{{ row.stotal }}</td>
+                    </tr>
+                  </tbody>
                 </table>
-            </div>
-            <div class="w-full p-2 flex justify-center items-center mt-6">
-              <table class="w-full">
-                <thead class="bg-[#f6f8fa] text-left">
-                  <tr>
-                    <th class="px-4 py-2 ">ID</th>
-                    <th class="px-4 py-2">Product</th>
-                    <th class="px-4 py-2">Description</th>
-                    <th class="px-4 py-2">Quantity</th>
-                    <th class="px-4 py-2">Unit</th>
-                    <th class="px-4 py-2">Unit Price</th>
-                    <th class="px-4 py-2">Discount</th>
-                    <th class="px-4 py-2">Sub Total</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr v-for="(row, index) in datarows" :key="index">
-                    <td class="px-4 py-2">{{ index + 1 }}</td>
-                    <td class="px-4 py-2">{{ row.sproduct }}</td>
-                    <td class="px-4 py-2">{{ row.sdescription }}</td>
-                    <td class="px-4 py-2">{{ row.squantity }}</td>
-                    <td class="px-4 py-2">{{ row.sunit }}</td>
-                    <td class="px-4 py-2">₱{{ row.sunitprice }}</td>
-                    <td class="px-4 py-2">10</td>
-                    <td class="px-4 py-2">₱{{ row.stotal }}</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <div class="w-full p-2 flex items-center">
-              <div class="w-1/2">
-                <div class="border bg-[#f6f8fa] p-2">
-                  Notes & Instructions
+              </div>
+              <div class="w-full p-2 flex items-center">
+                <div class="w-1/2">
+                  <div class="border bg-[#f6f8fa] p-2">
+                    Notes & Instructions
+                  </div>
+                  <div class="w-[400px] h-[200px] border p-2">
+                    {{ notes_instructions }}
+                  </div>
                 </div>
-                <div class="w-full h-[200px] border p-2">
-                  {{ notes_instructions }}
+                <div class="w-1/2 flex justify-end">
+                  <div class='grid grid-cols-2 w-[253px] text-[16px] gap-2'>
+                    <div class="font-bold">Delivery Charge</div>
+                    <div>₱ {{ deliver_charge }}</div>
+                    <div class="font-bold">Other Costs</div>
+                    <div>₱ {{ other_cost }}</div>
+                    <div class="font-bold">Sub Total</div>
+                    <div>₱ {{ total_in_table }}</div>
+                    <div class="font-bold">Discount</div>
+                    <div>₱ {{ discount }}</div>
+                    <div class="font-bold">TAX/VAT</div>
+                    <div>₱ {{ vat }}</div>
+                    <div class="font-bold">Total Amount</div>
+                    <div>₱ {{ total_amount }}</div>
+                  </div>
                 </div>
               </div>
-              <div class="w-1/2 flex justify-end">
-                <div class='grid grid-cols-2 w-[300px] text-h7'>
-                  <div>Delivery Charge</div>
-                  <div>₱ {{ deliver_charge }}</div>
-                  <div>Other Costs</div>
-                  <div>₱ {{ other_cost }}</div>
-                  <div>Sub Total</div>
-                  <div>₱ {{ total_in_table }}</div>
-                  <div>Discount</div>
-                  <div>₱ {{ discount }}</div>
-                  <div>TAX/VAT</div>
-                  <div>₱ {{ vat }}</div>
-                  <div>Total Amount</div>
-                  <div>₱ {{ total_amount }}</div>
+              <div class="w-full p-14 flex text-center justify-center items-center">
+                <div class="w-1/2 text-center">
+                  <p class="font-bold">Approved by</p>
+                  <q-img
+                    :src="previewApprovedSig || defaultImage()"
+                    alt="Description of the image"
+                    class="w-[50px] h-[50px]"
+                  />
+                  <p class="font-bold">{{ approvedby_name }}</p>
                 </div>
-              </div>
-            </div>
-            <div class="w-full p-14 flex text-center justify-center items-center">
-              <div class="w-1/2 text-center">
-                <p class="font-bold">Approved by</p>
-                <q-img
-                  :src="previewApprovedSig || defaultImage()"
-                  alt="Description of the image"
-                  class="w-[50px] h-[50px]"
-                />
-                <p class="font-bold">{{ approvedby_name }}</p>
-              </div>
-              <div class="w-1/2 text-center">
-                <p class="font-bold">Prepared by</p>
-                <q-img
-                  :src="previewPreparedSig || defaultImage()"
-                  alt="Description of the image"
-                  class="w-[50px] h-[50px]"
-                />
-                <p class="font-bold">{{ prepared_name }}</p>
+                <div class="w-1/2 text-center">
+                  <p class="font-bold">Prepared by</p>
+                  <q-img
+                    :src="previewPreparedSig || defaultImage()"
+                    alt="Description of the image"
+                    class="w-[50px] h-[50px]"
+                  />
+                  <p class="font-bold">{{ prepared_name }}</p>
+                </div>
               </div>
             </div>
           </div>
+
         </q-card-section>
 
         <q-card-actions align="right" class="bg-white text-teal">
@@ -780,6 +791,8 @@ export default {
       previewLogo: null,
       previewPreparedSig: null,
       previewApprovedSig: null,
+      pdfData: '',
+      MpoIDValue: '',
     };
   },
   mounted() {
@@ -847,22 +860,8 @@ export default {
         notes_instructions: this.notes_instructions,
         uploadPreparedSignature: this.uploadPreparedSignature,
         uploadApprovedSignature: this.uploadApprovedSignature,
-        pdfData: null
+        pdfData: this.pdfData,
       };
-
-      const pdf = new jsPDF();
-      const content = document.getElementById('content');
-      html2canvas(content).then(canvas => {
-        const imgData = canvas.toDataURL('image/jpeg');
-        const imgWidth = 210;
-        const imgHeight = (canvas.height * 210) / canvas.width;
-        pdf.addImage(imgData, 'JPEG', 0, 0, imgWidth, imgHeight);
-        pdf.output('blob', function (blob) {
-          formData.pdfData = blob;
-          console.log(formData);
-          // Example: this.$axios.post('/your-endpoint', formData)
-        });
-      });
     },
     generatePDF() {
       const pdf = new jsPDF();
@@ -900,9 +899,9 @@ export default {
         }
 
         // Save PDF
-        // pdf.save('document.pdf');
-        this.pdfData = pdf.output('blob');
-        console.log("PDF Data",this.pdfData);
+        pdf.save('document.pdf');
+        // this.pdfData = pdf.output('blob');
+        // console.log("PDF Data",this.pdfData);
       });
     },
     // Image Upload Properties
@@ -931,11 +930,10 @@ export default {
       }
     },
     defaultImage(){
-      return `/default.jpg`;
+      return `/default.png`;
     },
     // COMPUTATION DATA ! IF WORKING DO NOT GALAW GALAW THIS AREA
     updateTotalAmount() {
-      // Compute the total from the table
       // SUBTOTAL
       const totalFromTable = this.datarows.reduce((acc, row) => {
         const quantity = parseFloat(row.squantity) || 0;
@@ -968,10 +966,7 @@ export default {
       // const vatAmount = vatPercentage * totalFromTable;
       const deliveryCharge = parseFloat(this.deliver_charge) || 0;
       const otherCost = parseFloat(this.other_cost) || 0;
-
-
-
-        this.total_amount = totalFromTable - discountFromTable + vatFromTable + deliveryCharge - otherCost;
+      this.total_amount = totalFromTable - discountFromTable + vatFromTable + deliveryCharge - otherCost;
     },
     addProduct() {
       let maxId = 0;
@@ -998,7 +993,7 @@ export default {
     computeTotal(row) {
       const quantity = parseFloat(row.squantity);
       const unitPrice = parseFloat(row.sunitprice);
-      const discount = parseFloat(row.sdiscount); // Assuming sdiscount is the discount percentage
+      const discount = parseFloat(row.sdiscount);
 
       let total = quantity * unitPrice;
       if (!isNaN(discount) && discount >= 0) {
@@ -1068,7 +1063,7 @@ export default {
         const mpo_ref = `WEMA-MPO-${year}-${month}-${day}-${nextMPOID}`;
         console.log(mpo_ref);
 
-
+        this.MpoIDValue = nextMPOID;
         this.mpo_ref = mpo_ref;
       })
       .catch(error => {
