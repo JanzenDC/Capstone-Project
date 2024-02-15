@@ -352,7 +352,6 @@ export default {
     fetchMPOdata(){
       axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/MPO_Queries/mpo_data.php?get=alldata`)
       .then(response => {
-        console.log(response.data);
         this.rows = response.data.categoryData.map(row => {
 
           let mpo_status = row.status;

@@ -81,7 +81,7 @@
                 mpo_tbl.unit,
                 mpo_tbl.unit_price,
                 mpo_tbl.total,
-                mpo_tbl.delivery_change,
+                mpo_tbl.delivery_charge,
                 mpo_tbl.discount,
                 mpo_tbl.other_costs,
                 mpo_tbl.total_amount,

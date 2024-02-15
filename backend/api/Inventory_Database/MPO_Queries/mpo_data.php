@@ -141,6 +141,8 @@
                 'status' => 'fail',
                 'message' => 'Failed to fetch data.',
             ];
+            echo json_encode($response);
+            exit;
         }
     }
 
@@ -148,6 +150,67 @@
 
     public function httpPost($payload)
     {
+        $mpodata = $this->db->get('mpo_tbl');
+        $maxMPOID = 0;
+        foreach ($mpodata as $row) {
+            $mpoID = $row['mpoID'];
+            if ($mpoID > $maxMPOID) {
+                $maxMPOID = $mpoID;
+            }
+        }
+        $nextMPOID = $maxMPOID + 1;
+
+        $category = $this->db->where('title', $payload['selectedCategory'])->getOne('w_category');
+        if($category){
+            $supplierfetch = $this->db->where('supplier_name', $payload['selectedSupplier'])->getOne('w_supplierlist');
+            $isertData = [
+                'mpoID' => $nextMPOID,
+                'company_address' => $payload['company_address'],
+                'date_purchased' => $payload['date_purchased'],
+                'categoryID' => $category['categoryID'],
+                'client_ref_no' => $payload['company_address'],
+                'company_address' => $payload['wo_purchased'],
+                'company_address' => $payload['delivery_date_val'],
+                'company_address' => $payload['delivery_add_val'],
+                'supplierID' => $supplierfetch['supplierID'],
+                'supplier_address' => $payload['supplier_address'],
+                'delivery_charge' => $payload['deliver_charge'],
+                'discount' => $payload['discount'],
+                'vat' => $payload['vat'], //need data
+                'other_costs' => $payload['other_cost'],
+                'total_amount' => $payload['total_amount'],
+                'total_subtotal' => $payload['total_in_table'],
+                'notes_instructions' => $payload['notes_instructions'],
+                'prepared_by' => $payload['prepared_name'],
+                'approved_by' => $payload['approvedby_name'],
+            ];
+            $dataHolder = $this->db->insert('mpo_tbl', $isertData);
+            if($dataHolder){
+                $response = [
+                    'status' => 'success',
+                    'message' => 'Data has been insert successfully',
+                    'datas' => $dataHolder,
+                ];
+                echo json_encode($response);
+                exit;
+            }else{
+                $response = [
+                    'status' => 'fail',
+                    'message' => 'Fail to insert data.',
+                ];
+                echo json_encode($response);
+                exit;   
+            }
+
+        }else{
+            $response = [
+                'status' => 'fail',
+                'message' => 'There is no category.',
+            ];
+            echo json_encode($response);
+            exit;      
+        }
+
 
     }
 

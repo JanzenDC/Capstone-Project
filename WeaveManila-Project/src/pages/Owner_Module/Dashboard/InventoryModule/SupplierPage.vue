@@ -344,7 +344,7 @@ bordered
               </div>
               <div class="w-1/2 p-1">
                 <q-btn
-                  @click="Remove"
+                  @click="HandleRemove"
                   flat
                   label="Delete"
                   type="submit"
@@ -506,6 +506,7 @@ bordered
         return `Selected ${this.selected.length} item(s)`;
       },
       extractSelectedIds() {
+
         return this.selected.map(item => item.supplierID);
       },
       // Removing Data
@@ -515,7 +516,7 @@ bordered
       handleDeleteClick() {
         this.OpenDelete = true;
       },
-      Remove() {
+      HandleRemove() {
         const selectedIds = this.extractSelectedIds();
         axios.delete(`http://localhost/Capstone-Project/backend/api/Inventory_Database/Supplier_Database/supplier.php/${this.id}`, {
           data: { selectedIds: selectedIds },

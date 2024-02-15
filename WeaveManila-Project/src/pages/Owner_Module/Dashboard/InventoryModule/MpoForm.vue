@@ -353,11 +353,26 @@ bordered
                       {{ props.row.id }}
                     </q-td>
                     <q-td key="sproduct" :props="props">
-                      {{ props.row.sproduct }}
-                      <q-popup-edit v-model="props.row.sproduct" title="Update Product" buttons v-slot="scope">
-                        <q-input type="text" v-model="scope.value" dense autofocus />
-                      </q-popup-edit>
+                      <template v-if="selectedCategory === 'Raw Materials'">
+                        {{ props.row.sproduct }}
+                        <q-popup-edit v-model="props.row.sproduct" title="Update Product" buttons v-slot="scope">
+                          <q-select
+                            v-model="scope.value"
+                            :options="rawMaterialsOptions"
+                            outlined
+                            dense
+                            autofocus
+                          />
+                        </q-popup-edit>
+                      </template>
+                      <template v-else>
+                        {{ props.row.sproduct }}
+                        <q-popup-edit v-model="props.row.sproduct" title="Update Product" buttons v-slot="scope">
+                          <q-input type="text" v-model="scope.value" dense autofocus />
+                        </q-popup-edit>
+                      </template>
                     </q-td>
+
                     <q-td key="sdescription" :props="props">
                       {{ props.row.sdescription }}
                       <q-popup-edit v-model="props.row.sdescription" title="Update Description" buttons v-slot="scope">
@@ -397,42 +412,55 @@ bordered
                   </q-tr>
                 </template>
                 </q-table>
-                <div class="flex justify-end items-center mt-2">
-                  <div class="grid grid-cols-2 gap-1">
+                <div class="flex items-center mt-6">
+                  <div class="w-1/2 -mt-[90px]">
+                    <label>Notes & Instruction<span class="text-red-600">*</span></label>
+                    <q-input
+                      v-model="notes_instructions"
+                      outlined
+                      :maxlength="120"
+                      type="textarea"
+                      class="w-full h-[132px] resize-none"
+                    >
+                    </q-input>
+                    <span class="text-sm text-gray-400 flex justify-end">{{ characterCount }}/120 characters</span>
+                  </div>
+                  <div class="w-1/2 flex justify-end">
+                    <div class="grid grid-cols-2 gap-1 w-[332px] text-[16px] ">
+                        Delivery Charge
+                        <q-input dense outlined v-model="deliver_charge" >
+                          <template v-slot:append>
+                            ₱
+                          </template>
+                        </q-input> <!--base on user input-->
+                        Other Costs
+                        <q-input dense outlined v-model="other_cost">
+                          <template v-slot:append>
+                            ₱
+                          </template>
+                        </q-input> <!--base on user input-->
+                        Sub total
+                        <q-input dense outlined v-model="total_in_table" disable>
+                          <template v-slot:append>
+                            ₱
+                          </template>
+                        </q-input>
+                        Discount
+                        <q-input dense outlined v-model="discount" disable>
+                          <template v-slot:append>
+                            ₱
+                          </template>
+                        </q-input> <!--substraction automatic 10%-->
+                        Vat
+                        <q-input dense outlined v-model="vat" disable>
+                          <template v-slot:append>
+                            ₱
+                          </template>
+                        </q-input><!--substraction automatic 12%-->
 
-                      Delivery Charge
-                      <q-input dense outlined v-model="deliver_charge" >
-                        <template v-slot:append>
-                          ₱
-                        </template>
-                      </q-input> <!--base on user input-->
-                      Other Costs
-                      <q-input dense outlined v-model="other_cost">
-                        <template v-slot:append>
-                          ₱
-                        </template>
-                      </q-input> <!--base on user input-->
-                      Sub total
-                      <q-input dense outlined v-model="total_in_table" disable>
-                        <template v-slot:append>
-                          ₱
-                        </template>
-                      </q-input>
-                      Discount
-                      <q-input dense outlined v-model="discount" disable>
-                        <template v-slot:append>
-                          ₱
-                        </template>
-                      </q-input> <!--substraction automatic 10%-->
-                      Vat
-                      <q-input dense outlined v-model="vat" disable>
-                        <template v-slot:append>
-                          ₱
-                        </template>
-                      </q-input><!--substraction automatic 12%-->
-
-                      Total Amount
-                      <q-input dense outlined v-model="total_amount" disable/>
+                        Total Amount
+                        <q-input dense outlined v-model="total_amount" disable/>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -440,18 +468,7 @@ bordered
 
             <div>
               <div class="flex items-center gap-4">
-                <div class="w-[532px]">
-                  <label>Notes & Instruction<span class="text-red-600">*</span></label>
-                  <q-input
-                    v-model="notes_instructions"
-                    outlined
-                    :maxlength="120"
-                    type="textarea"
-                    class="w-full h-[132px] resize-none"
-                  >
-                  </q-input>
-                  <span class="text-sm text-gray-400 flex justify-end">{{ characterCount }}/120</span>
-                </div>
+
                 <div class="flex gap-2">
                   <div>
                     <label>Upload E-signature</label>
@@ -486,7 +503,6 @@ bordered
           </div>
 
           <div class="justify-end flex mt-3 gap-3 ">
-            <q-btn label="Preview Form" @click="previewForm = true" class="bg-[#634832] rounded-md text-white"/>
             <q-btn label="Save" type="submit" class="bg-[#634832] rounded-md text-white"/>
           </div>
         </q-form>
@@ -494,200 +510,7 @@ bordered
 
     </div>
 
-    <q-dialog
-    v-model="previewForm"
-    full-width
-    full-height
-    >
-      <q-card>
-        <q-card-section>
-          <div class="text-h6 flex items-center">
-            <q-icon name="assignment_add" class="w-[48px] h-[48px]"/>
-            MPO {{ MpoIDValue }}
-          </div>
-        </q-card-section>
 
-        <q-card-section class="overflow-y-auto overflow-x-hidden h-[480px] flex justify-center items-center">
-          <div class="border-[#634832] border">
-            <div id="content" class="p-5 w-[936px] ">
-              <div class="flex">
-                <div class="w-1/2">
-                    <div class="p-10 text-center">
-                        <q-img
-                          :src="previewLogo || defaultImage()"
-                          alt="Description of the image"
-                          class="w-[150px] h-[150px]"
-                        />
-                        <p class="text-[36px] font-bold text-[#634832]">WEAVEMANILA INC.</p>
-                        <p class="text-[14px] mt-8">{{ company_address }}</p>
-                    </div>
-                </div>
-                <div class="w-1/2  p-10 flex justify-center items-center">
-                    <div class="w-[410px] ">
-                        <div class="text-h5 font-bold text-center text-[#634832]">MATERIAL PURCHASE ORDER</div>
-                        <div class="mt-4">
-                            <div class="grid grid-cols-2 ">
-                                <div class="p-2">Date Purchase</div>
-                                <div class="border-[#634832] border p-2 text-center font-bold">{{ date_purchased }}</div>
-                            </div>
-                            <div class="grid grid-cols-2 ">
-                                <div class="p-2">MPO NO.</div>
-                                <div class="border-[#634832] border p-2 text-center font-bold">{{ mpo_ref }}</div>
-                            </div>
-                            <div class="grid grid-cols-2 ">
-                                <div class="p-2">CLIENT REFERENCE NO.</div>
-                                <div class="border-[#634832] border p-2 text-center font-bold">{{ client_ref }}</div>
-                            </div>
-                            <div class="grid grid-cols-2 ">
-                                <div class="p-2">W.O REFERENCE NO.</div>
-                                <div class="border-[#634832] border p-2 text-center font-bold">{{ wo_purchased }}</div>
-                            </div>
-                            <div class="grid grid-cols-2 ">
-                                <div class="p-2">DELIVERY DATE</div>
-                                <div class="border-[#634832] border p-2 text-center font-bold">{{ delivery_date_val }}</div>
-                            </div>
-                            <div class="grid grid-cols-2 ">
-                                <div class="p-2">DELIVERY ADDRESS</div>
-                                <div class="border-[#634832] border p-2 text-center font-bold">{{ delivery_add_val }}</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-              </div>
-              <div class="w-full p-2 flex justify-center items-center">
-                  <table class="w-full">
-                      <thead class="bg-[#f6f8fa] text-left border">
-                          <tr>
-                              <th class="px-4 py-2 w-[500px]">To</th>
-                              <th class="px-4 py-2">Process</th>
-
-                          </tr>
-                      </thead>
-                      <tbody>
-                          <tr class="border-b border">
-                              <td class="px-4 py-2 border-l border">{{ selectedSupplier }}</td>
-                              <td class="px-4 py-2 border-l border-r border grid grid-cols-2">
-                                <p>
-                                  Segregation
-                                </p>
-                                <label>{{ segregation }}</label>
-                              </td>
-                          </tr>
-                          <tr class="">
-                              <td class="border-l "></td>
-                              <td class="px-4 py-2 border-l border-r border grid grid-cols-2">
-                                <p>
-                                  Cleaning
-                                </p>
-                                <label>{{ cleaning }}</label>
-                              </td>
-                          </tr>
-                          <tr>
-                              <td class="px-4 py-2 border-l ">{{ supplier_address }}</td>
-                              <td class="px-4 py-2 border-l border-r border-t border grid grid-cols-2">
-                                <p>
-                                  Drying
-                                </p>
-                                <label>{{ drying }}</label>
-                              </td>
-                          </tr>
-                          <tr>
-                              <td class="px-4 py-2 border-b border-l"></td>
-                              <td class="px-4 py-2 border grid grid-cols-2">
-                                <p>
-                                  Weighting
-                                </p>
-                                <label>{{ weighting }}</label>
-                              </td>
-                          </tr>
-                      </tbody>
-                  </table>
-              </div>
-              <div class="w-full p-2 flex justify-center items-center mt-6">
-                <table class="w-full">
-                  <thead class="bg-[#f6f8fa] text-left">
-                    <tr>
-                      <th class="px-4 py-2 ">ID</th>
-                      <th class="px-4 py-2">Product</th>
-                      <th class="px-4 py-2">Description</th>
-                      <th class="px-4 py-2">Quantity</th>
-                      <th class="px-4 py-2">Unit</th>
-                      <th class="px-4 py-2">Unit Price</th>
-                      <th class="px-4 py-2">Discount</th>
-                      <th class="px-4 py-2">Sub Total</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr v-for="(row, index) in datarows" :key="index">
-                      <td class="px-4 py-2">{{ index + 1 }}</td>
-                      <td class="px-4 py-2">{{ row.sproduct }}</td>
-                      <td class="px-4 py-2">{{ row.sdescription }}</td>
-                      <td class="px-4 py-2">{{ row.squantity }}</td>
-                      <td class="px-4 py-2">{{ row.sunit }}</td>
-                      <td class="px-4 py-2">₱{{ row.sunitprice }}</td>
-                      <td class="px-4 py-2">10</td>
-                      <td class="px-4 py-2">₱{{ row.stotal }}</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              <div class="w-full p-2 flex items-center">
-                <div class="w-1/2">
-                  <div class="border bg-[#f6f8fa] p-2">
-                    Notes & Instructions
-                  </div>
-                  <div class="w-[400px] h-[200px] border p-2">
-                    {{ notes_instructions }}
-                  </div>
-                </div>
-                <div class="w-1/2 flex justify-end">
-                  <div class='grid grid-cols-2 w-[253px] text-[16px] gap-2'>
-                    <div class="font-bold">Delivery Charge</div>
-                    <div>₱ {{ deliver_charge }}</div>
-                    <div class="font-bold">Other Costs</div>
-                    <div>₱ {{ other_cost }}</div>
-                    <div class="font-bold">Sub Total</div>
-                    <div>₱ {{ total_in_table }}</div>
-                    <div class="font-bold">Discount</div>
-                    <div>₱ {{ discount }}</div>
-                    <div class="font-bold">TAX/VAT</div>
-                    <div>₱ {{ vat }}</div>
-                    <div class="font-bold">Total Amount</div>
-                    <div>₱ {{ total_amount }}</div>
-                  </div>
-                </div>
-              </div>
-              <div class="w-full p-14 flex text-center justify-center items-center">
-                <div class="w-1/2 text-center">
-                  <p class="font-bold">Approved by</p>
-                  <q-img
-                    :src="previewApprovedSig || defaultImage()"
-                    alt="Description of the image"
-                    class="w-[50px] h-[50px]"
-                  />
-                  <p class="font-bold">{{ approvedby_name }}</p>
-                </div>
-                <div class="w-1/2 text-center">
-                  <p class="font-bold">Prepared by</p>
-                  <q-img
-                    :src="previewPreparedSig || defaultImage()"
-                    alt="Description of the image"
-                    class="w-[50px] h-[50px]"
-                  />
-                  <p class="font-bold">{{ prepared_name }}</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-        </q-card-section>
-
-        <q-card-actions align="right" class="bg-white text-teal">
-          <q-btn @click="generatePDF">Generate PDF</q-btn>
-          <q-btn flat label="OK" v-close-popup />
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
   </q-page>
   </template>
 
@@ -768,7 +591,7 @@ export default {
       datarows: [],
       initialPagination: {
         page: 1,
-        rowsPerPage: 3
+        rowsPerPage: 5
       },
       deliver_charge: 0,
       discount: 0,
@@ -793,6 +616,8 @@ export default {
       previewApprovedSig: null,
       pdfData: '',
       MpoIDValue: '',
+
+      rawMaterialsOptions: '',
     };
   },
   mounted() {
@@ -803,6 +628,18 @@ export default {
     }, 20 * 1000); // 1 second (in milliseconds)
     this.fetchCategoryData();
     this.fetchSupplierData();
+    this.datarows.push(
+    {
+      id: 1,
+      sproduct: '',
+      sdescription: '',
+      squantity: '',
+      sunit: '',
+      sunitprice: '',
+      sdiscount: '',
+      stotal: '',
+
+    });
   },
   watch: {
     logo: 'handleFileChangeLogo',
@@ -821,6 +658,12 @@ export default {
 
     notes_instructions(newValue) {
       this.characterCount = newValue.length;
+    },
+    selectedCategory: {
+      handler() {
+        this.rawMaterialsFetch();
+      },
+      immediate: true // to call it on component mount
     },
   },
   computed: {
@@ -858,15 +701,34 @@ export default {
         total_amount: this.total_amount,
         total_in_table: this.total_in_table,
         notes_instructions: this.notes_instructions,
-        uploadPreparedSignature: this.uploadPreparedSignature,
-        uploadApprovedSignature: this.uploadApprovedSignature,
-        pdfData: this.pdfData,
+        prepareSig: this.prepared_name,
+        approveSig: this.approvedby_name,
       };
+      axios.post('http://localhost/Capstone-Project/backend/api/Inventory_Database/MPO_Queries/mpo_data.php/',formData)
+      .then(response => {
+        const Status = response.data.status;
+        const Message = response.data.message;
+        if (Status === "success") {
+            this.$q.notify({
+                message: `MPO ${this.MpoIDValue} save successfully!`,
+                color: 'green',
+                type: 'positive',
+            });
+            this.handleCancel();
+          }
+          if (Status === "fail") {
+            this.$q.notify({
+              color: 'negative',
+              message: `${Message} Please try again.`,
+            });
+            this.handleCancel();
+          }
+      }).catch(error => {
+        console.error('Error fetching data:', error.message);
+      });
     },
     generatePDF() {
       const pdf = new jsPDF();
-
-
       const content = document.getElementById('content');
 
       // Use html2canvas to render HTML to canvas
@@ -904,6 +766,16 @@ export default {
         // console.log("PDF Data",this.pdfData);
       });
     },
+    rawMaterialsFetch() {
+      axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/MPO_Queries/mpo_select.php?getRawMats=${this.selectedCategory}`)
+        .then((response) => {
+          this.rawMaterialsOptions = response.data.categoryData.map(material => material.product_description);
+        })
+        .catch(error => {
+          console.error('Error fetching data:', error.message);
+        });
+    },
+
     // Image Upload Properties
     handleFileChangeLogo(event) {
       this.uploadPhoto = event[0];
@@ -928,6 +800,9 @@ export default {
         this.file = event;
         this.previewApprovedSig = URL.createObjectURL(file);
       }
+    },
+    defaultImageLogo(){
+      return `/favicon-128x128.png`;
     },
     defaultImage(){
       return `/default.png`;
@@ -988,7 +863,7 @@ export default {
     },
     deleteRow(id) {
       this.datarows = this.datarows.filter(row => row.id !== id);
-      console.log(id);
+
     },
     computeTotal(row) {
       const quantity = parseFloat(row.squantity);
@@ -1027,7 +902,7 @@ export default {
       axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/MPO_Queries/mpo_data.php?get=category`)
       .then(response => {
           this.categories = response.data.categoryData.map(category => ({
-            value: category.categoryID,
+            value: category.title,
             label: category.title
           }));
       })
@@ -1061,8 +936,6 @@ export default {
         const month = ('0' + (currentDate.getMonth() + 1)).slice(-2);
         const day = ('0' + currentDate.getDate()).slice(-2);
         const mpo_ref = `WEMA-MPO-${year}-${month}-${day}-${nextMPOID}`;
-        console.log(mpo_ref);
-
         this.MpoIDValue = nextMPOID;
         this.mpo_ref = mpo_ref;
       })
@@ -1173,7 +1046,6 @@ export default {
             sessionStorage.clear();
           }
         } catch (error) {
-          console.log('Error parsing user data:', error);
           // Provide user feedback or navigate to an error page
           this.$q.notify({
             type: 'negative',

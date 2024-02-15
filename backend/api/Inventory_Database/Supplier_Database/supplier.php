@@ -107,7 +107,7 @@
                 }   
             }
 
-            $existingData = $this->db->where('id', $ids)->getOne('w_users');
+            $existingData = $this->db->where('personelID', $ids)->getOne('personel_tbl');
             if($existingData)
             {
                 if (strtolower($existingData['position']) === 'owner') {
