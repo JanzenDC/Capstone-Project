@@ -523,23 +523,23 @@ bordered
                           </div>
                           <div class="grid grid-cols-2 ">
                               <div class="p-2">MPO NO.</div>
-                              <div class="border-[#634832] border p-2">{{ mpo_ref }}</div>
+                              <div class="border-[#634832] border p-2 text-center">{{ mpo_ref }}</div>
                           </div>
                           <div class="grid grid-cols-2 ">
                               <div class="p-2">CLIENT REFERENCE NO.</div>
-                              <div class="border-[#634832] border p-2">{{ client_ref }}</div>
+                              <div class="border-[#634832] border p-2 text-center">{{ client_ref }}</div>
                           </div>
                           <div class="grid grid-cols-2 ">
                               <div class="p-2">W.O REFERENCE NO.</div>
-                              <div class="border-[#634832] border p-2">{{ wo_purchased }}</div>
+                              <div class="border-[#634832] border p-2 text-center">{{ wo_purchased }}</div>
                           </div>
                           <div class="grid grid-cols-2 ">
                               <div class="p-2">DELIVERY DATE</div>
-                              <div class="border-[#634832] border p-2">{{ delivery_date_val }}</div>
+                              <div class="border-[#634832] border p-2 text-center">{{ delivery_date_val }}</div>
                           </div>
                           <div class="grid grid-cols-2 ">
                               <div class="p-2">DELIVERY ADDRESS</div>
-                              <div class="border-[#634832] border p-2">{{ delivery_add_val }}</div>
+                              <div class="border-[#634832] border p-2 text-center">{{ delivery_add_val }}</div>
                           </div>
                       </div>
                   </div>
@@ -867,7 +867,7 @@ export default {
     generatePDF() {
       const pdf = new jsPDF();
 
-      // Get the element containing your HTML content
+
       const content = document.getElementById('content');
 
       // Use html2canvas to render HTML to canvas
@@ -875,29 +875,24 @@ export default {
         // Convert canvas to base64 image data
         const imgData = canvas.toDataURL('image/jpeg');
 
-        // Set page dimensions
         const pageWidth = 210; // A4 width in mm
         const pageHeight = 297; // A4 height in mm
 
-        // Calculate image dimensions while maintaining aspect ratio
         const imgWidth = pageWidth;
         const imgHeight = (canvas.height * pageWidth) / canvas.width;
 
-        // Check if image exceeds page height
+
         let position = 0;
         if (imgHeight > pageHeight) {
-          // Add new page
-          pdf.addPage();
-          position = -pageHeight; // Offset to account for starting from the top of the new page
 
-          // Add image to the new page
+          pdf.addPage();
+          position = -pageHeight;
+
           pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
         } else {
-          // Add image to current page
           pdf.addImage(imgData, 'JPEG', 0, 0, imgWidth, imgHeight);
         }
 
-        // Add remaining part of the image to subsequent pages if needed
         while (position + pageHeight < imgHeight) {
           position += pageHeight;
           pdf.addPage();
@@ -905,7 +900,9 @@ export default {
         }
 
         // Save PDF
-        pdf.save('document.pdf');
+        // pdf.save('document.pdf');
+        this.pdfData = pdf.output('blob');
+        console.log("PDF Data",this.pdfData);
       });
     },
     // Image Upload Properties
