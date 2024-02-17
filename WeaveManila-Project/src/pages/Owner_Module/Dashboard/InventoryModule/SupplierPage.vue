@@ -316,7 +316,11 @@ bordered
               <label> <!--Supplier Address-->
                 Supplier Address<span class="text-red-600">*</span>
               </label>
-              <q-input type="text" label="Supplier Address" v-model="suppAddress" required lazy-rules :no-error-icon="true" class="w-full" outlined dense :rules="[val => !!val || 'Field is required']"/>
+              <!-- <q-input type="text" label="Supplier Address" v-model="suppAddress" required lazy-rules :no-error-icon="true" class="w-full" outlined dense :rules="[val => !!val || 'Field is required']"/> -->
+                <q-select v-model="selectedRegion" :options="regionOptions" label="Region" @input="onRegionChange" />
+    <q-select v-model="selectedProvince" :options="provinceOptions" label="Province" @input="onProvinceChange" />
+    <q-select v-model="selectedCity" :options="cityOptions" label="City" @input="onCityChange" />
+    <q-select v-model="selectedBarangay" :options="barangayOptions" label="Barangay" />
             </q-card-section>
 
             <q-separator />
@@ -516,193 +520,306 @@ bordered
 </q-page>
 </template>
 
-  <script>
-  import { useQuasar } from 'quasar';
-  import { SessionStorage } from 'quasar';
-  import axios from 'axios';
+<script>
+import { useQuasar } from 'quasar';
+import { SessionStorage } from 'quasar';
+import axios from 'axios';
+import philippineData from '../../../../javascript/philippine_provinces_cities_municipalities_and_barangays_2019v2.json';
 
-  export default {
-    setup() {
-        const $q = useQuasar();
-    },
-    data() {
-      return {
-        id: '',
-        email: '',
-        fullname: '',
-        firstname: '',
-        middlename: '',
-        lastname: '',
-        userProfileImage: null,
-        username: '',
-        position: '',
-        status: '',
-        addCategory: false,
-        drawer: false,
-        showMenuIcon: false,
-        statusCheckTimer: null,
-        toggleDrawers: true,
-        drawerWidth: 300,
-        drawerIcon: 'arrow_back_ios',
-        inventoryMenuVisible: false,
+export default {
+  setup() {
+      const $q = useQuasar();
+  },
+  data() {
+    return {
+      id: '',
+      email: '',
+      fullname: '',
+      firstname: '',
+      middlename: '',
+      lastname: '',
+      userProfileImage: null,
+      username: '',
+      position: '',
+      status: '',
+      addCategory: false,
+      drawer: false,
+      showMenuIcon: false,
+      statusCheckTimer: null,
+      toggleDrawers: true,
+      drawerWidth: 300,
+      drawerIcon: 'arrow_back_ios',
+      inventoryMenuVisible: false,
 
-        // Add DATA
-        initialPagination: {
-          page: 1,
-          rowsPerPage: 10
-        },
-        addSupplier: false,
-        columns : [
-        {name: 'supplier', label: 'Supplier', field: 'supplier', sortable: true},
-        {name: 'contact_person', label: 'Contact Person', field: 'contact_person', sortable: true},
-        {name: 'address', label: 'Address', field: 'address', sortable: true},
-        {name: 'contact', label: 'Contact', field: 'contact', sortable: true},
-        {name: 'email', label: 'Email', field: 'email', sortable: true},
-        {name: 'actions', label: 'Actions', field: 'actions', sortable: true, align: 'center'},
-      ],
-      rows : [],
-      selected: [],
-      remove_action: '',
-      remove_dialog: false,
-      search: '',
-      OpenDelete: false,
-      // Supplier Data
-      selectedSupp: '',
-      suppName: '',
-      suppAddress: '',
-      suppContactName: '',
-      suppCp: '',
-      suppEmail: '',
-      showDropdown: false,
-      };
-    },
-    computed: {
-      filteredTableData() {
-      const searchQuery = this.search.toLowerCase();
-        return this.rows.filter(row =>
-          row.supplier.toLowerCase().includes(searchQuery) ||
-          row.contact_person.toLowerCase().includes(searchQuery) ||
-          row.email.toLowerCase().includes(searchQuery)
-        );
+      // Add DATA
+      initialPagination: {
+        page: 1,
+        rowsPerPage: 10
       },
-    },
-    mounted() {
-      this.loadUserData();
-      this.statusCheckTimer = setInterval(() => {
-        this.checkUserStatus();
+      addSupplier: false,
+      columns : [
+      {name: 'supplier', label: 'Supplier', field: 'supplier', sortable: true},
+      {name: 'contact_person', label: 'Contact Person', field: 'contact_person', sortable: true},
+      {name: 'address', label: 'Address', field: 'address', sortable: true},
+      {name: 'contact', label: 'Contact', field: 'contact', sortable: true},
+      {name: 'email', label: 'Email', field: 'email', sortable: true},
+      {name: 'actions', label: 'Actions', field: 'actions', sortable: true, align: 'center'},
+    ],
+    rows : [],
+    selected: [],
+    remove_action: '',
+    remove_dialog: false,
+    search: '',
+    OpenDelete: false,
+    // Supplier Data
+    selectedSupp: '',
+    suppName: '',
+    suppAddress: '',
+    suppContactName: '',
+    suppCp: '',
+    suppEmail: '',
+    showDropdown: false,
 
-      }, 20 * 1000); // 1 second (in milliseconds)
-      this.fetchData();
+    // Location Data
+      selectedRegion: null,
+      selectedProvince: null,
+      selectedCity: null,
+      selectedBarangay: null,
+      philippineData: philippineData,
+      regionOptions: [],
+      provinceOptions: [],
+      cityOptions: [],
+      barangayOptions: []
+    };
+  },
+  watch: {
+    selectedRegion: function(newValue, oldValue) {
+      if (newValue !== oldValue) {
+        this.onRegionChange();
+      }
     },
-    beforeUnmount() {
-      clearInterval(this.statusCheckTimer);
+    selectedProvince: function(newValue, oldValue) {
+      if (newValue !== oldValue) {
+        this.onProvinceChange();
+      }
     },
-    methods: {
-      EditSupplier(targetID, supplier_name, contact_person,contact, address, email) {
-        this.showDropdown = true;
-        this.selectedSupp = targetID;
-        this.suppName = supplier_name;
-        this.suppAddress = address;
-        this.suppContactName = contact_person;
-        this.suppCp = contact;
-        this.suppEmail = email;
-      },
-      handleCancelEdit() {
-        this.showDropdown = false;
-        this.selectedSupp = '';
-        this.suppName = '';
-        this.suppAddress = '';
-        this.suppContactName = '';
-        this.suppCp = '';
-        this.suppEmail = '';
-      },
-      removeRow(supplierID) {
-        this.remove_action = supplierID;
+    selectedCity: function(newValue, oldValue) {
+      if (newValue !== oldValue) {
+        this.onCityChange();
+      }
+    }
+  },
+  computed: {
+    filteredTableData() {
+    const searchQuery = this.search.toLowerCase();
+      return this.rows.filter(row =>
+        row.supplier.toLowerCase().includes(searchQuery) ||
+        row.contact_person.toLowerCase().includes(searchQuery) ||
+        row.email.toLowerCase().includes(searchQuery)
+      );
+    },
+  },
+  mounted() {
+    this.loadUserData();
+    console.log(this.philippineData);
+    this.statusCheckTimer = setInterval(() => {
+      this.checkUserStatus();
+    }, 20 * 1000); // 1 second (in milliseconds)
+    this.fetchData();
+    this.regionOptions = Object.keys(this.philippineData).map(regionCode => ({
+      label: regionCode,
+      value: regionCode
+    }));
+  },
+  beforeUnmount() {
+    clearInterval(this.statusCheckTimer);
+  },
+  methods: {
+    onRegionChange() {
+      console.log(this.selectedRegion.value);
+      console.log(philippineData[this.selectedRegion.value]);
 
-        this.remove_dialog = true;
-      },
-      HandleRemoveDialog() {
-        axios.delete(`http://localhost/Capstone-Project/backend/api/Inventory_Database/Supplier_Database/supplier_selected.php/${this.remove_action}`, )
-        .then((response) => {
-          this.remove_dialog = false;
-          const Status = response.data.status;
-          const Message = response.data.message;
-          if (Status === "success") {
-            this.$q.notify({
-                message: 'Supplier Removed!!',
-                caption: `${Message}`,
-                color: 'green',
-            });
-            this.fetchData();
-          }
-          if (Status === "fail") {
-            this.$q.notify({
-              color: 'negative',
-              message: `${Message} Please try again.`,
-            });
-          }
-        }).catch(error => {
-          console.error('Error fetching data:', error);
-        });
+    // Access the province list for the selected region
+    const regionData = this.philippineData[this.selectedRegion.value].province_list;
+    console.log(regionData);
 
-        this.selected = [];
-      },
-      // New Data
-      fetchData(){
-        this.rows = [];
-        axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/Supplier_Database/supplier.php?get=alldata`)
+    // Map the province names to options format
+    this.provinceOptions = Object.keys(regionData).map(provinceName => ({
+      label: provinceName,
+      value: provinceName
+    }));
+  },
+
+onProvinceChange() {
+  const selectedProvinceData = this.philippineData[this.selectedRegion.value].province_list[this.selectedProvince.value];
+  if (selectedProvinceData) {
+    const municipalityData = selectedProvinceData.municipality_list;
+    console.log(municipalityData);
+    
+    this.cityOptions = Object.keys(municipalityData).map(municipalityName => ({
+      label: municipalityName,
+      value: municipalityName
+    }));
+  }
+},
+
+onCityChange() {
+  const selectedMunicipalityData = this.philippineData[this.selectedRegion.value].province_list[this.selectedProvince.value].municipality_list[this.selectedCity.value];
+  if (selectedMunicipalityData) {
+    const barangayList = selectedMunicipalityData.barangay_list;
+    console.log(barangayList);
+    
+    this.barangayOptions = barangayList.map(barangayName => ({
+      label: barangayName,
+      value: barangayName
+    }));
+  }
+},
+
+    EditSupplier(targetID, supplier_name, contact_person,contact, address, email) {
+      this.showDropdown = true;
+      this.selectedSupp = targetID;
+      this.suppName = supplier_name;
+      this.suppAddress = address;
+      this.suppContactName = contact_person;
+      this.suppCp = contact;
+      this.suppEmail = email;
+    },
+    handleCancelEdit() {
+      this.showDropdown = false;
+      this.selectedSupp = '';
+      this.suppName = '';
+      this.suppAddress = '';
+      this.suppContactName = '';
+      this.suppCp = '';
+      this.suppEmail = '';
+    },
+    removeRow(supplierID) {
+      this.remove_action = supplierID;
+
+      this.remove_dialog = true;
+    },
+    HandleRemoveDialog() {
+      axios.delete(`http://localhost/Capstone-Project/backend/api/Inventory_Database/Supplier_Database/supplier_selected.php/${this.remove_action}`, )
+      .then((response) => {
+        this.remove_dialog = false;
+        const Status = response.data.status;
+        const Message = response.data.message;
+        if (Status === "success") {
+          this.$q.notify({
+              message: 'Supplier Removed!!',
+              caption: `${Message}`,
+              color: 'green',
+          });
+          this.fetchData();
+        }
+        if (Status === "fail") {
+          this.$q.notify({
+            color: 'negative',
+            message: `${Message} Please try again.`,
+          });
+        }
+      }).catch(error => {
+        console.error('Error fetching data:', error);
+      });
+
+      this.selected = [];
+    },
+    // New Data
+    fetchData(){
+      this.rows = [];
+      axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/Supplier_Database/supplier.php?get=alldata`)
+      .then(response => {
+        this.rows = response.data.information.values.map(row => {
+          return {
+            supplierID: row.supplierID,
+            supplier: row.supplier_name,
+            contact_person: row.contact_person,
+            address: row.address,
+            contact: row.contact,
+            email: row.email,
+          };
+        })
+      }).catch(error => {
+            console.error('Error fetching data:', error);
+      });
+    },
+    handleCheckboxChange(rowId) {
+      const index = this.selected.indexOf(rowId);
+
+      if (index === -1) {
+        this.selected.push(rowId);
+      } else {
+        this.selected.splice(index, 1);
+      }
+
+    },
+    getSelectedString() {
+      return `Selected ${this.selected.length} item(s)`;
+    },
+    extractSelectedIds() {
+      return this.selected.map(item => item.supplierID);
+    },
+    // Removing Data
+    handleCancel(){
+      this.selected = [];
+    },
+    handleDeleteClick() {
+      this.OpenDelete = true;
+    },
+    HandleRemove() {
+      const selectedIds = this.extractSelectedIds();
+      axios.delete(`http://localhost/Capstone-Project/backend/api/Inventory_Database/Supplier_Database/supplier.php/${this.id}`, {
+        data: { selectedIds: selectedIds },
+      }).then((response) => {
+        this.OpenDelete = false;
+        const Status = response.data.status;
+        const Message = response.data.message;
+        if (Status === "success") {
+          this.$q.notify({
+              message: 'Supplier Removed!!',
+              caption: `${Message}`,
+              color: 'green',
+          });
+          this.fetchData();
+        }
+        if (Status === "fail") {
+          this.$q.notify({
+            color: 'negative',
+            message: `${Message} Please try again.`,
+          });
+        }
+      }).catch(error => {
+        console.error('Error fetching data:', error);
+      });
+
+      this.selected = [];
+    },
+    // Adding Data
+    onSubmit() {
+        const formData = {
+          supplier_Name: this.suppName,
+          supplier_Address: this.suppAddress,
+          supplier_ContactName: this.suppContactName,
+          supplier_Cp: this.suppCp,
+          supplier_Email: this.suppEmail,
+        }
+        axios.post('http://localhost/Capstone-Project/backend/api/Inventory_Database/Supplier_Database/supplier.php/', formData)
         .then(response => {
-          this.rows = response.data.information.values.map(row => {
-            return {
-              supplierID: row.supplierID,
-              supplier: row.supplier_name,
-              contact_person: row.contact_person,
-              address: row.address,
-              contact: row.contact,
-              email: row.email,
-            };
-          })
-        }).catch(error => {
-              console.error('Error fetching data:', error);
-        });
-      },
-      handleCheckboxChange(rowId) {
-        const index = this.selected.indexOf(rowId);
-
-        if (index === -1) {
-          this.selected.push(rowId);
-        } else {
-          this.selected.splice(index, 1);
-        }
-
-      },
-      getSelectedString() {
-        return `Selected ${this.selected.length} item(s)`;
-      },
-      extractSelectedIds() {
-        return this.selected.map(item => item.supplierID);
-      },
-      // Removing Data
-      handleCancel(){
-        this.selected = [];
-      },
-      handleDeleteClick() {
-        this.OpenDelete = true;
-      },
-      HandleRemove() {
-        const selectedIds = this.extractSelectedIds();
-        axios.delete(`http://localhost/Capstone-Project/backend/api/Inventory_Database/Supplier_Database/supplier.php/${this.id}`, {
-          data: { selectedIds: selectedIds },
-        }).then((response) => {
-          this.OpenDelete = false;
           const Status = response.data.status;
           const Message = response.data.message;
           if (Status === "success") {
             this.$q.notify({
-                message: 'Supplier Removed!!',
+                message: 'Supplier Added!!',
                 caption: `${Message}`,
                 color: 'green',
             });
+            this.suppName = '';
+            this.suppAddress = '';
+            this.suppContactName = '';
+            this.suppCp = '';
+            this.suppEmail = '';
+            this.addSupplier = false;
             this.fetchData();
           }
           if (Status === "fail") {
@@ -713,134 +830,139 @@ bordered
           }
         }).catch(error => {
           console.error('Error fetching data:', error);
-        });
-
-        this.selected = [];
-      },
-      // Adding Data
-      onSubmit() {
-          const formData = {
-            supplier_Name: this.suppName,
-            supplier_Address: this.suppAddress,
-            supplier_ContactName: this.suppContactName,
-            supplier_Cp: this.suppCp,
-            supplier_Email: this.suppEmail,
-          }
-          axios.post('http://localhost/Capstone-Project/backend/api/Inventory_Database/Supplier_Database/supplier.php/', formData)
-          .then(response => {
-            const Status = response.data.status;
-            const Message = response.data.message;
-            if (Status === "success") {
-              this.$q.notify({
-                  message: 'Supplier Added!!',
-                  caption: `${Message}`,
-                  color: 'green',
-              });
-              this.suppName = '';
-              this.suppAddress = '';
-              this.suppContactName = '';
-              this.suppCp = '';
-              this.suppEmail = '';
-              this.addSupplier = false;
-              this.fetchData();
-            }
-            if (Status === "fail") {
-              this.$q.notify({
-                color: 'negative',
-                message: `${Message} Please try again.`,
-              });
-            }
-          }).catch(error => {
-            console.error('Error fetching data:', error);
-        });
-      },
-      ruleEmail(value) {
-        // Basic email validation using a regular expression
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return emailRegex.test(value) || 'Please enter a valid email address';
-      },
-      // Updating Data
-      onUpdate() {
-          const formData = {
-            supplier_Name: this.suppName,
-            supplier_Address: this.suppAddress,
-            supplier_ContactName: this.suppContactName,
-            supplier_Cp: this.suppCp,
-            supplier_Email: this.suppEmail,
-          }
-          axios.put(`http://localhost/Capstone-Project/backend/api/Inventory_Database/Supplier_Database/supplier.php/${this.selectedSupp}/`, formData)
-          .then(response => {
-            const Status = response.data.status;
-            const Message = response.data.message;
-            if (Status === "success") {
-              this.$q.notify({
-                  message: 'Supplier has been update!!',
-                  caption: `${Message}`,
-                  color: 'green',
-              });
-              this.suppName = '';
-              this.suppAddress = '';
-              this.suppContactName = '';
-              this.suppCp = '';
-              this.suppEmail = '';
-              this.addSupplier = false;
-              this.fetchData();
-            }
-            if (Status === "fail") {
-              this.$q.notify({
-                color: 'negative',
-                message: `${Message} Please try again.`,
-              });
-            }
-          }).catch(error => {
-            console.error('Error fetching data:', error);
-        });
-      },
-
-      // Old data
-      toggleInventoryMenu() {
-        this.inventoryMenuVisible = !this.inventoryMenuVisible;
-      },
-      toggleDrawer() {
-        if (!this.toggleDrawers) {
-          this.drawer = true;
-          this.drawerWidth = 300;
-          this.drawerIcon = 'arrow_forward_ios';
-          this.toggleDrawers = true;
-        } else {
-          this.drawer = true;
-          this.drawerWidth = 80;
-          this.toggleDrawers = false;
-          this.drawerIcon = 'arrow_back_ios_new';
+      });
+    },
+    ruleEmail(value) {
+      // Basic email validation using a regular expression
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return emailRegex.test(value) || 'Please enter a valid email address';
+    },
+    // Updating Data
+    onUpdate() {
+        const formData = {
+          supplier_Name: this.suppName,
+          supplier_Address: this.suppAddress,
+          supplier_ContactName: this.suppContactName,
+          supplier_Cp: this.suppCp,
+          supplier_Email: this.suppEmail,
         }
-      },
-      checkUserStatus() {
-          axios.get(`http://localhost/Capstone-Project/backend/api/verification.php?email=${this.email}`)
-          .then(response => {
-          const latestStatus = response.data.information.status;
-          const information = response.data.information;
-            this.information = {
-              id: information.id,
-              email: information.email,
-              username: information.username,
-              pfp: information.pfp,
-              firstname: information.firstname,
-              middlename: information.middlename,
-              lastname: information.lastname,
-              gender: information.gender,
-              position: information.position,
-              mobilenumber: information.mobilenumber,
-              birthdate: information.birthdate,
-              age: information.age,
-              address: information.address,
-              otp_code: information.otp_code,
-              isOnline: information.isOnline,
-              status: information.status,
-              password: information.password,
-            };
-            SessionStorage.set('information', JSON.stringify(this.information));
-          const Position = response.data.information.position;
-          if (Position.toLowerCase() === 'owner') {
+        axios.put(`http://localhost/Capstone-Project/backend/api/Inventory_Database/Supplier_Database/supplier.php/${this.selectedSupp}/`, formData)
+        .then(response => {
+          const Status = response.data.status;
+          const Message = response.data.message;
+          if (Status === "success") {
+            this.$q.notify({
+                message: 'Supplier has been update!!',
+                caption: `${Message}`,
+                color: 'green',
+            });
+            this.suppName = '';
+            this.suppAddress = '';
+            this.suppContactName = '';
+            this.suppCp = '';
+            this.suppEmail = '';
+            this.addSupplier = false;
+            this.fetchData();
+          }
+          if (Status === "fail") {
+            this.$q.notify({
+              color: 'negative',
+              message: `${Message} Please try again.`,
+            });
+          }
+        }).catch(error => {
+          console.error('Error fetching data:', error);
+      });
+    },
+
+    // Old data
+    toggleInventoryMenu() {
+      this.inventoryMenuVisible = !this.inventoryMenuVisible;
+    },
+    toggleDrawer() {
+      if (!this.toggleDrawers) {
+        this.drawer = true;
+        this.drawerWidth = 300;
+        this.drawerIcon = 'arrow_forward_ios';
+        this.toggleDrawers = true;
+      } else {
+        this.drawer = true;
+        this.drawerWidth = 80;
+        this.toggleDrawers = false;
+        this.drawerIcon = 'arrow_back_ios_new';
+      }
+    },
+    checkUserStatus() {
+        axios.get(`http://localhost/Capstone-Project/backend/api/verification.php?email=${this.email}`)
+        .then(response => {
+        const latestStatus = response.data.information.status;
+        const information = response.data.information;
+          this.information = {
+            id: information.id,
+            email: information.email,
+            username: information.username,
+            pfp: information.pfp,
+            firstname: information.firstname,
+            middlename: information.middlename,
+            lastname: information.lastname,
+            gender: information.gender,
+            position: information.position,
+            mobilenumber: information.mobilenumber,
+            birthdate: information.birthdate,
+            age: information.age,
+            address: information.address,
+            otp_code: information.otp_code,
+            isOnline: information.isOnline,
+            status: information.status,
+            password: information.password,
+          };
+          SessionStorage.set('information', JSON.stringify(this.information));
+        const Position = response.data.information.position;
+        if (Position.toLowerCase() === 'owner') {
+          this.$router.push('/dashboard/supplier-section');
+        }else{
+          this.$q.notify({
+          type: 'negative',
+            message: 'You do not have permission to access the system.',
+          });
+          this.$router.push('/');
+          sessionStorage.clear();
+        }
+        if (this.status !== latestStatus) {
+          this.status = latestStatus;
+
+          if (this.status === 0) {
+            this.$q.notify({
+              type: 'negative',
+              message: 'Your account is currently inactive. Please contact the account owner for activation.',
+            });
+            this.$router.push('/');
+            sessionStorage.clear();
+          }
+        }
+      }).catch(error => {
+        this.$router.push('/');
+        sessionStorage.clear();
+        console.error('Error fetching data:', error);
+      });
+    },
+    loadUserData() {
+      const userData = SessionStorage.getItem('information');
+      if (userData) {
+        try {
+          const userInformation = JSON.parse(userData);
+          this.email = userInformation.email;
+          this.username = userInformation.username;
+          this.userProfileImage = userInformation.pfp;
+          this.firstname = userInformation.firstname;
+          this.middlename = userInformation.middlename;
+          this.lastname = userInformation.lastname;
+          this.position = userInformation.position;
+          this.status = userInformation.status;
+          this.id = userInformation.id;
+
+          this.fullname = this.firstname + " " + this.lastname;
+          if (this.position.toLowerCase() === 'owner') {
             this.$router.push('/dashboard/supplier-section');
           }else{
             this.$q.notify({
@@ -850,98 +972,54 @@ bordered
             this.$router.push('/');
             sessionStorage.clear();
           }
-          if (this.status !== latestStatus) {
-            this.status = latestStatus;
-
-            if (this.status === 0) {
-              this.$q.notify({
-                type: 'negative',
-                message: 'Your account is currently inactive. Please contact the account owner for activation.',
-              });
-              this.$router.push('/');
-              sessionStorage.clear();
-            }
-          }
-        }).catch(error => {
-          this.$router.push('/');
-          sessionStorage.clear();
-          console.error('Error fetching data:', error);
-        });
-      },
-      loadUserData() {
-        const userData = SessionStorage.getItem('information');
-        if (userData) {
-          try {
-            const userInformation = JSON.parse(userData);
-            this.email = userInformation.email;
-            this.username = userInformation.username;
-            this.userProfileImage = userInformation.pfp;
-            this.firstname = userInformation.firstname;
-            this.middlename = userInformation.middlename;
-            this.lastname = userInformation.lastname;
-            this.position = userInformation.position;
-            this.status = userInformation.status;
-            this.id = userInformation.id;
-
-            this.fullname = this.firstname + " " + this.lastname;
-            if (this.position.toLowerCase() === 'owner') {
-              this.$router.push('/dashboard/supplier-section');
-            }else{
-              this.$q.notify({
-              type: 'negative',
-                message: 'You do not have permission to access the system.',
-              });
-              this.$router.push('/');
-              sessionStorage.clear();
-            }
-            if(this.status == 0)
-            {
-              this.$q.notify({
-              type: 'negative',
-                message: 'Your account is currently inactive. Please contact the account owner for activation.',
-              });
-              this.$router.push('/');
-              sessionStorage.clear();
-            }
-
-          } catch (error) {
-            console.log('Error parsing user data:', error);
-            // Provide user feedback or navigate to an error page
+          if(this.status == 0)
+          {
             this.$q.notify({
-              type: 'negative',
-              message: 'Error loading user data. Please try again.',
+            type: 'negative',
+              message: 'Your account is currently inactive. Please contact the account owner for activation.',
             });
             this.$router.push('/');
             sessionStorage.clear();
           }
-        } else {
-          // Handle the case when user data is not available
+
+        } catch (error) {
+          console.log('Error parsing user data:', error);
+          // Provide user feedback or navigate to an error page
+          this.$q.notify({
+            type: 'negative',
+            message: 'Error loading user data. Please try again.',
+          });
           this.$router.push('/');
           sessionStorage.clear();
         }
-      },
-      getLimitedFullname(fullname, maxLength) {
-        if (fullname.length > maxLength) {
-          return fullname.substring(0, maxLength) + '...';
-        }
-        return fullname;
-      },
-      getUserProfileImagePath() {
-        // Ensure userProfileImage is not null before creating the path
-        if (this.userProfileImage) {
-          return `/pfp/${this.userProfileImage}`;
-        } else {
-          // Return a default path or handle it as per your requirement
-          return '/default_profile.png';
-        }
-      },
-      logout() {
-        sessionStorage.clear();
+      } else {
+        // Handle the case when user data is not available
         this.$router.push('/');
-      },
+        sessionStorage.clear();
+      }
     },
-  };
-  </script>
+    getLimitedFullname(fullname, maxLength) {
+      if (fullname.length > maxLength) {
+        return fullname.substring(0, maxLength) + '...';
+      }
+      return fullname;
+    },
+    getUserProfileImagePath() {
+      // Ensure userProfileImage is not null before creating the path
+      if (this.userProfileImage) {
+        return `/pfp/${this.userProfileImage}`;
+      } else {
+        // Return a default path or handle it as per your requirement
+        return '/default_profile.png';
+      }
+    },
+    logout() {
+      sessionStorage.clear();
+      this.$router.push('/');
+    },
+  },
+};
+</script>
 
 <style lang="sass">
 .my-sticky-header-table
