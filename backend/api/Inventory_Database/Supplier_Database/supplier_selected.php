@@ -91,88 +91,33 @@
     
     public function httpPut($ids, $payload)
     {
-        // Check if $ids is a valid array of IDs
-        if (empty($ids)) {
-            $response = ['status' => 'fail', 'message' => 'Invalid or empty IDs array.'];
-            echo json_encode($response);
-            exit;
-        }
-
-        $requiredFields = ['supplier_Name','supplier_Address','supplier_ContactName','supplier_Cp','supplier_Email',];
-        foreach ($requiredFields as $field) {
-            if (!isset($payload[$field])) {
-                $response = ['status' => 'fail', 'message' => 'Missing required field: ' . $field];
-                echo json_encode($response);
-                exit;
-            }
-        }
-        $supplierTarget = $this->db->where("supplierID", $ids)->getOne('w_supplierlist');
-
-        if ($supplierTarget === null) {
-            $response = ['status' => 'fail', 'message' => 'Invalid target id.'];
-            echo json_encode($response);
-            exit;
-        }
-        $updateDatas = [
-            'supplier_name' => $payload['supplier_Name'],
-            'contact_person' => $payload['supplier_ContactName'],
-            'address' => $payload['supplier_Address'],
-            'contact' => $payload['supplier_Cp'],
-            'email' => $payload['supplier_Email'],
-        ];
-        $addData = $this->db->where('supplierID', $ids)->update('w_supplierlist', $updateDatas);
-        if($addData){
-            $response = ['status' => 'success', 'message' => 'Successfully update supplier information.'];
-            echo json_encode($response);
-            exit;
-        }else{
-            $response = ['status' => 'fail', 'message' => 'Invalid target id.'];
-            echo json_encode($response);
-            exit;
-        }
 
     }
     
 
     public function httpDelete($ids, $payload)
     {
-        if($payload['selectedIds']){
-            $requiredFields = ['selectedIds']; // Update field names here
-            foreach ($requiredFields as $field) {
-                if (!isset($payload[$field])) {
-                    $response = ['status' => 'fail', 'message' => 'Missing required field: ' . $field];
-                    echo json_encode($response);
-                    exit;
-                }   
-            }
-
-            $existingData = $this->db->where('personelID', $ids)->getOne('personel_tbl');
-            if($existingData)
-            {
-                if (strtolower($existingData['position']) === 'owner') {
-                    $deleteData = $this->db->where('supplierID', $payload['selectedIds'], 'IN')->delete('w_supplierlist');
-                    $response = [
-                        'status' => 'success',
-                        'message' => 'Records deleted successfully.',
-                    ];
-                    echo json_encode($response);
-                    exit;  
-                }else{
-                    $response = [
-                        'status' => 'fail',
-                        'message' => 'You do not have permission to remove supplier.',
-                    ];
-                    echo json_encode($response);
-                    exit;           
-                }
-            }else{
-
-            }
-        }else{
-            $response = ['status' => 'fail', 'message' => 'Invalid Payload.'];
+        if (empty($ids)) {
+            $response = ['status' => 'fail', 'message' => 'Invalid or empty IDs array.'];
             echo json_encode($response);
-            exit;            
+            exit;
         }
+        $existingIDs = $this->db->where('supplierID', $ids)->getOne('w_supplierlist');
+    
+        if (!$existingIDs) {
+            $response = ['status' => 'fail', 'message' => 'IDs not found in the database.'];
+            echo json_encode($response);
+            exit;
+        }
+
+        $deleteData = $this->db->where('supplierID', $ids)->delete('w_supplierlist');
+        $response = [
+            'status' => 'success',
+            'message' => 'Records deleted successfully.',
+        ];
+        echo json_encode($response);
+        exit;  
+
     }
   }
  
