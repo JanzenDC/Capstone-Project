@@ -235,26 +235,26 @@ bordered
           </q-btn>
           <q-btn-dropdown icon="filter_alt" label="Filter">
             <q-list>
-              <q-item clickable v-close-popup @click="onItemClick">
+              <q-item clickable v-close-popup>
                 <q-item-section>
                   <q-item-label>Active</q-item-label>
                 </q-item-section>
               </q-item>
 
-              <q-item clickable v-close-popup @click="onItemClick">
+              <q-item clickable v-close-popup>
                 <q-item-section>
                   <q-item-label>All</q-item-label>
                 </q-item-section>
               </q-item>
 
-              <q-item clickable v-close-popup @click="onItemClick">
+              <q-item clickable v-close-popup @click="onItemClickDelete">
                 <q-item-section>
                   <q-item-label>Delete</q-item-label>
                 </q-item-section>
               </q-item>
             </q-list>
           </q-btn-dropdown>
-          <q-btn @click="addSupplier = true" class="bg-[#281c0f] text-white">
+          <q-btn @click="AddSupplier" class="bg-[#281c0f] text-white">
             <i class="bi bi-plus-lg"></i>
             Add Supplier
           </q-btn>
@@ -285,8 +285,8 @@ bordered
                 </div>
                 <div>
                   <label>
-                  Email<span class="text-red-600">*</span>
-                </label>
+                    Email<span class="text-red-600">*</span>
+                  </label>
                 <q-input
                     type="email"
                     label="Email"
@@ -307,22 +307,17 @@ bordered
                   <q-input type="text" label="Contact Person" v-model="suppContactName" required lazy-rules :no-error-icon="true" outlined dense :rules="[val => !!val || 'Field is required']"/>
                 </div>
                 <div>
-                <label>
-                  Contact Number<span class="text-red-600">*</span>
-                </label>
-                <q-input type="tel" label="Contact Number" v-model="suppCp" lazy-rules required :no-error-icon="true" outlined dense :rules="[val => !!val || 'Phone Number is required', val => /^09\d{9}$/g.test(val) || 'Invalid Phone Number']"/>
+                  <label>
+                    Contact Number<span class="text-red-600">*</span>
+                  </label>
+                  <q-input type="tel" label="Contact Number" v-model="suppCp" lazy-rules required :no-error-icon="true" outlined dense :rules="[val => !!val || 'Phone Number is required', val => /^09\d{9}$/g.test(val) || 'Invalid Phone Number']"/>
                 </div>
               </div>
               <label> <!--Supplier Address-->
                 Supplier Address<span class="text-red-600">*</span>
               </label>
-              <!-- <q-input type="text" label="Supplier Address" v-model="suppAddress" required lazy-rules :no-error-icon="true" class="w-full" outlined dense :rules="[val => !!val || 'Field is required']"/> -->
-                <q-select v-model="selectedRegion" :options="regionOptions" label="Region" @input="onRegionChange" />
-    <q-select v-model="selectedProvince" :options="provinceOptions" label="Province" @input="onProvinceChange" />
-    <q-select v-model="selectedCity" :options="cityOptions" label="City" @input="onCityChange" />
-    <q-select v-model="selectedBarangay" :options="barangayOptions" label="Barangay" />
+              <q-input type="text" label="Supplier Address" v-model="suppAddress" required lazy-rules :no-error-icon="true" class="w-full" outlined dense :rules="[val => !!val || 'Field is required']" @click="onSupplierAddressClick" />
             </q-card-section>
-
             <q-separator />
 
             <q-card-actions align="right">
@@ -339,7 +334,55 @@ bordered
           </q-form>
           </q-card>
       </q-dialog>
-  <!-- Delete/Remove Dialog Modal -->
+
+<!-- Supplier Menu Address -->
+      <q-dialog v-model="supplierAddress">
+              <q-card class="w-[904px]">
+                <q-card-section class="row items-center q-pb-none">
+                  <div class="text-h6 font-bold flex items-center gap-2">
+                    <q-icon name="location_on" class="p-2 border"/>
+                    Supplier Address
+                  </div>
+                  <q-space />
+
+                </q-card-section>
+
+                <q-card-section >
+                  <div class="">
+                      <div>
+                        <label>Region<span class="text-red-600">*</span></label>
+                        <q-select v-model="selectedRegion" :options="regionOptions" label="Region" @input="onRegionChange" dense outlined class='flex-wrap' />
+                      </div>
+                      <div>
+                        <label>Province<span class="text-red-600">*</span></label>
+                        <q-select v-model="selectedProvince" :options="provinceOptions" label="Province" dense outlined :disable="!selectedRegion" class='flex-wrap'/>
+                      </div>
+                      <div>
+                        <label>City<span class="text-red-600">*</span></label>
+                        <q-select v-model="selectedCity" :options="cityOptions" label="City" dense outlined :disable="!selectedProvince" class='flex-wrap'/>
+                      </div>
+                      <div>
+                        <label>Barangay<span class="text-red-600">*</span></label>
+                        <q-select v-model="selectedBarangay" :options="barangayOptions" label="Barangay" dense outlined :disable="!selectedCity" />
+                      </div>
+                  </div>
+                </q-card-section>
+                <q-separator />
+
+                <q-card-actions align="right">
+                  <q-btn
+                    flat
+                    label="Save"
+                    color="primary"
+                    @click="SupplierSave"
+                    :disable="!selectedRegion || !selectedProvince || !selectedCity || !selectedBarangay"
+                  />
+                </q-card-actions>
+
+              </q-card>
+      </q-dialog>
+
+<!-- Delete/Remove Dialog Modal -->
       <q-dialog v-model="OpenDelete">
           <q-card>
             <q-card-section class="row items-center q-pb-none">
@@ -371,7 +414,7 @@ bordered
             </q-card-actions>
           </q-card>
       </q-dialog>
-  <!-- Delete/Remove 1 selectedDialog Modal -->
+<!-- Delete/Remove 1 selectedDialog Modal -->
       <q-dialog v-model="remove_dialog">
           <q-card>
             <q-card-section class="row items-center q-pb-none">
@@ -433,13 +476,15 @@ bordered
             <q-icon
               name="delete"
               class="w-[18px] h-[21px] p-1 text-white bg-red rounded"
-              @click="removeRow(props.row.supplierIDl)"
+              @click="removeRow(props.row.supplierID)"
             />
           </q-td>
         </template>
         </q-table>
       </div>
 
+
+<!-- OnUpdate -->
       <q-dialog v-model="showDropdown">
           <q-card class="w-[904px]">
             <q-form @submit="onUpdate">
@@ -494,7 +539,7 @@ bordered
               <label> <!--Supplier Address-->
                 Supplier Address<span class="text-red-600">*</span>
               </label>
-              <q-input type="text" label="Supplier Address" v-model="suppAddress" required lazy-rules :no-error-icon="true" class="w-full" outlined dense :rules="[val => !!val || 'Field is required']"/>
+              <q-input type="text" label="Supplier Address" v-model="suppAddress" required lazy-rules :no-error-icon="true" class="w-full" outlined dense :rules="[val => !!val || 'Field is required']" @click="EditsupplierAddress = true"/>
             </q-card-section>
 
             <q-separator />
@@ -512,6 +557,52 @@ bordered
             </q-card-actions>
           </q-form>
           </q-card>
+      </q-dialog>
+  <!-- Supplier Menu Address -->
+      <q-dialog v-model="EditsupplierAddress">
+              <q-card class="w-[904px]">
+                <q-card-section class="row items-center q-pb-none">
+                  <div class="text-h6 font-bold flex items-center gap-2">
+                    <q-icon name="location_on" class="p-2 border"/>
+                    Supplier Address
+                  </div>
+                  <q-space />
+
+                </q-card-section>
+
+                <q-card-section >
+                  <div class="">
+                      <div>
+                        <label>Region<span class="text-red-600">*</span></label>
+                        <q-select v-model="selectedRegion" :options="regionOptions" label="Region" @input="onRegionChange" dense outlined class='flex-wrap' />
+                      </div>
+                      <div>
+                        <label>Province<span class="text-red-600">*</span></label>
+                        <q-select v-model="selectedProvince" :options="provinceOptions" label="Province" dense outlined :disable="!selectedRegion" class='flex-wrap'/>
+                      </div>
+                      <div>
+                        <label>City<span class="text-red-600">*</span></label>
+                        <q-select v-model="selectedCity" :options="cityOptions" label="City" dense outlined :disable="!selectedProvince" class='flex-wrap'/>
+                      </div>
+                      <div>
+                        <label>Barangay<span class="text-red-600">*</span></label>
+                        <q-select v-model="selectedBarangay" :options="barangayOptions" label="Barangay" dense outlined :disable="!selectedCity" />
+                      </div>
+                  </div>
+                </q-card-section>
+                <q-separator />
+
+                <q-card-actions align="right">
+                  <q-btn
+                    flat
+                    label="Save"
+                    color="primary"
+                    @click="supplierUpdateSave"
+                    :disable="!selectedRegion || !selectedProvince || !selectedCity || !selectedBarangay"
+                  />
+                </q-card-actions>
+
+              </q-card>
       </q-dialog>
 
     </div>
@@ -579,7 +670,9 @@ export default {
     suppCp: '',
     suppEmail: '',
     showDropdown: false,
-
+    // supplierAddress Dialogs
+    EditsupplierAddress: false,
+    supplierAddress: false,
     // Location Data
       selectedRegion: null,
       selectedProvince: null,
@@ -607,6 +700,11 @@ export default {
       if (newValue !== oldValue) {
         this.onCityChange();
       }
+    },
+    selectedBarangay: function(newValue, oldValue) {
+      if (newValue !== oldValue) {
+        this.onBaranggayChange();
+      }
     }
   },
   computed: {
@@ -626,55 +724,106 @@ export default {
       this.checkUserStatus();
     }, 20 * 1000); // 1 second (in milliseconds)
     this.fetchData();
-    this.regionOptions = Object.keys(this.philippineData).map(regionCode => ({
-      label: regionCode,
+    this.regionOptions = Object.keys(this.philippineData)
+    .map(regionCode => ({
+      label: /^(0[1-9]|1[0-3]|[4][A-B]|[1-3]?[0-9])$/.test(regionCode) ? `Region ${regionCode}` : regionCode,
       value: regionCode
-    }));
+    }))
+    .sort((a, b) => a.label.localeCompare(b.label));
   },
   beforeUnmount() {
     clearInterval(this.statusCheckTimer);
   },
   methods: {
+    AddSupplier(){
+      this.selectedSupp = '';
+      this.suppName = '';
+      this.suppAddress = '';
+      this.suppContactName = '';
+      this.suppCp = '';
+      this.suppEmail = '';
+      this.selectedRegion = null;
+      this.selectedProvince = null;
+      this.selectedCity = null;
+      this.selectedBarangay = null;
+      this.addSupplier = true;
+    },
+    supplierUpdateSave(){
+      this.EditsupplierAddress = false;
+      this.showDropdown = true;
+    },
+    SupplierSave(){
+      this.supplierAddress = false;
+      this.addSupplier = true;
+    },
+    onSupplierAddressClick(){
+      this.supplierAddress = true;
+      this.addSupplier = false;
+    },
     onRegionChange() {
-      console.log(this.selectedRegion.value);
-      console.log(philippineData[this.selectedRegion.value]);
+    //   console.log(this.selectedRegion.value);
+    //   console.log(philippineData[this.selectedRegion.value]);
+    //  // Access the province list for the selected region
+      this.selectedProvince = null;
+      this.selectedCity = null;
+      this.selectedBarangay = null;
+      const regionData = this.philippineData[this.selectedRegion.value].province_list;
 
-    // Access the province list for the selected region
-    const regionData = this.philippineData[this.selectedRegion.value].province_list;
-    console.log(regionData);
+      // Map the province names to options format
+      this.provinceOptions = Object.keys(regionData).map(provinceName => ({
+        label: provinceName,
+        value: provinceName
+      }));
+      this.updateSuppAddress();
+    },
+    onProvinceChange() {
+      // Check if selectedProvince is not null before accessing its value
+      if (this.selectedProvince !== null) {
+        this.selectedCity = null;
+        this.selectedBarangay = null;
+        const selectedProvinceData = this.philippineData[this.selectedRegion.value].province_list[this.selectedProvince.value];
+        if (selectedProvinceData) {
+          const municipalityData = selectedProvinceData.municipality_list;
+          console.log(municipalityData);
 
-    // Map the province names to options format
-    this.provinceOptions = Object.keys(regionData).map(provinceName => ({
-      label: provinceName,
-      value: provinceName
-    }));
-  },
+          this.cityOptions = Object.keys(municipalityData).map(municipalityName => ({
+            label: municipalityName,
+            value: municipalityName
+          }));
+        }
+      }
+    },
+    onCityChange() {
+      if (this.selectedCity !== null) {
+        this.selectedBarangay = null;
+        const selectedMunicipalityData = this.philippineData[this.selectedRegion.value].province_list[this.selectedProvince.value].municipality_list[this.selectedCity.value];
+        if (selectedMunicipalityData) {
+          const barangayList = selectedMunicipalityData.barangay_list;
+          console.log(barangayList);
 
-onProvinceChange() {
-  const selectedProvinceData = this.philippineData[this.selectedRegion.value].province_list[this.selectedProvince.value];
-  if (selectedProvinceData) {
-    const municipalityData = selectedProvinceData.municipality_list;
-    console.log(municipalityData);
-    
-    this.cityOptions = Object.keys(municipalityData).map(municipalityName => ({
-      label: municipalityName,
-      value: municipalityName
-    }));
-  }
-},
+          this.barangayOptions = barangayList.map(barangayName => ({
+            label: barangayName,
+            value: barangayName
+          }));
+          this.updateSuppAddress();
+        }
+      }
+    },
+    onBaranggayChange() {
+      if (this.selectedBarangay !== null) {
+        this.updateSuppAddress();
+      }
+    },
+    updateSuppAddress() {
 
-onCityChange() {
-  const selectedMunicipalityData = this.philippineData[this.selectedRegion.value].province_list[this.selectedProvince.value].municipality_list[this.selectedCity.value];
-  if (selectedMunicipalityData) {
-    const barangayList = selectedMunicipalityData.barangay_list;
-    console.log(barangayList);
-    
-    this.barangayOptions = barangayList.map(barangayName => ({
-      label: barangayName,
-      value: barangayName
-    }));
-  }
-},
+      let address = '';
+      if (this.selectedRegion) address += `${this.selectedRegion.label}, `;
+      if (this.selectedProvince) address += `${this.selectedProvince.label}, `;
+      if (this.selectedCity) address += `${this.selectedCity.label}, `;
+      if (this.selectedBarangay) address += `${this.selectedBarangay.label}`;
+      this.suppAddress = address;
+    },
+
 
     EditSupplier(targetID, supplier_name, contact_person,contact, address, email) {
       this.showDropdown = true;
@@ -700,9 +849,11 @@ onCityChange() {
       this.remove_dialog = true;
     },
     HandleRemoveDialog() {
-      axios.delete(`http://localhost/Capstone-Project/backend/api/Inventory_Database/Supplier_Database/supplier_selected.php/${this.remove_action}`, )
+      console.log(this.remove_action);
+      axios.delete(`http://localhost/Capstone-Project/backend/api/Inventory_Database/Supplier_Database/supplier_selected.php/${this.remove_action}`)
       .then((response) => {
         this.remove_dialog = false;
+
         const Status = response.data.status;
         const Message = response.data.message;
         if (Status === "success") {
@@ -724,6 +875,9 @@ onCityChange() {
       });
 
       this.selected = [];
+    },
+    onItemClickDelete() {
+      this.$router.push('/dashboard/supplier-restorepoint');
     },
     // New Data
     fetchData(){

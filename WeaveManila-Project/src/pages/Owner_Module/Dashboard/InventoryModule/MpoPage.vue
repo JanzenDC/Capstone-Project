@@ -191,9 +191,9 @@ bordered
         @click="toggleDrawer"
         class="cursor-pointer max-[1020px]:flex min-[1020px]:hidden"
       />
-    <span class="font-bold">Material Purchase Order</span>
+    <span class="font-bold">Purchase List</span>
     </div>
-    <div class="text-[16px]"><span class="text-[#b8b8b8]">Inventory / </span>Material Purchase Order</div>
+    <div class="text-[16px]"><span class="text-[#b8b8b8]">Inventory / </span>Purchase List</div>
   </div>
 
   <div class="p-4">
@@ -246,41 +246,67 @@ bordered
             <q-btn square icon="cached" @click="refreshData"/>
           </div>
         </div>
-      <q-table
-          :rows="rows"
-          :columns="columns"
-          row-key="mpo_id"
-          class="my-sticky-header-table mt-3"
-          selection="multiple"
-          v-model:selected="selected"
-          :selected-rows-label="getSelectedString"
-        >
-
-        <template v-slot:body-cell-selection="props">
-          <q-td :props="props">
-            <q-checkbox
-              v-model="props.selected"
-              :val="props.row.mpo_id"
-              @input="handleCheckboxChange(props.row.mpo_id)"
-            />
-          </q-td>
-        </template>
+      <div class="q-pa-md">
+        <q-table
+            :rows="rows"
+            :columns="columns"
+            row-key="mpo_id"
+            class="my-sticky-header-table"
+            :dense="$q.screen.lt.md"
+            flat bordered
+            selection="multiple"
+            v-model:selected="selected"
+            :selected-rows-label="getSelectedString"
+          >
+          <template v-slot:body-cell-selection="props">
+            <q-td :props="props">
+              <q-checkbox
+                v-model="props.selected"
+                :val="props.row.mpo_id"
+                @input="handleCheckboxChange(props.row.mpo_id)"
+              />
+            </q-td>
+          </template>
 
 
         <template v-slot:body-cell-status="props">
-            <q-td :props="props">
-              <span v-if="props.row.status === 'Recieved'" class="text-green-600 p-2 rounded-full bg-green-300">
-                ● Recieved
-              </span>
-              <span v-else-if="props.row.status === 'Pending'" class="text-red-600 p-2 rounded-full bg-red-300">
-                ● Pending
-              </span>
-              <span v-else-if="props.row.status === 'Partial Recieved'" class="text-yellow-600 p-2 rounded-full bg-yellow-300">
-                ● Partial Recieved
-              </span>
-            </q-td>
-        </template>
-      </q-table>
+              <q-td :props="props">
+                <span v-if="props.row.status === 'Recieved'" class="text-green-600 p-2 rounded-full bg-green-300">
+                  ● Recieved
+                </span>
+                <span v-else-if="props.row.status === 'Pending'" class="text-red-600 p-2 rounded-full bg-red-300">
+                  ● Pending
+                </span>
+                <span v-else-if="props.row.status === 'Partial Recieved'" class="text-yellow-600 p-2 rounded-full bg-yellow-300">
+                  ● Partial Recieved
+                </span>
+              </q-td>
+          </template>
+
+          <template v-slot:body-cell-actions="props">
+              <q-td :props="props">
+                <div class="flex items-center justify-center w-[221px] gap-1">
+                  <div class="bg-[#ddffcd] py-1 px-2 text-green-600 rounded font-bold">
+                    Recieved
+                  </div>
+                  <div class="bg-[#475467] text-white w-[32px] h-[32px] text-[20px]">
+                    <q-icon name="history" />
+                  </div>
+                  <div class="bg-[#26218e] text-white w-[32px] h-[32px] text-[20px]">
+                    <q-icon name="assignment"/>
+                  </div>
+                  <div class="bg-[#b3261e] text-white text-[20px] w-[32px] h-[32px]">
+                    <q-icon name="delete"/>
+                  </div>
+                  <div class="w-[32px] h-[32px] text-[20px]">
+                    <q-icon name="arrow_forward_ios"/>
+                  </div>
+                </div>
+              </q-td>
+          </template>
+
+        </q-table>
+      </div>
     </div>
 
   </div>
@@ -318,17 +344,19 @@ export default {
       // Additional Data
       firstStep: false,
       secondStep: false,
-      columns : [
-        { name: 'mpo_number', align: 'left', label: 'MPO No.', field: 'mpo_number', sortable: true },
-        { name: 'supplier', align: 'left', label: 'Supplier', field: 'supplier', sortable: true },
-        { name: 'product', align: 'left', label: 'Product', field: 'product', sortable: true },
-        { name: 'date_purchase', align: 'left', label: 'Date Purchase', field: 'date_purchase', sortable: true },
-        { name: 'qty', align: 'left', label: 'Qty', field: 'qty', sortable: true },
-        { name: 'qty_recieved', align: 'left', label: 'Qty Recieved', field: 'qty_recieved', sortable: true },
-        { name: 'amount', align: 'left', label: 'Amount', field: 'amount', sortable: true },
-        { name: 'status', align: 'left', label: 'Status', field: 'status', sortable: true },
-        { name: 'actions', align: 'left', label: 'Actions', field: 'actions', sortable: true },
+      columns: [
+        { name: 'mpo_number', align: 'left', label: 'MPO No.', field: 'mpo_number', sortable: true, headerStyle: 'width: 44px;' },
+        { name: 'supplier', align: 'left', label: 'Supplier', field: 'supplier', sortable: true, headerStyle: 'width: 100px;' },
+        { name: 'product', align: 'left', label: 'Product', field: 'product', sortable: true, headerStyle: 'width: 150px;' },
+        { name: 'date_purchase', align: 'left', label: 'Date Purchase', field: 'date_purchase', sortable: true, headerStyle: 'width: 120px;' },
+        { name: 'qty', align: 'left', label: 'Qty', field: 'qty', sortable: true, headerStyle: 'width: 80px;' },
+        { name: 'qty_recieved', align: 'left', label: 'Qty Recieved', field: 'qty_recieved', sortable: true, headerStyle: 'width: 120px;' },
+        { name: 'amount', align: 'left', label: 'Amount', field: 'amount', sortable: true, headerStyle: 'width: 100px;' },
+        { name: 'status', align: 'left', label: 'Status', field: 'status', sortable: true, headerStyle: 'width: 80px;' },
+        { name: 'actions', align: 'center', label: 'Actions', field: 'actions', sortable: true },
+
       ],
+
       rows: [],
       selected: [],
 
@@ -534,20 +562,25 @@ export default {
   },
 };
 </script>
+
 <style lang="sass">
 .my-sticky-header-table
   /* height or max-height is important */
-  height: 360px
+  height: 370px
 
   .q-table__top,
+
   thead tr:first-child th
     /* bg color is important for th; just specify one */
-    font-size: 13px
     background-color: #fff
+    color: #000
+    text-align: center
+    font-size: 13px
 
   thead tr th
     position: sticky
     z-index: 1
+  thead tr:first-child th
     top: 0
 
   /* this is when the loading indicator appears */
@@ -560,18 +593,5 @@ export default {
     /* height of all previous header rows */
     scroll-margin-top: 48px
 
-.my-sticky-header-table-second
-  /* height or max-height is important */
-  height: 100px
-
-  .q-table__top,
-  thead tr:first-child th
-    /* bg color is important for th; just specify one */
-    font-size: 13px
-    background-color: #fff
-
-  thead tr th
-    position: sticky
-    z-index: 1
-    top: 0
 </style>
+

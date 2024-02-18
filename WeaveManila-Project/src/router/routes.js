@@ -43,7 +43,8 @@ const routes = [
       { path: 'inventory-viewpage', component: () => import('pages/Owner_Module/Dashboard/InventoryModule/InventoryPages/ViewDetails.vue') },
       { path: 'inventory-viewlist', component: () => import('pages/Owner_Module/Dashboard/InventoryModule/InventoryPages/ViewItemlist.vue') },
 
-
+      // Supplier Pages
+      { path: 'supplier-restorepoint', component: () => import('pages/Owner_Module/Dashboard/InventoryModule/SupplierPages/SupplierRestore.vue') },
 
 
     ]

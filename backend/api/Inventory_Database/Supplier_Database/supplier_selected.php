@@ -103,20 +103,35 @@
             exit;
         }
         $existingIDs = $this->db->where('supplierID', $ids)->getOne('w_supplierlist');
-    
         if (!$existingIDs) {
             $response = ['status' => 'fail', 'message' => 'IDs not found in the database.'];
             echo json_encode($response);
             exit;
         }
-
-        $deleteData = $this->db->where('supplierID', $ids)->delete('w_supplierlist');
-        $response = [
-            'status' => 'success',
-            'message' => 'Records deleted successfully.',
+        // First Execute
+        $data = [
+            'supplierID' => $ids,
+            'supplier_name' => $existingIDs['supplier_name'],
+            'contact_person' => $existingIDs['contact_person'],
+            'address' => $existingIDs['address'],
+            'contact' => $existingIDs['contact'],
+            'email' => $existingIDs['email'],
         ];
-        echo json_encode($response);
-        exit;  
+        $insertData = $this->db->insert('supplier_restorepoint', $data);
+        if($insertData){
+            $deleteData = $this->db->where('supplierID', $ids)->delete('w_supplierlist');
+            $response = [
+                'status' => 'success',
+                'message' => 'Records deleted successfully.',
+            ];
+            echo json_encode($response);
+            exit; 
+        }else{
+            $response = ['status' => 'fail', 'message' => 'Failed to add in restore point.'];
+            echo json_encode($response);
+            exit;           
+        }
+ 
 
     }
   }

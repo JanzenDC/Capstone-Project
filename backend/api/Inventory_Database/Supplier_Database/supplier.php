@@ -42,6 +42,26 @@
             echo json_encode($response);
             exit;
         }
+        if ($payload['get'] === 'removedata') {
+            $categoryData = $this->db->get('supplier_restorepoint');
+            if ($categoryData) {
+                $response = [
+                    'status' => 'success',
+                    'message' => 'Fetch Successfully.',
+                    'information' => [
+                        'values' => $categoryData,
+                    ],
+                ];
+            } else {
+                $response = [
+                    'status' => 'fail',
+                    'message' => 'Failed to fetch data.',
+                ];
+            }
+    
+            echo json_encode($response);
+            exit;
+        }
     }
     
     
@@ -136,44 +156,67 @@
 
     public function httpDelete($ids, $payload)
     {
-        if($payload['selectedIds']){
-            $requiredFields = ['selectedIds']; // Update field names here
-            foreach ($requiredFields as $field) {
-                if (!isset($payload[$field])) {
-                    $response = ['status' => 'fail', 'message' => 'Missing required field: ' . $field];
-                    echo json_encode($response);
-                    exit;
-                }   
-            }
-
-            $existingData = $this->db->where('personelID', $ids)->getOne('personel_tbl');
-            if($existingData)
-            {
-                if (strtolower($existingData['position']) === 'owner') {
-                    $deleteData = $this->db->where('supplierID', $payload['selectedIds'], 'IN')->delete('w_supplierlist');
-                    $response = [
-                        'status' => 'success',
-                        'message' => 'Records deleted successfully.',
-                    ];
-                    echo json_encode($response);
-                    exit;  
-                }else{
-                    $response = [
-                        'status' => 'fail',
-                        'message' => 'You do not have permission to remove supplier.',
-                    ];
-                    echo json_encode($response);
-                    exit;           
-                }
-            }else{
-
-            }
-        }else{
-            $response = ['status' => 'fail', 'message' => 'Invalid Payload.'];
+        if (!isset($payload['selectedIds']) || empty($payload['selectedIds'])) {
+            $response = ['status' => 'fail', 'message' => 'Invalid or empty selected IDs array.'];
             echo json_encode($response);
-            exit;            
+            exit;
+        }
+    
+        $requiredFields = ['selectedIds']; // Update field names here
+        foreach ($requiredFields as $field) {
+            if (!isset($payload[$field])) {
+                $response = ['status' => 'fail', 'message' => 'Missing required field: ' . $field];
+                echo json_encode($response);
+                exit;
+            }   
+        }
+    
+        $existingData = $this->db->where('personelID', $ids)->getOne('personel_tbl');
+        if ($existingData) {
+            if (strtolower($existingData['position']) === 'owner') {
+                foreach ($payload['selectedIds'] as $id) {
+                    $recordData = $this->db->where('supplierID', $id)->getOne('w_supplierlist');
+                    $data = [
+                        'supplierID' => $recordData['supplierID'],
+                        'supplier_name' => $recordData['supplier_name'],
+                        'contact_person' => $recordData['contact_person'],
+                        'address' => $recordData['address'],
+                        'contact' => $recordData['contact'],
+                        'email' => $recordData['email'],
+                    ];
+                    $insertData = $this->db->insert('supplier_restorepoint', $data);
+
+                    $deleteData = $this->db->where('supplierID', $id)->delete('w_supplierlist');
+                    if (!$insertData || !$deleteData) {
+                        $response = ['status' => 'fail', 'message' => 'Failed to delete records.'];
+                        echo json_encode($response);
+                        exit;
+                    }
+                }
+                $response = [
+                    'status' => 'success',
+                    'message' => 'Records deleted successfully.',
+                ];
+                echo json_encode($response);
+                exit;  
+            } else {
+                $response = [
+                    'status' => 'fail',
+                    'message' => 'You do not have permission to remove supplier.',
+                ];
+                echo json_encode($response);
+                exit;           
+            }
+        } else {
+            $response = [
+                'status' => 'fail',
+                'message' => 'No data found in the database.',
+            ];
+            echo json_encode($response);
+            exit;
         }
     }
+
   }
  
   $received_data = json_decode(file_get_contents('php://input'), true);
