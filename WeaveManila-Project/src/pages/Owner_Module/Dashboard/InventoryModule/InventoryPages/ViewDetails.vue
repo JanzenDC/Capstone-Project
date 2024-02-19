@@ -387,9 +387,9 @@ bordered
           }
 
             return {
-              item: row.product_description,
+              item: row.item_name,
               balance: row.quantity,
-              total: row.total,
+              total: row.quantity_balance,
               status: status,
             };
           })

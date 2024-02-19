@@ -64,7 +64,7 @@
                     exit;
                 }
                 $categoryID = $payload['id'];
-                $sqlQuery = "SELECT mpo_tbl.mpoID,
+                $sqlQuery = 'SELECT mpo_tbl.mpoID,
                 mpo_tbl.personelID,
                 mpo_tbl.supplierID,
                 mpo_tbl.categoryID,
@@ -75,11 +75,6 @@
                 mpo_tbl.delivery_date,
                 mpo_tbl.delivery_address,
                 mpo_tbl.supplier_address,
-                mpo_tbl.item,
-                mpo_tbl.product_description,
-                mpo_tbl.quantity,
-                mpo_tbl.unit,
-                mpo_tbl.unit_price,
                 mpo_tbl.total,
                 mpo_tbl.delivery_charge,
                 mpo_tbl.discount,
@@ -89,12 +84,22 @@
                 mpo_tbl.prepared_by,
                 mpo_tbl.approved_by,
                 w_supplierlist.supplierID,
-                w_supplierlist.supplier_name 
-                FROM mpo_tbl 
-                LEFT JOIN w_supplierlist ON mpo_tbl.supplierID = w_supplierlist.supplierID 
-                WHERE mpo_tbl.categoryID = ?";
-
-                // Execute the query with the payload ID as parameter
+                w_supplierlist.supplier_name,
+                w_supplierlist.address,
+                mpo_base.baseID,
+                mpo_base.item_name,
+                mpo_base.description,
+                mpo_base.quantity,
+                mpo_base.unit,
+                mpo_base.quantity_balance,
+                mpo_base.unit_price,
+                mpo_base.status,
+                mpo_base.discounts,
+                mpo_base.subtotal
+                FROM mpo_tbl
+                LEFT JOIN w_supplierlist ON mpo_tbl.supplierID = w_supplierlist.supplierID
+                LEFT JOIN mpo_base ON mpo_tbl.mpoID = mpo_base.mpoID
+                WHERE mpo_tbl.categoryID = ?';    
                 $results = $this->db->rawQuery($sqlQuery, array($categoryID));
                 if($results){
                     $response = [

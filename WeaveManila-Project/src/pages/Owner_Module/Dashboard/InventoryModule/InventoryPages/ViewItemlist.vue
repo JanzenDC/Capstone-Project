@@ -251,31 +251,26 @@ bordered
           v-model:selected="selected"
           :selected-rows-label="getSelectedString"
         >
+          <template v-slot:body="props">
+            <q-tr :props="props">
+              <q-td auto-width>
+                <q-btn size="sm" color="accent" round dense @click="props.row.expand = !props.row.expand" :icon="props.row.expand ? 'remove' : 'add'" />
+              </q-td>
+              <q-td
+                v-for="col in props.cols"
+                :key="col.name"
+                :props="props"
+              >
+                {{ col.value }}
+              </q-td>
 
-        <template v-slot:body-cell-selection="props">
-          <q-td :props="props">
-            <q-checkbox
-              v-model="props.selected"
-              :val="props.row.mpo_id"
-              @input="handleCheckboxChange(props.row.mpo_id)"
-            />
-          </q-td>
-        </template>
-
-        <template v-slot:body-cell-status="props">
-          <q-td :props="props">
-            <span v-if="props.row.status === 'In Stock'" class="text-green-600 p-2 rounded-full bg-green-300">
-              ● In Stock
-            </span>
-            <span v-else-if="props.row.status === 'Out of Stock'" class="text-red-600 p-2 rounded-full bg-red-300">
-              ● Out of stock
-            </span>
-            <span v-else-if="props.row.status === 'Low Stock'" class="text-yellow-600 p-2 rounded-full bg-yellow-300">
-              ● Low Stock
-            </span>
-          </q-td>
-        </template>
-
+            </q-tr>
+            <q-tr v-show="props.row.expand" :props="props">
+              <q-td colspan="100%">
+                <div class="text-left">This is expand slot for row above: {{ props.row.name }}.</div>
+              </q-td>
+            </q-tr>
+          </template>
         </q-table>
     </div>
   </div>
@@ -318,12 +313,13 @@ bordered
         category_id: '',
         category_name: '',
         columns : [
+        { name: 'expand', align: 'left', label: '', field: 'expand', sortable: true },
         { name: 'mpo_number', align: 'left', label: 'MPO No.', field: 'mpo_number', sortable: true },
         { name: 'date_purchased', align: 'left', label: 'Date Purchased', field: 'date_purchased', sortable: true },
         { name: 'supplier', align: 'left', label: 'Supplier', field: 'supplier', sortable: true },
-        { name: 'item', align: 'left', label: 'Item', field: 'item', sortable: true },
-        { name: 'balance', align: 'left', label: 'QTY', field: 'balance', sortable: true},
-        { name: 'total', align: 'left', label: 'QTY BALANCE', field: 'total', sortable: true},
+        { name: 'item', align: 'left', label: 'Product', field: 'item', sortable: true },
+        { name: 'balance', align: 'left', label: 'Qty Purchased', field: 'balance', sortable: true},
+        { name: 'total', align: 'left', label: 'Qty', field: 'total', sortable: true},
         { name: 'status', align: 'left', label: 'Status', field: 'status', sortable: true},
         { name: 'edited', align: 'left', label: 'Edited', field: 'edited', sortable: true},
         { name: 'action', align: 'left', label: 'Action', field: 'action', sortable: true},
@@ -384,6 +380,7 @@ bordered
               console.error('Error fetching data:', error);
         });
       },
+
       fetchMPOData(){
         this.rows = [];
         axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/inventory.php?type=2&id=${this.category_id}`)
@@ -400,16 +397,14 @@ bordered
             } else {
                 status = 'In Stock';
             }
-
             return {
               mpo_id: row.mpoID,
-
               mpo_number: row.mpo_ref_no,
               date_purchased: row.date_purchased,
               supplier: row.supplier_name,
-              item: row.product_description,
-              balance: row.quantity,
-              total: row.total,
+              item: row.item_name,
+              balance: row.quantity, // quantity purchase
+              total: row.quantity_balance, //quantity balance
               status: status,
             };
           })

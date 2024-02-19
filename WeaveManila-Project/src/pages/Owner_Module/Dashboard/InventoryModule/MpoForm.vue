@@ -221,7 +221,8 @@ bordered
       <div class="w-full bg-white p-4 h-[480px] overflow-x-hidden overflow-y-auto">
         <div class='text-h6'>Material Purchase Order</div>
         <q-form @submit="sendingForm">
-          <div>
+          <div class="flex items-center gap-3">
+            <div>
               <label>Category</label>
               <q-select
                 v-model="selectedCategory"
@@ -234,8 +235,27 @@ bordered
                 lazy-rules
                 :rules="SelectionRules"
               />
+            </div>
+            <div class="flex items-center gap-4">
+                <div>
+                    <label>Supplier</label>
+                    <q-select
+                      v-model="selectedSupplier"
+                      :options="supplier_list"
+                      emit-value
+                      map-options
+                      outlined
+                      dense
+                      class="w-[230px]"
+                      lazy-rules :rules="SelectionRules"
+                    />
+                </div>
+                <div>
+                  <label>Supplier Address</label>
+                  <q-input dense outlined v-model="supplier_address" class="w-[480px]" lazy-rules :rules="[ val => val && val.length > 0 || 'Please input something']"/>
+                </div>
+            </div>
           </div>
-
           <div class="flex items-center gap-3">
             <div>
               <label>Logo</label>
@@ -261,17 +281,20 @@ bordered
                 <label>MPO Ref. No</label>
                 <q-input dense outlined v-model="mpo_ref" class="w-[230px]" disable lazy-rules :rules="[ val => val && val.length > 0 || 'Please input something']"/>
               </div>
+
               <div>
                 <label>Date Purchased</label>
                 <q-input dense outlined v-model="date_purchased" type="date" class="w-[230px]" lazy-rules :rules="[ val => val && val.length > 0 || 'Please input something']"/>
               </div>
+
               <div>
                 <label>Client Ref. NO.</label>
-                <q-input dense outlined v-model="client_ref" class="w-[230px]" lazy-rules :rules="[ val => val && val.length > 0 || 'Please input something']"/>
+                <q-input dense outlined v-model="client_ref" class="w-[230px]"/>
               </div>
+
               <div>
                 <label>W.O Ref. No.</label>
-                <q-input dense outlined v-model="wo_purchased" class="w-[230px]" lazy-rules :rules="[ val => val && val.length > 0 || 'Please input something']"/>
+                <q-input dense outlined v-model="wo_purchased" class="w-[230px]"/>
               </div>
             </div>
 
@@ -287,46 +310,23 @@ bordered
             </div>
 
             <div>
-              <p class="text-h7 font-bold ">TO:</p>
-              <div class="flex items-center gap-4">
-                <div>
-                    <label>Supplier</label>
-                    <q-select
-                      v-model="selectedSupplier"
-                      :options="supplier_list"
-                      emit-value
-                      map-options
-                      outlined
-                      dense
-                      class="w-[230px]"
-                      lazy-rules :rules="SelectionRules"
-                    />
-                </div>
-                <div>
-                  <label>Supplier Address</label>
-                  <q-input dense outlined v-model="supplier_address" class="w-[720px]" lazy-rules :rules="[ val => val && val.length > 0 || 'Please input something']"/>
-                </div>
-              </div>
-            </div>
-
-            <div>
               <p class="text-h7 font-bold ">Process:</p>
               <div class="flex items-center gap-4">
                 <div>
                   <label>Segregation</label>
-                  <q-input dense outlined v-model="segregation" class="w-[230px]" lazy-rules :rules="[ val => val && val.length > 0 || 'Please input something']"/>
+                  <q-input dense outlined v-model="segregation" class="w-[230px]"/>
                 </div>
                 <div>
                   <label>Cleaning</label>
-                  <q-input dense outlined v-model="cleaning" class="w-[230px]" lazy-rules :rules="[ val => val && val.length > 0 || 'Please input something']"/>
+                  <q-input dense outlined v-model="cleaning" class="w-[230px]"/>
                 </div>
                 <div>
                   <label>Drying</label>
-                  <q-input dense outlined v-model="drying" class="w-[230px]" lazy-rules :rules="[ val => val && val.length > 0 || 'Please input something']"/>
+                  <q-input dense outlined v-model="drying" class="w-[230px]"/>
                 </div>
                 <div>
                   <label>Weighting</label>
-                  <q-input dense outlined v-model="weighting" class="w-[230px]" lazy-rules :rules="[ val => val && val.length > 0 || 'Please input something']"/>
+                  <q-input dense outlined v-model="weighting" class="w-[230px]"/>
                 </div>
               </div>
             </div>
@@ -388,7 +388,13 @@ bordered
                     <q-td key="sunit" :props="props">
                       {{ props.row.sunit }}
                       <q-popup-edit v-model="props.row.sunit" title="Update Unit" buttons v-slot="scope">
-                        <q-input type="text" v-model="scope.value" dense autofocus />
+                        <q-select
+                            v-model="scope.value"
+                            :options="unitOptions"
+                            outlined
+                            dense
+                            autofocus
+                          />
                       </q-popup-edit>
                     </q-td>
                     <q-td key="sunitprice" :props="props">
@@ -481,7 +487,7 @@ bordered
                       v-model="uploadPreparedSignature"
                     />
                     <label class="mt-3">Prepared By:</label>
-                    <q-input v-model="prepared_name" dense outlined/>
+                    <q-input v-model="prepared_name" dense outlined lazy-rules :rules="[ val => val && val.length > 0 || 'Please input something']"/>
                   </div>
                   <div>
                     <label>Upload E-signature</label>
@@ -492,9 +498,10 @@ bordered
                       accept="image/png"
                       class="w-[200px]"
                       v-model="uploadApprovedSignature"
+
                     />
                     <label class="mt-3">Approved By:</label>
-                    <q-input v-model="approvedby_name" dense outlined/>
+                    <q-input v-model="approvedby_name" dense outlined lazy-rules :rules="[ val => val && val.length > 0 || 'Please input something']"/>
                   </div>
                 </div>
               </div>
@@ -616,8 +623,12 @@ export default {
       previewApprovedSig: null,
       pdfData: '',
       MpoIDValue: '',
-
-      rawMaterialsOptions: '',
+      rawMaterialsOptions: [
+        'JK Fiber', 'M1 Fiber', 'S2 Fiber', 'S3 Fiber', 'G Fiber'
+      ],
+      unitOptions: [
+        'Kilogram','Liter','Box','Rim','Rolls','Drum','Bundles','Bag','CBY','Sacks'
+      ],
     };
   },
   mounted() {
@@ -660,11 +671,12 @@ export default {
       this.characterCount = newValue.length;
     },
     selectedCategory: {
-      handler() {
-        console.log(this.selectedCategory);
-        this.rawMaterialsFetch();
-      },
       immediate: true // to call it on component mount
+    },
+    selectedSupplier(newValue) {
+      if (newValue) {
+        this.fetchSupplierAddress(newValue);
+      }
     },
   },
   computed: {
@@ -732,7 +744,7 @@ export default {
                 color: 'green',
                 type: 'positive',
             });
-            // this.handleCancel();
+            this.handleCancel();
           }
           if (Status === "fail") {
             this.$q.notify({
@@ -783,15 +795,6 @@ export default {
         // this.pdfData = pdf.output('blob');
         // console.log("PDF Data",this.pdfData);
       });
-    },
-    rawMaterialsFetch() {
-      axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/MPO_Queries/mpo_select.php?getRawMats=${this.selectedCategory}`)
-        .then((response) => {
-          this.rawMaterialsOptions = response.data.categoryData.map(material => material.item_name);
-        })
-        .catch(error => {
-          console.error('Error fetching data:', error.message);
-        });
     },
 
     // Image Upload Properties
@@ -929,6 +932,7 @@ export default {
         console.error('Error fetching data:', error.message);
       });
     },
+
     fetchSupplierData(){
       axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/MPO_Queries/mpo_data.php?get=supplier`)
       .then(response => {
@@ -941,6 +945,23 @@ export default {
         // Handle any errors that occur during the HTTP request
         console.error('Error fetching data:', error.message);
       });
+    },
+    fetchSupplierAddress(supplierName) {
+      console.log(supplierName);
+      const formData = {
+        supplier: supplierName,
+      };
+      axios
+        .post(
+          `http://localhost/Capstone-Project/backend/api/Inventory_Database/MPO_Queries/supplier_address.php/`, formData
+        )
+        .then(response => {
+          console.log(response.data.address);
+          this.supplier_address = response.data.address;
+        })
+        .catch(error => {
+          console.error("Error fetching supplier address:", error.message);
+        });
     },
     refreshData(){
       this.fetchMPOdata();

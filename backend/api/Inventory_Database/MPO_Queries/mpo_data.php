@@ -43,7 +43,8 @@
             mpo_tbl.prepared_by,
             mpo_tbl.approved_by,
             w_supplierlist.supplierID,
-            w_supplierlist.supplier_name
+            w_supplierlist.supplier_name,
+            w_supplierlist.address
             FROM mpo_tbl
             LEFT JOIN w_supplierlist ON mpo_tbl.supplierID = w_supplierlist.supplierID';
             $queryResult = $this->db->rawQuery($sqlQuery);
