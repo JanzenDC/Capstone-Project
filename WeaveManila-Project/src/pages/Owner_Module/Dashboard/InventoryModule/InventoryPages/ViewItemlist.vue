@@ -251,26 +251,54 @@ bordered
           v-model:selected="selected"
           :selected-rows-label="getSelectedString"
         >
-          <template v-slot:body="props">
-            <q-tr :props="props">
-              <q-td auto-width>
-                <q-btn size="sm" color="accent" round dense @click="props.row.expand = !props.row.expand" :icon="props.row.expand ? 'remove' : 'add'" />
-              </q-td>
-              <q-td
-                v-for="col in props.cols"
-                :key="col.name"
-                :props="props"
-              >
-                {{ col.value }}
-              </q-td>
+        <template v-slot:body-cell-item="props">
+          <q-td :props="props">
+            <div v-for="item in props.row.item" :key="item">{{ item }}</div>
+          </q-td>
+        </template>
 
-            </q-tr>
-            <q-tr v-show="props.row.expand" :props="props">
-              <q-td colspan="100%">
-                <div class="text-left">This is expand slot for row above: {{ props.row.name }}.</div>
-              </q-td>
-            </q-tr>
-          </template>
+        <template v-slot:body-cell-balance="props">
+          <q-td :props="props">
+            <div v-for="balance in props.row.balance" :key="balance">{{ balance }}</div>
+          </q-td>
+        </template>
+
+        <template v-slot:body-cell-total="props">
+          <q-td :props="props">
+            <div v-for="total in props.row.total" :key="total">{{ total }}</div>
+          </q-td>
+        </template>
+
+        <template v-slot:body-cell-status="props">
+          <q-td :props="props">
+            <div v-for="status in props.row.status" :key="status">
+              <q-badge :color="getStatusColor(status)">
+                {{ status }}
+              </q-badge>
+            </div>
+          </q-td>
+        </template>
+
+        <template v-slot:body-cell-action="props">
+          <q-td :props="props">
+            <div class="flex items-center w-[180px] gap-2">
+              <div class="w-[32px] h-[32px] text-[20px] bg-[#344054] text-white text-center rounded ">
+                <q-icon name="history"/>
+              </div>
+              <div class="w-[32px] h-[32px] text-[20px] bg-[#26218e] text-white text-center rounded ">
+                <q-icon name="assignment"/>
+              </div>
+              <div class="w-[32px] h-[32px] text-[20px] bg-[#b3261e] text-white text-center rounded ">
+                <q-icon name="delete"/>
+              </div>
+              <div class="w-[32px] h-[32px] text-[20px] bg-white text-black text-center rounded ">
+                <q-icon name="arrow_forward_ios"/>
+              </div>
+            </div>
+          </q-td>
+        </template>
+
+
         </q-table>
     </div>
   </div>
@@ -313,7 +341,6 @@ bordered
         category_id: '',
         category_name: '',
         columns : [
-        { name: 'expand', align: 'left', label: '', field: 'expand', sortable: true },
         { name: 'mpo_number', align: 'left', label: 'MPO No.', field: 'mpo_number', sortable: true },
         { name: 'date_purchased', align: 'left', label: 'Date Purchased', field: 'date_purchased', sortable: true },
         { name: 'supplier', align: 'left', label: 'Supplier', field: 'supplier', sortable: true },
@@ -381,36 +408,62 @@ bordered
         });
       },
 
-      fetchMPOData(){
+      fetchMPOData() {
         this.rows = [];
         axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/inventory.php?type=2&id=${this.category_id}`)
-        .then(response => {
+          .then(response => {
             console.log(response.data);
-            this.rows = response.data.categoryData.map(row => {
+            // Grouping data by mpoID
+            const groupedData = response.data.categoryData.reduce((acc, row) => {
+              if (!acc[row.mpoID]) {
+                acc[row.mpoID] = {
+                  mpo_id: row.mpoID,
+                  mpo_number: row.mpo_ref_no,
+                  date_purchased: row.date_purchased,
+                  supplier: row.supplier_name,
+                  item: [],
+                  balance: [],
+                  total: [],
+                  status: []
+                };
+              }
+              acc[row.mpoID].item.push(row.item_name);
+              acc[row.mpoID].balance.push(row.quantity);
+              acc[row.mpoID].total.push(row.quantity_balance);
+              acc[row.mpoID].status.push(this.calculateStatus(row.quantity_balance));
+              return acc;
+            }, {});
 
-            let quantityNumber = parseFloat(row.total);
-            let status = '';
-            if (quantityNumber === 0) {
-                status = 'Out of Stock';
-            } else if (quantityNumber <= 300) {
-                status = 'Low Stock';
-            } else {
-                status = 'In Stock';
-            }
-            return {
-              mpo_id: row.mpoID,
-              mpo_number: row.mpo_ref_no,
-              date_purchased: row.date_purchased,
-              supplier: row.supplier_name,
-              item: row.item_name,
-              balance: row.quantity, // quantity purchase
-              total: row.quantity_balance, //quantity balance
-              status: status,
-            };
+            // Converting grouped data object into rows array
+            this.rows = Object.values(groupedData);
           })
-        }).catch(error => {
-              console.error('Error fetching data:', error);
-        });
+          .catch(error => {
+            console.error('Error fetching data:', error);
+          });
+      },
+      getStatusColor(status) {
+        switch (status) {
+          case '● Out of Stock':
+            return 'red';
+          case '● Low Stock':
+            return 'yellow';
+          case '● In Stock':
+            return 'green';
+          default:
+            return 'gray'; // or any default color for other statuses
+        }
+      },
+
+
+      calculateStatus(quantity_balance) {
+        let quantityNumber = parseFloat(quantity_balance);
+        if (quantityNumber === 0) {
+          return '● Out of Stock';
+        } else if (quantityNumber <= 300) {
+          return '● Low Stock';
+        } else {
+          return '● In Stock';
+        }
       },
       refreshData(){
         this.fetchMPOData();
@@ -595,10 +648,8 @@ bordered
 
   thead tr:first-child th
     /* bg color is important for th; just specify one */
-    background-color: #755e4a
-    color: #fff
-    font-size: 13px
-    font-weight: bold
+    background-color: #fff
+    color: #000
 
   thead tr th
     position: sticky
