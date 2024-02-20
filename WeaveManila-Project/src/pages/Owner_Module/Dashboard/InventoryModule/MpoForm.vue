@@ -176,107 +176,69 @@ bordered
       </li>
   </ul>
 </q-drawer>
-  <q-page class="bg-[#f5f5f5] ">
-    <div class="text-[30px] bg-white p-2 ">
-      <div class="items-center flex">
-        <q-icon
-          name="menu"
-          v-if="showMenuIcon"
-          @click="toggleDrawer"
-          class="cursor-pointer"
-        />
-        <q-icon
-          name="menu"
-          v-if="!showMenuIcon"
-          @click="toggleDrawer"
-          class="cursor-pointer max-[1020px]:flex min-[1020px]:hidden"
-        />
-      <span class="font-bold">Material Purchase Order</span>
+<q-page class="bg-[#f5f5f5] ">
+  <div class="text-[30px] bg-white p-2 ">
+    <div class="items-center flex">
+      <q-icon
+        name="menu"
+        v-if="showMenuIcon"
+        @click="toggleDrawer"
+        class="cursor-pointer"
+      />
+      <q-icon
+        name="menu"
+        v-if="!showMenuIcon"
+        @click="toggleDrawer"
+        class="cursor-pointer max-[1020px]:flex min-[1020px]:hidden"
+      />
+    <span class="font-bold">Material Purchase Order</span>
+    </div>
+    <div class="text-[16px]"><span class="text-[#b8b8b8]">Inventory / </span>Material Purchase Order</div>
+  </div>
+
+  <div class="p-4">
+    <!-- Header -->
+    <div class="flex mt-3">
+      <router-link to="/dashboard/mpo-section">
+        <div class="flex bg-white w-[155px] border-r-2 h-[44px] py-3 px-5 gap-[8px] rounded items-center text-[14px]">
+        <q-icon name="note_add"/>
+        <p>MPO Form</p>
       </div>
-      <div class="text-[16px]"><span class="text-[#b8b8b8]">Inventory / </span>Material Purchase Order</div>
+    </router-link>
+    <router-link to="/dashboard/mpo-section">
+      <div class="flex w-[155px] text-[#b8b8b8] border-t-2 border-e-2 h-[44px] py-3 px-5 gap-[8px] rounded items-center text-[14px]">
+        <q-icon name="list"/>
+        <p>Purchase list</p>
+      </div>
+    </router-link>
+    <router-link to="/dashboard/supplier-section">
+      <div class="flex w-[155px] text-[#b8b8b8] border-t-2 border-e-2 h-[44px] py-3 px-5 gap-[8px] rounded items-center text-[14px]">
+          <q-icon name="group"/>
+          <p>Supplier List</p>
+        </div>
+    </router-link>
     </div>
 
-    <div class="p-4">
-      <div class="flex mt-3">
-        <router-link to="/dashboard/mpo-section">
-          <div class="flex bg-white w-[155px] border-r-2 h-[44px] py-3 px-5 gap-[8px] rounded items-center text-[14px]">
-          <q-icon name="note_add"/>
-          <p>MPO Form</p>
+    <div class="w-full bg-white p-4 h-[470px] overflow-x-hidden overflow-y-auto">
+     <q-form @submit="sendingForm">
+        <div>
+                <label>Category</label>
+                <q-select
+                  v-model="selectedCategory"
+                  :options="categories"
+                  emit-value
+                  map-options
+                  outlined
+                  dense
+                  class="w-[230px]"
+                  lazy-rules
+                  :rules="SelectionRules"
+                />
         </div>
-      </router-link>
-      <router-link to="/dashboard/mpo-section">
-        <div class="flex w-[155px] text-[#b8b8b8] border-t-2 border-e-2 h-[44px] py-3 px-5 gap-[8px] rounded items-center text-[14px]">
-          <q-icon name="list"/>
-          <p>Purchase list</p>
-        </div>
-      </router-link>
-      <router-link to="/dashboard/supplier-section">
-        <div class="flex w-[155px] text-[#b8b8b8] border-t-2 border-e-2 h-[44px] py-3 px-5 gap-[8px] rounded items-center text-[14px]">
-            <q-icon name="group"/>
-            <p>Supplier List</p>
-          </div>
-      </router-link>
-      </div>
+        <p class="text-[24px] font-semibold mb-8">Material Purchase Order</p>
 
-      <div class="w-full bg-white p-4 h-[480px] overflow-x-hidden overflow-y-auto">
-        <div class='text-h6'>Material Purchase Order</div>
-        <q-form @submit="sendingForm">
-          <div class="flex items-center gap-3">
-            <div>
-              <label>Category</label>
-              <q-select
-                v-model="selectedCategory"
-                :options="categories"
-                emit-value
-                map-options
-                outlined
-                dense
-                class="w-[230px]"
-                lazy-rules
-                :rules="SelectionRules"
-              />
-            </div>
-            <div class="flex items-center gap-4">
-                <div>
-                    <label>Supplier</label>
-                    <q-select
-                      v-model="selectedSupplier"
-                      :options="supplier_list"
-                      emit-value
-                      map-options
-                      outlined
-                      dense
-                      class="w-[230px]"
-                      lazy-rules :rules="SelectionRules"
-                    />
-                </div>
-                <div>
-                  <label>Supplier Address</label>
-                  <q-input dense outlined v-model="supplier_address" class="w-[480px]" lazy-rules :rules="[ val => val && val.length > 0 || 'Please input something']"/>
-                </div>
-            </div>
-          </div>
-          <div class="flex items-center gap-3">
-            <div>
-              <label>Logo</label>
-              <q-input
-                @update:model-value="handleFileChangeLogo"
-                dense outlined
-                type="file"
-                accept="image/png"
-                class="w-[230px]"
-                v-model="uploadPhoto"
-              />
-            </div>
-            <div>
-              <label>Company Address</label>
-              <q-input v-model="company_address" dense outlined class="w-[723px]">
-              </q-input>
-            </div>
-          </div>
-
-          <div>
-            <div class="flex items-center gap-4 mt-3">
+        <div class="flex">
+          <div class="w-1/4">
               <div>
                 <label>MPO Ref. No</label>
                 <q-input dense outlined v-model="mpo_ref" class="w-[230px]" disable lazy-rules :rules="[ val => val && val.length > 0 || 'Please input something']"/>
@@ -292,240 +254,364 @@ bordered
                 <q-input dense outlined v-model="client_ref" class="w-[230px]"/>
               </div>
 
-              <div>
+              <div class="mt-5">
                 <label>W.O Ref. No.</label>
                 <q-input dense outlined v-model="wo_purchased" class="w-[230px]"/>
               </div>
-            </div>
 
-            <div class="flex items-center gap-4 ">
-              <div>
+              <div class="mt-5">
                 <label>Delivery Date</label>
                 <q-input dense outlined v-model="delivery_date_val" type="date" class="w-[230px]" lazy-rules :rules="[ val => val && val.length > 0 || 'Please input something']"/>
               </div>
-              <div>
-                <label>Delivery Address</label>
-                <q-input dense outlined v-model="delivery_add_val"  class="w-[720px]"         lazy-rules :rules="[ val => val && val.length > 0 || 'Please type something']"/>
-              </div>
+          </div>
+          <div class="w-3/4">
+            <div class="flex justify-center items-center h-[250px]">
+              <q-img
+                :src="previewLogo || defaultImageLogo()"
+                alt="Description of the image"
+                class="w-[930px] max-h-[250px]"
+              />
             </div>
 
-            <div>
-              <p class="text-h7 font-bold ">Process:</p>
-              <div class="flex items-center gap-4">
-                <div>
-                  <label>Segregation</label>
-                  <q-input dense outlined v-model="segregation" class="w-[230px]"/>
-                </div>
-                <div>
-                  <label>Cleaning</label>
-                  <q-input dense outlined v-model="cleaning" class="w-[230px]"/>
-                </div>
-                <div>
-                  <label>Drying</label>
-                  <q-input dense outlined v-model="drying" class="w-[230px]"/>
-                </div>
-                <div>
-                  <label>Weighting</label>
-                  <q-input dense outlined v-model="weighting" class="w-[230px]"/>
-                </div>
-              </div>
+            <div class="flex items-center gap-2 mt-3">
+              <q-input v-model="uploadedFileName" outlined dense label="Logo" disabled />
+              <q-btn @click="triggerFileInput('logo')" class="text-white bg-[#634832]">Change Photo</q-btn>
+              <input ref="logoInput" type="file" style="display: none" @change="handleFileChange('logo', $event)">
             </div>
 
-            <div>
-              <div class="q-pa-md">
-                <div class="mb-3 flex items-center justify-end">
-                  <q-btn label="Add Product" icon="add" class="bg-[#634832] text-white" @click="addProduct" size="sm"/>
-                </div>
+            <div class="mt-5">
+                <label>Company Address</label>
+                <q-input v-model="company_address" dense disable outlined class="w-full" lazy-rules :rules="[ val => val && val.length > 0 || 'Please input something']">
+                  <template v-slot:after>
+                    <q-icon name="edit" class="cursor-pointer" @click="openCompany = true"/>
+                  </template>
+                </q-input>
+            </div>
+          </div>
+        </div>
+        <!-- Deliver Area -->
+        <div>
+          <label>Delivery Address</label>
+          <q-input dense outlined v-model="delivery_add_val"  class="w-full" disable lazy-rules :rules="[ val => val && val.length > 0 || 'Please type something']">
+            <template v-slot:after>
+              <q-icon name="edit" class="cursor-pointer" @click="openDelivery = true"/>
+            </template>
+          </q-input>
+        </div>
+        <!-- Supplier Area -->
+        <label class="text-h6 font-bold">To:</label>
+        <div class="flex">
+          <div class="w-1/4">
+              <label>Supplier</label>
+              <q-select
+                v-model="selectedSupplier"
+                :options="supplier_list"
+                emit-value
+                map-options
+                outlined
+                dense
+                class="w-[230px]"
+                lazy-rules :rules="SelectionRules"
+              />
+          </div>
+          <div class="w-3/4">
+            <label>Supplier Address</label>
+            <q-input dense outlined v-model="supplier_address" disable class="w-full" lazy-rules :rules="[ val => val && val.length > 0 || 'Please input something']"/>
+          </div>
+        </div>
+        <!-- Process -->
+        <label class="text-h6 font-bold">Process:</label>
+        <div class="grid grid-cols-4 gap-5">
+          <div>
+            <label>Segregation</label>
+            <q-input dense outlined v-model="segregation" class="w-[230px]"/>
+          </div>
+          <div>
+            <label>Cleaning</label>
+            <q-input dense outlined v-model="cleaning" class="w-[230px]"/>
+          </div>
+          <div>
+            <label>Drying</label>
+            <q-input dense outlined v-model="drying" class="w-[230px]"/>
+          </div>
+          <div>
+            <label>Weighting</label>
+            <q-input dense outlined v-model="weighting" class="w-[230px]"/>
+          </div>
+        </div>
+        <!-- Add Product -->
+        <div>
+          <div class="q-pa-md">
+            <div class="mb-3 flex items-center justify-end">
+              <q-btn label="Add Product" icon="add" class="bg-[#634832] text-white" @click="addProduct" />
+            </div>
 
-                <q-table
-                  dense bordered
-                  :rows="datarows"
-                  :columns="datacolumns"
-                  row-key="name"
-                  :pagination="initialPagination"
-                  no-data-label="Please provide the necessary data to continue."
-                  class="my-sticky-header-table-second"
+            <q-table
+              dense bordered
+              :rows="datarows"
+              :columns="datacolumns"
+              row-key="name"
+              :pagination="initialPagination"
+              no-data-label="Please provide the necessary data to continue."
+              class="my-sticky-header-table-second"
+            >
+
+            <template v-slot:body="props">
+              <q-tr :props="props">
+                <q-td key="id" :props="props">
+                  {{ props.row.id }}
+                </q-td>
+                <q-td key="sproduct" :props="props">
+                  <template v-if="selectedCategory === 'Raw Materials'">
+                    {{ props.row.sproduct }}
+                    <q-popup-edit v-model="props.row.sproduct" title="Update Product" buttons v-slot="scope">
+                      <q-select
+                        v-model="scope.value"
+                        :options="rawMaterialsOptions"
+                        outlined
+                        dense
+                        autofocus
+                      />
+                    </q-popup-edit>
+                  </template>
+                  <template v-else>
+                    {{ props.row.sproduct }}
+                    <q-popup-edit v-model="props.row.sproduct" title="Update Product" buttons v-slot="scope">
+                      <q-input type="text" v-model="scope.value" dense autofocus />
+                    </q-popup-edit>
+                  </template>
+                </q-td>
+
+                <q-td key="sdescription" :props="props">
+                  {{ props.row.sdescription }}
+                  <q-popup-edit v-model="props.row.sdescription" title="Update Description" buttons v-slot="scope">
+                    <q-input type="text" v-model="scope.value" dense autofocus />
+                  </q-popup-edit>
+                </q-td>
+                <q-td key="squantity" :props="props">
+                  {{ props.row.squantity }}
+                  <q-popup-edit v-model="props.row.squantity" title="Update Quantity" buttons v-slot="scope">
+                    <q-input type="number" v-model="scope.value" dense autofocus />
+                  </q-popup-edit>
+                </q-td>
+                <q-td key="sunit" :props="props">
+                  {{ props.row.sunit }}
+                  <q-popup-edit v-model="props.row.sunit" title="Update Unit" buttons v-slot="scope">
+                    <q-select
+                        v-model="scope.value"
+                        :options="unitOptions"
+                        outlined
+                        dense
+                        autofocus
+                      />
+                  </q-popup-edit>
+                </q-td>
+                <q-td key="sunitprice" :props="props">
+                  {{ props.row.sunitprice }}
+                  <q-popup-edit v-model="props.row.sunitprice" title="Update Unit Price" buttons v-slot="scope">
+                    <q-input type="number" v-model="scope.value" dense autofocus />
+                  </q-popup-edit>
+                </q-td>
+                <q-td key="sdiscount" :props="props">
+                  {{ props.row.sdiscount }}
+                  <q-popup-edit v-model="props.row.sdiscount" title="Update Discount" buttons v-slot="scope">
+                    <q-input type="number" v-model="scope.value" dense autofocus />
+                  </q-popup-edit>
+                </q-td>
+                <q-td key="stotal" :props="props">
+                  ₱ {{ computeTotal(props.row) }}
+                </q-td>
+                <q-td key="sactions" :props="props">
+                  <q-icon name="delete" @click="deleteRow(props.row.id)" class="cursor-pointer p-2 bg-red text-white"/>
+                </q-td>
+              </q-tr>
+            </template>
+            </q-table>
+
+            <div class="flex items-center mt-6">
+              <div class="w-1/2 -mt-[90px]">
+                <label>Notes & Instruction<span class="text-red-600">*</span></label>
+
+                <q-input
+                  type="textarea"
+                  v-model="notes_instructions"
+                  outlined
+                  :maxlength="120"
+                  class="w-full h-[128px] resize-none"
                 >
-
-                <template v-slot:body="props">
-                  <q-tr :props="props">
-                    <q-td key="id" :props="props">
-                      {{ props.row.id }}
-                    </q-td>
-                    <q-td key="sproduct" :props="props">
-                      <template v-if="selectedCategory === 'Raw Materials'">
-                        {{ props.row.sproduct }}
-                        <q-popup-edit v-model="props.row.sproduct" title="Update Product" buttons v-slot="scope">
-                          <q-select
-                            v-model="scope.value"
-                            :options="rawMaterialsOptions"
-                            outlined
-                            dense
-                            autofocus
-                          />
-                        </q-popup-edit>
+                </q-input>
+                <span class="mt-3 text-sm text-gray-400 flex justify-end">{{ characterCount }}/120 characters</span>
+              </div>
+              <div class="w-1/2 flex justify-end">
+                <div class="grid grid-cols-2 gap-1 w-[332px] text-[16px] ">
+                    Delivery Charge
+                    <q-input dense outlined v-model="deliver_charge" >
+                      <template v-slot:append>
+                        ₱
                       </template>
-                      <template v-else>
-                        {{ props.row.sproduct }}
-                        <q-popup-edit v-model="props.row.sproduct" title="Update Product" buttons v-slot="scope">
-                          <q-input type="text" v-model="scope.value" dense autofocus />
-                        </q-popup-edit>
+                    </q-input> <!--base on user input-->
+                    Other Costs
+                    <q-input dense outlined v-model="other_cost">
+                      <template v-slot:append>
+                        ₱
                       </template>
-                    </q-td>
-
-                    <q-td key="sdescription" :props="props">
-                      {{ props.row.sdescription }}
-                      <q-popup-edit v-model="props.row.sdescription" title="Update Description" buttons v-slot="scope">
-                        <q-input type="text" v-model="scope.value" dense autofocus />
-                      </q-popup-edit>
-                    </q-td>
-                    <q-td key="squantity" :props="props">
-                      {{ props.row.squantity }}
-                      <q-popup-edit v-model="props.row.squantity" title="Update Quantity" buttons v-slot="scope">
-                        <q-input type="number" v-model="scope.value" dense autofocus />
-                      </q-popup-edit>
-                    </q-td>
-                    <q-td key="sunit" :props="props">
-                      {{ props.row.sunit }}
-                      <q-popup-edit v-model="props.row.sunit" title="Update Unit" buttons v-slot="scope">
-                        <q-select
-                            v-model="scope.value"
-                            :options="unitOptions"
-                            outlined
-                            dense
-                            autofocus
-                          />
-                      </q-popup-edit>
-                    </q-td>
-                    <q-td key="sunitprice" :props="props">
-                      {{ props.row.sunitprice }}
-                      <q-popup-edit v-model="props.row.sunitprice" title="Update Unit Price" buttons v-slot="scope">
-                        <q-input type="number" v-model="scope.value" dense autofocus />
-                      </q-popup-edit>
-                    </q-td>
-                    <q-td key="sdiscount" :props="props">
-                      {{ props.row.sdiscount }}
-                      <q-popup-edit v-model="props.row.sdiscount" title="Update Discount" buttons v-slot="scope">
-                        <q-input type="number" v-model="scope.value" dense autofocus />
-                      </q-popup-edit>
-                    </q-td>
-                    <q-td key="stotal" :props="props">
-                      ₱ {{ computeTotal(props.row) }}
-                    </q-td>
-                    <q-td key="sactions" :props="props">
-                      <q-icon name="delete" @click="deleteRow(props.row.id)" class="cursor-pointer p-2 bg-red text-white"/>
-                    </q-td>
-                  </q-tr>
-                </template>
-                </q-table>
-                <div class="flex items-center mt-6">
-                  <div class="w-1/2 -mt-[90px]">
-                    <label>Notes & Instruction<span class="text-red-600">*</span></label>
-                    <q-input
-                      v-model="notes_instructions"
-                      outlined
-                      :maxlength="120"
-                      type="textarea"
-                      class="w-full h-[132px] resize-none"
-                    >
+                    </q-input> <!--base on user input-->
+                    Sub total
+                    <q-input dense outlined v-model="total_in_table" disable>
+                      <template v-slot:append>
+                        ₱
+                      </template>
                     </q-input>
-                    <span class="text-sm text-gray-400 flex justify-end">{{ characterCount }}/120 characters</span>
-                  </div>
-                  <div class="w-1/2 flex justify-end">
-                    <div class="grid grid-cols-2 gap-1 w-[332px] text-[16px] ">
-                        Delivery Charge
-                        <q-input dense outlined v-model="deliver_charge" >
-                          <template v-slot:append>
-                            ₱
-                          </template>
-                        </q-input> <!--base on user input-->
-                        Other Costs
-                        <q-input dense outlined v-model="other_cost">
-                          <template v-slot:append>
-                            ₱
-                          </template>
-                        </q-input> <!--base on user input-->
-                        Sub total
-                        <q-input dense outlined v-model="total_in_table" disable>
-                          <template v-slot:append>
-                            ₱
-                          </template>
-                        </q-input>
-                        Discount
-                        <q-input dense outlined v-model="discount" disable>
-                          <template v-slot:append>
-                            ₱
-                          </template>
-                        </q-input> <!--substraction automatic 10%-->
-                        Vat
-                        <q-input dense outlined v-model="vat" disable>
-                          <template v-slot:append>
-                            ₱
-                          </template>
-                        </q-input><!--substraction automatic 12%-->
+                    Discount
+                    <q-input dense outlined v-model="discount" disable>
+                      <template v-slot:append>
+                        ₱
+                      </template>
+                    </q-input> <!--substraction automatic 10%-->
+                    Vat
+                    <q-input dense outlined v-model="vat" disable>
+                      <template v-slot:append>
+                        ₱
+                      </template>
+                    </q-input><!--substraction automatic 12%-->
 
-                        Total Amount
-                        <q-input dense outlined v-model="total_amount" disable/>
-                    </div>
-                  </div>
+                    Total Amount
+                    <q-input dense outlined v-model="total_amount" disable/>
                 </div>
               </div>
             </div>
 
-            <div>
-              <div class="flex items-center gap-4">
-
-                <div class="flex gap-2">
-                  <div>
-                    <label>Upload E-signature</label>
-                    <q-input
-                      @update:model-value="handleFileChangePrepared"
-                      dense outlined
-                      type="file"
-                      accept="image/png"
-                      class="w-[200px]"
-                      v-model="uploadPreparedSignature"
-                    />
-                    <label class="mt-3">Prepared By:</label>
-                    <q-input v-model="prepared_name" dense outlined lazy-rules :rules="[ val => val && val.length > 0 || 'Please input something']"/>
-                  </div>
-                  <div>
-                    <label>Upload E-signature</label>
-                    <q-input
-                      @update:model-value="handleFileChangeApproved"
-                      dense outlined
-                      type="file"
-                      accept="image/png"
-                      class="w-[200px]"
-                      v-model="uploadApprovedSignature"
-
-                    />
-                    <label class="mt-3">Approved By:</label>
-                    <q-input v-model="approvedby_name" dense outlined lazy-rules :rules="[ val => val && val.length > 0 || 'Please input something']"/>
-                  </div>
+            <div class="flex gap-2">
+              <div>
+                <label>Upload E-signature</label>
+                <div class="flex items-center gap-2 mt-3 ">
+                  <q-input v-model="uploadPreparedName" outlined dense label="Prepared By" disabled />
+                  <q-btn @click="triggerFileInput('prepared')" class="text-white bg-[#634832]">Change Photo</q-btn>
+                  <input ref="preparedInput" type="file" style="display: none" @change="handleFileChange('prepared', $event)">
                 </div>
+                <label class="mt-3">Prepared By:</label>
+                <q-input v-model="prepared_name" dense outlined lazy-rules :rules="[ val => val && val.length > 0 || 'Please input something']"/>
               </div>
-
+              <div>
+                <label>Upload E-signature</label>
+                <div class="flex items-center gap-2 mt-3">
+                  <q-input v-model="uploadApproveName" outlined dense label="Approved By" disabled />
+                  <q-btn @click="triggerFileInput('approve')" class="text-white bg-[#634832]">Change Photo</q-btn>
+                  <input ref="approveInput" type="file" style="display: none" @change="handleFileChange('approve', $event)">
+                </div>
+                <label class="mt-3">Approved By:</label>
+                <q-input v-model="approvedby_name" dense outlined lazy-rules :rules="[ val => val && val.length > 0 || 'Please input something']"/>
+              </div>
             </div>
           </div>
+        </div>
 
-          <div class="justify-end flex mt-3 gap-3 ">
-            <q-btn label="Save" type="submit" class="bg-[#634832] rounded-md text-white"/>
-          </div>
-        </q-form>
-      </div>
-
+        <div class="justify-end flex mt-3 gap-3 ">
+              <q-btn label="Save" type="submit" class="bg-[#634832] rounded-md text-white"/>
+        </div>
+      </q-form>
     </div>
+  </div>
 
+<!-- MODAL COMPANY ADDRESS -->
+<q-dialog
+  v-model="openCompany"
+>
+  <q-card style="width: 700px;">
+    <q-card-section class="row items-center q-pb-none">
+          <div class="flex items-center gap-2">
+            <q-icon name="apartment" class="text-[18px] p-2"/>
+            <div class="text-h6">
+            Company Address
+            </div>
+          </div>
+          <q-space />
+          <q-btn icon="close" flat round dense v-close-popup />
+    </q-card-section>
 
-  </q-page>
-  </template>
+    <q-card-section class="q-pt-none">
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label>Region<span class="text-red-600">*</span></label>
+          <q-select v-model="selectedRegion" :options="regionOptions" label="Region" @input="onRegionChange" dense outlined class='flex-wrap' />
+        </div>
+        <div>
+          <label>Province<span class="text-red-600">*</span></label>
+          <q-select v-model="selectedProvince" :options="provinceOptions" label="Province" dense outlined :disable="!selectedRegion" class='flex-wrap'/>
+        </div>
+        <div>
+          <label>City<span class="text-red-600">*</span></label>
+          <q-select v-model="selectedCity" :options="cityOptions" label="City" dense outlined :disable="!selectedProvince" class='flex-wrap'/>
+        </div>
+        <div>
+          <label>Barangay<span class="text-red-600">*</span></label>
+          <q-select v-model="selectedBarangay" :options="barangayOptions" label="Barangay" dense outlined :disable="!selectedCity" />
+        </div>
+      </div>
+    </q-card-section>
+
+    <q-card-actions align="right" class="bg-white text-teal">
+      <q-btn flat label="Save" v-close-popup />
+    </q-card-actions>
+  </q-card>
+</q-dialog>
+<!-- End of Company Address -->
+
+<!-- MODAL DELIVERY ADDRESS -->
+<q-dialog
+  v-model="openDelivery"
+>
+  <q-card style="width: 700px;">
+    <q-card-section class="row items-center q-pb-none">
+          <div class="flex items-center gap-2">
+            <q-icon name="apartment" class="text-[18px] p-2"/>
+            <div class="text-h6">
+            Delivery Address
+            </div>
+          </div>
+          <q-space />
+          <q-btn icon="close" flat round dense v-close-popup />
+    </q-card-section>
+
+    <q-card-section class="q-pt-none">
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label>Region<span class="text-red-600">*</span></label>
+          <q-select v-model="RegionDeliverySelected" :options="regionOptions" label="Region" @input="onUserRegionSelect" dense outlined class='flex-wrap' />
+        </div>
+        <div>
+          <label>Province<span class="text-red-600">*</span></label>
+          <q-select v-model="ProvinceDeliverySelected" :options="provinceOptions" label="Province" dense outlined :disable="!RegionDeliverySelected" class='flex-wrap'/>
+        </div>
+        <div>
+          <label>City<span class="text-red-600">*</span></label>
+          <q-select v-model="CityDeliverySelected" :options="cityOptions" label="City" dense outlined :disable="!ProvinceDeliverySelected" class='flex-wrap'/>
+        </div>
+        <div>
+          <label>Barangay<span class="text-red-600">*</span></label>
+          <q-select v-model="BaranggayDeliverySelected" :options="barangayOptions" label="Barangay" dense outlined :disable="!CityDeliverySelected" />
+        </div>
+      </div>
+    </q-card-section>
+
+    <q-card-actions align="right" class="bg-white text-teal">
+      <q-btn flat label="Save" v-close-popup />
+    </q-card-actions>
+  </q-card>
+</q-dialog>
+<!-- End of Delivery Address -->
+
+</q-page>
+</template>
 
 <script>
-import jsPDF from 'jspdf';
-import html2canvas from 'html2canvas';
+
 import { SessionStorage } from 'quasar';
 import axios from 'axios';
+
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
+import philippineData from '../../../../javascript/philippine_provinces_cities_municipalities_and_barangays_2019v2.json';
 
 export default {
   data() {
@@ -564,7 +650,6 @@ export default {
 
       // First Process Data
       company_address: '',
-      uploadPhoto: '',
       mpo_ref: '',
       date_purchased: '',
       selectedCategory: '',
@@ -613,14 +698,8 @@ export default {
       uploadApprovedSignature: '',
       approvedby_name: '',
       prepared_name: '',
-      logo: null,
-      esignature_p: null,
-      esignature_a: null,
 
-      previewForm: false,
-      previewLogo: null,
-      previewPreparedSig: null,
-      previewApprovedSig: null,
+
       pdfData: '',
       MpoIDValue: '',
       rawMaterialsOptions: [
@@ -629,9 +708,42 @@ export default {
       unitOptions: [
         'Kilogram','Liter','Box','Rim','Rolls','Drum','Bundles','Bag','CBY','Sacks'
       ],
+      // philippineData json
+      philippineData: philippineData,
+      // DIALOG PROPERTIES
+      openCompany: false,
+      openDelivery: false,
+      // Picture Properties
+      uploadedFileName: null,
+      uploadPreparedName: null,
+      uploadApproveName: null,
+      previewLogo: null,
+      e_signatureP: null,
+      e_signatureA: null,
+      uploadPhoto: null,
+
+      // Location Data
+      selectedRegion: null,
+      selectedProvince: null,
+      selectedCity: null,
+      selectedBarangay: null,
+      regionOptions: [],
+      provinceOptions: [],
+      cityOptions: [],
+      barangayOptions: [],
+      RegionDeliverySelected: null,
+      ProvinceDeliverySelected: null,
+      CityDeliverySelected: null,
+      BaranggayDeliverySelected: null,
     };
   },
   mounted() {
+    this.regionOptions = Object.keys(this.philippineData)
+    .map(regionCode => ({
+      label: /^(0[1-9]|1[0-3]|[4][A-B]|[1-3]?[0-9])$/.test(regionCode) ? `Region ${regionCode}` : regionCode,
+      value: regionCode
+    }))
+    .sort((a, b) => a.label.localeCompare(b.label));
     this.loadUserData();
     this.fetchMPOdata();
     this.statusCheckTimer = setInterval(() => {
@@ -653,9 +765,6 @@ export default {
     });
   },
   watch: {
-    logo: 'handleFileChangeLogo',
-    esignature_p: 'handleFileChangePrepared',
-    esignature_a: 'handleFileChangeApproved',
     datarows: {
       handler: function(newRows, oldRows) {
         this.updateTotalAmount();
@@ -678,6 +787,52 @@ export default {
         this.fetchSupplierAddress(newValue);
       }
     },
+    selectedRegion: function(newValue, oldValue) {
+      if (newValue !== oldValue) {
+        this.onRegionChange();
+      }
+    },
+    selectedProvince: function(newValue, oldValue) {
+      if (newValue !== oldValue) {
+        this.onProvinceChange();
+      }
+    },
+    selectedCity: function(newValue, oldValue) {
+      if (newValue !== oldValue) {
+        this.onCityChange();
+      }
+    },
+    selectedBarangay: function(newValue, oldValue) {
+      if (newValue !== oldValue) {
+        this.onBaranggayChange();
+      }
+    },
+
+    RegionDeliverySelected: function(newValue, oldValue) {
+      if (newValue !== oldValue) {
+        this.onUserRegionSelect();
+      }
+    },
+    ProvinceDeliverySelected: function(newValue, oldValue) {
+      if (newValue !== oldValue) {
+        this.onUserProvinceSelect();
+      }
+    },
+    CityDeliverySelected: function(newValue, oldValue) {
+      if (newValue !== oldValue) {
+        this.onUserCitySelect();
+      }
+    },
+    BaranggayDeliverySelected: function(newValue, oldValue) {
+      if (newValue !== oldValue) {
+        this.onUserBarangaySelect();
+      }
+    },
+    date_purchased(newValue, oldValue) {
+      if (newValue !== oldValue) {
+        this.fetchMPOdata();
+      }
+    }
   },
   computed: {
     SelectionRules() {
@@ -718,8 +873,10 @@ export default {
         prepareSig: this.prepared_name,
         approveSig: this.approvedby_name,
         products: [],
+        uploadPreparedName: this.e_signatureP,
+        uploadApproveName: this.e_signatureA,
       };
-      console.log(formData);
+
       this.datarows.forEach(row => {
           const product = {
               sproduct: row.sproduct,
@@ -732,30 +889,30 @@ export default {
           };
           formData.products.push(product);
       });
-
-      axios.post('http://localhost/Capstone-Project/backend/api/Inventory_Database/MPO_Queries/mpo_data.php/',formData)
-      .then(response => {
-        console.log(response.data);
-        const Status = response.data.status;
-        const Message = response.data.message;
-        if (Status === "success") {
-            this.$q.notify({
-                message: `MPO ${this.MpoIDValue} save successfully!`,
-                color: 'green',
-                type: 'positive',
-            });
-            this.handleCancel();
-          }
-          if (Status === "fail") {
-            this.$q.notify({
-              color: 'negative',
-              message: `${Message} Please try again.`,
-            });
-            this.handleCancel();
-          }
-      }).catch(error => {
-        console.error('Error fetching data:', error.message);
-      });
+      console.log(formData);
+      // axios.post('http://localhost/Capstone-Project/backend/api/Inventory_Database/MPO_Queries/mpo_data.php/',formData)
+      // .then(response => {
+      //   console.log(response.data);
+      //   const Status = response.data.status;
+      //   const Message = response.data.message;
+      //   if (Status === "success") {
+      //       this.$q.notify({
+      //           message: `MPO ${this.MpoIDValue} save successfully!`,
+      //           color: 'green',
+      //           type: 'positive',
+      //       });
+      //       this.handleCancel();
+      //     }
+      //     if (Status === "fail") {
+      //       this.$q.notify({
+      //         color: 'negative',
+      //         message: `${Message} Please try again.`,
+      //       });
+      //       this.handleCancel();
+      //     }
+      // }).catch(error => {
+      //   console.error('Error fetching data:', error.message);
+      // });
     },
     generatePDF() {
       const pdf = new jsPDF();
@@ -798,32 +955,41 @@ export default {
     },
 
     // Image Upload Properties
-    handleFileChangeLogo(event) {
-      this.uploadPhoto = event[0];
-      if (event && event[0]) {
-        const file = event[0];
-        this.file = event;
-        this.previewLogo = URL.createObjectURL(file);
+    triggerFileInput(type) {
+      this.$refs[`${type}Input`].click();
+    },
+    handleFileChange(type, event) {
+      const file = event.target.files[0];
+      if (file) {
+        // Convert file to URL if it's for logo
+        if (type === 'logo') {
+          this.previewLogo = URL.createObjectURL(file);
+        }
+
+        // Save the uploaded file reference based on type
+        switch (type) {
+          case 'logo':
+            this.uploadPhoto = file;
+            this.uploadedFileName = file.name;
+            break;
+          case 'prepared':
+            this.e_signatureP = file;
+            this.uploadPreparedName = file.name;
+            break;
+          case 'approve':
+            this.e_signatureA = file;
+            this.uploadApproveName = file.name;
+            break;
+        }
+
+        console.log("Uploaded file:", file);
       }
     },
-    handleFileChangePrepared(event) {
-      this.uploadPreparedSignature = event[0];
-      if (event && event[0]) {
-        const file = event[0];
-        this.file = event;
-        this.previewPreparedSig = URL.createObjectURL(file);
-      }
-    },
-    handleFileChangeApproved(event) {
-      this.uploadApprovedSignature = event[0];
-      if (event && event[0]) {
-        const file = event[0];
-        this.file = event;
-        this.previewApprovedSig = URL.createObjectURL(file);
-      }
-    },
+
+
+
     defaultImageLogo(){
-      return `/favicon-128x128.png`;
+      return `/default_logo.png`;
     },
     defaultImage(){
       return `/default.png`;
@@ -970,11 +1136,11 @@ export default {
       axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/MPO_Queries/mpo_data.php?get=mpo`)
       .then(response => {
         const nextMPOID = response.data.nextMPOID;
-        const currentDate = new Date();
-        const year = currentDate.getFullYear();
-        const month = ('0' + (currentDate.getMonth() + 1)).slice(-2);
-        const day = ('0' + currentDate.getDate()).slice(-2);
-        const mpo_ref = `WEMA-MPO-${year}-${month}-${day}-${nextMPOID}`;
+        // const currentDate = new Date();
+        // const year = currentDate.getFullYear();
+        // const month = ('0' + (currentDate.getMonth() + 1)).slice(-2);
+        // const day = ('0' + currentDate.getDate()).slice(-2);
+        const mpo_ref = `WEMA-MPO-${this.date_purchased}-${nextMPOID}`;
         this.MpoIDValue = nextMPOID;
         this.mpo_ref = mpo_ref;
       })
@@ -984,10 +1150,137 @@ export default {
       });
     },
 
+    onRegionChange() {
+    //   console.log(this.selectedRegion.value);
+    //   console.log(philippineData[this.selectedRegion.value]);
+    //  // Access the province list for the selected region
+      this.selectedProvince = null;
+      this.selectedCity = null;
+      this.selectedBarangay = null;
+      const regionData = this.philippineData[this.selectedRegion.value].province_list;
 
+      // Map the province names to options format
+      this.provinceOptions = Object.keys(regionData).map(provinceName => ({
+        label: provinceName,
+        value: provinceName
+      }));
+      this.updateSuppAddress();
+    },
+    onProvinceChange() {
+      // Check if selectedProvince is not null before accessing its value
+      if (this.selectedProvince !== null) {
+        this.selectedCity = null;
+        this.selectedBarangay = null;
+        const selectedProvinceData = this.philippineData[this.selectedRegion.value].province_list[this.selectedProvince.value];
+        if (selectedProvinceData) {
+          const municipalityData = selectedProvinceData.municipality_list;
+          console.log(municipalityData);
 
+          this.cityOptions = Object.keys(municipalityData).map(municipalityName => ({
+            label: municipalityName,
+            value: municipalityName
+          }));
+          this.updateSuppAddress();
+        }
+      }
+    },
+    onCityChange() {
+      if (this.selectedCity !== null) {
+        this.selectedBarangay = null;
+        const selectedMunicipalityData = this.philippineData[this.selectedRegion.value].province_list[this.selectedProvince.value].municipality_list[this.selectedCity.value];
+        if (selectedMunicipalityData) {
+          const barangayList = selectedMunicipalityData.barangay_list;
+          console.log(barangayList);
 
+          this.barangayOptions = barangayList.map(barangayName => ({
+            label: barangayName,
+            value: barangayName
+          }));
+          this.updateSuppAddress();
+        }
+      }
+    },
+    onBaranggayChange() {
+      if (this.selectedBarangay !== null) {
+        this.updateSuppAddress();
+      }
+    },
+    updateSuppAddress() {
 
+      let address = '';
+      if (this.selectedRegion) address += `${this.selectedRegion.label}, `;
+      if (this.selectedProvince) address += `${this.selectedProvince.label}, `;
+      if (this.selectedCity) address += `${this.selectedCity.label}, `;
+      if (this.selectedBarangay) address += `${this.selectedBarangay.label}`;
+      this.company_address = address;
+    },
+
+    onUserRegionSelect() {
+  //   console.log(this.RegionDeliverySelected.value);
+  //   console.log(philippineData[this.RegionDeliverySelected.value]);
+  //  // Access the province list for the selected region
+    this.ProvinceDeliverySelected = null;
+    this.CityDeliverySelected = null;
+    this.BaranggayDeliverySelected = null;
+    const regionData = this.philippineData[this.RegionDeliverySelected.value].province_list;
+
+    // Map the province names to options format
+    this.provinceOptions = Object.keys(regionData).map(provinceName => ({
+      label: provinceName,
+      value: provinceName
+    }));
+    this.updateDeliverAddress();
+    },
+    onUserProvinceSelect() {
+      // Check if ProvinceDeliverySelected is not null before accessing its value
+      if (this.ProvinceDeliverySelected !== null) {
+        this.CityDeliverySelected = null;
+        this.BaranggayDeliverySelected = null;
+        const ProvinceDeliverySelectedData = this.philippineData[this.RegionDeliverySelected.value].province_list[this.ProvinceDeliverySelected.value];
+        if (ProvinceDeliverySelectedData) {
+          const municipalityData = ProvinceDeliverySelectedData.municipality_list;
+          console.log(municipalityData);
+
+          this.cityOptions = Object.keys(municipalityData).map(municipalityName => ({
+            label: municipalityName,
+            value: municipalityName
+          }));
+          this.updateDeliverAddress();
+        }
+      }
+    },
+    onUserCitySelect() {
+      if (this.CityDeliverySelected !== null) {
+        this.BaranggayDeliverySelected = null;
+        const selectedMunicipalityData = this.philippineData[this.RegionDeliverySelected.value].province_list[this.ProvinceDeliverySelected.value].municipality_list[this.CityDeliverySelected.value];
+        if (selectedMunicipalityData) {
+          const barangayList = selectedMunicipalityData.barangay_list;
+          console.log(barangayList);
+
+          this.barangayOptions = barangayList.map(barangayName => ({
+            label: barangayName,
+            value: barangayName
+          }));
+          this.updateDeliverAddress();
+        }
+      }
+    },
+    onUserBarangaySelect() {
+      if (this.BaranggayDeliverySelected !== null) {
+        this.updateDeliverAddress();
+      }
+    },
+    updateDeliverAddress() {
+
+      let address = '';
+      if (this.RegionDeliverySelected) address += `${this.RegionDeliverySelected.label}, `;
+      if (this.ProvinceDeliverySelected) address += `${this.ProvinceDeliverySelected.label}, `;
+      if (this.CityDeliverySelected) address += `${this.CityDeliverySelected.label}, `;
+      if (this.BaranggayDeliverySelected) address += `${this.BaranggayDeliverySelected.label}`;
+      this.delivery_add_val = address;
+    },
+
+// OLD DATA
     toggleInventoryMenu() {
       this.inventoryMenuVisible = !this.inventoryMenuVisible;
     },
@@ -1121,4 +1414,3 @@ export default {
   },
 };
 </script>
-

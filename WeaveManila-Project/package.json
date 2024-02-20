@@ -16,6 +16,7 @@
     "@quasar/extras": "^1.16.4",
     "axios": "^1.2.1",
     "bootstrap-icons": "^1.11.3",
+    "cropperjs": "^1.6.1",
     "exceljs": "^4.4.0",
     "html2canvas": "^1.4.1",
     "html2pdf.js": "^0.10.1",
