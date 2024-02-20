@@ -305,340 +305,342 @@ bordered
 
 
 </q-page>
+
 </template>
 
-  <script>
-  import { useQuasar } from 'quasar';
-  import { SessionStorage } from 'quasar';
-  import axios from 'axios';
-  import ExcelJS from 'exceljs';
+<script>
+import { useQuasar } from 'quasar';
+import { SessionStorage } from 'quasar';
+import axios from 'axios';
+import ExcelJS from 'exceljs';
 
 
-  export default {
-    setup() {
-      const $q = useQuasar();
-    },
-    data() {
-      return {
-        email: '',
-        fullname: '',
-        firstname: '',
-        middlename: '',
-        lastname: '',
-        userProfileImage: null,
-        username: '',
-        position: '',
-        status: '',
-        drawer: false,
-        showMenuIcon: false,
-        statusCheckTimer: null,
-        toggleDrawers: true,
-        drawerWidth: 300,
-        drawerIcon: 'arrow_back_ios',
-        inventoryMenuVisible: false,
+export default {
+  setup() {
+    const $q = useQuasar();
+  },
+  data() {
+    return {
+      email: '',
+      fullname: '',
+      firstname: '',
+      middlename: '',
+      lastname: '',
+      userProfileImage: null,
+      username: '',
+      position: '',
+      status: '',
+      drawer: false,
+      showMenuIcon: false,
+      statusCheckTimer: null,
+      toggleDrawers: true,
+      drawerWidth: 300,
+      drawerIcon: 'arrow_back_ios',
+      inventoryMenuVisible: false,
 
-        // Additional Data
-        category_id: '',
-        category_name: '',
-        columns : [
-        { name: 'mpo_number', align: 'left', label: 'MPO No.', field: 'mpo_number', sortable: true },
-        { name: 'date_purchased', align: 'left', label: 'Date Purchased', field: 'date_purchased', sortable: true },
-        { name: 'supplier', align: 'left', label: 'Supplier', field: 'supplier', sortable: true },
-        { name: 'item', align: 'left', label: 'Product', field: 'item', sortable: true },
-        { name: 'balance', align: 'left', label: 'Qty Purchased', field: 'balance', sortable: true},
-        { name: 'total', align: 'left', label: 'Qty', field: 'total', sortable: true},
-        { name: 'status', align: 'left', label: 'Status', field: 'status', sortable: true},
-        { name: 'edited', align: 'left', label: 'Edited', field: 'edited', sortable: true},
-        { name: 'action', align: 'left', label: 'Action', field: 'action', sortable: true},
-      ],
-      rows: [],
-      selected: [],
-      };
+      // Additional Data
+      category_id: '',
+      category_name: '',
+      columns : [
+      { name: 'mpo_number', align: 'left', label: 'MPO No.', field: 'mpo_number', sortable: true },
+      { name: 'date_purchased', align: 'left', label: 'Date Purchased', field: 'date_purchased', sortable: true },
+      { name: 'supplier', align: 'left', label: 'Supplier', field: 'supplier', sortable: true },
+      { name: 'item', align: 'left', label: 'Product', field: 'item', sortable: true },
+      { name: 'balance', align: 'left', label: 'Qty Purchased', field: 'balance', sortable: true},
+      { name: 'total', align: 'left', label: 'Qty', field: 'total', sortable: true},
+      { name: 'status', align: 'left', label: 'Status', field: 'status', sortable: true},
+      { name: 'edited', align: 'left', label: 'Edited', field: 'edited', sortable: true},
+      { name: 'action', align: 'left', label: 'Action', field: 'action', sortable: true},
+    ],
+    rows: [],
+    selected: [],
+    };
+  },
+  mounted() {
+    this.loadUserData();
+    this.loadCategoryData();
+    this.fetchMPOData();
+    this.statusCheckTimer = setInterval(() => {
+      this.checkUserStatus();
+      this.checkCategoryStatus();
+    }, 50 * 1000);
+  },
+  beforeUnmount() {
+    clearInterval(this.statusCheckTimer);
+  },
+  methods: {
+    onMainDashboard(){
+      this.$router.push('/dashboard/main-dashboard');
     },
-    mounted() {
-      this.loadUserData();
-      this.loadCategoryData();
-      this.fetchMPOData();
-      this.statusCheckTimer = setInterval(() => {
-        this.checkUserStatus();
-        this.checkCategoryStatus();
-      }, 50 * 1000);
-    },
-    beforeUnmount() {
-      clearInterval(this.statusCheckTimer);
-    },
-    methods: {
-      onMainDashboard(){
-        this.$router.push('/dashboard/main-dashboard');
-      },
-      loadCategoryData() {
-        const categoryData = SessionStorage.getItem('inventoryData');
-        if (categoryData) {
-          try {
-            const categInformation = JSON.parse(categoryData);
-            this.category_id = categInformation.InventoryId;
-            this.category_name = categInformation.InventoryName;
+    loadCategoryData() {
+      const categoryData = SessionStorage.getItem('inventoryData');
+      if (categoryData) {
+        try {
+          const categInformation = JSON.parse(categoryData);
+          this.category_id = categInformation.InventoryId;
+          this.category_name = categInformation.InventoryName;
 
-          } catch (error) {
-            console.log('Error parsing user data:', error);
-            // Provide user feedback or navigate to an error page
-            this.$q.notify({
-              type: 'negative',
-              message: 'Error loading category data. Please try again.',
-            });
-            this.$router.push('/dashboard/inventory-section');
-            sessionStorage.removeItem('inventoryData');
-          }
-        } else {
-          // Handle the case when user data is not available
+        } catch (error) {
+          console.log('Error parsing user data:', error);
+          // Provide user feedback or navigate to an error page
+          this.$q.notify({
+            type: 'negative',
+            message: 'Error loading category data. Please try again.',
+          });
           this.$router.push('/dashboard/inventory-section');
           sessionStorage.removeItem('inventoryData');
         }
-      },
-      checkCategoryStatus() {
-        axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/inventory.php?type&id=${this.category_id}`)
-        .then(response => {
-          const inventoryData = {
-            InventoryId: this.category_id,
-            InventoryName: this.category_name,
-          }
-          SessionStorage.set('inventoryData', JSON.stringify(inventoryData));
-        }).catch(error => {
-              console.error('Error fetching data:', error);
-        });
-      },
-
-      fetchMPOData() {
-        this.rows = [];
-        axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/inventory.php?type=2&id=${this.category_id}`)
-          .then(response => {
-            console.log(response.data);
-            // Grouping data by mpoID
-            const groupedData = response.data.categoryData.reduce((acc, row) => {
-              if (!acc[row.mpoID]) {
-                acc[row.mpoID] = {
-                  mpo_id: row.mpoID,
-                  mpo_number: row.mpo_ref_no,
-                  date_purchased: row.date_purchased,
-                  supplier: row.supplier_name,
-                  item: [],
-                  balance: [],
-                  total: [],
-                  status: []
-                };
-              }
-              acc[row.mpoID].item.push(row.item_name);
-              acc[row.mpoID].balance.push(row.quantity);
-              acc[row.mpoID].total.push(row.quantity_balance);
-              acc[row.mpoID].status.push(this.calculateStatus(row.quantity_balance));
-              return acc;
-            }, {});
-
-            // Converting grouped data object into rows array
-            this.rows = Object.values(groupedData);
-          })
-          .catch(error => {
+      } else {
+        // Handle the case when user data is not available
+        this.$router.push('/dashboard/inventory-section');
+        sessionStorage.removeItem('inventoryData');
+      }
+    },
+    checkCategoryStatus() {
+      axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/inventory.php?type&id=${this.category_id}`)
+      .then(response => {
+        const inventoryData = {
+          InventoryId: this.category_id,
+          InventoryName: this.category_name,
+        }
+        SessionStorage.set('inventoryData', JSON.stringify(inventoryData));
+      }).catch(error => {
             console.error('Error fetching data:', error);
-          });
-      },
-      getStatusColor(status) {
-        switch (status) {
-          case '● Out of Stock':
-            return 'red';
-          case '● Low Stock':
-            return 'yellow';
-          case '● In Stock':
-            return 'green';
-          default:
-            return 'gray'; // or any default color for other statuses
-        }
-      },
+      });
+    },
 
-
-      calculateStatus(quantity_balance) {
-        let quantityNumber = parseFloat(quantity_balance);
-        if (quantityNumber === 0) {
-          return '● Out of Stock';
-        } else if (quantityNumber <= 300) {
-          return '● Low Stock';
-        } else {
-          return '● In Stock';
-        }
-      },
-      refreshData(){
-        this.fetchMPOData();
-      },
-      downloadExcel() {
-        const workbook = new ExcelJS.Workbook();
-        const worksheet = workbook.addWorksheet('Sheet 1');
-
-        // Add headers
-        const headers = this.columns.map(column => column.label);
-        worksheet.addRow(headers);
-
-        // Add data rows
-        this.rows.forEach(row => {
-          const rowData = this.columns.map(column => row[column.field]);
-          worksheet.addRow(rowData);
-        });
-        workbook.xlsx.writeBuffer().then(buffer => {
-          const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-          const link = document.createElement('a');
-          link.href = window.URL.createObjectURL(blob);
-          link.download = `weavemanila_${this.category_name}.xlsx`;
-          link.click();
-        });
-      },
-      handleCheckboxChange(rowId) {
-        const index = this.selected.indexOf(rowId);
-
-        if (index === -1) {
-          this.selected.push(rowId);
-        } else {
-          this.selected.splice(index, 1);
-        }
-
-      },
-      getSelectedString() {
-        console.log(this.selected);
-        return `Selected ${this.selected.length} item(s)`;
-      },
-
-
-      toggleInventoryMenu() {
-        this.inventoryMenuVisible = !this.inventoryMenuVisible;
-      },
-      toggleDrawer() {
-        if (!this.toggleDrawers) {
-          this.drawer = true;
-          this.drawerWidth = 300;
-          this.drawerIcon = 'arrow_forward_ios';
-          this.toggleDrawers = true;
-        } else {
-          this.drawer = true;
-          this.drawerWidth = 80;
-          this.toggleDrawers = false;
-          this.drawerIcon = 'arrow_back_ios_new';
-        }
-      },
-      checkUserStatus() {
-          axios.get(`http://localhost/Capstone-Project/backend/api/verification.php?email=${this.email}`)
-          .then(response => {
-          const latestStatus = response.data.information.status;
-          const information = response.data.information;
-            this.information = {
-              id: information.id,
-              email: information.email,
-              username: information.username,
-              pfp: information.pfp,
-              firstname: information.firstname,
-              middlename: information.middlename,
-              lastname: information.lastname,
-              gender: information.gender,
-              position: information.position,
-              mobilenumber: information.mobilenumber,
-              birthdate: information.birthdate,
-              age: information.age,
-              address: information.address,
-              otp_code: information.otp_code,
-              isOnline: information.isOnline,
-              status: information.status,
-              password: information.password,
-            };
-            SessionStorage.set('information', JSON.stringify(this.information));
-          // Update the local status and take appropriate action if it has changed
-          if (this.status !== latestStatus) {
-            this.status = latestStatus;
-
-            if (this.status === 0) {
-              this.$q.notify({
-                type: 'negative',
-                message: 'Your account is currently inactive. Please contact the account owner for activation.',
-              });
-              this.$router.push('/');
-              sessionStorage.clear();
+    fetchMPOData() {
+      this.rows = [];
+      axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/inventory.php?type=2&id=${this.category_id}`)
+        .then(response => {
+          console.log(response.data);
+          // Grouping data by mpoID
+          const groupedData = response.data.categoryData.reduce((acc, row) => {
+            if (!acc[row.mpoID]) {
+              acc[row.mpoID] = {
+                mpo_id: row.mpoID,
+                mpo_number: row.mpo_ref_no,
+                date_purchased: row.date_purchased,
+                supplier: row.supplier_name,
+                item: [],
+                balance: [],
+                total: [],
+                status: []
+              };
             }
-          }
-        }).catch(error => {
-              console.error('Error fetching data:', error);
+            acc[row.mpoID].item.push(row.item_name);
+            acc[row.mpoID].balance.push(row.quantity);
+            acc[row.mpoID].total.push(row.quantity_balance);
+            acc[row.mpoID].status.push(this.calculateStatus(row.quantity_balance));
+            return acc;
+          }, {});
+
+          // Converting grouped data object into rows array
+          this.rows = Object.values(groupedData);
+        })
+        .catch(error => {
+          console.error('Error fetching data:', error);
         });
-      },
-      loadUserData() {
+    },
+    getStatusColor(status) {
+      switch (status) {
+        case '● Out of Stock':
+          return 'red';
+        case '● Low Stock':
+          return 'yellow';
+        case '● In Stock':
+          return 'green';
+        default:
+          return 'gray'; // or any default color for other statuses
+      }
+    },
 
-        const userData = SessionStorage.getItem('information');
 
-        if (userData) {
-          try {
-            const userInformation = JSON.parse(userData);
-            this.email = userInformation.email;
-            this.username = userInformation.username;
-            this.userProfileImage = userInformation.pfp;
-            this.firstname = userInformation.firstname;
-            this.middlename = userInformation.middlename;
-            this.lastname = userInformation.lastname;
-            this.position = userInformation.position;
-            this.status = userInformation.status;
+    calculateStatus(quantity_balance) {
+      let quantityNumber = parseFloat(quantity_balance);
+      if (quantityNumber === 0) {
+        return '● Out of Stock';
+      } else if (quantityNumber <= 300) {
+        return '● Low Stock';
+      } else {
+        return '● In Stock';
+      }
+    },
+    refreshData(){
+      this.fetchMPOData();
+    },
+    downloadExcel() {
+      const workbook = new ExcelJS.Workbook();
+      const worksheet = workbook.addWorksheet('Sheet 1');
 
-            this.fullname = this.firstname + " " + this.lastname;
-            if (this.position.toLowerCase() === 'owner') {
-              this.$router.push('/dashboard/inventory-viewlist');
-            } else {
+      // Add headers
+      const headers = this.columns.map(column => column.label);
+      worksheet.addRow(headers);
 
-              this.$q.notify({
-                type: 'negative',
-                message: 'You do not have permission to access the system.',
-              });
-              this.$router.push('/');
-              sessionStorage.clear();
-            }
+      // Add data rows
+      this.rows.forEach(row => {
+        const rowData = this.columns.map(column => row[column.field]);
+        worksheet.addRow(rowData);
+      });
+      workbook.xlsx.writeBuffer().then(buffer => {
+        const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+        const link = document.createElement('a');
+        link.href = window.URL.createObjectURL(blob);
+        link.download = `weavemanila_${this.category_name}.xlsx`;
+        link.click();
+      });
+    },
+    handleCheckboxChange(rowId) {
+      const index = this.selected.indexOf(rowId);
 
-            if (this.status == 0) {
+      if (index === -1) {
+        this.selected.push(rowId);
+      } else {
+        this.selected.splice(index, 1);
+      }
 
-              this.$q.notify({
-                type: 'negative',
-                message: 'Your account is currently inactive. Please contact the account owner for activation.',
-              });
-              this.$router.push('/');
-              sessionStorage.clear();
-            }
-          } catch (error) {
-            console.log('Error parsing user data:', error);
-            // Provide user feedback or navigate to an error page
+    },
+    getSelectedString() {
+      console.log(this.selected);
+      return `Selected ${this.selected.length} item(s)`;
+    },
+
+
+    toggleInventoryMenu() {
+      this.inventoryMenuVisible = !this.inventoryMenuVisible;
+    },
+    toggleDrawer() {
+      if (!this.toggleDrawers) {
+        this.drawer = true;
+        this.drawerWidth = 300;
+        this.drawerIcon = 'arrow_forward_ios';
+        this.toggleDrawers = true;
+      } else {
+        this.drawer = true;
+        this.drawerWidth = 80;
+        this.toggleDrawers = false;
+        this.drawerIcon = 'arrow_back_ios_new';
+      }
+    },
+    checkUserStatus() {
+        axios.get(`http://localhost/Capstone-Project/backend/api/verification.php?email=${this.email}`)
+        .then(response => {
+        const latestStatus = response.data.information.status;
+        const information = response.data.information;
+          this.information = {
+            id: information.id,
+            email: information.email,
+            username: information.username,
+            pfp: information.pfp,
+            firstname: information.firstname,
+            middlename: information.middlename,
+            lastname: information.lastname,
+            gender: information.gender,
+            position: information.position,
+            mobilenumber: information.mobilenumber,
+            birthdate: information.birthdate,
+            age: information.age,
+            address: information.address,
+            otp_code: information.otp_code,
+            isOnline: information.isOnline,
+            status: information.status,
+            password: information.password,
+          };
+          SessionStorage.set('information', JSON.stringify(this.information));
+        // Update the local status and take appropriate action if it has changed
+        if (this.status !== latestStatus) {
+          this.status = latestStatus;
+
+          if (this.status === 0) {
             this.$q.notify({
               type: 'negative',
-              message: 'Error loading user data. Please try again.',
+              message: 'Your account is currently inactive. Please contact the account owner for activation.',
             });
             this.$router.push('/');
             sessionStorage.clear();
           }
-        } else {
-          // Handle the case when user data is not available
+        }
+      }).catch(error => {
+            console.error('Error fetching data:', error);
+      });
+    },
+    loadUserData() {
+
+      const userData = SessionStorage.getItem('information');
+
+      if (userData) {
+        try {
+          const userInformation = JSON.parse(userData);
+          this.email = userInformation.email;
+          this.username = userInformation.username;
+          this.userProfileImage = userInformation.pfp;
+          this.firstname = userInformation.firstname;
+          this.middlename = userInformation.middlename;
+          this.lastname = userInformation.lastname;
+          this.position = userInformation.position;
+          this.status = userInformation.status;
+
+          this.fullname = this.firstname + " " + this.lastname;
+          if (this.position.toLowerCase() === 'owner') {
+            this.$router.push('/dashboard/inventory-viewlist');
+          } else {
+
+            this.$q.notify({
+              type: 'negative',
+              message: 'You do not have permission to access the system.',
+            });
+            this.$router.push('/');
+            sessionStorage.clear();
+          }
+
+          if (this.status == 0) {
+
+            this.$q.notify({
+              type: 'negative',
+              message: 'Your account is currently inactive. Please contact the account owner for activation.',
+            });
+            this.$router.push('/');
+            sessionStorage.clear();
+          }
+        } catch (error) {
+          console.log('Error parsing user data:', error);
+          // Provide user feedback or navigate to an error page
+          this.$q.notify({
+            type: 'negative',
+            message: 'Error loading user data. Please try again.',
+          });
           this.$router.push('/');
           sessionStorage.clear();
         }
-      },
-      getLimitedFullname(fullname, maxLength) {
-        if (fullname.length > maxLength) {
-          return fullname.substring(0, maxLength) + '...';
-        }
-        return fullname;
-      },
-      getUserProfileImagePath() {
-        // Ensure userProfileImage is not null before creating the path
-        if (this.userProfileImage) {
-          return `/pfp/${this.userProfileImage}`;
-        } else {
-          // Return a default path or handle it as per your requirement
-          return '/default_profile.png';
-        }
-      },
-      logout() {
-        sessionStorage.clear();
+      } else {
+        // Handle the case when user data is not available
         this.$router.push('/');
-      },
+        sessionStorage.clear();
+      }
     },
-  };
-  </script>
+    getLimitedFullname(fullname, maxLength) {
+      if (fullname.length > maxLength) {
+        return fullname.substring(0, maxLength) + '...';
+      }
+      return fullname;
+    },
+    getUserProfileImagePath() {
+      // Ensure userProfileImage is not null before creating the path
+      if (this.userProfileImage) {
+        return `/pfp/${this.userProfileImage}`;
+      } else {
+        // Return a default path or handle it as per your requirement
+        return '/default_profile.png';
+      }
+    },
+    logout() {
+      sessionStorage.clear();
+      this.$router.push('/');
+    },
+  },
+};
+</script>
+
 <style lang="sass">
 .my-sticky-header-table
   /* height or max-height is important */
