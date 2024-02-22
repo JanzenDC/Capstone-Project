@@ -70,15 +70,9 @@
 </template>
 
 <script>
-import { useQuasar } from 'quasar';
 import { SessionStorage } from 'quasar';
 import axios from 'axios';
 export default {
-  setup() {
-    const $q = useQuasar();
-
-    return { $q };
-  },
   data() {
     return {
       uid: '',

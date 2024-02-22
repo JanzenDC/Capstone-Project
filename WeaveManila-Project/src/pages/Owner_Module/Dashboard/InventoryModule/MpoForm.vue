@@ -485,7 +485,7 @@ bordered
               <div>
                 <label>Upload E-signature</label>
                 <div class="flex items-center gap-2 mt-3 ">
-                  <q-input v-model="uploadPreparedName" outlined dense label="Prepared By" disabled />
+                  <q-input v-model="uploadPreparedName" outlined dense label="Prepared By" disable />
                   <q-btn @click="triggerFileInput('prepared')" class="text-white bg-[#634832]">Change Photo</q-btn>
                   <input ref="preparedInput" type="file" style="display: none" @change="handleFileChange('prepared', $event)">
                 </div>
@@ -495,7 +495,7 @@ bordered
               <div>
                 <label>Upload E-signature</label>
                 <div class="flex items-center gap-2 mt-3">
-                  <q-input v-model="uploadApproveName" outlined dense label="Approved By" disabled />
+                  <q-input v-model="uploadApproveName" outlined dense label="Approved By" disable />
                   <q-btn @click="triggerFileInput('approve')" class="text-white bg-[#634832]">Change Photo</q-btn>
                   <input ref="approveInput" type="file" style="display: none" @change="handleFileChange('approve', $event)">
                 </div>

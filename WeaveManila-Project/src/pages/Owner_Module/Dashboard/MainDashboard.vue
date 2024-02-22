@@ -233,7 +233,6 @@ export default {
     this.statusCheckTimer = setInterval(() => {
       this.checkUserStatus();
     }, 20 * 1000); // 1 second (in milliseconds)
-    this.toggleDrawer();
   },
   beforeUnmount() {
     clearInterval(this.statusCheckTimer);

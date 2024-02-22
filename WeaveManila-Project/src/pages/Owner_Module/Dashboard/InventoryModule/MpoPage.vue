@@ -283,9 +283,9 @@ bordered
           </q-td>
         </template>
 
-        <template v-slot:body-cell-qty_recieved="props">
+        <template v-slot:body-cell-qty_received="props">
           <q-td :props="props">
-            <div v-for="qty_recieved in props.row.qty_recieved" :key="qty_recieved">{{ qty_recieved }}</div>
+            <div v-for="qty_received in props.row.qty_received" :key="qty_received">{{ qty_received }}</div>
           </q-td>
         </template>
 
@@ -310,7 +310,7 @@ bordered
               <q-td :props="props">
                 <div class="flex items-center justify-center w-[221px] gap-1">
                   <div class="bg-[#ddffcd] rounded py-1 px-2 text-green-600 rounded font-bold">
-                    Recieved
+                    Received
                   </div>
                   <div class="bg-[#475467] rounded text-white w-[32px] h-[32px] text-[20px]">
                     <q-icon name="history" />
@@ -567,7 +567,7 @@ export default {
         { name: 'product', align: 'left', label: 'Product', field: 'product', sortable: true, headerStyle: 'width: 150px;' },
         { name: 'date_purchase', align: 'left', label: 'Date Purchase', field: 'date_purchase', sortable: true, headerStyle: 'width: 120px;' },
         { name: 'qty', align: 'left', label: 'Qty', field: 'qty', sortable: true, headerStyle: 'width: 80px;' },
-        { name: 'qty_recieved', align: 'left', label: 'Qty Recieved', field: 'qty_recieved', sortable: true, headerStyle: 'width: 120px;' },
+        { name: 'qty_received', align: 'left', label: 'Qty Received', field: 'qty_received', sortable: true, headerStyle: 'width: 120px;' },
         { name: 'amount', align: 'left', label: 'Amount', field: 'amount', sortable: true, headerStyle: 'width: 100px;' },
         { name: 'status', align: 'left', label: 'Status', field: 'status', sortable: true, headerStyle: 'width: 80px;' },
         { name: 'actions', align: 'center', label: 'Actions', field: 'actions', sortable: true },
@@ -610,13 +610,13 @@ export default {
                       total: [],
                       amount: [],
                       status: [],
-                      qty_recieved: [] // Initialize qty_recieved array here
+                      qty_received: [] // Initialize qty_received array here
                   };
               }
               acc[row.mpoID].amount.push(row.subtotal);
               acc[row.mpoID].product.push(row.item_name);
               acc[row.mpoID].qty.push(row.quantity);
-              acc[row.mpoID].qty_recieved.push(row.quantity_balance);
+              acc[row.mpoID].qty_received.push(row.quantity_balance);
               let mpo_status = row.status;
               let status = '';
               if (mpo_status === 2) {
@@ -641,9 +641,9 @@ export default {
       switch (status) {
         case '● Pending':
           return 'red';
-        case '● Partial Recieved':
+        case '● Partial Received':
           return 'yellow';
-        case '● Recieved':
+        case '● Received':
           return 'green';
         default:
           return 'gray'
@@ -663,7 +663,7 @@ export default {
       return `Selected ${this.selected.length} item(s)`;
     },
     ViewForm(targetID){
-      
+
       // this.personnel_Email = '';
       // this.company_address = '';
       // this.uploadPhoto = '';

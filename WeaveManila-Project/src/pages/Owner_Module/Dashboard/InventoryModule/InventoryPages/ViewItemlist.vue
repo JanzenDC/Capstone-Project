@@ -200,7 +200,7 @@ bordered
   <div class="p-4">
     <div class="flex mt-8">
       <router-link to="/dashboard/inventory-viewpage">
-        <div class="flex w-[128px] border-t-2 border-l-2 h-[44px] py-3 px-5 gap-[8px] rounded items-center text-[14px]">
+        <div class="flex w-[128px] text-[#89909e] border-t-2 border-l-2 h-[44px] py-3 px-5 gap-[8px] rounded items-center text-[14px]">
           <q-icon name="summarize"/>
           <p>Summary</p>
         </div>

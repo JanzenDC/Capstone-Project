@@ -713,6 +713,7 @@ export default {
     FetchUser(){
       axios.get('http://localhost/Capstone-Project/backend/api/Usermanagement/userdata.php?select=all')
       .then(response => {
+        console.log(response.data);
         this.tableData = response.data.informations.rows.map(row => {
           const time = new Date(row.account_created).toLocaleDateString('en-US', { year: 'numeric', month: 'numeric', day: 'numeric' });          const fullname = row.firstname + " " + row.lastname;
           return {

@@ -145,285 +145,280 @@
   </div>
 </template>
 
-  <script>
-  import { useQuasar } from 'quasar';
-  import { SessionStorage } from 'quasar';
-  import axios from 'axios';
+<script>
+import { SessionStorage } from 'quasar';
+import axios from 'axios';
 
-  export default {
-    setup() {
-      const $q = useQuasar();
+export default {
 
-      return { $q };
-    },
-    data() {
-      return {
-        responseInformation: '',
-        responseStatus: '',
-        id: '',
-        email: '',
-        userProfileImage: null,
-        changeImage: null,
-        username: '',
-        firstname: '',
-        lastname: '',
-        position: '',
-        status: '',
-        selectedAvatar: null,
-        showModal: false,
-        arrowDirection: false,
-        uploadDialog: false,
-        file: null,
-        previewImage: null,
+  data() {
+    return {
+      responseInformation: '',
+      responseStatus: '',
+      id: '',
+      email: '',
+      userProfileImage: null,
+      changeImage: null,
+      username: '',
+      firstname: '',
+      lastname: '',
+      position: '',
+      status: '',
+      selectedAvatar: null,
+      showModal: false,
+      arrowDirection: false,
+      uploadDialog: false,
+      file: null,
+      previewImage: null,
 
-        fullnames: '',
-        drawer: false,
-        showMenuIcon: false,
-        inventoryMenuVisible: false,
-        selectedFile: null,
-        statusCheckTimer: null,
-      };
-    },
-    watch: {
-      file: 'handleFileChange',
-    },
-    mounted() {
-      this.loadUserData();
-      this.statusCheckTimer = setInterval(() => {
-      this.checkUserStatus();
-      }, 5 * 1000);
-    },
-    beforeUnmount() {
-      clearInterval(this.statusCheckTimer);
-    },
-    methods: {
-      checkUserStatus() {
-          axios.get(`http://localhost/Capstone-Project/backend/api/verification.php?email=${this.email}`)
-          .then(response => {
-          const latestStatus = response.data.information.status;
-          const information = response.data.information;
-          this.information = {
-            id: information.id,
-            email: information.email,
-            username: information.username,
-            pfp: information.pfp,
-            firstname: information.firstname,
-            middlename: information.middlename,
-            lastname: information.lastname,
-            gender: information.gender,
-            position: information.position,
-            mobilenumber: information.mobilenumber,
-            birthdate: information.birthdate,
-            age: information.age,
-            address: information.address,
-            otp_code: information.otp_code,
-            isOnline: information.isOnline,
-            status: information.status,
-            password: information.password,
-          };
-          SessionStorage.set('information', JSON.stringify(this.information));
-          if (this.status !== latestStatus) {
-            this.status = latestStatus;
+      fullnames: '',
+      drawer: false,
+      showMenuIcon: false,
+      inventoryMenuVisible: false,
+      selectedFile: null,
+      statusCheckTimer: null,
+    };
+  },
+  watch: {
+    file: 'handleFileChange',
+  },
+  mounted() {
+    this.loadUserData();
+    this.statusCheckTimer = setInterval(() => {
+    this.checkUserStatus();
+    }, 5 * 1000);
+  },
+  beforeUnmount() {
+    clearInterval(this.statusCheckTimer);
+  },
+  methods: {
+    checkUserStatus() {
+        axios.get(`http://localhost/Capstone-Project/backend/api/verification.php?email=${this.email}`)
+        .then(response => {
+        const latestStatus = response.data.information.status;
+        const information = response.data.information;
+        this.information = {
+          id: information.id,
+          email: information.email,
+          username: information.username,
+          pfp: information.pfp,
+          firstname: information.firstname,
+          middlename: information.middlename,
+          lastname: information.lastname,
+          gender: information.gender,
+          position: information.position,
+          mobilenumber: information.mobilenumber,
+          birthdate: information.birthdate,
+          age: information.age,
+          address: information.address,
+          otp_code: information.otp_code,
+          isOnline: information.isOnline,
+          status: information.status,
+          password: information.password,
+        };
+        SessionStorage.set('information', JSON.stringify(this.information));
+        if (this.status !== latestStatus) {
+          this.status = latestStatus;
 
-            if (this.status === 0) {
-              this.$q.notify({
-                type: 'negative',
-                message: 'Your account is currently inactive. Please contact the account owner for activation.',
-              });
-              this.$router.push('/');
-              sessionStorage.clear();
-            }
-          }
-        }).catch(error => {
-              console.error('Error fetching data:', error);
-        });
-      },
-      getLimitedFullname(fullname, maxLength) {
-        if (fullname.length > maxLength) {
-          return fullname.substring(0, maxLength) + '...';
-        }
-        return fullname;
-      },
-      toggleInventoryMenu() {
-        this.inventoryMenuVisible = !this.inventoryMenuVisible;
-      },
-      toggleDrawer() {
-        this.drawer = !this.drawer;
-        this.showMenuIcon = !this.showMenuIcon;
-      },
-      loadUserData() {
-        const userData = SessionStorage.getItem('information');
-        if (userData) {
-          try {
-            const userInformation = JSON.parse(userData);
-            this.userProfileImage = userInformation.pfp;
-            this.firstname = userInformation.firstname;
-            this.lastname = userInformation.lastname;
-            this.position = userInformation.position;
-            this.email = userInformation.email;
-            this.id = userInformation.id;
-            this.changeImage = userInformation.pfp;
-            this.status = userInformation.status;
-            this.fullnames = this.firstname + " " + this.lastname;
-
-            if(this.status == 0)
-            {
-              this.$q.notify({
+          if (this.status === 0) {
+            this.$q.notify({
               type: 'negative',
-                message: 'Your account is currently inactive. Please contact the account owner for activation.',
-              });
-              this.$router.push('/');
-              sessionStorage.clear();
-            }
-          } catch (error) {
+              message: 'Your account is currently inactive. Please contact the account owner for activation.',
+            });
             this.$router.push('/');
             sessionStorage.clear();
           }
-        } else {
-          // Handle the case when user data is not available
+        }
+      }).catch(error => {
+            console.error('Error fetching data:', error);
+      });
+    },
+    getLimitedFullname(fullname, maxLength) {
+      if (fullname.length > maxLength) {
+        return fullname.substring(0, maxLength) + '...';
+      }
+      return fullname;
+    },
+    toggleInventoryMenu() {
+      this.inventoryMenuVisible = !this.inventoryMenuVisible;
+    },
+    toggleDrawer() {
+      this.drawer = !this.drawer;
+      this.showMenuIcon = !this.showMenuIcon;
+    },
+    loadUserData() {
+      const userData = SessionStorage.getItem('information');
+      if (userData) {
+        try {
+          const userInformation = JSON.parse(userData);
+          this.userProfileImage = userInformation.pfp;
+          this.firstname = userInformation.firstname;
+          this.lastname = userInformation.lastname;
+          this.position = userInformation.position;
+          this.email = userInformation.email;
+          this.id = userInformation.id;
+          this.changeImage = userInformation.pfp;
+          this.status = userInformation.status;
+          this.fullnames = this.firstname + " " + this.lastname;
+
+          if(this.status == 0)
+          {
+            this.$q.notify({
+            type: 'negative',
+              message: 'Your account is currently inactive. Please contact the account owner for activation.',
+            });
+            this.$router.push('/');
+            sessionStorage.clear();
+          }
+        } catch (error) {
           this.$router.push('/');
           sessionStorage.clear();
         }
-      },
-      handleFileChange(event) {
-        this.selectedFile = event[0];
-        if (event && event[0]) {
-          const file = event[0];
-          this.file = event;
-          this.previewImage = URL.createObjectURL(file); // Set previewImage for preview
-        }
-      },
+      } else {
+        // Handle the case when user data is not available
+        this.$router.push('/');
+        sessionStorage.clear();
+      }
+    },
+    handleFileChange(event) {
+      this.selectedFile = event[0];
+      if (event && event[0]) {
+        const file = event[0];
+        this.file = event;
+        this.previewImage = URL.createObjectURL(file); // Set previewImage for preview
+      }
+    },
 
-      cancelPreview() {
-        this.file = 0;
-        this.previewImage = 0;
-        this.userProfileImage = this.userProfileImage; // Set back to default value
-        this.$refs.fileInput.$el.querySelector('input[type=file]').value = null; // Clear file input
-      },
-      cancelUpload() {
-        this.file = 0;
-        this.previewImage = 0;
-        this.userProfileImage = this.userProfileImage; // Set back to default value
-        this.$refs.fileInput.$el.querySelector('input[type=file]').value = null; // Clear file input
-      },
-      getUserImagePath() {
-        if (this.userProfileImage) {
-          // Check if the file extension is present
-          const hasExtension = /\.\w+$/.test(this.userProfileImage);
+    cancelPreview() {
+      this.file = 0;
+      this.previewImage = 0;
+      this.userProfileImage = this.userProfileImage; // Set back to default value
+      this.$refs.fileInput.$el.querySelector('input[type=file]').value = null; // Clear file input
+    },
+    cancelUpload() {
+      this.file = 0;
+      this.previewImage = 0;
+      this.userProfileImage = this.userProfileImage; // Set back to default value
+      this.$refs.fileInput.$el.querySelector('input[type=file]').value = null; // Clear file input
+    },
+    getUserImagePath() {
+      if (this.userProfileImage) {
+        // Check if the file extension is present
+        const hasExtension = /\.\w+$/.test(this.userProfileImage);
 
-          if (hasExtension) {
-            return `/pfp/${this.userProfileImage}`;
-          } else {
-            return `/pfp/${this.userProfileImage}`;
-          }
+        if (hasExtension) {
+          return `/pfp/${this.userProfileImage}`;
         } else {
-          return '/default_profile.png';
+          return `/pfp/${this.userProfileImage}`;
         }
-      },
-      getUserProfileImagePath() {
-        if (this.userProfileImage) {
-          // Check if the file extension is present
-          const hasExtension = /\.\w+$/.test(this.userProfileImage);
+      } else {
+        return '/default_profile.png';
+      }
+    },
+    getUserProfileImagePath() {
+      if (this.userProfileImage) {
+        // Check if the file extension is present
+        const hasExtension = /\.\w+$/.test(this.userProfileImage);
 
-          if (hasExtension) {
-            return `/pfp/${this.userProfileImage}`;
-          } else {
-            return `/pfp/${this.userProfileImage}`;
-          }
+        if (hasExtension) {
+          return `/pfp/${this.userProfileImage}`;
         } else {
-          return '/default_profile.png';
+          return `/pfp/${this.userProfileImage}`;
         }
-      },
-      toggleModal() {
-        this.arrowDirection = !this.arrowDirection;
-        this.showModal = !this.showModal;
-      },
-      selectAvatar(avatar) {
-        this.selectedAvatar = avatar;
-      },
+      } else {
+        return '/default_profile.png';
+      }
+    },
+    toggleModal() {
+      this.arrowDirection = !this.arrowDirection;
+      this.showModal = !this.showModal;
+    },
+    selectAvatar(avatar) {
+      this.selectedAvatar = avatar;
+    },
 
-      onSubmit() {
-        if (!this.selectedAvatar) {
-          this.$q.notify({
-            message: 'Please choose an avatar.',
-            color: 'red',
-          });
-          return;
-        }
-        const formData = {
-          pfp: this.selectedAvatar,
-        };
-        console.log(formData);
-          axios.put(`http://localhost/Capstone-Project/backend/api/Account_Settings/changeprofile.php/${this.id}`, formData)
-          .then((response) =>{
-            this.responseStatus = response.data.status;
-            this.responseMessage = response.data.message;
-            this.responseInformation = response.data.information;
-            if (this.responseStatus === "success") {
-                const existingInformation = JSON.parse(SessionStorage.getItem('information')) || {};
-                existingInformation.pfp = this.responseInformation.pfp;
-                SessionStorage.set('information', JSON.stringify(existingInformation));
-                this.$q.notify({
-                  message: 'Successfully changed profile picture.',
-                  color: 'green',
-                });
-                this.loadUserData();
-                window.location.reload();
-            }
-          }).catch(error => {
-          console.error('Error submitting form:', error);
+    onSubmit() {
+      if (!this.selectedAvatar) {
+        this.$q.notify({
+          message: 'Please choose an avatar.',
+          color: 'red',
         });
-      },
-      onUpload() {
-        if (!this.file) {
-          this.$q.notify({
-            message: 'Image does not exist.',
-            color: 'red',
-          });
-          return;
-        }
-        const formData = new FormData();
-        const id = this.id;
-        formData.append("file", this.selectedFile);
-        formData.append("id", id);
-
-        axios
-        .post(`http://localhost/Capstone-Project/backend/api/Account_Settings/uploadprofile.php`, formData)
-        .then((response) => {
+        return;
+      }
+      const formData = {
+        pfp: this.selectedAvatar,
+      };
+      console.log(formData);
+        axios.put(`http://localhost/Capstone-Project/backend/api/Account_Settings/changeprofile.php/${this.id}`, formData)
+        .then((response) =>{
           this.responseStatus = response.data.status;
+          this.responseMessage = response.data.message;
           this.responseInformation = response.data.information;
           if (this.responseStatus === "success") {
-            const existingInformation = JSON.parse(SessionStorage.getItem('information')) || {};
-            existingInformation.pfp = this.responseInformation.pfp;
-            this.$q.notify({
-                message: 'Success',
-                caption: 'You have successfully change your profile picture.',
+              const existingInformation = JSON.parse(SessionStorage.getItem('information')) || {};
+              existingInformation.pfp = this.responseInformation.pfp;
+              SessionStorage.set('information', JSON.stringify(existingInformation));
+              this.$q.notify({
+                message: 'Successfully changed profile picture.',
                 color: 'green',
-            });
-            this.uploadDialog = false;
-            SessionStorage.set('information', JSON.stringify(existingInformation));
-            this.loadUserData();
-            window.location.reload();
+              });
+              this.loadUserData();
+              window.location.reload();
           }
-          if (this.responseStatus === "fail") {
-
-            this.$q.notify({
-              color: 'negative',
-              message: `${response.data.message} Please try again.`,
-            });
-          }
-        })
-        .catch((error) => {
-          console.error('Error submitting form:', error);
-        });
-      },
-      logout() {
-        sessionStorage.clear();
-        this.$router.push('/');
-      },
+        }).catch(error => {
+        console.error('Error submitting form:', error);
+      });
     },
-  };
-  </script>
+    onUpload() {
+      if (!this.file) {
+        this.$q.notify({
+          message: 'Image does not exist.',
+          color: 'red',
+        });
+        return;
+      }
+      const formData = new FormData();
+      const id = this.id;
+      formData.append("file", this.selectedFile);
+      formData.append("id", id);
+
+      axios
+      .post(`http://localhost/Capstone-Project/backend/api/Account_Settings/uploadprofile.php`, formData)
+      .then((response) => {
+        this.responseStatus = response.data.status;
+        this.responseInformation = response.data.information;
+        if (this.responseStatus === "success") {
+          const existingInformation = JSON.parse(SessionStorage.getItem('information')) || {};
+          existingInformation.pfp = this.responseInformation.pfp;
+          this.$q.notify({
+              message: 'Success',
+              caption: 'You have successfully change your profile picture.',
+              color: 'green',
+          });
+          this.uploadDialog = false;
+          SessionStorage.set('information', JSON.stringify(existingInformation));
+          this.loadUserData();
+          window.location.reload();
+        }
+        if (this.responseStatus === "fail") {
+
+          this.$q.notify({
+            color: 'negative',
+            message: `${response.data.message} Please try again.`,
+          });
+        }
+      })
+      .catch((error) => {
+        console.error('Error submitting form:', error);
+      });
+    },
+    logout() {
+      sessionStorage.clear();
+      this.$router.push('/');
+    },
+  },
+};
+</script>
 
 <style scoped>
 .selected-avatar {
