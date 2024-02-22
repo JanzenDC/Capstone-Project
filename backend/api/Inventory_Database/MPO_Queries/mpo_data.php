@@ -23,30 +23,43 @@
     public function httpGet($payload)
     {
         if($payload['get'] == 'alldata'){
-            $sqlQuery = 'SELECT mpo_tbl.mpoID,
-            mpo_tbl.personelID,
-            mpo_tbl.supplierID,
-            mpo_tbl.categoryID,
-            mpo_tbl.mpo_ref_no,
-            mpo_tbl.date_purchased,
-            mpo_tbl.client_ref_no,
-            mpo_tbl.w_o_ref_no,
-            mpo_tbl.delivery_date,
-            mpo_tbl.delivery_address,
-            mpo_tbl.supplier_address,
-            mpo_tbl.total,
-            mpo_tbl.delivery_charge,
-            mpo_tbl.discount,
-            mpo_tbl.other_costs,
-            mpo_tbl.total_amount,
-            mpo_tbl.notes_instructions,
-            mpo_tbl.prepared_by,
-            mpo_tbl.approved_by,
-            w_supplierlist.supplierID,
-            w_supplierlist.supplier_name,
-            w_supplierlist.address
-            FROM mpo_tbl
-            LEFT JOIN w_supplierlist ON mpo_tbl.supplierID = w_supplierlist.supplierID';
+            $sqlQuery = 'SELECT 
+                mpo.mpoID,
+                mpo.personelID,
+                mpo.supplierID,
+                mpo.categoryID,
+                mpo.mpo_ref_no,
+                mpo.date_purchased,
+                mpo.client_ref_no,
+                mpo.w_o_ref_no,
+                mpo.delivery_date,
+                mpo.delivery_address,
+                mpo.supplier_address,
+                mpo.total,
+                mpo.delivery_charge,
+                mpo.discount,
+                mpo.other_costs,
+                mpo.total_amount,
+                mpo.notes_instructions,
+                mpo.prepared_by,
+                mpo.approved_by,
+                supplier.supplier_name,
+                supplier.address AS supplier_address,
+                base.item_name,
+                base.quantity,
+                base.unit,
+                base.quantity_balance,
+                base.unit_price,
+                base.status,
+                base.discounts,
+                base.subtotal
+            FROM 
+                mpo_tbl AS mpo
+            LEFT JOIN 
+                w_supplierlist AS supplier ON mpo.supplierID = supplier.supplierID
+            LEFT JOIN 
+                mpo_base AS base ON mpo.mpoID = base.mpoID;
+            ';
             $queryResult = $this->db->rawQuery($sqlQuery);
             if($queryResult){
                 $response = [

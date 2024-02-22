@@ -1141,21 +1141,34 @@ export default {
       return row.stotal;
     },
     handleCancel(){
-      this.mpo_ref= '';
-      this.date_purchased= '';
-      this.selectedCategory= '';
-      this.client_ref= '';
-      this.wo_purchased= '';
-      this.delivery_date_val= '';
-      this.delivery_add_val= '';
-
-      this.selectedSupplier='';
-      this.supplier_address= '';
-
-      this. segregation= '';
-      this.cleaning= '';
-      this.drying= '';
-      this.weighting= '';
+      this.personnel_Email = '';
+      this.company_address = '';
+      this.uploadPhoto = '';
+      this.mpo_ref = '';
+      this.date_purchased = '';
+      this.selectedCategory = '';
+      this.client_ref = '';
+      this.wo_purchased = '';
+      this.delivery_date_val = '';
+      this.delivery_add_val = '';
+      this.selectedSupplier = '';
+      this.supplier_address = '';
+      this.segregation = '';
+      this.cleaning = '';
+      this.drying = '';
+      this.weighting = '';
+      this.deliver_charge = '';
+      this.discount = '';
+      this.vat = '';
+      this.other_cost = '';
+      this.total_amount = '';
+      this.total_in_table = '';
+      this.notes_instructions = '';
+      this.prepareSig = '';
+      this.approvedby_name = '';
+      this.e_signatureP = '';
+      this.e_signatureA = '';
+      this.datarows = [];
     },
     fetchCategoryData(){
       axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/MPO_Queries/mpo_data.php?get=category`)
