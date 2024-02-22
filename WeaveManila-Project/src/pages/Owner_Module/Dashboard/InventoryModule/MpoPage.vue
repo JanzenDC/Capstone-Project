@@ -342,23 +342,31 @@ bordered
     full-height
     >
       <q-card>
-        <q-card-section>
+        <q-card-section class="row items-center q-pb-none">
           <div class="text-h6 flex items-center">
             <q-icon name="assignment_add" class="w-[48px] h-[48px]"/>
             MPO {{ MpoIDValue }}
           </div>
+          <q-space />
+          <q-btn icon="close" flat round dense v-close-popup />
         </q-card-section>
-
-        <q-card-section class="overflow-y-auto overflow-x-hidden h-[480px] flex justify-center items-center">
+        <q-card-section>
+          <div class="flex items-end justify-end gap-2">
+            <q-btn icon="download" @click="generatePDF"/>
+            <q-btn icon="print" @click="printContent"/>
+            <q-btn label="Send to email" icon="send" class="bg-[#634842] text-white" @click="generatePDFAndSendEmail"/>
+          </div>
+        </q-card-section>
+        <q-card-section class="overflow-y-auto overflow-x-hidden h-[460px] flex justify-center items-center">
           <div class="border-[#634832] border">
             <div id="content" class="p-5 w-[936px] ">
               <div class="flex">
                 <div class="w-1/2">
                     <div class="p-10 text-center">
                         <q-img
-                          :src="previewLogo || defaultImageLogo()"
+                          :src="getDefaultImage('prepared')"
                           alt="Description of the image"
-                          class="w-[150px] h-[150px]"
+                          class="w-[50px] h-[50px]"
                         />
                         <p class="text-[14px] mt-8">{{ company_address }}</p>
                     </div>
@@ -502,7 +510,7 @@ bordered
                 <div class="w-1/2 text-center">
                   <p class="font-bold">Approved by</p>
                   <q-img
-                    :src="previewApprovedSig || defaultImage()"
+                    :src="getDefaultImage('approved')"
                     alt="Description of the image"
                     class="w-[50px] h-[50px]"
                   />
@@ -511,7 +519,7 @@ bordered
                 <div class="w-1/2 text-center">
                   <p class="font-bold">Prepared by</p>
                   <q-img
-                    :src="previewPreparedSig || defaultImage()"
+                    :src="getDefaultImage('prepared')"
                     alt="Description of the image"
                     class="w-[50px] h-[50px]"
                   />
@@ -523,18 +531,14 @@ bordered
           </div>
 
         </q-card-section>
-
-        <q-card-actions align="right" class="bg-white text-teal">
-          <q-btn @click="generatePDF">Generate PDF</q-btn>
-          <q-btn flat label="OK" v-close-popup />
-        </q-card-actions>
       </q-card>
-    </q-dialog>
+</q-dialog>
 </q-page>
 </template>
 
 <script>
-
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 import { SessionStorage } from 'quasar';
 import axios from 'axios';
 
@@ -576,7 +580,46 @@ export default {
       rows: [],
       selected: [],
       previewForm: false,
-
+      // Second Process Data
+      datacolumns: [
+        { name: 'id', align: 'left', label: '#', field: 'id', sortable: true },
+        { name: 'sproduct', align: 'left', label: 'Product', field: 'sproduct', sortable: true },
+        { name: 'sdescription', align: 'left', label: 'Description', field: 'sdescription', sortable: true },
+        { name: 'squantity', align: 'left', label: 'Quantity', field: 'squantity', sortable: true },
+        { name: 'sunit', align: 'left', label: 'Unit', field: 'sunit', sortable: true },
+        { name: 'sunitprice', align: 'left', label: 'Unit Price', field: 'sunitprice', sortable: true },
+        { name: 'sdiscount', align: 'left', label: 'Discount', field: 'sdiscount', sortable: true },
+        { name: 'stotal', align: 'left', label: 'Sub Total', field: 'stotal', sortable: true },
+        { name: 'sactions', align: 'left', label: 'Actions', field: 'sactions', sortable: true },
+      ],
+      datarows: [],
+      company_address: '',
+      uploadPhoto: '',
+      mpo_ref: '',
+      date_purchased: '',
+      selectedCategory: '',
+      client_ref: '',
+      wo_purchased: '',
+      delivery_date_val: '',
+      delivery_add_val: '',
+      selectedSupplier: '',
+      supplier_address: '',
+      segregation: '',
+      cleaning: '',
+      drying: '',
+      weighting: '',
+      deliver_charge: '',
+      discount: '',
+      vat: '',
+      other_cost: '',
+      total_amount: '',
+      total_in_table: '',
+      notes_instructions: '',
+      prepared_name: '',
+      approvedby_name: '',
+      e_signatureP: '',
+      e_signatureA: '',
+      MpoIDValue: '',
     };
   },
   mounted() {
@@ -590,6 +633,149 @@ export default {
     clearInterval(this.statusCheckTimer);
   },
   methods: {
+    generatePDFAndSendEmail() {
+      const pdf = new jsPDF();
+      const content = document.getElementById('content');
+
+      // Use html2canvas to render HTML to canvas
+      html2canvas(content).then(canvas => {
+        // Convert canvas to base64 image data
+        const imgData = canvas.toDataURL('image/jpeg');
+
+        const pageWidth = 210; // A4 width in mm
+        const pageHeight = 297; // A4 height in mm
+
+        const imgWidth = pageWidth;
+        const imgHeight = (canvas.height * pageWidth) / canvas.width;
+
+        let position = 0;
+        if (imgHeight > pageHeight) {
+          pdf.addPage();
+          position = -pageHeight;
+          pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
+        } else {
+          pdf.addImage(imgData, 'JPEG', 0, 0, imgWidth, imgHeight);
+        }
+
+        while (position + pageHeight < imgHeight) {
+          position += pageHeight;
+          pdf.addPage();
+          pdf.addImage(imgData, 'JPEG', 0, -position, imgWidth, imgHeight);
+        }
+
+        // Convert the PDF to Blob
+        const pdfBlob = pdf.output('blob');
+
+        const pdfformat = `MPO${this.MpoIDValue}-form.pdf`;
+        const formData = new FormData();
+        formData.append('pdfFile', pdfBlob, pdfformat);
+        formData.append('pdfFileName', pdfBlob, pdfformat);
+        formData.append('selectedSupplier', this.selectedSupplier);
+        console.log(this.selectedSupplier);
+        // Send the FormData via email using Axios
+        axios.post('http://localhost/Capstone-Project/backend/api/Inventory_Database/MPO_Queries/viewform.php/', formData)
+          .then(response => {
+            const Status = response.data.status;
+            if (Status === "fail") {
+              this.$q.notify({
+                color: 'negative',
+                message: `${Message} Please try again.`,
+              });
+              this.previewForm = false;
+            }
+            if (Status === "success") {
+              this.$q.notify({
+                color: 'green',
+                message: `The MPO ${this.MpoIDValue} form has been successfully sent to the supplier's email..`,
+              });
+              this.previewForm = false;
+            }
+          })
+          .catch(error => {
+            console.error('Error sending PDF:', error);
+            // Handle error, show error message, etc.
+          });
+      });
+    },
+    generatePDF() {
+      const pdf = new jsPDF();
+      const content = document.getElementById('content');
+
+      // Use html2canvas to render HTML to canvas
+      html2canvas(content).then(canvas => {
+        // Convert canvas to base64 image data
+        const imgData = canvas.toDataURL('image/jpeg');
+
+        const pageWidth = 210; // A4 width in mm
+        const pageHeight = 297; // A4 height in mm
+
+        const imgWidth = pageWidth;
+        const imgHeight = (canvas.height * pageWidth) / canvas.width;
+
+
+        let position = 0;
+        if (imgHeight > pageHeight) {
+
+          pdf.addPage();
+          position = -pageHeight;
+
+          pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
+        } else {
+          pdf.addImage(imgData, 'JPEG', 0, 0, imgWidth, imgHeight);
+        }
+
+        while (position + pageHeight < imgHeight) {
+          position += pageHeight;
+          pdf.addPage();
+          pdf.addImage(imgData, 'JPEG', 0, -position, imgWidth, imgHeight);
+        }
+
+        // Save PDF
+        const pdfformat = `MPO${this.MpoIDValue}-form.pdf`;
+        pdf.save(pdfformat);
+
+        // this.pdfData = pdf.output('blob');
+        // console.log("PDF Data",this.pdfData);
+      });
+    },
+    printContent() {
+      this.previewForm = false;
+      const printableContent = document.getElementById('content');
+      const originalContents = document.body.innerHTML;
+      document.body.innerHTML = printableContent.innerHTML;
+      window.print();
+      document.body.innerHTML = originalContents;
+      window.addEventListener('afterprint', this.reloadPage);
+      this.reloadPage();
+    },
+    reloadPage() {
+      window.removeEventListener('afterprint', this.reloadPage);
+      location.reload();
+    },
+    getDefaultImage(type) {
+      switch (type) {
+        case 'prepared':
+          return this.e_signatureP ? `/Important_Images/${this.e_signatureP}` : this.getDefaultImageUrl('prepared');
+        case 'approved':
+          return this.e_signatureA ? `/Important_Images/${this.e_signatureA}` : this.getDefaultImageUrl('approved');
+        case 'logo':
+          return this.uploadPhoto ? `/Important_Images/${this.uploadPhoto}` : this.getDefaultImageUrl('logo');
+        default:
+          return null; // or any default image source you want to set
+      }
+    },
+    getDefaultImageUrl(type) {
+      switch (type) {
+        case 'prepared':
+          return '/default.png';
+        case 'approved':
+          return '/default.png';
+        case 'logo':
+          return '/default_logo.png';
+        default:
+          return null; // or any default image URL you want to set
+      }
+    },
     refreshData(){
       this.fetchMPOData();
     },
@@ -662,37 +848,67 @@ export default {
     getSelectedString() {
       return `Selected ${this.selected.length} item(s)`;
     },
-    ViewForm(targetID){
+    ViewForm(targetID) {
+      // Fetch data from the server
+      axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/MPO_Queries/viewform.php?mpoform=${targetID}`)
+        .then(response => {
+          // Process response data
+          const responseData = response.data;
+          const mpoBaseData = responseData.MpoBase;
+          const mpoData = responseData.MpoData;
+          const suppData = responseData.SupplierData;
 
-      // this.personnel_Email = '';
-      // this.company_address = '';
-      // this.uploadPhoto = '';
-      // this.mpo_ref = '';
-      // this.date_purchased = '';
-      // this.selectedCategory = '';
-      // this.client_ref = '';
-      // this.wo_purchased = '';
-      // this.delivery_date_val = '';
-      // this.delivery_add_val = '';
-      // this.selectedSupplier = '';
-      // this.supplier_address = '';
-      // this.segregation = '';
-      // this.cleaning = '';
-      // this.drying = '';
-      // this.weighting = '';
-      // this.deliver_charge = '';
-      // this.discount = '';
-      // this.vat = '';
-      // this.other_cost = '';
-      // this.total_amount = '';
-      // this.total_in_table = '';
-      // this.notes_instructions = '';
-      // this.prepareSig = '';
-      // this.approvedby_name = '';
-      // this.e_signatureP = '';
-      // this.e_signatureA = '';
-      // this.datarows = [];
+          console.log(suppData);
+          this.previewForm = true;
+          // Map MpoBase data to datarows
+          this.datarows = mpoBaseData.map((row, index) => ({
+            id: index + 1,
+            sproduct: row.item_name,
+            sdescription: row.description,
+            squantity: row.quantity_balance,
+            sunit: row.unit,
+            sunitprice: row.unit_price,
+            sdiscount: row.subtotal,
+            stotal: row.subtotal,
+          }));
+
+          // Assign MpoData fields to respective variables
+          this.MpoIDValue = mpoData.mpoID;
+          this.company_address = mpoData.company_address;
+          this.uploadPhoto = mpoData.file_logo;
+          this.mpo_ref = mpoData.mpo_ref_no;
+          this.date_purchased = mpoData.date_purchased;
+          this.selectedCategory = mpoData.categoryID;
+          this.client_ref = mpoData.client_ref_no;
+          this.wo_purchased = mpoData.w_o_ref_no;
+          this.delivery_date_val = mpoData.delivery_date;
+          this.delivery_add_val = mpoData.delivery_address;
+          this.selectedSupplier = suppData.supplier_name;
+          this.supplier_address = mpoData.supplier_address;
+          this.segregation = '';
+          this.cleaning = '';
+          this.drying = '';
+          this.weighting = '';
+          this.deliver_charge = mpoData.delivery_charge ?? 0;
+          this.discount = mpoData.discount ?? 0;
+          this.vat = mpoData.vat ?? 0;
+          this.other_cost = mpoData.other_cost ?? 0;
+          this.total_amount = mpoData.total_amount ?? 0;
+
+          // Calculate total in table
+          this.total_in_table = this.datarows.reduce((total, row) => total + row.stotal, 0);
+
+          this.notes_instructions = mpoData.notes_instructions;
+          this.prepared_name = mpoData.prepared_by;
+          this.approvedby_name = mpoData.approved_by;
+          this.e_signatureP = mpoData.file_esignaturep;
+          this.e_signatureA = mpoData.file_esignaturea;
+        })
+        .catch(error => {
+          console.error('Error fetching data:', error);
+        });
     },
+
 
 
 

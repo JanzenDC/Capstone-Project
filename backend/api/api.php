@@ -71,56 +71,7 @@
                  'sender' => ['name' => 'WeaveManila Company', 'email' => 'janzendelacruz28@gmail.com'],
                  'replyTo' => ['name' => 'Sendinblue', 'email' => 'no-reply@gmail.com'],
                  'to' => [[ 'name' => $recipient, 'email' => $validEmail]],
-                 'htmlContent' => '<!DOCTYPE html>
-                 <html>
-                 <head>
-                     <style>
-                         body {
-                             font-family: Arial, sans-serif;
-                             margin: 0;
-                             padding: 0;
-                             background-color: #f0f0f0;
-                         }
-                         
-                         .container {
-                             max-width: 600px;
-                             margin: 0 auto;
-                             padding: 20px;
-                             background-color: #F6F8FC;
-                             border-radius: 5px;
-                             box-shadow: 5px 10px #888888;
-                         }
-                         
-                         .title {
-                             color: #333333;
-                             font-size: 24px;
-                             margin-bottom: 20px;
-                             border-bottom: 1px solid black;
-                         }
-                         
-                         .email {
-                             color: #333333;
-                             font-size: 16px;
-                             margin-bottom: 20px;
-                         }
-                         
-                         .verification-code {
-                             color: #333333;
-                             font-size: 24px;
-                             font-weight: bold;
-                             margin-bottom: 20px;
-                             text-align: center;
-                         }
-                     </style>
-                 </head>
-                 <body>
-                     <div class="container">
-                         <div class="title">Verify code</div>
-                         <div class="email">We received a request to access your Account <span>' . $validEmail . '</span> through your email address. Your verification code is:</div>
-                         <div class="verification-code">' . $code . '</div>
-                     </div>
-                 </body>
-                 </html>',
+                 'htmlContent' => '',
     
                  'params' => ['bodyMessage' => "test"]
             ]);

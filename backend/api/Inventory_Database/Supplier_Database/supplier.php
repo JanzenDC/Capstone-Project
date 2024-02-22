@@ -87,24 +87,33 @@
             echo json_encode($response);
             exit;
         }
+        $getData = $this->db->where('supplier_name', $payload['supplier_Name'])->getOne('w_supplierlist');
 
-        $data = [
-            'supplier_name' => $payload['supplier_Name'],
-            'contact_person' => $payload['supplier_ContactName'],
-            'address' => $payload['supplier_Address'],
-            'contact' => $payload['supplier_Cp'],
-            'email' => $payload['supplier_Email'],
-        ];
-        $id = $this->db->insert('w_supplierlist', $data);
-        if ($id) {
-            $response = ['status' => 'success', 'message' => 'Successfully Add in the database'];
-            echo json_encode($response);
-            exit;
-        }else{
-            $response = ['status' => 'fail', 'message' => 'Failed to insert data into the database'];
+        if (!$getData) {
+            $data = [
+                'supplier_name' => $payload['supplier_Name'],
+                'contact_person' => $payload['supplier_ContactName'],
+                'address' => $payload['supplier_Address'],
+                'contact' => $payload['supplier_Cp'],
+                'email' => $payload['supplier_Email'],
+            ];
+            $id = $this->db->insert('w_supplierlist', $data);
+            if ($id) {
+                $response = ['status' => 'success', 'message' => 'Successfully Add in the database'];
+                echo json_encode($response);
+                exit;
+            }else{
+                $response = ['status' => 'fail', 'message' => 'Failed to insert data into the database'];
+                echo json_encode($response);
+                exit;
+            }
+        } else {
+            $response = ['status' => 'fail', 'message' => 'Data already exists. Cannot add duplicate entry.'];
             echo json_encode($response);
             exit;
         }
+        
+
     }
     
     
