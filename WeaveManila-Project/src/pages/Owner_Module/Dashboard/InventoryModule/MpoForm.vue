@@ -845,75 +845,75 @@ export default {
     clearInterval(this.statusCheckTimer);
   },
   methods: {
-    sendingForm() {
-      const formData = {
-        personnel_Email: this.email,
-        company_address: this.company_address,
-        uploadPhoto: this.uploadPhoto,
-        mpo_ref: this.MpoIDValue,
-        date_purchased: this.date_purchased,
-        selectedCategory: this.selectedCategory,
-        client_ref: this.client_ref,
-        wo_purchased: this.wo_purchased,
-        delivery_date_val: this.delivery_date_val,
-        delivery_add_val: this.delivery_add_val,
-        selectedSupplier: this.selectedSupplier,
-        supplier_address: this.supplier_address,
-        segregation: this.segregation,
-        cleaning: this.cleaning,
-        drying: this.drying,
-        weighting: this.weighting,
-        deliver_charge: this.deliver_charge,
-        discount: this.discount,
-        vat: this.vat,
-        other_cost: this.other_cost,
-        total_amount: this.total_amount,
-        total_in_table: this.total_in_table,
-        notes_instructions: this.notes_instructions,
-        prepareSig: this.prepared_name,
-        approveSig: this.approvedby_name,
-        products: [],
-        uploadPreparedName: this.e_signatureP,
-        uploadApproveName: this.e_signatureA,
-      };
+    // sendingForm() {
+    //   const formData = {
+    //     personnel_Email: this.email,
+    //     company_address: this.company_address,
+    //     uploadPhoto: this.uploadPhoto,
+    //     mpo_ref: this.MpoIDValue,
+    //     date_purchased: this.date_purchased,
+    //     selectedCategory: this.selectedCategory,
+    //     client_ref: this.client_ref,
+    //     wo_purchased: this.wo_purchased,
+    //     delivery_date_val: this.delivery_date_val,
+    //     delivery_add_val: this.delivery_add_val,
+    //     selectedSupplier: this.selectedSupplier,
+    //     supplier_address: this.supplier_address,
+    //     segregation: this.segregation,
+    //     cleaning: this.cleaning,
+    //     drying: this.drying,
+    //     weighting: this.weighting,
+    //     deliver_charge: this.deliver_charge,
+    //     discount: this.discount,
+    //     vat: this.vat,
+    //     other_cost: this.other_cost,
+    //     total_amount: this.total_amount,
+    //     total_in_table: this.total_in_table,
+    //     notes_instructions: this.notes_instructions,
+    //     prepareSig: this.prepared_name,
+    //     approveSig: this.approvedby_name,
+    //     products: [],
+    //     uploadPreparedName: this.e_signatureP,
+    //     uploadApproveName: this.e_signatureA,
+    //   };
 
-      this.datarows.forEach(row => {
-          const product = {
-              sproduct: row.sproduct,
-              sdescription: row.sdescription,
-              squantity: row.squantity,
-              sunit: row.sunit,
-              sunitprice: row.sunitprice,
-              sdiscount: row.sdiscount,
-              stotal: row.stotal,
-          };
-          formData.products.push(product);
-      });
-      console.log(formData);
-      // axios.post('http://localhost/Capstone-Project/backend/api/Inventory_Database/MPO_Queries/mpo_data.php/',formData)
-      // .then(response => {
-      //   console.log(response.data);
-      //   const Status = response.data.status;
-      //   const Message = response.data.message;
-      //   if (Status === "success") {
-      //       this.$q.notify({
-      //           message: `MPO ${this.MpoIDValue} save successfully!`,
-      //           color: 'green',
-      //           type: 'positive',
-      //       });
-      //       this.handleCancel();
-      //     }
-      //     if (Status === "fail") {
-      //       this.$q.notify({
-      //         color: 'negative',
-      //         message: `${Message} Please try again.`,
-      //       });
-      //       this.handleCancel();
-      //     }
-      // }).catch(error => {
-      //   console.error('Error fetching data:', error.message);
-      // });
-    },
+    //   this.datarows.forEach(row => {
+    //       const product = {
+    //           sproduct: row.sproduct,
+    //           sdescription: row.sdescription,
+    //           squantity: row.squantity,
+    //           sunit: row.sunit,
+    //           sunitprice: row.sunitprice,
+    //           sdiscount: row.sdiscount,
+    //           stotal: row.stotal,
+    //       };
+    //       formData.products.push(product);
+    //   });
+    //   console.log(formData);
+    //   axios.post('http://localhost/Capstone-Project/backend/api/Inventory_Database/MPO_Queries/mpo_data.php/',formData)
+    //   .then(response => {
+    //     console.log(response.data);
+    //     const Status = response.data.status;
+    //     const Message = response.data.message;
+    //     if (Status === "success") {
+    //         this.$q.notify({
+    //             message: `MPO ${this.MpoIDValue} save successfully!`,
+    //             color: 'green',
+    //             type: 'positive',
+    //         });
+    //         this.handleCancel();
+    //       }
+    //       if (Status === "fail") {
+    //         this.$q.notify({
+    //           color: 'negative',
+    //           message: `${Message} Please try again.`,
+    //         });
+    //         this.handleCancel();
+    //       }
+    //   }).catch(error => {
+    //     console.error('Error fetching data:', error.message);
+    //   });
+    // },
     generatePDF() {
       const pdf = new jsPDF();
       const content = document.getElementById('content');
@@ -952,6 +952,78 @@ export default {
         // this.pdfData = pdf.output('blob');
         // console.log("PDF Data",this.pdfData);
       });
+    },
+    sendingForm() {
+      const formData = new FormData();
+
+      formData.append('personnel_Email', this.email);
+      formData.append('company_address', this.company_address);
+      formData.append('uploadPhoto', this.uploadPhoto);
+      formData.append('mpo_ref', this.MpoIDValue);
+      formData.append('date_purchased', this.date_purchased);
+      formData.append('selectedCategory', this.selectedCategory);
+      formData.append('client_ref', this.client_ref);
+      formData.append('wo_purchased', this.wo_purchased);
+      formData.append('delivery_date_val', this.delivery_date_val);
+      formData.append('delivery_add_val', this.delivery_add_val);
+      formData.append('selectedSupplier', this.selectedSupplier);
+      formData.append('supplier_address', this.supplier_address);
+      formData.append('segregation', this.segregation);
+      formData.append('cleaning', this.cleaning);
+      formData.append('drying', this.drying);
+      formData.append('weighting', this.weighting);
+      formData.append('deliver_charge', this.deliver_charge);
+      formData.append('discount', this.discount);
+      formData.append('vat', this.vat);
+      formData.append('other_cost', this.other_cost);
+      formData.append('total_amount', this.total_amount);
+      formData.append('total_in_table', this.total_in_table);
+      formData.append('notes_instructions', this.notes_instructions);
+      formData.append('prepareSig', this.prepared_name);
+      formData.append('approveSig', this.approvedby_name);
+      formData.append('uploadPreparedName', this.e_signatureP);
+      formData.append('uploadApproveName', this.e_signatureA);
+
+      this.datarows.forEach(row => {
+          const productData = {
+              sproduct: row.sproduct,
+              sdescription: row.sdescription,
+              squantity: row.squantity,
+              sunit: row.sunit,
+              sunitprice: row.sunitprice,
+              sdiscount: row.sdiscount,
+              stotal: row.stotal,
+          };
+          console.log('Product Data:', productData);
+          formData.append('products[]', JSON.stringify(productData));
+      });
+
+
+      console.log(formData);
+
+      axios.post('http://localhost/Capstone-Project/backend/api/Inventory_Database/MPO_Queries/mpo_data.php/', formData)
+        .then(response => {
+          console.log(response.data);
+          const Status = response.data.status;
+          const Message = response.data.message;
+          if (Status === "success") {
+            this.$q.notify({
+              message: `MPO ${this.MpoIDValue} save successfully!`,
+              color: 'green',
+              type: 'positive',
+            });
+            this.handleCancel();
+          }
+          if (Status === "fail") {
+            this.$q.notify({
+              color: 'negative',
+              message: `${Message} Please try again.`,
+            });
+            this.handleCancel();
+          }
+        }).catch(error => {
+          console.error('Error fetching data:', error.message);
+        });
     },
 
     // Image Upload Properties
