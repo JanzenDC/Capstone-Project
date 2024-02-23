@@ -230,7 +230,7 @@ bordered
                   <q-item-label>Excel</q-item-label>
                 </q-item-section>
               </q-item>
-              <q-item clickable v-close-popup @click="downloadPDF">
+              <q-item clickable v-close-popup @click="generatePDF">
                 <q-item-section>
                   <q-item-label>PDF</q-item-label>
                 </q-item-section>
@@ -242,64 +242,66 @@ bordered
         </div>
       </div>
       <q-separator class="mt-3" />
-        <q-table
-          :rows="rows"
-          :columns="columns"
-          row-key="mpo_id"
-          class="my-sticky-header-table"
-          selection="multiple"
-          v-model:selected="selected"
-          :selected-rows-label="getSelectedString"
-        >
-        <template v-slot:body-cell-item="props">
-          <q-td :props="props">
-            <div v-for="item in props.row.item" :key="item">{{ item }}</div>
-          </q-td>
-        </template>
+        <div id="content">
+          <q-table
+            :rows="rows"
+            :columns="columns"
+            row-key="mpo_id"
+            class="my-sticky-header-table"
+            selection="multiple"
+            v-model:selected="selected"
+            :selected-rows-label="getSelectedString"
+          >
+          <template v-slot:body-cell-item="props">
+            <q-td :props="props">
+              <div v-for="item in props.row.item" :key="item">{{ item }}</div>
+            </q-td>
+          </template>
 
-        <template v-slot:body-cell-balance="props">
-          <q-td :props="props">
-            <div v-for="balance in props.row.balance" :key="balance">{{ balance }}</div>
-          </q-td>
-        </template>
+          <template v-slot:body-cell-balance="props">
+            <q-td :props="props">
+              <div v-for="balance in props.row.balance" :key="balance">{{ balance }}</div>
+            </q-td>
+          </template>
 
-        <template v-slot:body-cell-total="props">
-          <q-td :props="props">
-            <div v-for="total in props.row.total" :key="total">{{ total }}</div>
-          </q-td>
-        </template>
+          <template v-slot:body-cell-total="props">
+            <q-td :props="props">
+              <div v-for="total in props.row.total" :key="total">{{ total }}</div>
+            </q-td>
+          </template>
 
-        <template v-slot:body-cell-status="props">
-          <q-td :props="props">
-            <div v-for="status in props.row.status" :key="status">
-              <q-badge :color="getStatusColor(status)">
-                {{ status }}
-              </q-badge>
-            </div>
-          </q-td>
-        </template>
-
-        <template v-slot:body-cell-action="props">
-          <q-td :props="props">
-            <div class="flex items-center w-[180px] gap-2">
-              <div class="w-[32px] h-[32px] text-[20px] bg-[#344054] text-white text-center rounded ">
-                <q-icon name="history"/>
+          <template v-slot:body-cell-status="props">
+            <q-td :props="props">
+              <div v-for="status in props.row.status" :key="status">
+                <q-badge :color="getStatusColor(status)">
+                  {{ status }}
+                </q-badge>
               </div>
-              <div class="w-[32px] h-[32px] text-[20px] bg-[#26218e] text-white text-center rounded ">
-                <q-icon name="assignment"/>
+            </q-td>
+          </template>
+
+          <template v-slot:body-cell-action="props">
+            <q-td :props="props">
+              <div class="flex items-center w-[180px] gap-2">
+                <div class="w-[32px] h-[32px] text-[20px] bg-[#344054] text-white text-center rounded ">
+                  <q-icon name="history"/>
+                </div>
+                <div class="w-[32px] h-[32px] text-[20px] bg-[#26218e] text-white text-center rounded ">
+                  <q-icon name="assignment"/>
+                </div>
+                <div class="w-[32px] h-[32px] text-[20px] bg-[#b3261e] text-white text-center rounded ">
+                  <q-icon name="delete"/>
+                </div>
+                <div class="w-[32px] h-[32px] text-[20px] bg-white text-black text-center rounded ">
+                  <q-icon name="arrow_forward_ios"/>
+                </div>
               </div>
-              <div class="w-[32px] h-[32px] text-[20px] bg-[#b3261e] text-white text-center rounded ">
-                <q-icon name="delete"/>
-              </div>
-              <div class="w-[32px] h-[32px] text-[20px] bg-white text-black text-center rounded ">
-                <q-icon name="arrow_forward_ios"/>
-              </div>
-            </div>
-          </q-td>
-        </template>
+            </q-td>
+          </template>
 
 
-        </q-table>
+          </q-table>
+        </div>
     </div>
   </div>
 
@@ -313,7 +315,8 @@ import { useQuasar } from 'quasar';
 import { SessionStorage } from 'quasar';
 import axios from 'axios';
 import ExcelJS from 'exceljs';
-
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
 
 export default {
   setup() {
@@ -444,26 +447,23 @@ export default {
     },
     getStatusColor(status) {
       switch (status) {
-        case '● Out of Stock':
+        case 'Out of Stock':
           return 'red';
-        case '● Low Stock':
+        case 'Low Stock':
           return 'yellow';
-        case '● In Stock':
+        case 'In Stock':
           return 'green';
         default:
           return 'gray'; // or any default color for other statuses
       }
     },
-
-
     calculateStatus(quantity_balance) {
-      let quantityNumber = parseFloat(quantity_balance);
-      if (quantityNumber === 0) {
-        return '● Out of Stock';
-      } else if (quantityNumber <= 300) {
-        return '● Low Stock';
+      if (quantity_balance === 0 || quantity_balance === null || quantity_balance === undefined) {
+        return 'Out of Stock';
+      } else if (quantity_balance < some_threshold) { // Adjust some_threshold according to your criteria for "Low Stock"
+        return 'Low Stock';
       } else {
-        return '● In Stock';
+        return 'In Stock';
       }
     },
     refreshData(){
@@ -489,6 +489,28 @@ export default {
         link.download = `weavemanila_${this.category_name}.xlsx`;
         link.click();
       });
+    },
+    generatePDF() {
+      const doc = new jsPDF();
+
+      const tableData = this.rows.map(row => {
+        return [
+          row.mpo_number,
+          row.date_purchased,
+          row.supplier,
+          row.item.join('\n'), // Concatenate items with new lines
+          row.balance.join('\n'), // Concatenate balances with new lines
+          row.total.join('\n'), // Concatenate totals with new lines
+          row.status.join('\n') // Concatenate statuses with new lines
+        ];
+      });
+
+      doc.autoTable({
+        head: [['MPO Number', 'Date Purchased', 'Supplier', 'Item', 'Balance', 'Total', 'Status']],
+        body: tableData
+      });
+
+      doc.save("inventory.pdf");
     },
     handleCheckboxChange(rowId) {
       const index = this.selected.indexOf(rowId);

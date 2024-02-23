@@ -239,7 +239,7 @@ bordered
                 </q-item>
               </q-list>
             </q-btn-dropdown>
-            <q-btn square icon="print" @click="printTable" />
+            <q-btn square icon="print" />
             <q-btn square icon="cached" @click="refreshData"/>
           </div>
         </div>
@@ -375,8 +375,8 @@ bordered
           console.log(response.data);
           this.rows = response.data.categoryData.map(row => {
 
-          let quantityNumber = parseFloat(row.total);
-          console.log(quantityNumber);
+          let quantityNumber = row.quantity_balance;
+          // console.log(quantityNumber);
           let status = '';
           if (quantityNumber === 0) {
               status = 'Out of Stock';
@@ -398,7 +398,6 @@ bordered
         });
       },
       refreshData(){
-        console.log("click");
         this.fetchMPOData();
       },
       downloadExcel() {
