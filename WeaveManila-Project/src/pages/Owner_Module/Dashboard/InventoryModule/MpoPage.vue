@@ -269,13 +269,35 @@ bordered
           </template>
 
           <template v-slot:body-cell-product="props">
-          <q-td :props="props">
-            <div v-for="product in props.row.product" :key="product">
-              <q-icon name="expand_more"/>
-              {{ product }}
-            </div>
-          </q-td>
-        </template>
+            <q-td :props="props">
+              <div v-if="props.row.product && props.row.product.length > 0">
+                <!-- Iterate over each product -->
+                <div v-for="(product, index) in props.row.product" :key="index">
+                  <div v-if="product !== null">
+                    <!-- Expand icon -->
+                    <q-icon  name="expand_more" @click="toggleExpand(props.row.mpo_id, product)" />
+                    {{ product }}
+                  </div>
+
+                  <!-- Expanded details -->
+                  <div v-if="isExpanded(props.row.mpo_id, product)">
+                    <!-- Additional text to show when expanded -->
+                    More details for {{ product }} here...
+                  </div>
+                </div>
+              </div>
+            </q-td>
+          </template>
+
+
+
+
+
+
+
+
+
+
 
         <template v-slot:body-cell-qty="props">
           <q-td :props="props">
@@ -309,19 +331,19 @@ bordered
         <template v-slot:body-cell-actions="props">
               <q-td :props="props">
                 <div class="flex items-center justify-center w-[221px] gap-1">
-                  <div class="bg-[#ddffcd] rounded py-1 px-2 text-green-600 rounded font-bold">
+                  <div @click="ProductReceived(props.row.mpo_id)" class="bg-[#ddffcd] rounded py-1 px-2 text-green-600 rounded font-bold cursor-pointer">
                     Received
                   </div>
-                  <div class="bg-[#475467] rounded text-white w-[32px] h-[32px] text-[20px]">
+                  <div class="bg-[#475467] rounded text-white cursor-pointer w-[32px] h-[32px] text-[20px]">
                     <q-icon name="history" />
                   </div>
-                  <div class="bg-[#26218e] rounded text-white w-[32px] h-[32px] text-[20px]">
+                  <div class="bg-[#26218e] rounded text-white cursor-pointer w-[32px] h-[32px] text-[20px]">
                     <q-icon name="assignment" @click="ViewForm(props.row.mpo_id)"/>
                   </div>
-                  <div class="bg-[#b3261e] rounded text-white text-[20px] w-[32px] h-[32px]">
+                  <div class="bg-[#b3261e] rounded text-white cursor-pointer text-[20px] w-[32px] h-[32px]">
                     <q-icon name="delete"/>
                   </div>
-                  <div class="w-[32px] h-[32px] text-[20px]">
+                  <div class="w-[32px] h-[32px] cursor-pointer text-[20px]">
                     <q-icon name="arrow_forward_ios"/>
                   </div>
                 </div>
@@ -533,6 +555,46 @@ bordered
         </q-card-section>
       </q-card>
 </q-dialog>
+
+<!-- PRODUCT RECIEVED -->
+<q-dialog v-model="product_dialog">
+  <q-card class="w-[472px]">
+    <q-card-section class="row items-center q-pb-none">
+      <div class="flex items-center gap-2">
+        <div class='p-2 text-[18px] border '>
+          <q-icon name="local_mall"/>
+        </div>
+        <span class="font-semibold text-[18px]">Product Received</span>
+      </div>
+      <q-space />
+      <q-btn icon="close" flat round dense v-close-popup />
+    </q-card-section>
+
+    <q-card-section class="text-[18px]">
+      <div>
+        <label>MPO Ref. No</label>
+        <q-input dense outlined disable v-model="mpo_ref"/>
+      </div>
+      <div class="mt-3">
+        <label>Date Received</label>
+        <q-input dense outlined type="date"/>
+      </div>
+      <div class="grid grid-cols-2 gap-2 mt-3">
+        <div>
+          <label>Quantity Purchased</label>
+          <q-input dense outlined disable type="number"/>
+        </div>
+        <div>
+          <label>Quantity Received</label>
+          <q-input dense outlined type="number"/>
+        </div>
+      </div>
+    </q-card-section>
+    <q-card-actions align="right">
+      <q-btn v-close-popup flat class="bg-[#634832] text-white" label="Submit" />
+    </q-card-actions>
+  </q-card>
+  </q-dialog>
 </q-page>
 </template>
 
@@ -580,6 +642,7 @@ export default {
       rows: [],
       selected: [],
       previewForm: false,
+      product_dialog: false,
       // Second Process Data
       datacolumns: [
         { name: 'id', align: 'left', label: '#', field: 'id', sortable: true },
@@ -593,6 +656,7 @@ export default {
         { name: 'sactions', align: 'left', label: 'Actions', field: 'sactions', sortable: true },
       ],
       datarows: [],
+      expandedProducts: [],
       company_address: '',
       uploadPhoto: '',
       mpo_ref: '',
@@ -633,6 +697,22 @@ export default {
     clearInterval(this.statusCheckTimer);
   },
   methods: {
+  toggleExpand(mpoId, product) {
+
+    const key = `${mpoId}_${product}`;
+    if (this.expandedProducts.includes(key)) {
+      console.log(`Collapsing ${product} in row with mpo_id ${mpoId}`);
+      this.expandedProducts = this.expandedProducts.filter(p => p !== key);
+    } else {
+      console.log(`Expanding ${product} in row with mpo_id ${mpoId}`);
+      this.expandedProducts.push(key);
+    }
+  },
+  isExpanded(mpoId, product) {
+    // Check if the product in the specified row is expanded
+    const key = `${mpoId}_${product}`;
+    return this.expandedProducts.includes(key);
+  },
     generatePDFAndSendEmail() {
       const pdf = new jsPDF();
       const content = document.getElementById('content');
@@ -816,13 +896,22 @@ export default {
               return acc;
           }, {});
 
+          const groupedArray = Object.values(groupedData);
 
-          this.rows = Object.values(groupedData);
+          // Filter out ungrouped data (where only one data point exists)
+          const ungroupedData = response.data.categoryData.filter(row => !groupedData[row.mpoID]);
+
+          // Combine grouped and ungrouped data
+          const combinedData = groupedArray.concat(ungroupedData);
+
+          this.rows = combinedData;
         })
         .catch(error => {
           console.error('Error fetching data:', error);
         });
     },
+
+
     calculateStatus(status) {
       switch (status) {
         case '● Pending':
@@ -908,7 +997,20 @@ export default {
           console.error('Error fetching data:', error);
         });
     },
-
+    ProductReceived(targetID){
+      axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/MPO_Queries/viewform.php?mpoform=${targetID}`)
+      .then(response => {
+        this.product_dialog = true;
+        const responseData = response.data;
+        const mpoBaseData = responseData.MpoBase;
+        const mpoData = responseData.MpoData;
+        const suppData = responseData.SupplierData;
+        const mpo_ref = `WEMA-MPO-${mpoData.date_purchased}-${mpoData.mpoID}`;
+        this.mpo_ref = mpo_ref;
+      }).catch(error => {
+          console.error('Error fetching data:', error);
+        });
+    },
 
 
 

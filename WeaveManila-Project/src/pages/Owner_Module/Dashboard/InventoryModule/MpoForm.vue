@@ -1053,7 +1053,6 @@ export default {
     },
     deleteRow(id) {
       this.datarows = this.datarows.filter(row => row.id !== id);
-
     },
     computeTotal(row) {
       const quantity = parseFloat(row.squantity);

@@ -266,37 +266,65 @@
                             foreach ($_POST['products'] as $productJSON) {
                                 $productData = json_decode($productJSON, true);
                                 if ($productData !== null) { 
-                                    if (isset($productData['sproduct'], $productData['sdescription'], $productData['squantity'], $productData['sunit'], $productData['sunitprice'], $productData['stotal'])) {
-                                        $discount = isset($productData['sdiscount']) ? floatval($productData['sdiscount']) : 0;
+                                    $requiredFields = ['sproduct', 'sdescription', 'squantity', 'sunit', 'sunitprice', 'stotal'];
+                                    $missingFields = array_diff($requiredFields, array_keys($productData));
                             
-                                        $productDataToInsert = [
-                                            'mpoID' => $nextMPOID,
-                                            'item_name' => $productData['sproduct'],
-                                            'description' => $productData['sdescription'],
-                                            'quantity' => $productData['squantity'],
-                                            'unit' => $productData['sunit'],
-                                            'unit_price' => $productData['sunitprice'],
-                                            'discounts' => $discount,
-                                            'subtotal' => $productData['stotal'],
-                                        ];
-                                        $test = $this->db->insert('mpo_base', $productDataToInsert);
-                                        $insertedProducts[] = $productDataToInsert;
-                                    } else {
-                                        echo "Error: Missing required fields for product.";
-                                        exit;
+                                    if (!empty($missingFields)) {
+                                        if (!empty($missingFields)) {
+                                            $response = [
+                                                'status' => 'fail',
+                                                'message' => 'Error: Missing required fields for product: ' . implode(', ', $missingFields),
+                                            ];
+                                            echo json_encode($response);
+                                            exit;
+                                        }
                                     }
+                            
+                                    foreach ($productData as $key => $value) {
+                                        if ($value === '') {
+                                            $response = [
+                                                'status' => 'fail',
+                                                'message' => 'Error: Missing or invalid "products" data.',
+                                            ];
+                                            echo json_encode($response);
+                                            exit;
+                                        }
+                                    }
+                            
+                                    $discount = isset($productData['sdiscount']) ? floatval($productData['sdiscount']) : 0;
+                            
+                                    $productDataToInsert = [
+                                        'mpoID' => $nextMPOID,
+                                        'item_name' => $productData['sproduct'],
+                                        'description' => $productData['sdescription'],
+                                        'quantity' => $productData['squantity'],
+                                        'unit' => $productData['sunit'],
+                                        'unit_price' => $productData['sunitprice'],
+                                        'discounts' => $discount,
+                                        'subtotal' => $productData['stotal'],
+                                    ];
+                                    $test = $this->db->insert('mpo_base', $productDataToInsert);
+                                    $insertedProducts[] = $productDataToInsert;
                                 } else {
-                                    echo "Error: Failed to decode product JSON: $productJSON";
+                                    $response = [
+                                        'status' => 'fail',
+                                        'message' => 'Error: Missing or invalid "products" data.',
+                                    ];
+                                    echo json_encode($response);
                                     exit;
                                 }
-                            }
+                            }                            
                             $response = [
                                 'status' => 'success',
                             ];
                             echo json_encode($response);
                             exit;
                         } else {
-                            echo "Error: Missing or invalid 'products' data.";
+                            $response = [
+                                'status' => 'fail',
+                                'message' => 'Error: Missing or invalid "products" data.',
+                            ];
+                            echo json_encode($response);
                             exit;
                         }
                     }else {
