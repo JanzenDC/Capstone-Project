@@ -48,7 +48,7 @@
                 base.item_name,
                 base.quantity,
                 base.unit,
-                base.quantity_balance,
+                base.quantity_received,
                 base.unit_price,
                 base.status,
                 base.discounts,

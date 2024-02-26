@@ -91,7 +91,7 @@
                 mpo_base.description,
                 mpo_base.quantity,
                 mpo_base.unit,
-                mpo_base.quantity_balance,
+                mpo_base.quantity_received,
                 mpo_base.unit_price,
                 mpo_base.status,
                 mpo_base.discounts,

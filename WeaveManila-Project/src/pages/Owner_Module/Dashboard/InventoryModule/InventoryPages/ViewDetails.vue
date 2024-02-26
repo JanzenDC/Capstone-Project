@@ -375,7 +375,7 @@ bordered
           console.log(response.data);
           this.rows = response.data.categoryData.map(row => {
 
-          let quantityNumber = row.quantity_balance;
+          let quantityNumber = row.quantity_received;
           // console.log(quantityNumber);
           let status = '';
           if (quantityNumber === 0) {
@@ -389,7 +389,7 @@ bordered
             return {
               item: row.item_name,
               balance: row.quantity,
-              total: row.quantity_balance,
+              total: row.quantity_received,
               status: status,
             };
           })

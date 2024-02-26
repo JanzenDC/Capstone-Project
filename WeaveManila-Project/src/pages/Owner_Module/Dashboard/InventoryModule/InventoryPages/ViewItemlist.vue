@@ -433,8 +433,8 @@ export default {
             }
             acc[row.mpoID].item.push(row.item_name);
             acc[row.mpoID].balance.push(row.quantity);
-            acc[row.mpoID].total.push(row.quantity_balance);
-            acc[row.mpoID].status.push(this.calculateStatus(row.quantity_balance));
+            acc[row.mpoID].total.push(row.quantity_received);
+            acc[row.mpoID].status.push(this.calculateStatus(row.quantity_received));
             return acc;
           }, {});
 
@@ -457,10 +457,10 @@ export default {
           return 'gray'; // or any default color for other statuses
       }
     },
-    calculateStatus(quantity_balance) {
-      if (quantity_balance === 0 || quantity_balance === null || quantity_balance === undefined) {
+    calculateStatus(quantity_received) {
+      if (quantity_received === 0 || quantity_received === null || quantity_received === undefined) {
         return 'Out of Stock';
-      } else if (quantity_balance < some_threshold) { // Adjust some_threshold according to your criteria for "Low Stock"
+      } else if (quantity_received < some_threshold) { // Adjust some_threshold according to your criteria for "Low Stock"
         return 'Low Stock';
       } else {
         return 'In Stock';
