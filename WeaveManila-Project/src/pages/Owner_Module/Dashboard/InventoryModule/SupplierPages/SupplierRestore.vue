@@ -91,6 +91,14 @@
             </router-link>
           </div>
         </li>
+        <li class="py-[10px] px-[20px]" v-if="isAdmin === 1">
+        <div class="flex items-center">
+          <router-link to="/dashboard/backup-section">
+            <q-icon name="backup" class="mr-2"/> <span >Data Backup</span>
+          </router-link>
+        </div>
+      </li>
+
 
         <li class="mt-auto py-[10px]">
           <q-separator />
@@ -379,6 +387,7 @@
     },
     data() {
       return {
+        isAdmin: 0,
         id: '',
         email: '',
         fullname: '',
@@ -668,6 +677,7 @@
               isOnline: information.isOnline,
               status: information.status,
               password: information.password,
+              isAdmin: information.isAdmin,
             };
             SessionStorage.set('information', JSON.stringify(this.information));
           const Position = response.data.information.position;
@@ -713,7 +723,8 @@
             this.position = userInformation.position;
             this.status = userInformation.status;
             this.id = userInformation.id;
-
+            this.isAdmin = userInformation.isAdmin;
+            
             this.fullname = this.firstname + " " + this.lastname;
             if (this.position.toLowerCase() === 'owner') {
               this.$router.push('/dashboard/supplier-restorepoint');

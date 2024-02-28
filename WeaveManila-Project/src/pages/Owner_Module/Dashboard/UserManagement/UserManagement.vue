@@ -91,6 +91,13 @@ bordered
           </router-link>
         </div>
       </li>
+      <li class="py-[10px] px-[20px]" v-if="isAdmin === 1">
+        <div class="flex items-center">
+          <router-link to="/dashboard/backup-section">
+            <q-icon name="backup" class="mr-2"/> <span >Data Backup</span>
+          </router-link>
+        </div>
+      </li>
 
       <li class="mt-auto py-[10px]">
         <q-separator />
@@ -627,6 +634,7 @@ export default {
   },
   data() {
     return {
+      isAdmin: 0,
       responseInformation: '',
       responseStatus: '',
       email: '',
@@ -968,6 +976,7 @@ export default {
             isOnline: information.isOnline,
             status: information.status,
             password: information.password,
+            isAdmin: information.isAdmin,
           };
           SessionStorage.set('information', JSON.stringify(this.information));
         if (Position.toLowerCase() === 'owner') {
@@ -1026,6 +1035,7 @@ export default {
           this.lastname = userInformation.lastname;
           this.position = userInformation.position;
           this.status = userInformation.status;
+          this.isAdmin = userInformation.isAdmin;
           this.fullnames = this.firstname + " " + this.lastname;
           if (this.position.toLowerCase() === 'owner') {
             this.$router.push('/dashboard/usermanagement-section');

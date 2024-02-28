@@ -36,6 +36,7 @@ const AuthService = {
             isOnline: information.isOnline,
             status: information.status,
             password: information.password,
+            isAdmin: information.isAdmin,
           };
           SessionStorage.set('information', JSON.stringify(this.information));
           return this.information;

@@ -91,6 +91,13 @@ bordered
           </router-link>
         </div>
       </li>
+      <li class="py-[10px] px-[20px]" v-if="isAdmin === 1">
+        <div class="flex items-center">
+          <router-link to="/dashboard/backup-section">
+            <q-icon name="backup" class="mr-2"/> <span >Data Backup</span>
+          </router-link>
+        </div>
+      </li>
 
       <li class="mt-auto py-[10px]">
         <q-separator />
@@ -285,6 +292,7 @@ bordered
     },
     data() {
       return {
+        isAdmin: 0,
         email: '',
         fullname: '',
         firstname: '',
@@ -307,7 +315,6 @@ bordered
         category_name: '',
         columns : [
         { name: 'item', align: 'left', label: 'Item', field: 'item', sortable: true, headerStyle: 'width: 900px', },
-        { name: 'balance', align: 'left', label: 'QTY', field: 'balance', sortable: true, headerStyle: 'width: 100px', },
         { name: 'total', align: 'left', label: 'QTY BALANCE', field: 'total', sortable: true, headerStyle: 'width: 100px', },
 
         { name: 'status', align: 'left', label: 'Status', field: 'status', sortable: true, headerStyle: 'width: 100px' },
@@ -463,6 +470,7 @@ bordered
               isOnline: information.isOnline,
               status: information.status,
               password: information.password,
+              isAdmin: information.isAdmin,
             };
             SessionStorage.set('information', JSON.stringify(this.information));
           // Update the local status and take appropriate action if it has changed
@@ -497,7 +505,8 @@ bordered
             this.lastname = userInformation.lastname;
             this.position = userInformation.position;
             this.status = userInformation.status;
-
+            this.isAdmin = userInformation.isAdmin;
+            
             this.fullname = this.firstname + " " + this.lastname;
             if (this.position.toLowerCase() === 'owner') {
               this.$router.push('/dashboard/inventory-viewpage');

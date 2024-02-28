@@ -46,6 +46,8 @@ const routes = [
       // Supplier Pages
       { path: 'supplier-restorepoint', component: () => import('pages/Owner_Module/Dashboard/InventoryModule/SupplierPages/SupplierRestore.vue') },
 
+      // Backup And Restore Module
+      { path: 'backup-section', component: () => import('pages/Owner_Module/Dashboard/BackupAndRestore/BackupPage.vue') },
 
     ]
   },

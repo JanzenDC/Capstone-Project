@@ -91,6 +91,13 @@ bordered
           </router-link>
         </div>
       </li>
+      <li class="py-[10px] px-[20px]" v-if="isAdmin === 1">
+        <div class="flex items-center">
+          <router-link to="/dashboard/backup-section">
+            <q-icon name="backup" class="mr-2"/> <span >Data Backup</span>
+          </router-link>
+        </div>
+      </li>
 
       <li class="mt-auto py-[10px]">
         <q-separator />
@@ -275,7 +282,7 @@ bordered
                 <div v-for="(product, index) in props.row.product" :key="index">
                   <div v-if="product !== null">
                     <!-- Expand icon -->
-                    <q-icon  name="expand_more" @click="toggleExpand(props.row.mpo_id, product)" />
+                    <!-- <q-icon  name="expand_more" @click="toggleExpand(props.row.mpo_id, product)" /> -->
                     {{ product }}
                   </div>
 
@@ -545,7 +552,7 @@ bordered
 
 <!-- PRODUCT RECIEVED -->
 <q-dialog v-model="product_dialog">
-<q-card class="w-[1204px]">
+<q-card style="width: 1024px; max-width: 80vw;">
   <q-card-section class="row items-center q-pb-none">
     <div class="flex items-center gap-2">
       <div class='p-2 text-[18px] border '>
@@ -603,10 +610,12 @@ bordered
 
         <q-td key="sreceived" :props="props">
           {{ props.row.sreceived }}
-          <q-popup-edit v-model="props.row.sreceived" title="Update Description" buttons v-slot="scope">
+          <q-popup-edit v-model="props.row.sreceived" title="Update Description" :disable="props.row.sstatus === 2" buttons v-slot="scope">
             <q-input type="number" v-model="scope.value" dense autofocus />
           </q-popup-edit>
         </q-td>
+
+
 
         <q-td key="sstatus" :props="props">
           <q-badge :color="calculateStatusColor(props.row.sstatus)">
@@ -639,6 +648,7 @@ import axios from 'axios';
 export default {
   data() {
     return {
+      isAdmin: 0,
       email: '',
       fullname: '',
       firstname: '',
@@ -664,7 +674,7 @@ export default {
         { name: 'supplier', align: 'left', label: 'Supplier', field: 'supplier', sortable: true, headerStyle: 'width: 100px;' },
         { name: 'product', align: 'left', label: 'Product', field: 'product', sortable: true, headerStyle: 'width: 150px;' },
         { name: 'date_purchase', align: 'left', label: 'Date Purchase', field: 'date_purchase', sortable: true, headerStyle: 'width: 120px;' },
-        { name: 'qty', align: 'left', label: 'Qty', field: 'qty', sortable: true, headerStyle: 'width: 80px;' },
+        { name: 'qty', align: 'left', label: 'Qty Purchased', field: 'qty', sortable: true, headerStyle: 'width: 80px;' },
         { name: 'qty_received', align: 'left', label: 'Qty Received', field: 'qty_received', sortable: true, headerStyle: 'width: 120px;' },
         { name: 'amount', align: 'left', label: 'Amount', field: 'amount', sortable: true, headerStyle: 'width: 100px;' },
         { name: 'status', align: 'left', label: 'Status', field: 'status', sortable: true, headerStyle: 'width: 80px;' },
@@ -823,11 +833,11 @@ export default {
         formData.append('pdfFile', pdfBlob, pdfformat);
         formData.append('pdfFileName', pdfBlob, pdfformat);
         formData.append('selectedSupplier', this.selectedSupplier);
-        console.log(this.selectedSupplier);
         // Send the FormData via email using Axios
         axios.post('http://localhost/Capstone-Project/backend/api/Inventory_Database/MPO_Queries/viewform.php/', formData)
           .then(response => {
             const Status = response.data.status;
+            const Message = response.data.message;
             if (Status === "fail") {
               this.$q.notify({
                 color: 'negative',
@@ -934,8 +944,6 @@ export default {
     fetchMPOData() {
       axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/MPO_Queries/mpo_data.php?get=alldata`)
         .then(response => {
-          console.log(response.data);
-
           const groupedData = response.data.categoryData.reduce((acc, row) => {
               if (!acc[row.mpoID]) {
                   acc[row.mpoID] = {
@@ -948,21 +956,22 @@ export default {
                       total: [],
                       amount: [],
                       status: [],
-                      qty_received: [] // Initialize qty_received array here
+                      qty_received: []
                   };
               }
               acc[row.mpoID].amount.push(row.subtotal);
               acc[row.mpoID].product.push(row.item_name);
               acc[row.mpoID].qty.push(row.quantity);
               acc[row.mpoID].qty_received.push(row.quantity_received);
-              let mpo_status = row.status;
+
+              // Calculate status based on received quantity
               let status = '';
-              if (mpo_status === 2) {
+              if (row.quantity_received === row.quantity) {
                   status = '● Received';
-              } else if (mpo_status == 1) {
+              } else if (row.quantity_received === 0 || row.quantity_received === '0' || row.quantity_received === null || row.quantity_received === undefined) {
+                status = '● Pending';
+              } else if (row.quantity_received < row.quantity) {
                   status = '● Partial Received';
-              } else {
-                  status = '● Pending';
               }
               acc[row.mpoID].status.push(status);
               return acc;
@@ -982,6 +991,8 @@ export default {
           console.error('Error fetching data:', error);
         });
     },
+
+
 
 
     calculateStatus(status) {
@@ -1019,7 +1030,7 @@ export default {
           const mpoData = responseData.MpoData;
           const suppData = responseData.SupplierData;
 
-          console.log(suppData);
+
           this.previewForm = true;
           // Map MpoBase data to datarows
           this.datarows = mpoBaseData.map((row, index) => ({
@@ -1070,10 +1081,8 @@ export default {
         });
     },
     ProductReceived(targetID){
-      console.log(targetID);
       axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/MPO_Queries/viewform.php?mpoform=${targetID}`)
       .then(response => {
-        console.log(response.data);
         this.product_dialog = true;
         const responseData = response.data;
         const mpoData = responseData.MpoData;
@@ -1081,14 +1090,15 @@ export default {
         this.mpo_ref = mpo_ref;
         const mpoBaseData = responseData.MpoBase;
         this.selectedRows = mpoBaseData.map((row, index) => {
-          let sreceived = 0; // Default value for sreceived
+          let sreceived = 0;
           if (row.status === 1) {
-            sreceived = row.quantity_received; // If status is partial received, set sreceived to quantity received
+            sreceived = row.quantity_received;
           } else if (row.status === 2) {
-            sreceived = row.quantity_received; // If status is received, set sreceived to quantity received
+            sreceived = row.quantity_received;
           }
-          return {
+          const rowData = {
             id: index + 1,
+            sqlid: row.baseID,
             sproducts: row.item_name,
             sdescription: row.description,
             sqtypurchased: row.quantity,
@@ -1097,6 +1107,7 @@ export default {
             sreceived: sreceived,
             sstatus: row.status,
           };
+          return rowData;
         });
       }).catch(error => {
           console.error('Error fetching data:', error);
@@ -1127,8 +1138,54 @@ export default {
       }
     },
     submitHandler() {
-      console.log('Submitted row:', this.selectedRows);
+      const formData = new FormData();
+
+      // Assuming you have an endpoint where you want to send the data
+      const endpoint = 'http://localhost/Capstone-Project/backend/api/Inventory_Database/MPO_Queries/mpopage_productionlist.php/';
+
+      // Append each selected row to the FormData object
+      this.selectedRows.forEach(row => {
+        const rowData = {
+          sqlid: row.sqlid,
+          sproducts: row.sproducts,
+          sdescription: row.sdescription,
+          sqtypurchased: row.sqtypurchased,
+          sunit: row.sunit,
+          sqtyrecieved: row.sqtyrecieved,
+          sreceived: row.sreceived,
+          sstatus: row.sstatus,
+        };
+        console.log(rowData);
+        formData.append('products[]', JSON.stringify(rowData));
+      });
+
+      axios.post(endpoint, formData)
+        .then(response => {
+          console.log(response.data);
+          const Status = response.data.status;
+          const Message = response.data.message;
+          if (Status === "fail") {
+            this.$q.notify({
+              color: 'negative',
+              message: `${Message} Please try again.`,
+            });
+            this.product_dialog = false;
+          }
+          if (Status === "success") {
+            this.$q.notify({
+              color: 'green',
+              message: `Successfully Updated`,
+            });
+            this.fetchMPOData();
+            this.product_dialog = false;
+          }
+        })
+        .catch(error => {
+          console.error('Error submitting data:', error);
+        });
     },
+
+
 
 
     toggleInventoryMenu() {
@@ -1170,6 +1227,7 @@ export default {
             isOnline: information.isOnline,
             status: information.status,
             password: information.password,
+            isAdmin: information.isAdmin,
           };
           SessionStorage.set('information', JSON.stringify(this.information));
         // Update the local status and take appropriate action if it has changed
@@ -1203,7 +1261,8 @@ export default {
           this.lastname = userInformation.lastname;
           this.position = userInformation.position;
           this.status = userInformation.status;
-
+          this.isAdmin = userInformation.isAdmin;
+          
           this.fullname = this.firstname + " " + this.lastname;
           if (this.position.toLowerCase() === 'owner') {
 

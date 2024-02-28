@@ -60,6 +60,7 @@
                         'otp_code' => 0,
                         'isOnline' => 1,
                         'status' => $existingRecord['status'],
+                        'isAdmin' => $existingRecord['isAdmin'],
                     ]
                 ];
                 echo json_encode($response);
