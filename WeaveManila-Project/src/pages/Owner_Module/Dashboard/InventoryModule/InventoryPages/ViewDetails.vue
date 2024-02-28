@@ -380,30 +380,47 @@ bordered
         axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/inventory.php?type=2&id=${this.category_id}`)
         .then(response => {
           console.log(response.data);
-          this.rows = response.data.categoryData.map(row => {
 
-          let quantityNumber = row.quantity_received;
-          // console.log(quantityNumber);
-          let status = '';
-          if (quantityNumber === 0) {
-              status = 'Out of Stock';
-          } else if (quantityNumber <= 300) {
-              status = 'Low Stock';
-          } else {
-              status = 'In Stock';
-          }
+          // Create an object to store merged items
+          let mergedItems = {};
 
-            return {
-              item: row.item_name,
-              balance: row.quantity,
-              total: row.quantity_received,
-              status: status,
-            };
-          })
+          response.data.categoryData.forEach(row => {
+            let itemName = row.item_name;
+            let quantityReceived = parseInt(row.quantity_received);
+
+            // If the item already exists in mergedItems, add to its total
+            if (mergedItems[itemName]) {
+              mergedItems[itemName].total += quantityReceived;
+            } else {
+              // Otherwise, initialize the item
+              mergedItems[itemName] = {
+                item: itemName,
+                balance: row.quantity,
+                total: quantityReceived,
+                status: ''
+              };
+            }
+          });
+
+          // Update status based on totals
+          Object.values(mergedItems).forEach(item => {
+            if (item.total === 0) {
+              item.status = 'Out of Stock';
+            } else if (item.total <= 300) {
+              item.status = 'Low Stock';
+            } else {
+              item.status = 'In Stock';
+            }
+          });
+
+          // Convert mergedItems object to array
+          this.rows = Object.values(mergedItems);
+
         }).catch(error => {
-              console.error('Error fetching data:', error);
+          console.error('Error fetching data:', error);
         });
       },
+
       refreshData(){
         this.fetchMPOData();
       },
@@ -506,7 +523,7 @@ bordered
             this.position = userInformation.position;
             this.status = userInformation.status;
             this.isAdmin = userInformation.isAdmin;
-            
+
             this.fullname = this.firstname + " " + this.lastname;
             if (this.position.toLowerCase() === 'owner') {
               this.$router.push('/dashboard/inventory-viewpage');

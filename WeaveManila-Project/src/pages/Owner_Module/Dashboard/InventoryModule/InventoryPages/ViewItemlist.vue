@@ -531,7 +531,6 @@ export default {
 
     },
     getSelectedString() {
-      console.log(this.selected);
       return `Selected ${this.selected.length} item(s)`;
     },
 
@@ -611,7 +610,7 @@ export default {
           this.position = userInformation.position;
           this.status = userInformation.status;
           this.isAdmin = userInformation.isAdmin;
-          
+
           this.fullname = this.firstname + " " + this.lastname;
           if (this.position.toLowerCase() === 'owner') {
             this.$router.push('/dashboard/inventory-viewlist');
