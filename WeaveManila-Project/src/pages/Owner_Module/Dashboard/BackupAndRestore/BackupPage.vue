@@ -211,6 +211,63 @@ bordered
 
 
   </div>
+  <div class="p-4">
+      <div class="flex mt-3">
+        <router-link to="">
+          <div class="flex w-[155px] bg-white h-[44px] py-3 px-5 gap-[8px] rounded items-center text-[14px]">
+            <q-icon name="note_add"/>
+            <p>Backup Data</p>
+          </div>
+        </router-link>
+        <router-link to="">
+          <div class="flex  w-[155px] text-[#b8b8b8] border-l-2 border-t-2 border-e-2 h-[44px] py-3 px-5 gap-[8px] rounded items-center text-[14px]">
+            <q-icon name="list"/>
+            <p>Restore Data</p>
+          </div>
+        </router-link>
+
+      </div>
+      <div class="bg-white px-4 py-3">
+        <div>
+          <div class="w-full flex gap-4">
+            <div class="text-h1 p-4 text-[#281A0D]">
+              <q-icon name="backup"/>
+            </div>
+            <div class="text-h3 p-4">
+              <p class="text-h4">Next Backup:</p>
+              <p class="">{{ daysLeft }} days left</p>
+            </div>
+          </div>
+          <div class="w-full border border-[#281A0D] h-auto relative p-4 mt-10">
+            <div class="absolute -top-4 left-4 bg-white text-h6 py-1 px-2 rounded">
+              <p class="text-[#281A0D] font-semibold">Manual Backup</p>
+            </div>
+
+            <p class="text-sm mt-2 leading-tight">
+              <span class="font-semibold">Note:</span> Your data is important! To ensure its safety, we recommend performing a manual backup. Instructions will be sent to your email address shortly.
+            </p>
+
+            <div class="flex mt-10">
+              <div class="w-1/2">
+                <q-btn label="Backup" @click="backupData" rounded class="bg-[#281A0D] text-white" icon="backup"/>
+              </div>
+              <div class="w-1/2">
+                <div v-if="logs.length > 0">
+                  <h3>Backup Logs:</h3>
+                  <ul>
+                    <li v-for="(log, index) in displayedLogs" :key="index">{{ log }}</li>
+                  </ul>
+                </div>
+                <div v-else>
+                  No backup logs available.
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
 </q-page>
 </template>
 
@@ -218,6 +275,7 @@ bordered
 import { useQuasar } from 'quasar';
 import { SessionStorage } from 'quasar';
 import axios from 'axios';
+import moment from 'moment';
 
 export default {
   setup() {
@@ -242,10 +300,16 @@ export default {
       drawerWidth: 300,
       drawerIcon: 'arrow_back_ios',
       inventoryMenuVisible: false,
+
+      // New Data
+      daysLeft: 0,
+      logs: [],
     };
   },
   mounted() {
     this.loadUserData();
+    this.calculateDaysLeft();
+    this.fetchLogs();
     this.statusCheckTimer = setInterval(() => {
       this.checkUserStatus();
     }, 20 * 1000); // 1 second (in milliseconds)
@@ -253,7 +317,73 @@ export default {
   beforeUnmount() {
     clearInterval(this.statusCheckTimer);
   },
+  computed: {
+    displayedLogs() {
+      return this.logs.slice(0, 3);
+    },
+  },
   methods: {
+    calculateDaysLeft() {
+      const currentDate = moment();
+      const currentDay = currentDate.date();
+      const daysInMonth = moment().daysInMonth();
+      const isLeapYear = moment().isLeapYear();
+      let daysLeft;
+
+      if (currentDay < 28 || (currentDay === 28 && !isLeapYear)) {
+        daysLeft = 28 - currentDay;
+      } else {
+        daysLeft = daysInMonth - currentDay + 28 - (isLeapYear ? 1 : 0);
+      }
+
+      this.daysLeft = daysLeft;
+    },
+    fetchLogs() {
+      axios.get('http://localhost/Capstone-Project/backend/api/BackupAndRestore/backup.php?type=backup')
+        .then(response => {
+          // Convert timestamp to 12-hour format
+          this.logs = response.data.backupData.map(log => {
+            const timestamp = new Date(log.timestamp); // Assuming timestamp is in ISO format
+            // Check if the timestamp is valid
+            if (!isNaN(timestamp.getTime())) {
+              const date = timestamp.toLocaleDateString(); // Extract date component
+              const hours = timestamp.getHours();
+              const minutes = timestamp.getMinutes();
+              const period = hours >= 12 ? 'PM' : 'AM';
+              const formattedHours = hours % 12 || 12; // Convert 0 to 12
+              const formattedMinutes = minutes.toString().padStart(2, '0'); // Add leading zero if needed
+              return `${date} ${formattedHours}:${formattedMinutes} ${period}`;
+            } else {
+              return 'Invalid timestamp';
+            }
+          });
+        })
+        .catch(error => {
+          console.error('Error fetching logs:', error);
+        });
+    },
+    backupData() {
+      const formData = {
+        email: this.email,
+      };
+      axios.post('http://localhost/Capstone-Project/backend/api/BackupAndRestore/backup.php/',formData)
+        .then(response => {
+          console.log(response.data);
+        })
+        .catch(error => {
+          console.error('Error fetching logs:', error);
+        });
+    },
+
+
+
+
+
+
+
+
+
+    // Old Data
     toggleInventoryMenu() {
       this.inventoryMenuVisible = !this.inventoryMenuVisible;
     },
