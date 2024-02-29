@@ -174,6 +174,13 @@ bordered
             <q-icon name="manage_accounts"/>
         </div>
       </li>
+      <li class="py-[10px] px-[20px]">
+        <div class="flex items-center" @click="toggleDrawer">
+            <q-icon name="backup"/>
+        </div>
+      </li>
+
+
       <li class="mt-auto py-[10px]">
           <div class="flex justify-center ">
             <router-link @click="logout" to="/">
