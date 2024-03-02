@@ -3,7 +3,7 @@
 -- Host: localhost	Database: weavemanila_main
 -- ------------------------------------------------------
 -- Server version 	10.4.28-MariaDB
--- Date: Fri, 01 Mar 2024 04:08:02 +0100
+-- Date: Sat, 02 Mar 2024 07:48:15 +0100
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -33,7 +33,7 @@ CREATE TABLE `audit_logs` (
   `timestamp` timestamp NOT NULL DEFAULT current_timestamp(),
   `image` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -43,12 +43,12 @@ CREATE TABLE `audit_logs` (
 LOCK TABLES `audit_logs` WRITE;
 /*!40000 ALTER TABLE `audit_logs` DISABLE KEYS */;
 SET autocommit=0;
-INSERT INTO `audit_logs` VALUES (1,1,'John Doe','Manager','Backup Data','2024-01-23','2024-01-23 07:38:10','man1.png'),(2,2,'Jane Smith','Developer','Backup Data','2024-01-24','2024-01-23 07:38:10','man.png'),(3,3,'Bob Johnson','Analyst','Backup Data','2024-01-25','2024-01-23 07:38:10','man_2.png'),(4,4,'Alice Brown','Coordinator','Backup Data','2024-01-26','2024-01-23 07:38:10','man_3.png'),(5,5,'Charlie Wilson','Engineer','Delete File','2024-01-27','2024-01-23 07:38:10','man_3.png'),(6,6,'Eva Davis','Supervisor','Approve Request','2024-01-28','2024-01-23 07:38:10','man_4.png'),(7,7,'Frank Miller','Designer','Send Email','2024-01-29','2024-01-23 07:38:10','default_pfp.png'),(8,8,'Grace Thompson','Administrator','Change Password','2024-01-30','2024-01-23 07:38:10','default_pfp.png'),(9,9,'Henry Lee','Tester','Run Tests','2024-01-31','2024-01-23 07:38:10','default_pfp.png'),(10,10,'Ivy Chen','Support','View Dashboard','2024-02-01','2024-01-23 07:38:10','default_pfp.png'),(21,11,'Jane Smith','Developer','Update','2023-01-25','2024-01-24 12:24:53','man1.png'),(22,12,'Bob Johnson','Designer','Delete','2023-01-26','2024-01-24 12:24:53','man1.png'),(23,13,'Alice Brown','Analyst','Create','2023-01-27','2024-01-24 12:24:53','man1.png'),(24,14,'Charlie Wilson','Coordinator','Update','2023-01-28','2024-01-24 12:24:53','man1.png'),(25,15,'Eva Davis','Manager','Delete','2023-01-29','2024-01-24 12:24:53','man1.png'),(26,16,'Frank Miller','Developer','Create','2023-01-30','2024-01-24 12:24:53','man1.png'),(27,17,'Grace Turner','Designer','Update','2023-01-31','2024-01-24 12:24:53','man1.png'),(28,18,'Henry Parker','Analyst','Delete','2023-02-01','2024-01-24 12:24:53','man1.png'),(29,19,'Ivy White','Coordinator','Create','2023-02-02','2024-01-24 12:24:53','man1.png'),(30,1,'test','Owner','nag logout','2024-01-17','2024-01-26 10:54:27','man_1.png');
+INSERT INTO `audit_logs` VALUES (1,1,'John Doe','Manager','Backup Data','2024-01-23','2024-01-23 07:38:10','man1.png'),(2,2,'Jane Smith','Developer','Backup Data','2024-01-24','2024-01-23 07:38:10','man.png'),(3,3,'Bob Johnson','Analyst','Backup Data','2024-01-25','2024-01-23 07:38:10','man_2.png'),(4,4,'Alice Brown','Coordinator','Backup Data','2024-01-26','2024-01-23 07:38:10','man_3.png'),(5,5,'Charlie Wilson','Engineer','Delete File','2024-01-27','2024-01-23 07:38:10','man_3.png'),(6,6,'Eva Davis','Supervisor','Approve Request','2024-01-28','2024-01-23 07:38:10','man_4.png'),(7,7,'Frank Miller','Designer','Send Email','2024-01-29','2024-01-23 07:38:10','default_pfp.png'),(8,8,'Grace Thompson','Administrator','Change Password','2024-01-30','2024-01-23 07:38:10','default_pfp.png'),(9,9,'Henry Lee','Tester','Run Tests','2024-01-31','2024-01-23 07:38:10','default_pfp.png'),(10,10,'Ivy Chen','Support','View Dashboard','2024-02-01','2024-01-23 07:38:10','default_pfp.png'),(21,11,'Jane Smith','Developer','Update','2023-01-25','2024-01-24 12:24:53','man1.png'),(22,12,'Bob Johnson','Designer','Delete','2023-01-26','2024-01-24 12:24:53','man1.png'),(23,13,'Alice Brown','Analyst','Create','2023-01-27','2024-01-24 12:24:53','man1.png'),(24,14,'Charlie Wilson','Coordinator','Update','2023-01-28','2024-01-24 12:24:53','man1.png'),(25,15,'Eva Davis','Manager','Delete','2023-01-29','2024-01-24 12:24:53','man1.png'),(26,16,'Frank Miller','Developer','Create','2023-01-30','2024-01-24 12:24:53','man1.png'),(27,17,'Grace Turner','Designer','Update','2023-01-31','2024-01-24 12:24:53','man1.png'),(28,18,'Henry Parker','Analyst','Delete','2023-02-01','2024-01-24 12:24:53','man1.png'),(29,19,'Ivy White','Coordinator','Create','2023-02-02','2024-01-24 12:24:53','man1.png'),(30,1,'test','Owner','nag logout','2024-01-17','2024-01-26 10:54:27','man_1.png'),(31,1,'Janzen Forrest Dela Cruz','Owner','Backup Data','2024-03-01','2024-02-29 20:08:04','1707310005_65c37bb54ce044.84624441_images.png'),(32,1,'Janzen Forrest Dela Cruz','Owner','Backup Data','2024-03-02','2024-03-01 23:21:15','1707310005_65c37bb54ce044.84624441_images.png');
 /*!40000 ALTER TABLE `audit_logs` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;
 
--- Dumped table `audit_logs` with 20 row(s)
+-- Dumped table `audit_logs` with 22 row(s)
 --
 
 --
@@ -384,7 +384,7 @@ CREATE TABLE `personel_tbl` (
 LOCK TABLES `personel_tbl` WRITE;
 /*!40000 ALTER TABLE `personel_tbl` DISABLE KEYS */;
 SET autocommit=0;
-INSERT INTO `personel_tbl` VALUES (1,'meniski2345@gmail.com','janzen.d','Janzen Forrest','Agarin','Dela Cruz','$2y$10$GOYR1EGFV3yr1oerF7tSIOvmJpvaA6ZuuhfTkNFKd.5RoZ41wzcfW','1707310005_65c37bb54ce044.84624441_images.png','Male','Owner','09123456789','2001-07-27',22,'Buyuan Legazpi City',1,'2024-01-26 09:28:56','Single',1),(2,'user1@example.com','user1','John','Doe','Smith','password1','man_2.png','Male','Developer','1234567890','1990-01-01',31,'123 Main St',0,'2024-01-26 09:56:25','',0),(3,'user2@example.com','user2','Jane','Doe','Johnson','password2','woman_2.png','Female','Designer','2147483647','1995-05-15',26,'456 Oak St',0,'2024-01-26 09:56:25','',0),(5,'user1@example.com','user1','User','M','One','hashed_password1','man_4.png','Male','Manager','1234567891','1990-02-15',32,'123 Street Ave, City',0,'2024-01-26 11:55:51','',0),(18,'carlbrozebandola24@gmail.com','','Carlo ','','Bandola','$2y$10$94gsllwLkABo7bShX7G8WOC9clSN66Gg0MGLksrl0jL4BI5/g3YN6','default_pfp.png','Male','','2147483647','2024-01-02',0,'Pogi Street',0,'2024-01-27 04:45:44','Single',0);
+INSERT INTO `personel_tbl` VALUES (1,'meniski2345@gmail.com','janzen.d','Janzen Forrest','Agarin','Dela Cruz','$2y$10$jnFtbJcqmjJ4NaCJBGpIc.Vp/dht5JLUMk2T1yRzVQ4WOu43j.Hky','1707310005_65c37bb54ce044.84624441_images.png','Male','Owner','09123456789','2001-07-27',22,'Buyuan Legazpi City',1,'2024-01-26 09:28:56','Single',1),(2,'user1@example.com','user1','John','Doe','Smith','password1','man_2.png','Male','Developer','1234567890','1990-01-01',31,'123 Main St',0,'2024-01-26 09:56:25','',0),(3,'user2@example.com','user2','Jane','Doe','Johnson','password2','woman_2.png','Female','Designer','2147483647','1995-05-15',26,'456 Oak St',0,'2024-01-26 09:56:25','',0),(5,'user1@example.com','user1','User','M','One','hashed_password1','man_4.png','Male','Manager','1234567891','1990-02-15',32,'123 Street Ave, City',0,'2024-01-26 11:55:51','',0),(18,'carlbrozebandola24@gmail.com','','Carlo ','','Bandola','$2y$10$94gsllwLkABo7bShX7G8WOC9clSN66Gg0MGLksrl0jL4BI5/g3YN6','default_pfp.png','Male','','2147483647','2024-01-02',0,'Pogi Street',0,'2024-01-27 04:45:44','Single',0);
 /*!40000 ALTER TABLE `personel_tbl` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;
@@ -753,7 +753,7 @@ CREATE TABLE `w_otp` (
 LOCK TABLES `w_otp` WRITE;
 /*!40000 ALTER TABLE `w_otp` DISABLE KEYS */;
 SET autocommit=0;
-INSERT INTO `w_otp` VALUES (2,1,'257332','2024-02-24 05:06:37');
+INSERT INTO `w_otp` VALUES (2,1,'679567','2024-03-01 03:34:00');
 /*!40000 ALTER TABLE `w_otp` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;
@@ -803,4 +803,4 @@ COMMIT;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on: Fri, 01 Mar 2024 04:08:02 +0100
+-- Dump completed on: Sat, 02 Mar 2024 07:48:15 +0100

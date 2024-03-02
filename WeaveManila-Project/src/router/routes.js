@@ -48,7 +48,7 @@ const routes = [
 
       // Backup And Restore Module
       { path: 'backup-section', component: () => import('pages/Owner_Module/Dashboard/BackupAndRestore/BackupPage.vue') },
-
+      { path: 'restore-section', component: () => import('pages/Owner_Module/Dashboard/BackupAndRestore/RestorePage.vue') },
     ]
   },
   {

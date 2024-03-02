@@ -213,19 +213,18 @@ bordered
   </div>
   <div class="p-4">
       <div class="flex mt-3">
-        <router-link to="">
-          <div class="flex w-[155px] bg-white h-[44px] py-3 px-5 gap-[8px] rounded items-center text-[14px]">
-            <q-icon name="note_add"/>
-            <p>Backup Data</p>
-          </div>
-        </router-link>
-        <router-link to="">
-          <div class="flex  w-[155px] text-[#b8b8b8] border-l-2 border-t-2 border-e-2 h-[44px] py-3 px-5 gap-[8px] rounded items-center text-[14px]">
-            <q-icon name="list"/>
-            <p>Restore Data</p>
-          </div>
-        </router-link>
-
+        <router-link to="/dashboard/backup-section">
+            <div class="flex w-[155px] bg-white h-[44px] py-3 px-5 gap-[8px] rounded items-center text-[14px]">
+              <q-icon name="backup"/>
+              <p>Backup Data</p>
+            </div>
+          </router-link>
+          <router-link to="/dashboard/restore-section">
+            <div class="flex  w-[155px] text-[#b8b8b8] border-l-2 border-t-2 border-e-2 h-[44px] py-3 px-5 gap-[8px] rounded items-center text-[14px]">
+              <q-icon name="restore"/>
+              <p>Restore Data</p>
+            </div>
+          </router-link>
       </div>
       <div class="bg-white px-4 py-3">
         <div>
@@ -234,7 +233,7 @@ bordered
               <q-icon name="backup"/>
             </div>
             <div class="text-h3 p-4">
-              <p class="text-h4">Next Backup:</p>
+              <p class="text-h4">Next Automatic Backup:</p>
               <p class="">{{ daysLeft }} days left</p>
             </div>
           </div>
