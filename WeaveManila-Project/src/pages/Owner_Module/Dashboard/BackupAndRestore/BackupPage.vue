@@ -341,18 +341,39 @@ export default {
     fetchLogs() {
       axios.get('http://localhost/Capstone-Project/backend/api/BackupAndRestore/backup.php?type=backup')
         .then(response => {
+          // Current timestamp
+          const currentDate = new Date();
+
           // Convert timestamp to 12-hour format
           this.logs = response.data.backupData.map(log => {
             const timestamp = new Date(log.timestamp); // Assuming timestamp is in ISO format
             // Check if the timestamp is valid
             if (!isNaN(timestamp.getTime())) {
-              const date = timestamp.toLocaleDateString(); // Extract date component
+              const date = `${timestamp.getMonth() + 1}/${timestamp.getDate()}/${timestamp.getFullYear()}`; // Extract date component
               const hours = timestamp.getHours();
               const minutes = timestamp.getMinutes();
               const period = hours >= 12 ? 'PM' : 'AM';
               const formattedHours = hours % 12 || 12; // Convert 0 to 12
               const formattedMinutes = minutes.toString().padStart(2, '0'); // Add leading zero if needed
-              return `${date} ${formattedHours}:${formattedMinutes} ${period}`;
+
+              // Check if the log was made today
+              const isToday = timestamp.getDate() === currentDate.getDate() &&
+                            timestamp.getMonth() === currentDate.getMonth() &&
+                            timestamp.getFullYear() === currentDate.getFullYear();
+
+              // Calculate the difference in days between current date and log timestamp
+              const timeDiff = Math.abs(currentDate - timestamp);
+              const diffDays = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+
+              // Construct the string with days ago information
+              const daysAgo = diffDays === 1 ? '1 day ago' : `${diffDays} days ago`;
+
+              // Construct the final string based on conditions
+              if (isToday) {
+                return `${date} ${formattedHours}:${formattedMinutes} ${period} (Today)`;
+              } else {
+                return `${date} ${formattedHours}:${formattedMinutes} ${period} (${daysAgo})`;
+              }
             } else {
               return 'Invalid timestamp';
             }
@@ -362,6 +383,9 @@ export default {
           console.error('Error fetching logs:', error);
         });
     },
+
+
+
     backupData() {
       const formData = {
         email: this.email,
@@ -369,6 +393,21 @@ export default {
       axios.post('http://localhost/Capstone-Project/backend/api/BackupAndRestore/backup.php/',formData)
         .then(response => {
           console.log(response.data);
+          const Status = response.data.status;
+          const Message = response.data.message;
+          if (Status === "success") {
+            this.$q.notify({
+              color: 'green',
+              message: `${Message}.`,
+            });
+            this.fetchLogs();
+          }
+          if (Status === "fail") {
+            this.$q.notify({
+              color: 'negative',
+              message: `${Message} Please try again.`,
+            });
+          }
         })
         .catch(error => {
           console.error('Error fetching logs:', error);
