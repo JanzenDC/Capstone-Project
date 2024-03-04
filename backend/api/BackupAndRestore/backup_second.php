@@ -33,7 +33,66 @@
                 echo json_encode($response);
                 exit;
             }
-        } else {
+        } 
+        else if ($payload['type'] == 'dump_sql') {
+            $host = 'localhost';
+            $username = 'root';
+            $password = '';
+            $database = 'weavemanila_main';
+            $dump = new IMysqldump\Mysqldump("mysql:host=$host;dbname=$database", $username, $password);
+            $outputFile = 'backup_' . date("Y-m-d") . '.sql';
+
+            $dump->start($outputFile);
+            $content = file_get_contents($outputFile);
+            $response = ['status' => 'success', 'content' => $content];
+            echo json_encode($response);
+            // Delete the file from the local storage
+            unlink($outputFile);
+            exit;
+        }
+        else if ($payload['type'] == 'backup_dump') {
+            $host = 'localhost';
+            $username = 'root';
+            $password = '';
+            $database = 'weavemanila_main';
+            $dump = new IMysqldump\Mysqldump("mysql:host=$host;dbname=$database", $username, $password);
+            $outputFile = 'backup_' . date("Y-m-d") . '.sql';
+
+            $dump->start($outputFile);
+            $content = file_get_contents($outputFile);
+
+            // Delete the file from the local storage
+            unlink($outputFile);
+            $userData = $this->db->where('email', $payload['email'])->getOne('personel_tbl');
+            if(!$userData){
+                $response = ['status' => 'fail', 'message' => 'There is no such account.'];
+                echo json_encode($response);
+                exit;
+            }
+            $fullname = $userData['firstname'] . " " . $userData['lastname'];
+            date_default_timezone_set('Asia/Singapore');
+
+            $insertData = [
+                'image' => $userData['profile_pic'],
+                'uid' => $userData['personelID'],
+                'fullname' => $fullname,
+                'position' => $userData['position'],
+                'action' => 'Backup Data',
+                'timestamp' => date('Y-m-d H:i:s'), // Format: YYYY-MM-DD HH:MM:SS
+                'date' => date('Y-m-d'),
+            ];
+            $addLogs = $this->db->insert('audit_logs', $insertData);
+            if($addLogs){
+                $response = ['status' => 'success', 'content' => $content];
+                echo json_encode($response);
+                exit;
+            }else{
+                $response = ['status' => 'fail', 'message' => 'Failed to insert data.'];
+                echo json_encode($response);
+                exit;
+            }
+            exit;
+        }else {
             $response = ['status' => 'fail', 'message' => 'Empty Payload.'];
             echo json_encode($response);
             exit;
@@ -59,7 +118,9 @@
         $dump = new IMysqldump\Mysqldump("mysql:host=$host;dbname=$database", $username, $password);
         $outputFile = 'backup_' . date("Y-m-d") . '.sql';
         $dump->start($outputFile);
-
+        header('Content-Type: application/octet-stream');
+        header('Content-Disposition: attachment; filename="' . $outputFile . '"');
+        
         $zip = new ZipArchive();
         $zipFileName = 'backup_' . date("Y-m-d") . '.zip'; 
         if ($zip->open($zipFileName, ZipArchive::CREATE) === TRUE) {
@@ -134,8 +195,6 @@
 
         // Send email
         $result = $apiInstance->sendTransacEmail($sendSmtpEmail);
-        unlink($outputFile);
-        unlink($zipFileName);
         if($result){
             $userData = $this->db->where('email', $payload['email'])->getOne('personel_tbl');
             if(!$userData){
@@ -154,7 +213,6 @@
                 'date' => date('Y-m-d'),
             ];
             $addLogs = $this->db->insert('audit_logs', $insertData);
-
             if($addLogs){
                 $response = ['status' => 'success', 'message' => 'Backup Data has been sent to your email address.'];
                 echo json_encode($response);
@@ -169,7 +227,6 @@
             echo json_encode($response);
             exit;
         }
-
     }
     
     

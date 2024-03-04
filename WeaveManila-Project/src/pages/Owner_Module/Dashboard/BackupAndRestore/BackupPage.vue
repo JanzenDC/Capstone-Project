@@ -247,8 +247,9 @@ bordered
             </p>
 
             <div class="flex mt-10">
-              <div class="w-1/2">
-                <q-btn label="Backup" @click="backupData" rounded class="bg-[#281A0D] text-white" icon="backup"/>
+              <div class="w-1/2 grid grid-cols-1">
+                <q-btn label="Save to Local Storage" @click="backupData" rounded class="bg-[#281A0D] text-white w-[260px]" icon="save" />
+                <q-btn label="Send to your Email" @click="SendToEmail" rounded class="bg-[#281A0D] text-white w-[260px] mt-3" icon="send"/>
               </div>
               <div class="w-1/2">
                 <div v-if="logs.length > 0">
@@ -306,6 +307,7 @@ export default {
     };
   },
   mounted() {
+    this.getBackupDump();
     this.loadUserData();
     this.calculateDaysLeft();
     this.fetchLogs();
@@ -321,6 +323,7 @@ export default {
       return this.logs.slice(0, 3);
     },
   },
+
   methods: {
     calculateDaysLeft() {
       const currentDate = moment();
@@ -382,10 +385,41 @@ export default {
           console.error('Error fetching logs:', error);
         });
     },
-
-
-
+    getBackupDump(){
+      axios.get('http://localhost/Capstone-Project/backend/api/BackupAndRestore/backup_second.php?type=dump_sql')
+      .then(response => {
+        console.log(response.data);
+      })
+      .catch(error => {
+        console.error('Error fetching logs:', error);
+      });
+    },
     backupData() {
+      axios.get(`http://localhost/Capstone-Project/backend/api/BackupAndRestore/backup_second.php?type=backup_dump&email=${this.email}`)
+        .then(response => {
+          const content = response.data.content.substring(response.data.content.indexOf('content":"') + 108);
+          const url = window.URL.createObjectURL(new Blob([content]));
+
+          // Construct filename in Month-Day-Year format
+          const currentDate = new Date();
+          const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+          const day = String(currentDate.getDate()).padStart(2, '0');
+          const year = currentDate.getFullYear();
+          const filename = `backup_${month}-${day}-${year}.sql`;
+
+          const link = document.createElement('a');
+          link.href = url;
+          link.setAttribute('download', filename); // Set the filename
+          document.body.appendChild(link);
+          link.click();
+          this.fetchLogs();
+        })
+        .catch(error => {
+          console.error('Error fetching backup:', error);
+        });
+    },
+
+    SendToEmail() {
       const formData = {
         email: this.email,
       };
@@ -412,6 +446,7 @@ export default {
           console.error('Error fetching logs:', error);
         });
     },
+
 
 
 
