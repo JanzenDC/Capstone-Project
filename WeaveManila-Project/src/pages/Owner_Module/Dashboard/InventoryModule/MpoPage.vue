@@ -232,7 +232,7 @@ bordered
       </router-link>
     </div>
 
-    <div class="w-full bg-white p-4">
+    <div class="w-full bg-white p-4 h-[380px]">
       <div class="flex md:items-end md:justify-between">
           <div class="flex items-center gap-2">
             <q-input outlined dense placeholder="Search" class="md:w-[400px]">
@@ -348,7 +348,7 @@ bordered
                     <q-icon name="delete"/>
                   </div>
                   <div class="w-[32px] h-[32px] cursor-pointer text-[20px]">
-                    <q-icon name="arrow_forward_ios"/>
+                    <q-icon name="arrow_forward_ios" @click="toNextPage(props.row.mpo_id)"/>
                   </div>
                 </div>
               </q-td>
@@ -786,6 +786,64 @@ export default {
     clearInterval(this.statusCheckTimer);
   },
   methods: {
+    toNextPage(targetID) {
+      axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/MPO_Queries/mpopage_segregation.php?select=${targetID}`)
+          .then(response => {
+              const Status = response.data.status;
+              const Message = response.data.message;
+              const itemId = response.data.mpoBaseFetch;
+              const mpoData = response.data.queryResult;
+
+              if (Status === "success") {
+                  this.$q.notify({
+                      message: `${Message}`,
+                      color: 'green',
+                  });
+                  if (Array.isArray(itemId)) {
+                    mpoData.map(mpoInfo => {
+                      const mpoDataRestrieve = {
+                          mpoID: mpoInfo.mpoID,
+                          personelID: mpoInfo.personelID,
+                          supplierID: mpoInfo.supplierID,
+                          categoryID: mpoInfo.categoryID,
+                          mpo_ref_no: mpoInfo.mpo_ref_no,
+                          date_purchased: mpoInfo.date_purchased,
+                          client_ref_no: mpoInfo.client_ref_no,
+                          w_o_ref_no: mpoInfo.w_o_ref_no,
+                          delivery_date: mpoInfo.delivery_date,
+                          delivery_address: mpoInfo.delivery_address,
+                          supplier_address: mpoInfo.supplier_address,
+                          total: mpoInfo.total,
+                          delivery_charge: mpoInfo.delivery_charge,
+                          discount: mpoInfo.discount,
+                          other_costs: mpoInfo.other_costs,
+                          total_amount: mpoInfo.total_amount,
+                          notes_instructions: mpoInfo.notes_instructions,
+                          prepared_by: mpoInfo.prepared_by,
+                          approved_by: mpoInfo.approved_by,
+                          supplier_name: mpoInfo.supplier_name,
+                      };
+                      console.log(mpoDataRestrieve);
+                      SessionStorage.set('MPOData', JSON.stringify(mpoDataRestrieve));
+                    });
+
+
+                    this.$router.push('/dashboard/rawmaterials-section');
+                } else {
+                    console.error('itemId is not an array.');
+                }
+              }
+              if (Status === "fail") {
+                  this.$q.notify({
+                      color: 'negative',
+                      message: `${Message} Please try again.`,
+                  });
+              }
+          }).catch(error => {
+              console.error('Error fetching data:', error);
+          });
+    },
+
     toggleExpand(mpoId, product) {
 
       const key = `${mpoId}_${product}`;
@@ -998,10 +1056,6 @@ export default {
           console.error('Error fetching data:', error);
         });
     },
-
-
-
-
     calculateStatus(status) {
       switch (status) {
         case '● Pending':
@@ -1269,7 +1323,7 @@ export default {
           this.position = userInformation.position;
           this.status = userInformation.status;
           this.isAdmin = userInformation.isAdmin;
-          
+
           this.fullname = this.firstname + " " + this.lastname;
           if (this.position.toLowerCase() === 'owner') {
 
@@ -1335,7 +1389,7 @@ export default {
 <style lang="sass">
 .my-sticky-header-table
   /* height or max-height is important */
-  height: 370px
+  height: 280px
 
   .q-table__top,
 

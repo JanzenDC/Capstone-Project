@@ -9,14 +9,14 @@ bordered
     <div class="flex">
       <div class="w-1/4 items-center flex justify-center" >
         <q-img
-          src="../../../../assets/favicon-128x128.png"
+          src="../../../../../assets/favicon-128x128.png"
           alt="Description of the image"
           class="w-[50px] md:w-[60px]"
         />
       </div>
       <div class=" items-center flex justify-center" v-if="drawerWidth <= 80">
         <q-img
-          src="../../../../assets/favicon-128x128.png"
+          src="../../../../../assets/favicon-128x128.png"
           alt="Description of the image"
           class="w-[150px] md:w-[60px]"
         />
@@ -188,9 +188,9 @@ bordered
       </li>
   </ul>
 </q-drawer>
-<q-page class="bg-[#f5f5f5] ">
-  <div class="text-[30px] bg-white p-2">
-    <div class="items-center flex ">
+<q-page class="bg-[#f5f5f5]">
+    <div class="text-[30px] bg-white p-2">
+    <div class="items-center flex">
       <q-icon
         name="menu"
         v-if="showMenuIcon"
@@ -203,163 +203,66 @@ bordered
         @click="toggleDrawer"
         class="cursor-pointer max-[1020px]:flex min-[1020px]:hidden"
       />
-    <span class="font-bold">Inventory</span>
+      <div class="">
+        <p class="font-bold text-[#755e4a]">MPO {{ mpoIDnumber }}</p>
+          <p class="text-[16px] text-[#89909e]">Inventory / Raw Materials / <span class="text-black">MPO {{ mpoIDnumber }}</span></p>
+      </div>
     </div>
-    <div class="text-[16px]">Efficiently manage and track your stock for streamlined supply chain operations and optimized inventory.</div>
   </div>
   <div class="p-4">
-    <div class="flex md:items-end md:justify-end mt-6 ">
-      <div class="flex items-center gap-5">
-        <q-input v-model="search" outlined dense placeholder="Search" class="md:w-[400px]">
-          <template v-slot:prepend>
-            <q-icon name="search" />
-          </template>
-        </q-input>
-        <q-btn @click="addCategory = true" class="bg-[#281c0f] text-white">
-          <i class="bi bi-plus-lg"></i>
-          Add Category
-        </q-btn>
-      </div>
+    <div class="flex mt-3">
+      <router-link to="">
+        <div class="flex bg-white w-[128px] border-l-2 h-[44px] py-3 px-5 gap-[8px] rounded items-center text-[14px]">
+
+          <q-icon name="library_books"/>
+          <p>Details</p>
+        </div>
+      </router-link>
+      <router-link to="">
+          <div class="flex w-[135px] text-[#89909e] border-t-2 border-l-2 h-[44px] py-3 px-5 gap-[8px] rounded items-center text-[14px]">
+            <q-icon name="list"/>
+            <p>Segregate</p>
+          </div>
+      </router-link>
+      <router-link to="">
+          <div class="flex w-[128px] text-[#89909e] border-t-2 border-l-2 h-[44px] py-3 px-5 gap-[8px] rounded items-center text-[14px]">
+            <q-icon name="group"/>
+            <p>Issuance</p>
+          </div>
+      </router-link>
     </div>
-
-    <q-dialog v-model="addCategory">
-        <q-card>
-          <q-form @submit="onSubmit">
-          <q-card-section class="row items-center q-pb-none">
-            <div class="text-h6 font-bold">Add Category</div>
-            <q-space />
-            <q-btn icon="close" flat round dense v-close-popup />
-          </q-card-section>
-
-          <q-card-section class="scroll">
-            <label>
-              Category Name<span class="text-red-600">*</span>
-            </label>
-            <q-input type="text" label="Category Name" v-model="title"  outlined dense :rules="[val => !!val || 'Field is required']"/>
-              <label>
-                Procedure<span class="text-red-600">*</span>
-              </label>
-              <q-select
-                outlined dense
-                v-model="selectedProcedure"
-                :options="procedureOptions"
-                label="Select Procedure"
-                :rules="[val => !!val || 'Field is required']"
-              />
-            <label class="">
-              Item Description<span class="text-red-600">*</span>
-            </label>
-            <q-input
-              type="textarea"
-              label="Item Description"
-              v-model="description"
-              outlined
-              dense
-              :rules="[val => !!val || 'Field is required']"
-              style="width: 300px; resize: none;"
-            />
-          </q-card-section>
-
-          <q-separator />
-
-          <q-card-actions align="right">
-            <q-btn flat label="Cancel" color="primary" v-close-popup />
-            <q-btn
-              flat
-              label="Save"
-              type="submit"
-              icon="save"
-              size="md"
-              class="bg-[#281c0f] text-white rounded"
-            />
-          </q-card-actions>
-        </q-form>
-        </q-card>
-    </q-dialog>
-
-    <q-dialog v-model="OpenDelete">
-        <q-card>
-          <q-card-section class="row items-center q-pb-none">
-            <div class="py-1 px-2 border text-[24px]"><q-icon name="delete"/></div>
-            <q-space />
-            <q-btn icon="close" flat round dense v-close-popup />
-          </q-card-section>
-
-          <q-card-section>
-            <div class="text-h6 font-bold">Delete Card</div>
-            <p>Are you sure you want to delete this card? This</p>
-            <p>action cannot be undone.</p>
-          </q-card-section>
-
-          <q-card-actions class="flex justify-center items-center">
-            <div class="w-1/2 p-1">
-              <q-btn flat label="Cancel" outline v-close-popup class="w-full border"/>
-            </div>
-            <div class="w-1/2 p-1">
-              <q-btn
-                @click="onDelete"
-                flat
-                label="Delete"
-                type="submit"
-                size="md"
-                class="bg-red-600 text-white rounded w-full"
-              />
-            </div>
-          </q-card-actions>
-        </q-card>
-    </q-dialog>
-
-      <div class="max-[390px]:mt-3 md:grid md:grid-cols-4 gap-4 md:p-4 h-[435px] overflow-y-auto overflow-x-hidden" >
-      <!-- Display fetched data in the grid with checkboxes -->
-      <div v-for="item in filteredItems" :key="item.id" style="border: #b09582 2px solid " class=" min-[390px]:mt-3 relative min-[390px]:w-full md:w-[231px] bg-white drop-shadow-lg border-[#b09582] rounded ">
-        <q-card flat>
-          <q-card-section>
-            <div class="row items-center no-wrap">
-              <div class="col">
-                <div class="text-h6">{{ item.title }}</div>
-              </div>
-              <div class="col-auto">
-                <q-btn color="grey-7" round flat icon="more_vert">
-                  <q-menu cover auto-close>
-                    <q-list>
-                      <q-item clickable @click="handleViewClick(item)">
-                        <q-item-section>View Details</q-item-section>
-                      </q-item>
-                      <q-item clickable @click="handleEditClick(item)">
-                        <q-item-section>Edit Card</q-item-section>
-                      </q-item>
-                      <q-item clickable @click="handleDeleteClick(item)">
-                        <q-item-section>Delete Card</q-item-section>
-                      </q-item>
-                    </q-list>
-                  </q-menu>
-                </q-btn>
-              </div>
-            </div>
-          </q-card-section>
-
-          <q-card-section>
-            <div class="items-center flex gap-3">
-              <q-icon name="inventory_2" class="text-[#b09582]"/>
-              <div class="grid grid-cols-2 gap-4">
-                <p>Inventory</p>
-                {{ getItemCount(item.categoryID) }}
-              </div>
-            </div>
-            <div class="flex items-center gap-2">
-              <q-icon name="short_text" class="text-[#b09582]"/>
-              <p>Description:</p>
-              <p class="overflow-hidden whitespace-nowrap overflow-ellipsis w-[86px]">{{ item.description }}asd adasdas</p>
-            </div>
-
-
-
-          </q-card-section>
-        </q-card>
+    <div class="w-full bg-white p-4  h-[390px]">
+      <div class="flex justify-end items-end gap-4">
+        <q-btn icon="download" />
+        <q-btn icon="print" />
+        <q-btn icon="refresh" />
       </div>
+      <q-separator class="mt-9 "/>
+      <div class="overflox-y-auto overflow-x-hidden h-[300px] mt-3">
+        <div class="text-[16px] mt-3">
+          <p> Date Purchased: {{ date_purchased }}</p>
+          <p> Supplier: {{ supplier_name }}</p>
+          <p> Delivery Charge: {{ delivery_charge }}</p>
+          <p> Discount: {{ discount }}</p>
+          <p> Other Cost: {{ other_costs }}</p>
+          <p> <span class="font-bold">Total Amount:</span>{{ total_amount }}</p>
+        </div>
+        <div class="text-[16px] mt-3 font-bold">
+          Purchase Details
+        </div>
+        <div class="q-pa-md">
+          <q-table
+            :rows="rows"
+            :columns="columns"
+            row-key="name"
+          />
+        </div>
+      </div>
+
     </div>
   </div>
 </q-page>
+
 </template>
 
 <script>
@@ -370,7 +273,6 @@ import axios from 'axios';
 export default {
   setup() {
     const $q = useQuasar();
-
   },
   data() {
     return {
@@ -384,7 +286,6 @@ export default {
       username: '',
       position: '',
       status: '',
-      addCategory: false,
       drawer: false,
       showMenuIcon: false,
       statusCheckTimer: null,
@@ -393,173 +294,98 @@ export default {
       drawerIcon: 'arrow_back_ios',
       inventoryMenuVisible: false,
 
-      // Add DATA
-      search: '',
-      title: '',
-      description: '',
-      items: [],
-      countData: {},
-      selectedItems: [],
-      isOptionsOpen: {},
-      selectedProcedure: null,
-      procedureOptions: ["Process & issuance", "Issuance only"],
-
-      OpenDelete: false,
-      targetDelete: '',
-
+      // Another Data
+      mpoSelect: '',
+      columns: [
+        { name: 'product', align: 'left', label: 'Product', field: 'product', sortable: true, headerStyle: 'width: 44px;' },
+        { name: 'qtypurchased', align: 'left', label: 'Qty Purchased', field: 'qtypurchased', sortable: true, headerStyle: 'width: 100px;' },
+        { name: 'product_cost', align: 'left', label: 'Product Cost', field: 'product_cost', sortable: true, headerStyle: 'width: 100px;' },
+        { name: 'qtyreceived', align: 'left', label: 'Qty Received', field: 'qtyreceived', sortable: true, headerStyle: 'width: 150px;' },
+        { name: 'qtybalance', align: 'left', label: 'Qty Balance', field: 'qtybalance', sortable: true, headerStyle: 'width: 150px;' },
+        { name: 'received_date', align: 'left', label: 'Received Date', field: 'received_date', sortable: true, headerStyle: 'width: 150px;' },
+        { name: 'status', align: 'left', label: 'Status', field: 'status', sortable: true, headerStyle: 'width: 80px;' }
+      ],
+      rows: [],
+      mpoIDnumber: '',
+      date_purchased: '',
+      delivery_charge: '',
+      discount: '',
+      other_costs: '',
+      total_amount: '',
+      supplier_name: '',
     };
-  },
-  computed: {
-    filteredItems() {
-      // Filter items based on the search input
-      return this.items.filter(item => {
-        const lowerSearch = this.search.toLowerCase();
-        return item.title.toLowerCase().includes(lowerSearch) || item.description.toLowerCase().includes(lowerSearch);
-      });
-    },
   },
   mounted() {
     this.loadUserData();
     this.statusCheckTimer = setInterval(() => {
       this.checkUserStatus();
-    }, 20 * 1000); // 1 second (in milliseconds)
-    this.fetchData();
-    this.clearInventoryData();
+    }, 50 * 1000);
+    this.loadFetchData(); //uncomment this
   },
   beforeUnmount() {
     clearInterval(this.statusCheckTimer);
   },
   methods: {
-    clearInventoryData() {
-      sessionStorage.removeItem('inventoryData');
-    },
-    onSubmit(){
-      const formData = {
-        title: this.title,
-        procedure: this.selectedProcedure,
-        description: this.description,
+    loadFetchData() {
+      const MPOData = SessionStorage.getItem('MPOData');
+      if (MPOData) {
+        try {
+          const mpoInfo = JSON.parse(MPOData); // Parse MPOData
 
+          this.mpoIDnumber = mpoInfo.mpoID;
+          const datePurchased = new Date(mpoInfo.date_purchased);
+          const day = datePurchased.getDate();
+          const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+          const monthName = monthNames[datePurchased.getMonth()];
+          const year = datePurchased.getFullYear();
+          this.date_purchased = `${day} ${monthName} ${year}`;
+          this.supplier_name = mpoInfo.supplier_name;
+          this.total_amount = mpoInfo.total_amount;
+          this.delivery_charge = mpoInfo.delivery_charge;
+          this.discount = mpoInfo.discount;
+          this.other_costs = mpoInfo.other_costs;
+
+          axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/MPO_Queries/mpo_details.php?targetdata=${this.mpoIDnumber}`)
+          .then(response => {
+            console.log(response.data.information);
+            this.rows = response.data.information.map(row => {
+              return {
+                product: row.item_name,
+                qtypurchased: row.quantity,
+                product_cost: row.subtotal,
+                qtyreceived: row.quantity_received,
+                // qtybalance: row.quantity,
+                // received_date:
+                status: row.status
+              };
+            })
+          }).catch(error => {
+              console.error('Error fetching data:', error);
+          });
+
+
+        } catch (error) {
+          console.log('Error parsing user data:', error);
+          this.$q.notify({
+            type: 'negative',
+            message: 'Error loading user data. Please try again.',
+          });
+          this.$router.push('/dashboard/mpo-section');
+          SessionStorage.removeItem('MPOData');
+          SessionStorage.removeItem('RetrieveData');
+        }
+      } else {
+        this.$router.push('/dashboard/mpo-section');
+        SessionStorage.removeItem('MPOData');
+        SessionStorage.removeItem('RetrieveData');
       }
-      axios.post('http://localhost/Capstone-Project/backend/api/Inventory_Database/inventory.php/', formData)
-      .then(response => {
-
-        const Status = response.data.status;
-        const Message = response.data.message;
-        if (Status === "success") {
-          this.$q.notify({
-              message: 'Category Added!!',
-              caption: `${Message}`,
-              color: 'green',
-          });
-          this.title = '';
-          this.description = '';
-          this.procedureOptions = [];
-          this.addCategory = false;
-          this.fetchData();
-        }
-        if (Status === "fail") {
-          this.$q.notify({
-            color: 'negative',
-            message: `${Message} Please try again.`,
-          });
-        }
-
-      }).catch(error => {
-            console.error('Error fetching data:', error);
-      });
-    },
-    fetchData() {
-
-      axios.get('http://localhost/Capstone-Project/backend/api/Inventory_Database/inventory.php?type=1')
-        .then(response => {
-          if (response.data && response.data.status === 'success' && response.data.information) {
-            const fetchedData = response.data.information.rows;
-            const countData = response.data.information.itemCountData;
-            this.countData = countData;
-            this.items = fetchedData;
-          } else {
-            console.error('Failed to fetch data:', response.data.message);
-          }
-        })
-        .catch(error => {
-          // Handle any errors that occur during the HTTP request
-          console.error('Error fetching data:', error.message);
-        });
-    },
-    toggleOptions(itemId) {
-      // Close dropdown for other items
-      Object.keys(this.isOptionsOpen).forEach(id => {
-        if (id !== itemId) {
-          this.isOptionsOpen[id] = false;
-        }
-      });
-
-      // Toggle the dropdown options for the clicked item
-      this.isOptionsOpen[itemId] = !this.isOptionsOpen[itemId];
-    },
-    getItemCount(categoryID) {
-      return this.countData[categoryID] || 0;
-    },
-    handleViewClick(itemId) {
-      axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/inventory.php?type&id=${itemId.categoryID}`)
-      .then(response => {
-
-        const Status = response.data.status;
-        const Message = response.data.message;
-        if (Status === "success") {
-          const inventoryData = {
-            mpoID: itemId.categoryID,
-            InventoryName: itemId.title,
-          }
-          SessionStorage.set('inventoryData', JSON.stringify(inventoryData));
-          this.$router.push('/dashboard/inventory-viewpage');
-        }
-        if (Status === "fail") {
-          this.$q.notify({
-            color: 'negative',
-            message: `${Message} Please try again.`,
-          });
-        }
-      }).catch(error => {
-            console.error('Error fetching data:', error);
-      });
-    },
-    handleEditClick(itemId) {
-      console.log('Edit button clicked for item ID:', itemId.categoryID);
-    },
-    handleDeleteClick(itemId) {
-      this.targetDelete = itemId.categoryID;
-      this.OpenDelete = true;
-    },
-
-// Execution
-    onDelete(){
-      axios.delete(`http://localhost/Capstone-Project/backend/api/Inventory_Database/inventory.php/${this.targetDelete}`)
-      .then(response => {
-        const Status = response.data.status;
-        const Message = response.data.message;
-        if (Status === "success") {
-          this.$q.notify({
-              message: 'Category deleted successfully!!',
-              color: 'green',
-          });
-        }
-        if (Status === "fail") {
-          this.$q.notify({
-            color: 'negative',
-            message: `${Message} Please try again.`,
-          });
-        }
-        this.OpenDelete = false;
-        this.fetchData();
-      }).catch(error => {
-            console.error('Error fetching data:', error);
-      });
     },
 
 
 
-
+    onMainDashboard(){
+      this.$router.push('/dashboard/main-dashboard');
+    },
     toggleInventoryMenu() {
       this.inventoryMenuVisible = !this.inventoryMenuVisible;
     },
@@ -602,17 +428,7 @@ export default {
             isAdmin: information.isAdmin,
           };
           SessionStorage.set('information', JSON.stringify(this.information));
-        const Position = response.data.information.position;
-        if (Position.toLowerCase() === 'owner') {
-          this.$router.push('/dashboard/inventory-section');
-        }else{
-          this.$q.notify({
-          type: 'negative',
-            message: 'You do not have permission to access the system.',
-          });
-          this.$router.push('/');
-          sessionStorage.clear();
-        }
+        // Update the local status and take appropriate action if it has changed
         if (this.status !== latestStatus) {
           this.status = latestStatus;
 
@@ -646,25 +462,26 @@ export default {
 
           this.fullname = this.firstname + " " + this.lastname;
           if (this.position.toLowerCase() === 'owner') {
-            this.$router.push('/dashboard/inventory-section');
-          }else{
+            this.$router.push('/dashboard/rawmaterials-section');
+          } else {
+
             this.$q.notify({
-            type: 'negative',
+              type: 'negative',
               message: 'You do not have permission to access the system.',
             });
             this.$router.push('/');
             sessionStorage.clear();
           }
-          if(this.status == 0)
-          {
+
+          if (this.status == 0) {
+
             this.$q.notify({
-            type: 'negative',
+              type: 'negative',
               message: 'Your account is currently inactive. Please contact the account owner for activation.',
             });
             this.$router.push('/');
             sessionStorage.clear();
           }
-
         } catch (error) {
           console.log('Error parsing user data:', error);
           // Provide user feedback or navigate to an error page
