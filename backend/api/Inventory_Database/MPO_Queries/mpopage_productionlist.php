@@ -41,6 +41,48 @@
                             'status' => $productData['sstatus'],
                         ];
                         $result = $this->db->where('baseID', $productData['sqlid'])->update('mpo_base', $data);
+                        if ($productData['sstatus'] != $selectedData['status'] || $productData['sreceived'] != $selectedData['quantity_received']) {
+                          // Check if data already exists for the baseID and status '2'
+                          $params = [$selectedData['baseID'], 2];
+                          $users = $this->db->rawQuery("SELECT * FROM mpo_datereceived_logs WHERE baseID = ? AND status = ?", $params);
+
+                          // If no existing data found, insert new data
+                          if (!$users) {
+      
+                              $date_received = isset($_POST['date_received']) ? $_POST['date_received'] : null;
+                              $status = isset($productData['sstatus']) ? $productData['sstatus'] : null;
+
+                              // Prepare data for insertion
+                              $dataInsert = [
+                                  'baseID' => $selectedData['baseID'],
+                                  'date_received' => $date_received,
+                                  'status' => $status,
+                              ];
+
+                              // Insert new data
+                              $result = $this->db->insert('mpo_datereceived_logs', $dataInsert);
+
+                              if ($result) {
+                                  // Data inserted successfully
+                                  $response = [
+                                      'status' => 'success',
+                                      'message' => 'Data inserted successfully.',
+                                  ];
+                              } else {
+                                  // Handle insertion failure
+                                  $response = [
+                                      'status' => 'error',
+                                      'message' => 'Failed to insert data.',
+                                  ];
+                              }
+                          } else {
+                              // If there is existing data, return a message without inserting new data
+                              $response = [
+                                  'status' => 'success',
+                                  'message' => "Data already exists for the given baseID and status.",
+                              ];
+                          }
+                        }
                     }else{
                         $response = [
                             'status' => 'fail',
@@ -71,6 +113,7 @@
             echo json_encode($response);
             exit;
         }
+
     }
     
 

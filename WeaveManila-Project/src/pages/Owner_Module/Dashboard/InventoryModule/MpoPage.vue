@@ -579,7 +579,7 @@ bordered
       </div>
       <div>
         <label>Date Received</label>
-        <q-input dense outlined type="date"/>
+        <q-input dense outlined v-model="date_received" type='date'/>
       </div>
     </div>
     <q-table
@@ -744,6 +744,7 @@ export default {
         { name: 'sstatus', align: 'left', label: 'Status', field: 'sstatus', sortable: true },
       ],
       selectedRows: [],
+      date_received: '',
     };
   },
   watch: {
@@ -1201,9 +1202,8 @@ export default {
     submitHandler() {
       const formData = new FormData();
 
-      // Assuming you have an endpoint where you want to send the data
       const endpoint = 'http://localhost/Capstone-Project/backend/api/Inventory_Database/MPO_Queries/mpopage_productionlist.php/';
-
+      formData.append('date_received', this.date_received);
       // Append each selected row to the FormData object
       this.selectedRows.forEach(row => {
         const rowData = {
