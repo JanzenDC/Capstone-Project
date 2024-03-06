@@ -211,15 +211,14 @@
     </div>
     <div class="p-4">
       <div class="flex mt-3">
-        <router-link to="">
-          <div class="flex bg-white w-[128px] border-l-2 h-[44px] py-3 px-5 gap-[8px] rounded items-center text-[14px]">
-
+        <router-link to="rawmaterials-section">
+          <div class="flex w-[135px] text-[#89909e] border-t-2 border-l-2 h-[44px] py-3 px-5 gap-[8px] rounded items-center text-[14px]">
             <q-icon name="library_books"/>
             <p>Details</p>
           </div>
         </router-link>
-        <router-link to="">
-            <div class="flex w-[135px] text-[#89909e] border-t-2 border-l-2 h-[44px] py-3 px-5 gap-[8px] rounded items-center text-[14px]">
+        <router-link to="segregate-section">
+          <div class="flex bg-white w-[135px] border-l-2 h-[44px] py-3 px-5 gap-[8px] rounded items-center text-[14px]">
               <q-icon name="list"/>
               <p>Segregate</p>
             </div>
@@ -236,31 +235,99 @@
           <q-btn icon="download" />
           <q-btn icon="print" />
           <q-btn icon="refresh" />
+
         </div>
         <q-separator class="mt-9 "/>
-        <div class="overflox-y-auto overflow-x-hidden h-[300px] mt-3">
-          <div class="text-[16px] mt-3">
-            <p> Date Purchased: {{ date_purchased }}</p>
-            <p> Supplier: {{ supplier_name }}</p>
-            <p> Delivery Charge: {{ delivery_charge }}</p>
-            <p> Discount: {{ discount }}</p>
-            <p> Other Cost: {{ other_costs }}</p>
-            <p> <span class="font-bold">Total Amount:</span>{{ total_amount }}</p>
-          </div>
-          <div class="text-[16px] mt-3 font-bold">
-            Purchase Details
-          </div>
-          <div class="q-pa-md">
-            <q-table
-              :rows="rows"
-              :columns="columns"
-              row-key="name"
-            />
+        <div class="overflox-y-auto overflow-x-hidden h-[300px] mt-3 flex gap-8">
+          <!-- Use loop here using quasar -->
+          <div v-for="item in items" :key="item.id" class="gap-2">
+              <div class="w-[123px]">
+                <q-img
+                  src="../../../../../assets/folder_name.png"
+                  alt="Description of the image"
+                  class="w-[60px] md:w-[120px] cursor-pointer"
+                  @click="handleImageClick(item.baseID)"
+                />
+                <p class="text-center">
+                  {{ item.item_name }}
+                </p>
+              </div>
           </div>
         </div>
 
+
       </div>
     </div>
+
+    <!-- MODAL -->
+    <q-dialog v-model="ShowFolder">
+      <q-card style="width: 900px; max-width: 80vw;">
+        <q-card-section class="row items-center q-pb-none">
+          <div class="flex items-center">
+
+            <q-icon name='stacks'/>
+            <div class="text-h6">{{ selectedIDName }}</div>
+          </div>
+
+          <q-space />
+          <q-btn icon="close" flat round dense v-close-popup />
+        </q-card-section>
+        <q-separator />
+        <q-card-section>
+          <div class="flex items-end justify-end mb-3 gap-4">
+            <q-btn icon="download" />
+            <q-btn icon="print" />
+            <q-btn icon="refresh" />
+            <q-btn @click="addTable" icon="add" label="Add table" class="bg-[#634832] text-white"/>
+          </div>
+          <q-separator />
+          <div class="mt-3">
+            <p>Product Name: <span class="text-gray-900"> {{ selectedIDName }} Taknis</span></p>
+            <p>Quantity Stocks: <span class="text-gray-900"> {{ selected_Quantity }} </span> </p>
+            <p>Quantity Balance: <span class="text-gray-900"> {{ balance_raw }} </span></p>
+          </div>
+          <div>
+
+            <q-table
+              flat bordered
+              :rows="rows"
+              :columns="columns"
+              row-key="baseID"
+            >
+            <template v-slot:body="props">
+              <q-tr :props="props">
+                <q-td key="date" :props="props">
+                  {{ props.row.date }}
+                  <q-popup-edit v-model="props.row.date" title="Update Description" buttons v-slot="scope">
+                    <q-input type="date" v-model="scope.value" dense autofocus />
+                  </q-popup-edit>
+                </q-td>
+                <q-td key="segregator" :props="props">
+                  {{ props.row.segregator }}
+                  <q-popup-edit v-model="props.row.segregator" title="Update Description" buttons v-slot="scope">
+                    <q-input type="text" v-model="scope.value" dense autofocus />
+                  </q-popup-edit>
+                </q-td>
+
+                <q-td key="qty_raw" :props="props">
+                  {{ props.row.qty_raw }}
+                  <q-popup-edit v-model="props.row.qty_raw" title="Update Description" buttons v-slot="scope">
+                    <q-input type="number" v-model="scope.value" dense autofocus />
+                  </q-popup-edit>
+                </q-td>
+
+                <q-td key="balance_raw" :props="props">
+                  {{ props.row.balance_raw }}
+                </q-td>
+
+              </q-tr>
+            </template>
+            </q-table>
+
+          </div>
+        </q-card-section>
+      </q-card>
+    </q-dialog>
   </q-page>
 
   </template>
@@ -297,24 +364,43 @@
         // Another Data
         mpoSelect: '',
         columns: [
-          { name: 'product', align: 'left', label: 'Product', field: 'product', sortable: true, headerStyle: 'width: 44px;' },
-          { name: 'qtypurchased', align: 'left', label: 'Qty Purchased', field: 'qtypurchased', sortable: true, headerStyle: 'width: 100px;' },
-          { name: 'product_cost', align: 'left', label: 'Product Cost', field: 'product_cost', sortable: true, headerStyle: 'width: 100px;' },
-          { name: 'qtyreceived', align: 'left', label: 'Qty Received', field: 'qtyreceived', sortable: true, headerStyle: 'width: 150px;' },
-          { name: 'qtybalance', align: 'left', label: 'Qty Balance', field: 'qtybalance', sortable: true, headerStyle: 'width: 150px;' },
-          { name: 'received_date', align: 'left', label: 'Received Date', field: 'received_date', sortable: true, headerStyle: 'width: 150px;' },
-          { name: 'status', align: 'left', label: 'Status', field: 'status', sortable: true, headerStyle: 'width: 80px;' }
+          { name: 'date', align: 'left', label: 'Date', field: 'date', sortable: true, },
+          { name: 'segregator', align: 'left', label: 'Segregator', field: 'segregator', sortable: true,},
+          { name: 'qty_raw', align: 'left', label: 'Qty Raw', field: 'qty_raw', sortable: true,},
+          { name: 'balance_raw', align: 'left', label: 'Balance Raw', field: 'balance_raw', sortable: true,},
+          { name: 'qty_received', align: 'left', label: 'Qty Received', field: 'qty_received', sortable: true,},
+          { name: 'waste_gumon', align: 'left', label: 'Waste / Gumon', field: 'waste_gumon', sortable: true,},
+          { name: 'balance', align: 'left', label: 'Balance', field: 'balance', sortable: true,},
+          { name: 'action', align: 'left', label: 'Action', field: 'action', sortable: true,},
         ],
         rows: [],
         mpoIDnumber: '',
-        date_purchased: '',
-        delivery_charge: '',
-        discount: '',
-        other_costs: '',
-        total_amount: '',
-        supplier_name: '',
+        items: [],
+        ShowFolder: false,
+        // HOLDING THE DATA WHEN CLICKING THE FOLDER
+        selectedID: '',
+        selectedIDName: '',
+        selected_Quantity: '',
+        balance_raw: ''
       };
     },
+    watch: {
+      rows: {
+        handler(newRows, oldRows) {
+          let totalQtyRaw = 0;
+          newRows.forEach(row => {
+            totalQtyRaw += parseFloat(row.qty_raw);
+            // row.balance_raw += this.balance_raw;
+          });
+
+          // Subtract totalQtyRaw from selected_Quantity
+          this.balance_raw = parseFloat(this.selected_Quantity) - totalQtyRaw;
+
+        },
+        deep: true
+      }
+    },
+
     mounted() {
       this.loadUserData();
       this.statusCheckTimer = setInterval(() => {
@@ -348,17 +434,8 @@
             axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/MPO_Queries/mpo_details.php?targetdata=${this.mpoIDnumber}`)
             .then(response => {
               console.log(response.data.information);
-              this.rows = response.data.information.map(row => {
-                return {
-                  product: row.item_name,
-                  qtypurchased: row.quantity,
-                  product_cost: row.subtotal,
-                  qtyreceived: row.quantity_received,
-                  // qtybalance: row.quantity,
-                  // received_date:
-                  status: row.status
-                };
-              })
+              const info =  response.data.information;
+              this.items = response.data.information;
             }).catch(error => {
                 console.error('Error fetching data:', error);
             });
@@ -380,6 +457,37 @@
           SessionStorage.removeItem('RetrieveData');
         }
       },
+      handleImageClick(event){
+        this.ShowFolder = true;
+        console.log(event)
+        axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/MPO_Queries/segregation_queries/segregation.php?type=1&id=${event}`)
+        .then(response => {
+          const Info = response.data.result;
+          this.selectedIDName = Info.item_name;
+          this.selected_Quantity = Info.quantity_received;
+
+          // Balance
+          this.balance_raw = Info.quantity_received;
+
+          console.log(Info);
+        }).catch(error => {
+            console.error('Error fetching data:', error);
+        });
+      },
+      addTable() {
+
+        this.rows.push({
+          date: '',
+          segregator: '',
+          qty_raw: 0,
+          balance_raw: '',
+          qty_received: '',
+          waste_gumon: '',
+          balance: '',
+        });
+      },
+
+
 
 
 
@@ -462,7 +570,7 @@
 
             this.fullname = this.firstname + " " + this.lastname;
             if (this.position.toLowerCase() === 'owner') {
-              this.$router.push('/dashboard/rawmaterials-section');
+              this.$router.push('/dashboard/segregate-section');
             } else {
 
               this.$q.notify({

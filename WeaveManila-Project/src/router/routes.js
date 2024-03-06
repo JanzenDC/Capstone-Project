@@ -42,8 +42,11 @@ const routes = [
       // Inventory Pages
       { path: 'inventory-viewpage', component: () => import('pages/Owner_Module/Dashboard/InventoryModule/InventoryPages/ViewDetails.vue') },
       { path: 'inventory-viewlist', component: () => import('pages/Owner_Module/Dashboard/InventoryModule/InventoryPages/ViewItemlist.vue') },
-      { path: 'rawmaterials-section', component: () => import('pages/Owner_Module/Dashboard/InventoryModule/InventoryPages/RawMaterials.vue') },
 
+      { path: 'rawmaterials-section', component: () => import('pages/Owner_Module/Dashboard/InventoryModule/InventoryPages/RawMaterials.vue') },
+      { path: 'segregate-section', component: () => import('pages/Owner_Module/Dashboard/InventoryModule/InventoryPages/SegregatePage.vue') },
+
+      
       // Supplier Pages
       { path: 'supplier-restorepoint', component: () => import('pages/Owner_Module/Dashboard/InventoryModule/SupplierPages/SupplierRestore.vue') },
 

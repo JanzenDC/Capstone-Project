@@ -55,6 +55,7 @@
                               // Prepare data for insertion
                               $dataInsert = [
                                   'baseID' => $selectedData['baseID'],
+                                  'mpoID' => $selectedData['mpoID'],
                                   'date_received' => $date_received,
                                   'status' => $status,
                               ];

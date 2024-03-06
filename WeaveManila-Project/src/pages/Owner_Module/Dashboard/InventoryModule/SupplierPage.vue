@@ -1130,7 +1130,7 @@ export default {
           this.status = userInformation.status;
           this.id = userInformation.id;
           this.isAdmin = userInformation.isAdmin;
-          
+
           this.fullname = this.firstname + " " + this.lastname;
           if (this.position.toLowerCase() === 'owner') {
             this.$router.push('/dashboard/supplier-section');

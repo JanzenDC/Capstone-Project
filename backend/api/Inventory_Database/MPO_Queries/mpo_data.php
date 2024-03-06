@@ -52,14 +52,23 @@
                 base.unit_price,
                 base.status,
                 base.discounts,
-                base.subtotal
+                base.subtotal,
+                COALESCE(received_logs.datareceivedID, "") AS datareceivedID,
+                received_logs.baseID,
+                COALESCE(received_logs.date_received, "No data.") AS date_received,
+                received_logs.status
             FROM 
                 mpo_tbl AS mpo
             LEFT JOIN 
                 w_supplierlist AS supplier ON mpo.supplierID = supplier.supplierID
             LEFT JOIN 
-                mpo_base AS base ON mpo.mpoID = base.mpoID;
+                mpo_base AS base ON mpo.mpoID = base.mpoID
+            LEFT JOIN 
+                mpo_datereceived_logs AS received_logs ON base.baseID = received_logs.baseID;
             ';
+        
+        
+        
             $queryResult = $this->db->rawQuery($sqlQuery);
             if($queryResult){
                 $response = [

@@ -315,6 +315,11 @@ bordered
           </q-td>
         </template>
 
+        <template v-slot:body-cell-date_received="props">
+          <q-td :props="props">
+            <div v-for="date_received in props.row.date_received" :key="date_received">{{ date_received }}</div>
+          </q-td>
+        </template>
 
         <template v-slot:body-cell-status="props">
           <q-td :props="props">
@@ -1011,6 +1016,7 @@ export default {
     fetchMPOData() {
       axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/MPO_Queries/mpo_data.php?get=alldata`)
         .then(response => {
+          console.log(response.data)
           const groupedData = response.data.categoryData.reduce((acc, row) => {
               if (!acc[row.mpoID]) {
                   acc[row.mpoID] = {
@@ -1023,19 +1029,28 @@ export default {
                       total: [],
                       amount: [],
                       status: [],
-                      qty_received: []
+                      qty_received: [],
+                      date_received: [],
                   };
               }
               acc[row.mpoID].amount.push(row.subtotal);
               acc[row.mpoID].product.push(row.item_name);
               acc[row.mpoID].qty.push(row.quantity);
+
+              // Check if date_received is null
+              if (row.date_received !== null) {
+                acc[row.mpoID].date_received.push(row.date_received);
+              } else {
+                acc[row.mpoID].date_received.push(''); // Pushing an empty string for null values
+              }
+
               acc[row.mpoID].qty_received.push(row.quantity_received);
 
               // Calculate status based on received quantity
               let status = '';
               if (row.quantity_received === row.quantity) {
                   status = '● Received';
-              } else if (row.quantity_received === 0 || row.quantity_received === '0' || row.quantity_received === null || row.quantity_received === undefined) {
+              } else if (!row.quantity_received || row.quantity_received === '0') {
                 status = '● Pending';
               } else if (row.quantity_received < row.quantity) {
                   status = '● Partial Received';
@@ -1058,6 +1073,8 @@ export default {
           console.error('Error fetching data:', error);
         });
     },
+
+
     calculateStatus(status) {
       switch (status) {
         case '● Pending':
