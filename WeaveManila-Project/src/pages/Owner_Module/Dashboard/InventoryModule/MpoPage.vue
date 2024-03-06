@@ -684,6 +684,7 @@ export default {
         { name: 'qty', align: 'left', label: 'Qty Purchased', field: 'qty', sortable: true, headerStyle: 'width: 80px;' },
         { name: 'qty_received', align: 'left', label: 'Qty Received', field: 'qty_received', sortable: true, headerStyle: 'width: 120px;' },
         { name: 'amount', align: 'left', label: 'Amount', field: 'amount', sortable: true, headerStyle: 'width: 100px;' },
+        { name: 'date_received', align: 'left', label: 'Date Received', field: 'date_received', sortable: true, headerStyle: 'width: 100px;' },
         { name: 'status', align: 'left', label: 'Status', field: 'status', sortable: true, headerStyle: 'width: 80px;' },
         { name: 'actions', align: 'center', label: 'Actions', field: 'actions', sortable: true },
       ],

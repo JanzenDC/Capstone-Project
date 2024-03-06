@@ -345,6 +345,7 @@ bordered
       },
       loadCategoryData() {
         const categoryData = SessionStorage.getItem('inventoryData');
+        console.log(categoryData);
         if (categoryData) {
           try {
             const categInformation = JSON.parse(categoryData);

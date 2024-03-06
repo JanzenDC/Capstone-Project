@@ -508,7 +508,7 @@ export default {
         const Message = response.data.message;
         if (Status === "success") {
           const inventoryData = {
-            mpoID: itemId.categoryID,
+            InventoryId: itemId.categoryID,
             InventoryName: itemId.title,
           }
           SessionStorage.set('inventoryData', JSON.stringify(inventoryData));
