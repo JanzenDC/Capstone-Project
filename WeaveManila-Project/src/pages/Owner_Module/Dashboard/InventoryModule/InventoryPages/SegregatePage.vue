@@ -260,7 +260,7 @@
     </div>
 
     <!-- MODAL -->
-    <q-dialog v-model="ShowFolder">
+    <q-dialog v-model="ShowFolder" persistent transition-show="scale" transition-hide="scale">
       <q-card style="width: 900px; max-width: 80vw;">
         <q-card-section class="row items-center q-pb-none">
           <div class="flex items-center">
@@ -270,7 +270,7 @@
           </div>
 
           <q-space />
-          <q-btn icon="close" flat round dense v-close-popup />
+          <q-btn icon="close" flat round dense @click='CloseFolder' />
         </q-card-section>
         <q-separator />
         <q-card-section>
@@ -278,13 +278,15 @@
             <q-btn icon="download" />
             <q-btn icon="print" />
             <q-btn icon="refresh" />
-            <q-btn @click="addTable" icon="add" label="Add table" class="bg-[#634832] text-white"/>
+            <q-btn icon="add" label="Add table" class="bg-[#634832] text-white"/>
           </div>
           <q-separator />
           <div class="mt-3">
             <p>Product Name: <span class="text-gray-900"> {{ selectedIDName }} Taknis</span></p>
             <p>Quantity Stocks: <span class="text-gray-900"> {{ selected_Quantity }} </span> </p>
-            <p>Quantity Balance: <span class="text-gray-900"> {{ balance_raw }} </span></p>
+            <p class="hidden">Quantity Balance: <span class="text-gray-900 "> {{ totalBalance }} </span></p>
+            <p>Quantity Balance: <span class="text-gray-900"> {{ totalBalanceRaw }} </span></p>
+
           </div>
           <div>
 
@@ -294,6 +296,12 @@
               :columns="columns"
               row-key="baseID"
             >
+            <template v-slot:header-cell-action="props">
+              <q-th :props="props">
+                <q-icon name="add" class='p-2 rounded bg-violet-900 text-white cursor-pointer' @click='addRow'/>
+
+              </q-th>
+            </template>
             <template v-slot:body="props">
               <q-tr :props="props">
                 <q-td key="date" :props="props">
@@ -318,6 +326,32 @@
 
                 <q-td key="balance_raw" :props="props">
                   {{ props.row.balance_raw }}
+                </q-td>
+
+                <q-td key="qty_received" :props="props">
+                  {{ props.row.qty_received }}
+                  <q-popup-edit v-model="props.row.qty_received" title="Update Description" buttons v-slot="scope">
+                    <q-input type="number" v-model="scope.value" dense autofocus/>
+                  </q-popup-edit>
+                </q-td>
+
+                <q-td key="waste_gumon" :props="props">
+                  {{ props.row.waste_gumon }}
+                  <q-popup-edit v-model="props.row.waste_gumon" title="Update Description" buttons v-slot="scope">
+                    <q-input type="number" v-model="scope.value" dense autofocus />
+                  </q-popup-edit>
+                </q-td>
+
+                <q-td key="balance" :props="props">
+                  {{ calculateBalance(props.row, props.index) }}
+                </q-td>
+
+                <q-td key="action" :props="props">
+                  <q-icon
+                    name="delete"
+                    class="w-[18px] h-[21px] p-1 text-white bg-red rounded"
+                    @click="deleteRow(props.row)"
+                  />
                 </q-td>
 
               </q-tr>
@@ -371,7 +405,7 @@
           { name: 'qty_received', align: 'left', label: 'Qty Received', field: 'qty_received', sortable: true,},
           { name: 'waste_gumon', align: 'left', label: 'Waste / Gumon', field: 'waste_gumon', sortable: true,},
           { name: 'balance', align: 'left', label: 'Balance', field: 'balance', sortable: true,},
-          { name: 'action', align: 'left', label: 'Action', field: 'action', sortable: true,},
+          { name: 'action', align: 'left', label: '+', field: 'action'},
         ],
         rows: [],
         mpoIDnumber: '',
@@ -381,21 +415,27 @@
         selectedID: '',
         selectedIDName: '',
         selected_Quantity: '',
-        balance_raw: ''
+        totalBalance: 0,
+        totalBalanceRaw: 0,
       };
     },
     watch: {
       rows: {
         handler(newRows, oldRows) {
+          let previousBalance = parseFloat(this.totalBalance);
+
           let totalQtyRaw = 0;
           newRows.forEach(row => {
+            if (parseFloat(row.qty_raw) > parseFloat(previousBalance)) {
+              // If the input value exceeds selected_Quantity, set it to selected_Quantity
+              row.qty_raw = parseFloat(previousBalance);
+            }
+            row.balance_raw = previousBalance - parseFloat(row.qty_raw);
+            previousBalance = parseFloat(row.balance_raw);
             totalQtyRaw += parseFloat(row.qty_raw);
-            // row.balance_raw += this.balance_raw;
           });
-
-          // Subtract totalQtyRaw from selected_Quantity
-          this.balance_raw = parseFloat(this.selected_Quantity) - totalQtyRaw;
-
+          this.totalBalanceRaw = previousBalance;
+          // this.totalBalanceRaw = this.totalBalance;
         },
         deep: true
       }
@@ -407,11 +447,22 @@
         this.checkUserStatus();
       }, 50 * 1000);
       this.loadFetchData(); //uncomment this
+
     },
     beforeUnmount() {
       clearInterval(this.statusCheckTimer);
     },
     methods: {
+      calculateBalance(row) {
+        // Calculate balance based on the values of qty_received, waste_gumon, and qty_raw
+        const newItem = parseFloat(row.qty_received) + parseFloat(row.waste_gumon);
+        return parseFloat(row.qty_raw) - newItem ;
+      },
+      updateRowBalance() {
+        this.rows.forEach(row => {
+          row.balance_raw = parseFloat(this.selected_Quantity) - parseFloat(row.qty_raw);
+        });
+      },
       loadFetchData() {
         const MPOData = SessionStorage.getItem('MPOData');
         if (MPOData) {
@@ -457,6 +508,10 @@
           SessionStorage.removeItem('RetrieveData');
         }
       },
+      CloseFolder(){
+        this.ShowFolder = false;
+        this.rows = [];
+      },
       handleImageClick(event){
         this.ShowFolder = true;
         console.log(event)
@@ -467,24 +522,41 @@
           this.selected_Quantity = Info.quantity_received;
 
           // Balance
-          this.balance_raw = Info.quantity_received;
-
+          this.totalBalance = Info.quantity_received;
+          this.totalBalanceRaw = Info.quantity_received;
+          this.addRow();
           console.log(Info);
         }).catch(error => {
             console.error('Error fetching data:', error);
         });
       },
-      addTable() {
+      addRow() {
+        if (parseFloat(this.totalBalanceRaw) == 0) {
+          this.$q.notify({
+            type: 'negative',
+            message: 'Cannot add another table.',
+          });
+          return;
+        }
 
         this.rows.push({
           date: '',
           segregator: '',
           qty_raw: 0,
-          balance_raw: '',
-          qty_received: '',
-          waste_gumon: '',
-          balance: '',
+          balance_raw: parseFloat(this.totalBalance), // Ensure totalBalance is parsed as float
+          qty_received: 0,
+          waste_gumon: 0,
+          balance: 0
         });
+        console.log(this.totalBalance);
+        console.log(this.rows);
+      },
+      deleteRow(row) {
+        // Implement logic to delete the specified row
+        const index = this.rows.indexOf(row);
+        if (index !== -1) {
+          this.rows.splice(index, 1);
+        }
       },
 
 
