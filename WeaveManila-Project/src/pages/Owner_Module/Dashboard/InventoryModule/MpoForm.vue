@@ -58,10 +58,21 @@ bordered
         </ul>
       </li>
 
-      <li class="py-[10px] px-[20px] ">
-        <div class="flex items-center gap-2">
-          <i class="bi bi-box-seam"></i> <span >Product Monitoring</span>
+      <li class="py-[10px] px-[20px]" @click="toggleProduction">
+        <div class="flex items-center gap-2 justify-between">
+          <div>
+            <i class="bi bi-box-seam"></i> <span >Product Monitoring</span>
+          </div>
+          <div><q-icon name="expand_more"  /> </div>
         </div>
+        <ul v-if="productionVisible">
+          <router-link to="/dashboard/productionplan-section">
+            <li class="py-[2px] px-[40px] mt-3">Production Plan</li>
+          </router-link>
+          <router-link to="/dashboard/joborder-section">
+            <li class="px-[40px] mt-3">Job Order</li>
+          </router-link>
+        </ul>
       </li>
       <li class="py-[10px] px-[20px]">
         <div class="flex items-center">
@@ -180,7 +191,7 @@ bordered
         </div>
       </li>
 
-      
+
       <li class="mt-auto py-[10px]">
           <div class="flex justify-center ">
             <router-link @click="logout" to="/">
@@ -647,6 +658,7 @@ export default {
       drawerWidth: 300,
       drawerIcon: 'arrow_back_ios',
       inventoryMenuVisible: false,
+      productionVisible: false,
 
       // Additional Data
       columns : [
@@ -1311,6 +1323,9 @@ export default {
     },
 
 // OLD DATA
+    toggleProduction(){
+      this.productionVisible = !this.productionVisible;
+    },
     toggleInventoryMenu() {
       this.inventoryMenuVisible = !this.inventoryMenuVisible;
     },
@@ -1385,7 +1400,7 @@ export default {
           this.position = userInformation.position;
           this.status = userInformation.status;
           this.isAdmin = userInformation.isAdmin;
-          
+
           this.fullname = this.firstname + " " + this.lastname;
           if (this.position.toLowerCase() === 'owner') {
 

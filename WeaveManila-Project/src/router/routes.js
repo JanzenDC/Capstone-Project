@@ -46,13 +46,18 @@ const routes = [
       { path: 'rawmaterials-section', component: () => import('pages/Owner_Module/Dashboard/InventoryModule/InventoryPages/RawMaterials.vue') },
       { path: 'segregate-section', component: () => import('pages/Owner_Module/Dashboard/InventoryModule/InventoryPages/SegregatePage.vue') },
 
-      
+       // Production Monitoring Module
+      { path: 'productionplan-section', component: () => import('pages/Owner_Module/Dashboard/ProductionMonitoring/ProductionPlan.vue') },
+      { path: 'joborder-section', component: () => import('pages/Owner_Module/Dashboard/ProductionMonitoring/JobOrder.vue') },
+
       // Supplier Pages
       { path: 'supplier-restorepoint', component: () => import('pages/Owner_Module/Dashboard/InventoryModule/SupplierPages/SupplierRestore.vue') },
 
       // Backup And Restore Module
       { path: 'backup-section', component: () => import('pages/Owner_Module/Dashboard/BackupAndRestore/BackupPage.vue') },
       { path: 'restore-section', component: () => import('pages/Owner_Module/Dashboard/BackupAndRestore/RestorePage.vue') },
+
+
     ]
   },
   {
