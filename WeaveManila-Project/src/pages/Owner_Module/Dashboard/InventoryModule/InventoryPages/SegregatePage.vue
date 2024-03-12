@@ -296,20 +296,18 @@
               :columns="columns"
               row-key="baseID"
             >
-            <template v-slot:header-cell-action="props">
-              <q-th :props="props">
-                <q-icon name="add" class='p-2 rounded bg-violet-900 text-white cursor-pointer' @click='addRow'/>
 
-              </q-th>
-            </template>
             <template v-slot:body="props">
               <q-tr :props="props">
+
+
                 <q-td key="date" :props="props">
                   {{ props.row.date }}
                   <q-popup-edit v-model="props.row.date" title="Update Description" buttons v-slot="scope">
                     <q-input type="date" v-model="scope.value" dense autofocus />
                   </q-popup-edit>
                 </q-td>
+
                 <q-td key="segregator" :props="props">
                   {{ props.row.segregator }}
                   <q-popup-edit v-model="props.row.segregator" title="Update Description" buttons v-slot="scope">
@@ -343,15 +341,23 @@
                 </q-td>
 
                 <q-td key="balance" :props="props">
-                  {{ calculateBalance(props.row, props.index) }}
+                  {{ stored_Variable }}
                 </q-td>
 
-                <q-td key="action" :props="props">
+
+                <q-td key="action" :props="props" >
+                  <div class="w-[70px] flex gap-3">
+                    <q-icon
+                    name="edit"
+                    class="w-[18px] h-[21px] p-1 text-white bg-yellow rounded"
+                  />
                   <q-icon
                     name="delete"
                     class="w-[18px] h-[21px] p-1 text-white bg-red rounded"
                     @click="deleteRow(props.row)"
                   />
+                  </div>
+
                 </q-td>
 
               </q-tr>
@@ -405,7 +411,7 @@
           { name: 'qty_received', align: 'left', label: 'Qty Received', field: 'qty_received', sortable: true,},
           { name: 'waste_gumon', align: 'left', label: 'Waste / Gumon', field: 'waste_gumon', sortable: true,},
           { name: 'balance', align: 'left', label: 'Balance', field: 'balance', sortable: true,},
-          { name: 'action', align: 'left', label: '+', field: 'action'},
+          { name: 'action', align: 'center', label: 'Actions', field: 'action'},
         ],
         rows: [],
         mpoIDnumber: '',
@@ -417,30 +423,18 @@
         selected_Quantity: '',
         totalBalance: 0,
         totalBalanceRaw: 0,
+        updatedBalance: 0,
+        stored_Variable: 0,
+
+        newRow: {
+          date: '',
+          segregator: '',
+          qty_raw: '',
+          qty_received: '',
+          waste_gumon: ''
+        },
       };
     },
-    watch: {
-      rows: {
-        handler(newRows, oldRows) {
-          let previousBalance = parseFloat(this.totalBalance);
-
-          let totalQtyRaw = 0;
-          newRows.forEach(row => {
-            if (parseFloat(row.qty_raw) > parseFloat(previousBalance)) {
-              // If the input value exceeds selected_Quantity, set it to selected_Quantity
-              row.qty_raw = parseFloat(previousBalance);
-            }
-            row.balance_raw = previousBalance - parseFloat(row.qty_raw);
-            previousBalance = parseFloat(row.balance_raw);
-            totalQtyRaw += parseFloat(row.qty_raw);
-          });
-          this.totalBalanceRaw = previousBalance;
-          // this.totalBalanceRaw = this.totalBalance;
-        },
-        deep: true
-      }
-    },
-
     mounted() {
       this.loadUserData();
       this.statusCheckTimer = setInterval(() => {
@@ -452,17 +446,30 @@
     beforeUnmount() {
       clearInterval(this.statusCheckTimer);
     },
+    watch: {
+      rows: {
+        handler(newRows, oldRows) {
+          let previousBalance = parseFloat(this.totalBalance);
+          let totalQtyRaw = 0;
+          newRows.forEach(row => {
+            if (parseFloat(row.qty_raw) > parseFloat(previousBalance)) {
+  
+              row.qty_raw = parseFloat(previousBalance);
+            }
+            row.balance_raw = previousBalance - parseFloat(row.qty_raw);
+            previousBalance = parseFloat(row.balance_raw);
+            totalQtyRaw += parseFloat(row.qty_raw);
+
+            row.balance = this.calculateBalance(row);
+          });
+          this.totalBalanceRaw = previousBalance;
+          // this.totalBalanceRaw = this.totalBalance;
+        },
+        deep: true
+      }
+    },
     methods: {
-      calculateBalance(row) {
-        // Calculate balance based on the values of qty_received, waste_gumon, and qty_raw
-        const newItem = parseFloat(row.qty_received) + parseFloat(row.waste_gumon);
-        return parseFloat(row.qty_raw) - newItem ;
-      },
-      updateRowBalance() {
-        this.rows.forEach(row => {
-          row.balance_raw = parseFloat(this.selected_Quantity) - parseFloat(row.qty_raw);
-        });
-      },
+
       loadFetchData() {
         const MPOData = SessionStorage.getItem('MPOData');
         if (MPOData) {
@@ -524,7 +531,15 @@
           // Balance
           this.totalBalance = Info.quantity_received;
           this.totalBalanceRaw = Info.quantity_received;
-          this.addRow();
+          // this.rows.push({
+          //   date: '',
+          //   segregator: '',
+          //   qty_raw: 0,
+          //   balance_raw: parseFloat(this.totalBalance), // Ensure totalBalance is parsed as float
+          //   qty_received: 0,
+          //   waste_gumon: 0,
+          //   balance: 0
+          // });
           console.log(Info);
         }).catch(error => {
             console.error('Error fetching data:', error);
@@ -546,7 +561,7 @@
           balance_raw: parseFloat(this.totalBalance), // Ensure totalBalance is parsed as float
           qty_received: 0,
           waste_gumon: 0,
-          balance: 0
+          balance: parseFloat(this.updatedBalance)
         });
         console.log(this.totalBalance);
         console.log(this.rows);
@@ -557,6 +572,41 @@
         if (index !== -1) {
           this.rows.splice(index, 1);
         }
+      },
+      AddData() {
+        // Convert inputs to numbers using parseFloat
+        const newRowQtyRaw = parseFloat(this.newRow.qty_raw) || 0;
+        const newRowQtyReceived = parseFloat(this.newRow.qty_received) || 0;
+        const newRowWasteGumon = parseFloat(this.newRow.waste_gumon) || 0;
+
+        // if(newRowQtyRaw < newRowQtyReceived)
+        // {
+        //   this.$q.notify({
+        //     type: 'negative',
+        //     message: 'Wrong Input: Quantity Received is greater than Quantity Raw. Please try again.',
+        //   });
+        //   return;
+        // }
+        // Calculate balance_raw
+        const balanceRaw = this.totalBalanceRaw - newRowQtyRaw;
+
+        // Calculate balance
+        const totalReceivedAndWaste = newRowQtyReceived + newRowWasteGumon;
+        const balance = newRowQtyRaw - totalReceivedAndWaste;
+        this.stored_Variable = balance;
+        // Push new row to rows array
+        this.rows.push({
+          date: this.newRow.date,
+          segregator: this.newRow.segregator,
+          qty_raw: newRowQtyRaw,
+          balance_raw: balanceRaw,
+          qty_received: newRowQtyReceived,
+          waste_gumon: newRowWasteGumon,
+          //balance: balance,
+        });
+
+        // Update total balance
+        this.totalBalanceRaw = balanceRaw;
       },
 
 

@@ -255,7 +255,22 @@ bordered
             :rows="rows"
             :columns="columns"
             row-key="name"
-          />
+          >
+          <template v-slot:body-cell-status="props">
+            <q-td :props="props">
+              <span v-if="props.row.status === 2" class="text-green-600 p-2 rounded-full bg-green-300">
+                ● In Stock
+              </span>
+              <span v-else-if="props.row.status === 0" class="text-red-600 p-2 rounded-full bg-red-300">
+                ● Out of stock
+              </span>
+              <span v-else-if="props.row.status === 1" class="text-yellow-600 p-2 rounded-full bg-yellow-300">
+                ● Low Stock
+              </span>
+            </q-td>
+          </template>
+          </q-table>
+
         </div>
       </div>
 
