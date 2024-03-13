@@ -72,6 +72,9 @@ bordered
           <router-link to="/dashboard/joborder-section">
             <li class="px-[40px] mt-3">Job Order</li>
           </router-link>
+          <router-link to="/dashboard/weaver-section">
+            <li class="px-[40px] mt-3">Weaver</li>
+          </router-link>
         </ul>
       </li>
       <li class="py-[10px] px-[20px]">
@@ -721,8 +724,6 @@ export default {
       // THIRD PROCESS
       notes_instructions: '',
       characterCount: 0,
-      uploadPreparedSignature: '',
-      uploadApprovedSignature: '',
       approvedby_name: '',
       prepared_name: '',
 
