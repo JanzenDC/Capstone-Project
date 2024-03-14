@@ -47,6 +47,13 @@
                 'message' => 'Password have been changed.',
             ];
             echo json_encode($response);
+            exit;
+        }else{
+            $response = [
+                'status' => 'fail',
+                'message' => 'There is an error to change the password.',
+            ];
+            echo json_encode($response);
         }
 
 

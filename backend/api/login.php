@@ -76,7 +76,7 @@
         else{
             $response = [
                 'status' => 'fail',
-                'message' => 'Email not registered.',
+                'message' => 'Email not registered in the system.',
             ];
             echo json_encode($response);
             exit;         
