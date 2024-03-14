@@ -1,244 +1,431 @@
 <template>
-    <q-drawer
-    show-if-above
-    v-model="drawer"
-    side="left"
-    bordered
-    :width="drawerWidth">
-      <ul class=" p-2 flex flex-col h-full static" v-if="drawerWidth !== 80">
-        <div class="flex">
-          <div class="w-1/4 items-center flex justify-center" >
-            <q-img
-              src="../../../../assets/favicon-128x128.png"
-              alt="Description of the image"
-              class="w-[50px] md:w-[60px]"
-            />
-          </div>
-          <div class=" items-center flex justify-center" v-if="drawerWidth <= 80">
-            <q-img
-              src="../../../../assets/favicon-128x128.png"
-              alt="Description of the image"
-              class="w-[150px] md:w-[60px]"
-            />
-          </div>
-          <div class="text-[#281c0f] text-[18px] w-3/4 flex justify-center items-center gap-1" v-if="drawerWidth !== 80">
-          <div>
-            <span class="font-bold ">WEAVEMANILA INC.</span><br>
-          </div>
-          <div>
-            <q-icon name="keyboard_double_arrow_right" class="text-[30px] cursor-pointer" @click="toggleDrawer" />
-          </div>
-        </div>
-  
-        </div>
-  
-  
-  
-        <li class="font-bold mt-5">Menu</li>
-          <li class="py-[10px] px-[20px]" >
-            <div class="flex items-center">
-              <router-link to="/dashboard/main-dashboard">
-              <q-icon name="dashboard" class="mr-2" /> <span>Dashboard</span>
-              </router-link>
-            </div>
-          </li>
-  
-          <li class="py-[10px] px-[20px]" @click="toggleInventoryMenu">
-            <div class="flex items-center gap-2 justify-between">
-              <div><q-icon name="inventory"/> <span >Inventory</span></div>
-              <div><q-icon name="expand_more"  /> </div>
-            </div>
-            <ul v-if="inventoryMenuVisible">
-              <router-link to="/dashboard/inventory-section">
-                <li class="py-[2px] px-[40px] mt-3">Materials</li>
-              </router-link>
-              <router-link to="/dashboard/mpoform-section">
-                <li class="px-[40px] mt-3"> Material Purchase Order</li>
-              </router-link>
-            </ul>
-          </li>
-  
-          <li class="py-[10px] px-[20px]" @click="toggleProduction">
-            <div class="flex items-center gap-2 justify-between">
-              <div>
-                <i class="bi bi-box-seam"></i> <span >Product Monitoring</span>
-              </div>
-              <div><q-icon name="expand_more"  /> </div>
-            </div>
-            <ul v-if="productionVisible">
-              <router-link to="/dashboard/productionplan-section">
-                <li class="py-[2px] px-[40px] mt-3">Production Plan</li>
-              </router-link>
-            <router-link to="/dashboard/joborder-section">
-              <li class="px-[40px] mt-3">Job Order</li>
-            </router-link>
-            <router-link to="/dashboard/weaver-section">
-              <li class="px-[40px] mt-3">Weaver</li>
-            </router-link>
-            </ul>
-          </li>
-          <li class="py-[10px] px-[20px]">
-            <div class="flex items-center">
-              <q-icon name="assignment_add" class="mr-2"/><span>Report</span>
-            </div>
-          </li>
-          <!-- Settings Section -->
-          <li class="font-bold" >Admin</li>
-          <li class="py-[10px] px-[20px]">
-            <div class="flex items-center">
-              <router-link to="/dashboard/auditlogs-section">
-                <i class="bi bi-activity mr-2"></i> <span >Audit Logs</span>
-              </router-link>
-            </div>
-          </li>
-          <li class="py-[10px] px-[20px]">
-            <div class="flex items-center">
-              <router-link to="/dashboard/usermanagement-section">
-                <q-icon name="group" class="mr-2"/> <span >User Management</span>
-              </router-link>
-            </div>
-          </li>
-          <li class="py-[10px] px-[20px]">
-            <div class="flex items-center">
-              <router-link to="/dashboard/account-settings">
-                <q-icon name="manage_accounts" class="mr-2"/> <span >Account Settings</span>
-              </router-link>
-            </div>
-          </li>
-          <li class="py-[10px] px-[20px]" v-if="isAdmin === 1">
-            <div class="flex items-center">
-              <router-link to="/dashboard/backup-section">
-                <q-icon name="backup" class="mr-2"/> <span >Data Backup</span>
-              </router-link>
-            </div>
-          </li>
-  
-          <li class="mt-auto py-[10px]">
-            <q-separator />
-            <div class="flex justify-between text-center" >
-              <div class="flex items-center" >
-                <q-img
-                  :src="getUserProfileImagePath()"
-                  alt="Description of the image"
-                  class="w-12 md:w-12 rounded-full"
-                />
-                <div class="ml-2 overflow-hidden">
-                  <div class="whitespace-nowrap overflow-hidden text-overflow-ellipsis font-bold">
-                    {{ getLimitedFullname(fullname, 25) }}
-                  </div>
-                  <div class="text-center">
-                    {{ position }}
-                  </div>
-                </div>
-              </div>
-              <div class="flex items-center ">
-                <router-link @click="logout" to="/">
-                  <q-icon name="logout" class="h-[18px] w-[20px] font-bold"/>
-                </router-link>
-              </div>
-            </div>
-          </li>
-      </ul>
-  
-      <ul class="p-2 flex flex-col h-full static" v-if="drawerWidth <= 80">
-  
-        <div class="flex justify-center items-center text-[40px]">
-          <div class=" items-center flex justify-center cursor-pointer" v-if="drawerWidth <= 80">
-            <q-icon name="keyboard_double_arrow_right" @click="toggleDrawer"/>
-          </div>
-        </div>
-  
-          <li class="mt-5 text-center">Menu</li>
-          <li class="py-[10px] px-[20px]" >
-            <div class="flex items-center" @click="toggleDrawer">
-              <q-icon name="dashboard" />
-            </div>
-          </li>
-          <!-- Process Section -->
-  
-          <li class="py-[10px] px-[20px]" @click="toggleDrawer">
-            <div class="flex items-center gap-2 justify-between">
-              <div><q-icon name="inventory"/></div>
-            </div>
-          </li>
-  
-          <li class="py-[10px] px-[20px] ">
-            <div class="flex items-center gap-2" @click="toggleDrawer">
-              <i class="bi bi-box-seam"></i>
-            </div>
-          </li>
-          <li class="py-[10px] px-[20px]">
-            <div class="flex items-center" @click="toggleDrawer">
-              <q-icon name="description" />
-            </div>
-          </li>
-          <li class="text-center">Admin</li>
-          <li class="py-[10px] px-[20px]">
-            <div class="flex items-center" @click="toggleDrawer">
-                <i class="bi bi-activity"></i>
-            </div>
-          </li>
-          <li class="py-[10px] px-[20px]">
-            <div class="flex items-center" @click="toggleDrawer">
-                <q-icon name="group" class="mr-2"/>
-            </div>
-          </li>
-          <li class="py-[10px] px-[20px]">
-            <div class="flex items-center" @click="toggleDrawer">
-                <q-icon name="manage_accounts"/>
-            </div>
-          </li>
-          <li class="py-[10px] px-[20px]">
-            <div class="flex items-center" @click="toggleDrawer">
-                <q-icon name="backup"/>
-            </div>
-          </li>
-          <li class="mt-auto py-[10px]">
-              <div class="flex justify-center ">
-                <router-link @click="logout" to="/">
-                  <q-icon name="logout" class="h-[18px] w-[20px] font-bold"/>
-                </router-link>
-              </div>
-          </li>
-      </ul>
-    </q-drawer>
-    <q-page class="bg-[#f5f5f5] ">
-      <div class="text-[30px] bg-white p-4">
-        <div class="items-center flex">
-          <q-icon
-            name="menu"
-            v-if="showMenuIcon"
-            @click="toggleDrawer"
-            class="cursor-pointer"
-          />
-          <q-icon
-            name="menu"
-            v-if="!showMenuIcon"
-            @click="toggleDrawer"
-            class="cursor-pointer max-[1020px]:flex min-[1020px]:hidden"
-          />
-          <div>
-            <span class="font-bold">Weavers List</span>
-            <div class="text-[16px] text-[#999999]">Production Monitoring  / <span class='text-black'>Weavers List</span></div>
-          </div>
-        </div>
-  
-  
+<q-drawer
+show-if-above
+v-model="drawer"
+side="left"
+bordered
+:width="drawerWidth">
+  <ul class=" p-2 flex flex-col h-full static" v-if="drawerWidth !== 80">
+    <div class="flex">
+      <div class="w-1/4 items-center flex justify-center" >
+        <q-img
+          src="../../../../assets/favicon-128x128.png"
+          alt="Description of the image"
+          class="w-[50px] md:w-[60px]"
+        />
       </div>
-      <div class="p-4">
-        <div class="bg-white px-4 py-3 rounded h-[500px]">
+      <div class=" items-center flex justify-center" v-if="drawerWidth <= 80">
+        <q-img
+          src="../../../../assets/favicon-128x128.png"
+          alt="Description of the image"
+          class="w-[150px] md:w-[60px]"
+        />
+      </div>
+      <div class="text-[#281c0f] text-[18px] w-3/4 flex justify-center items-center gap-1" v-if="drawerWidth !== 80">
+      <div>
+        <span class="font-bold ">WEAVEMANILA INC.</span><br>
+      </div>
+      <div>
+        <q-icon name="keyboard_double_arrow_right" class="text-[30px] cursor-pointer" @click="toggleDrawer" />
+      </div>
+    </div>
 
+    </div>
+
+
+
+    <li class="font-bold mt-5">Menu</li>
+      <li class="py-[10px] px-[20px]" >
+        <div class="flex items-center">
+          <router-link to="/dashboard/main-dashboard">
+          <q-icon name="dashboard" class="mr-2" /> <span>Dashboard</span>
+          </router-link>
         </div>
+      </li>
+
+      <li class="py-[10px] px-[20px]" @click="toggleInventoryMenu">
+        <div class="flex items-center gap-2 justify-between">
+          <div><q-icon name="inventory"/> <span >Inventory</span></div>
+          <div><q-icon name="expand_more"  /> </div>
+        </div>
+        <ul v-if="inventoryMenuVisible">
+          <router-link to="/dashboard/inventory-section">
+            <li class="py-[2px] px-[40px] mt-3">Materials</li>
+          </router-link>
+          <router-link to="/dashboard/mpoform-section">
+            <li class="px-[40px] mt-3"> Material Purchase Order</li>
+          </router-link>
+        </ul>
+      </li>
+
+      <li class="py-[10px] px-[20px]" @click="toggleProduction">
+        <div class="flex items-center gap-2 justify-between">
+          <div>
+            <i class="bi bi-box-seam"></i> <span >Product Monitoring</span>
+          </div>
+          <div><q-icon name="expand_more"  /> </div>
+        </div>
+        <ul v-if="productionVisible">
+          <router-link to="/dashboard/productionplan-section">
+            <li class="py-[2px] px-[40px] mt-3">Production Plan</li>
+          </router-link>
+        <router-link to="/dashboard/joborder-section">
+          <li class="px-[40px] mt-3">Job Order</li>
+        </router-link>
+        </ul>
+      </li>
+      <li class="py-[10px] px-[20px]">
+        <div class="flex items-center">
+          <q-icon name="assignment_add" class="mr-2"/><span>Report</span>
+        </div>
+      </li>
+      <!-- Settings Section -->
+      <li class="font-bold" >Admin</li>
+      <li class="py-[10px] px-[20px]">
+        <div class="flex items-center">
+          <router-link to="/dashboard/auditlogs-section">
+            <i class="bi bi-activity mr-2"></i> <span >Audit Logs</span>
+          </router-link>
+        </div>
+      </li>
+      <li class="py-[10px] px-[20px]">
+        <div class="flex items-center">
+          <router-link to="/dashboard/usermanagement-section">
+            <q-icon name="group" class="mr-2"/> <span >User Management</span>
+          </router-link>
+        </div>
+      </li>
+      <li class="py-[10px] px-[20px]">
+        <div class="flex items-center">
+          <router-link to="/dashboard/account-settings">
+            <q-icon name="manage_accounts" class="mr-2"/> <span >Account Settings</span>
+          </router-link>
+        </div>
+      </li>
+      <li class="py-[10px] px-[20px]" v-if="isAdmin === 1">
+        <div class="flex items-center">
+          <router-link to="/dashboard/backup-section">
+            <q-icon name="backup" class="mr-2"/> <span >Data Backup</span>
+          </router-link>
+        </div>
+      </li>
+
+      <li class="mt-auto py-[10px]">
+        <q-separator />
+        <div class="flex justify-between text-center" >
+          <div class="flex items-center" >
+            <q-img
+              :src="getUserProfileImagePath()"
+              alt="Description of the image"
+              class="w-12 md:w-12 rounded-full"
+            />
+            <div class="ml-2 overflow-hidden">
+              <div class="whitespace-nowrap overflow-hidden text-overflow-ellipsis font-bold">
+                {{ getLimitedFullname(fullname, 25) }}
+              </div>
+              <div class="text-center">
+                {{ position }}
+              </div>
+            </div>
+          </div>
+          <div class="flex items-center ">
+            <router-link @click="logout" to="/">
+              <q-icon name="logout" class="h-[18px] w-[20px] font-bold"/>
+            </router-link>
+          </div>
+        </div>
+      </li>
+  </ul>
+
+  <ul class="p-2 flex flex-col h-full static" v-if="drawerWidth <= 80">
+
+    <div class="flex justify-center items-center text-[40px]">
+      <div class=" items-center flex justify-center cursor-pointer" v-if="drawerWidth <= 80">
+        <q-icon name="keyboard_double_arrow_right" @click="toggleDrawer"/>
       </div>
-    </q-page>
-    </template>
-  
+    </div>
+
+      <li class="mt-5 text-center">Menu</li>
+      <li class="py-[10px] px-[20px]" >
+        <div class="flex items-center" @click="toggleDrawer">
+          <q-icon name="dashboard" />
+        </div>
+      </li>
+      <!-- Process Section -->
+
+      <li class="py-[10px] px-[20px]" @click="toggleDrawer">
+        <div class="flex items-center gap-2 justify-between">
+          <div><q-icon name="inventory"/></div>
+        </div>
+      </li>
+
+      <li class="py-[10px] px-[20px] ">
+        <div class="flex items-center gap-2" @click="toggleDrawer">
+          <i class="bi bi-box-seam"></i>
+        </div>
+      </li>
+      <li class="py-[10px] px-[20px]">
+        <div class="flex items-center" @click="toggleDrawer">
+          <q-icon name="description" />
+        </div>
+      </li>
+      <li class="text-center">Admin</li>
+      <li class="py-[10px] px-[20px]">
+        <div class="flex items-center" @click="toggleDrawer">
+            <i class="bi bi-activity"></i>
+        </div>
+      </li>
+      <li class="py-[10px] px-[20px]">
+        <div class="flex items-center" @click="toggleDrawer">
+            <q-icon name="group" class="mr-2"/>
+        </div>
+      </li>
+      <li class="py-[10px] px-[20px]">
+        <div class="flex items-center" @click="toggleDrawer">
+            <q-icon name="manage_accounts"/>
+        </div>
+      </li>
+      <li class="py-[10px] px-[20px]">
+        <div class="flex items-center" @click="toggleDrawer">
+            <q-icon name="backup"/>
+        </div>
+      </li>
+      <li class="mt-auto py-[10px]">
+          <div class="flex justify-center ">
+            <router-link @click="logout" to="/">
+              <q-icon name="logout" class="h-[18px] w-[20px] font-bold"/>
+            </router-link>
+          </div>
+      </li>
+  </ul>
+</q-drawer>
+<q-page class="bg-[#f5f5f5] ">
+  <div class="text-[30px] bg-white p-4">
+    <div class="items-center flex">
+      <q-icon
+        name="menu"
+        v-if="showMenuIcon"
+        @click="toggleDrawer"
+        class="cursor-pointer"
+      />
+      <q-icon
+        name="menu"
+        v-if="!showMenuIcon"
+        @click="toggleDrawer"
+        class="cursor-pointer max-[1020px]:flex min-[1020px]:hidden"
+      />
+      <div>
+        <span class="font-bold">Weavers List</span>
+        <div class="text-[16px] text-[#999999]">Production Monitoring  / <span class='text-black'>Weavers List</span></div>
+      </div>
+    </div>
+
+
+  </div>
+  <div class="p-4">
+    <div class="bg-white px-4 py-3 rounded h-[500px]">
+        <div class="md:flex md:items-center md:justify-between ">
+          <div class="grid-cols-2 grid gap-2 md:flex items-center md:gap-5">
+            <q-input v-model="search" outlined dense placeholder="Search" class="md:w-[400px] ">
+              <template v-slot:prepend>
+                <q-icon name="search" />
+              </template>
+            </q-input>
+          </div>
+          <div class='flex gap-2'>
+            <q-btn icon='download'/>
+            <q-btn icon='print'/>
+            <q-btn icon='cached'/>
+            <q-btn icon='filter_list'/>
+            <q-btn icon='add' label='ADD WEAVER' class="bg-[#634832] text-white" @click="addWeaver = true"/>
+          </div>
+        </div>
+
+          <div class='mt-3'>
+            <q-table
+              class="my-sticky-header-table"
+              flat bordered
+              :rows="w_rows"
+              :columns="w_columns"
+              row-key="weaverID"
+              :selected-rows-label="getSelectedString"
+              selection="multiple"
+              :pagination="initialPagination"
+              v-model:selected="selected"
+            >
+            <template v-slot:body-cell-action="props">
+              <q-td :props="props">
+                <div class='flex gap-2 w-[180px]'>
+                  <q-btn icon='history' class='text-white bg-[#475467] w-[32px] h-[32px]'>
+                    <q-tooltip :offset="[0, 8]">History</q-tooltip>
+                  </q-btn>
+                  <q-btn icon='edit' class='text-white bg-[#109CF1] w-[32px] h-[32px]' @click='editWeaver(props.row.id, props.row.name, props.row.contact, props.row.emailaddress, props.row.addresses, props.row.firstname, props.row.lastname)'>
+                    <q-tooltip :offset="[0, 8]">Edit</q-tooltip>
+                  </q-btn>
+                  <q-btn icon='visibility' class='text-white bg-[#999999] w-[32px] h-[32px]'>
+                    <q-tooltip :offset="[0, 8]">See Details</q-tooltip>
+                  </q-btn>
+                  <q-btn icon='delete' class='text-white bg-[#B3261E] w-[32px] h-[32px]'
+                  @click='deleteWeaver(props.row.id)'>
+                    <q-tooltip :offset="[0, 8]">Delete</q-tooltip>
+                  </q-btn>
+
+                </div>
+              </q-td>
+            </template>
+            </q-table>
+          </div>
+        </div>
+  </div>
+
+<!-- ONSUBMIT -->
+    <q-dialog v-model="addWeaver" persistent>
+      <q-card class='w-[964px]'>
+        <q-card-section class="row items-center q-pb-none">
+          <div class='flex gap-2 items-center'>
+            <q-icon name="group" class="w-[48px] h-[48px] text-h5 rounded drop-shadow-lg"/>
+            <div class='text-h6'>
+              Add Weaver
+            </div>
+          </div>
+          <q-space />
+          <q-btn icon="close" flat round dense v-close-popup />
+        </q-card-section>
+
+        <q-card-section>
+          <q-form @submit="onSubmit">
+              <p class='text-[16px]'>Basic Information</p>
+              <div class='grid grid-cols-2 gap-2'>
+                  <div>
+                      <label>First Name</label>
+                      <q-input v-model='v_fname' dense outlined lazy-rules :rules="[ val => val && val.length > 0 || 'Please type something']"/>
+                  </div>
+                  <div>
+                      <label>Last Name</label>
+                      <q-input v-model='v_lname' dense outlined lazy-rules :rules="[ val => val && val.length > 0 || 'Please type something']"/>
+                  </div>
+                  <div>
+                      <label>Contact Number</label>
+                      <q-input v-model='v_contactnumber' dense outlined lazy-rules :rules="[
+                          val => val && val.length === 11 && val.startsWith('09') && /^\d+$/.test(val) || 'Contact number must start with 09, be 11 digits long, and contain only numbers'
+                      ]"/>
+                  </div>
+                  <div>
+                      <label>Email Address</label>
+                      <q-input v-model='v_emailaddress' dense outlined lazy-rules :rules="[
+                          val => val && val.length > 0 && val.includes('@') || 'Please enter a valid email address'
+                      ]"/>
+                  </div>
+              </div>
+              <div class="grid grid-cols-2 gap-2">
+                  <div>
+                      <label>Region<span class="text-red-600">*</span></label>
+                      <q-select v-model="selectedRegion" :options="regionOptions" label="Region" @input="onRegionChange" dense outlined class='flex-wrap' />
+                  </div>
+                  <div>
+                      <label>Province<span class="text-red-600">*</span></label>
+                      <q-select v-model="selectedProvince" :options="provinceOptions" label="Province" dense outlined :disable="!selectedRegion" class='flex-wrap'/>
+                  </div>
+                  <div>
+                      <label>City<span class="text-red-600">*</span></label>
+                      <q-select v-model="selectedCity" :options="cityOptions" label="City" dense outlined :disable="!selectedProvince" class='flex-wrap'/>
+                  </div>
+                  <div>
+                      <label>Barangay<span class="text-red-600">*</span></label>
+                      <q-select v-model="selectedBarangay" :options="barangayOptions" label="Barangay" dense outlined :disable="!selectedCity" />
+                  </div>
+                  <q-input v-model='weaverAddress' class='hidden'/>
+              </div>
+              <div class='flex justify-end items-end mt-3'>
+                <q-btn label="Submit" type="submit" color="primary"/>
+              </div>
+          </q-form>
+
+        </q-card-section>
+      </q-card>
+    </q-dialog>
+<!-- ONUPDATE -->
+    <q-dialog v-model="editDialog" persistent>
+      <q-card class='w-[964px]'>
+        <q-card-section class="row items-center q-pb-none">
+          <div class='flex gap-2 items-center'>
+            <q-icon name="group" class="w-[48px] h-[48px] text-h5 rounded drop-shadow-lg"/>
+            <div class='text-h6'>
+              Edit Weaver
+            </div>
+          </div>
+          <q-space />
+          <q-btn icon="close" flat round dense v-close-popup @click='handleClose'/>
+        </q-card-section>
+
+        <q-card-section>
+          <q-form @submit="onUpdate">
+              <p class='text-[16px]'>Basic Information</p>
+              <div class='grid grid-cols-2 gap-2'>
+                  <div>
+                      <label>First Name</label>
+                      <q-input v-model='v_fname' dense outlined lazy-rules :rules="[ val => val && val.length > 0 || 'Please type something']"/>
+                  </div>
+                  <div>
+                      <label>Last Name</label>
+                      <q-input v-model='v_lname' dense outlined lazy-rules :rules="[ val => val && val.length > 0 || 'Please type something']"/>
+                  </div>
+                  <div>
+                      <label>Contact Number</label>
+                      <q-input v-model='v_contactnumber' dense outlined lazy-rules :rules="[
+                          val => val && val.length === 11 && val.startsWith('09') && /^\d+$/.test(val) || 'Contact number must start with 09, be 11 digits long, and contain only numbers'
+                      ]"/>
+                  </div>
+                  <div>
+                      <label>Email Address</label>
+                      <q-input v-model='v_emailaddress' dense outlined lazy-rules :rules="[
+                          val => val && val.length > 0 && val.includes('@') || 'Please enter a valid email address'
+                      ]"/>
+                  </div>
+              </div>
+              <div class='w-full'>
+                <q-input v-model='weaverAddress' dense outlined disable>
+                  <template v-slot:after>
+                    <q-btn round dense flat icon="edit" @click="isEditing = !isEditing"/>
+                  </template>
+                </q-input>
+              </div>
+              <div class="grid grid-cols-2 gap-2" :class="{ 'hidden': !isEditing }">
+                  <div>
+                      <label>Region<span class="text-red-600">*</span></label>
+                      <q-select v-model="selectedRegion" :options="regionOptions" label="Region" @input="onRegionChange" dense outlined class='flex-wrap' />
+                  </div>
+                  <div>
+                      <label>Province<span class="text-red-600">*</span></label>
+                      <q-select v-model="selectedProvince" :options="provinceOptions" label="Province" dense outlined :disable="!selectedRegion" class='flex-wrap'/>
+                  </div>
+                  <div>
+                      <label>City<span class="text-red-600">*</span></label>
+                      <q-select v-model="selectedCity" :options="cityOptions" label="City" dense outlined :disable="!selectedProvince" class='flex-wrap'/>
+                  </div>
+                  <div>
+                      <label>Barangay<span class="text-red-600">*</span></label>
+                      <q-select v-model="selectedBarangay" :options="barangayOptions" label="Barangay" dense outlined :disable="!selectedCity" />
+                  </div>
+                  <q-input v-model='weaverAddress' class='hidden'/>
+              </div>
+              <div class='flex justify-end items-end mt-3'>
+                <q-btn label="Submit" type="submit" color="primary"/>
+              </div>
+          </q-form>
+
+        </q-card-section>
+      </q-card>
+    </q-dialog>
+</q-page>
+</template>
+
   <script>
   import { useQuasar } from 'quasar';
   import { SessionStorage } from 'quasar';
   import axios from 'axios';
-  import moment from 'moment';
-  
+  import philippineData from '../../../../javascript/philippine_provinces_cities_municipalities_and_barangays_2019v2.json';
+
   export default {
     setup() {
       const $q = useQuasar();
@@ -264,160 +451,300 @@
         inventoryMenuVisible: false,
         productionVisible: false,
         // New Data
-        daysLeft: 0,
-        logs: [],
+        w_columns: [
+          {name: 'name', label: 'Name', field: 'name', sortable: true},
+          {name: 'contact', label: 'Contact No.', field: 'contact', sortable: true},
+          {name: 'emailaddress', label: 'Email Address', field: 'emailaddress', sortable: true},
+          {name: 'address', label: 'Address', field: 'address', sortable: true},
+          {name: 'edited', label: 'Edited', field: 'edited', sortable: true},
+          {name: 'action', label: 'Action', field: 'action', sortable: true},
+        ],
+        w_rows: [],
+        selectedRegion: null,
+        selectedProvince: null,
+        selectedCity: null,
+        selectedBarangay: null,
+        philippineData: philippineData,
+        regionOptions: [],
+        provinceOptions: [],
+        cityOptions: [],
+        barangayOptions: [],
+        addWeaver: false,
+        weaverAddress: '',
+        v_fname: '',
+        v_lname: '',
+        v_contactnumber: '',
+        v_emailaddress: '',
+        v_selectedID: '',
+        // EDIT DIALOG
+        editDialog: false,
+        isEditing: false,
       };
     },
+    watch: {
+      selectedRegion: function(newValue, oldValue) {
+        if (newValue !== oldValue) {
+          this.onRegionChange();
+        }
+      },
+      selectedProvince: function(newValue, oldValue) {
+        if (newValue !== oldValue) {
+          this.onProvinceChange();
+        }
+      },
+      selectedCity: function(newValue, oldValue) {
+        if (newValue !== oldValue) {
+          this.onCityChange();
+        }
+      },
+      selectedBarangay: function(newValue, oldValue) {
+        if (newValue !== oldValue) {
+          this.onBaranggayChange();
+        }
+      }
+    },
     mounted() {
-      this.getBackupDump();
+      this.regionOptions = Object.keys(this.philippineData)
+      .map(regionCode => ({
+        label: /^(0[1-9]|1[0-3]|[4][A-B]|[1-3]?[0-9])$/.test(regionCode) ? `Region ${regionCode}` : regionCode,
+        value: regionCode
+      }))
+      .sort((a, b) => a.label.localeCompare(b.label));
       this.loadUserData();
-      this.calculateDaysLeft();
-      this.fetchLogs();
+      this.loadWeaverData();
       this.statusCheckTimer = setInterval(() => {
         this.checkUserStatus();
-      }, 20 * 1000); // 1 second (in milliseconds)
+      }, 20 * 1000);
     },
     beforeUnmount() {
       clearInterval(this.statusCheckTimer);
     },
-    computed: {
-      displayedLogs() {
-        return this.logs.slice(0, 3);
-      },
-    },
-  
     methods: {
-      calculateDaysLeft() {
-        const currentDate = moment();
-        const currentDay = currentDate.date();
-        const daysInMonth = moment().daysInMonth();
-        const isLeapYear = moment().isLeapYear();
-        let daysLeft;
-  
-        if (currentDay < 28 || (currentDay === 28 && !isLeapYear)) {
-          daysLeft = 28 - currentDay;
-        } else {
-          daysLeft = daysInMonth - currentDay + 28 - (isLeapYear ? 1 : 0);
+      editWeaver(id, name, contact, email, address, firstname, lastname) {
+        this.editDialog = true;
+        console.log("ID:", id);
+        console.log("Name:", name);
+        console.log("Contact:", contact);
+        console.log("Email:", email);
+        console.log("Address:", address);
+        this.v_selectedID = id;
+        this.v_fname = firstname;
+        this.v_lname = lastname;
+        this.v_contactnumber = contact;
+        this.v_emailaddress = email;
+        this.weaverAddress = address;
+      },
+      onUpdate(){
+        const formData = {
+          v_selectedID: this.v_selectedID,
+          weaverAddress: this.weaverAddress,
+          v_fname: this.v_fname,
+          v_lname: this.v_lname,
+          v_contactnumber: this.v_contactnumber,
+          v_emailaddress: this.v_emailaddress,
+          type: 2,
         }
-  
-        this.daysLeft = daysLeft;
-      },
-      fetchLogs() {
-        axios.get('http://localhost/Capstone-Project/backend/api/BackupAndRestore/backup.php?type=backup')
-          .then(response => {
-            // Current timestamp
-            const currentDate = new Date();
-  
-            // Convert timestamp to 12-hour format
-            this.logs = response.data.backupData.map(log => {
-              const timestamp = new Date(log.timestamp); // Assuming timestamp is in ISO format
-              // Check if the timestamp is valid
-              if (!isNaN(timestamp.getTime())) {
-                const date = `${timestamp.getMonth() + 1}/${timestamp.getDate()}/${timestamp.getFullYear()}`; // Extract date component
-                const hours = timestamp.getHours();
-                const minutes = timestamp.getMinutes();
-                const period = hours >= 12 ? 'PM' : 'AM';
-                const formattedHours = hours % 12 || 12; // Convert 0 to 12
-                const formattedMinutes = minutes.toString().padStart(2, '0'); // Add leading zero if needed
-  
-                // Check if the log was made today
-                const isToday = timestamp.getDate() === currentDate.getDate() &&
-                              timestamp.getMonth() === currentDate.getMonth() &&
-                              timestamp.getFullYear() === currentDate.getFullYear();
-  
-                // Calculate the difference in days between current date and log timestamp
-                const timeDiff = Math.abs(currentDate - timestamp);
-                const diffDays = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
-  
-                // Construct the string with days ago information
-                const daysAgo = diffDays === 1 ? '1 day ago' : `${diffDays} days ago`;
-  
-                // Construct the final string based on conditions
-                if (isToday) {
-                  return `${date} ${formattedHours}:${formattedMinutes} ${period} (Today)`;
-                } else {
-                  return `${date} ${formattedHours}:${formattedMinutes} ${period} (${daysAgo})`;
-                }
-              } else {
-                return 'Invalid timestamp';
-              }
-            });
-          })
-          .catch(error => {
-            console.error('Error fetching logs:', error);
-          });
-      },
-      getBackupDump(){
-        axios.get('http://localhost/Capstone-Project/backend/api/BackupAndRestore/backup_second.php?type=dump_sql')
-        .then(response => {
+        axios.post('http://localhost/Capstone-Project/backend/api/ProductionMonitoring/Weaver_Queries/weaver.php/', formData)
+        .then((response) =>{
           console.log(response.data);
-        })
-        .catch(error => {
-          console.error('Error fetching logs:', error);
+          const Status = response.data.status;
+          const Message = response.data.message;
+          if (Status === "success") {
+            this.$q.notify({
+                message: `${Message}`,
+                color: 'green',
+            });
+            this.v_fname = '';
+            this.v_lname = '';
+            this.v_contactnumber = '';
+            this.v_emailaddress = '';
+
+            this.selectedProvince = null;
+            this.selectedCity = null;
+            this.selectedBarangay = null;
+            this.editDialog = false;
+            this.loadWeaverData();
+          }
+          if (Status === "fail") {
+            this.$q.notify({
+              color: 'negative',
+              message: `${Message} Please try again.`,
+            });
+          }
+        }).catch(error => {
+              console.error('Error fetching data:', error);
         });
       },
-      backupData() {
-        axios.get(`http://localhost/Capstone-Project/backend/api/BackupAndRestore/backup_second.php?type=backup_dump&email=${this.email}`)
-          .then(response => {
-            const content = response.data.content.substring(response.data.content.indexOf('content":"') + 108);
-            const url = window.URL.createObjectURL(new Blob([content]));
-  
-            // Construct filename in Month-Day-Year format
-            const currentDate = new Date();
-            const month = String(currentDate.getMonth() + 1).padStart(2, '0');
-            const day = String(currentDate.getDate()).padStart(2, '0');
-            const year = currentDate.getFullYear();
-            const filename = `backup_${month}-${day}-${year}.sql`;
-  
-            const link = document.createElement('a');
-            link.href = url;
-            link.setAttribute('download', filename); // Set the filename
-            document.body.appendChild(link);
-            link.click();
-            this.fetchLogs();
-          })
-          .catch(error => {
-            console.error('Error fetching backup:', error);
-          });
-      },
-  
-      SendToEmail() {
-        const formData = {
-          email: this.email,
-        };
-        axios.post('http://localhost/Capstone-Project/backend/api/BackupAndRestore/backup.php/',formData)
-          .then(response => {
-            console.log(response.data);
-            const Status = response.data.status;
-            const Message = response.data.message;
-            if (Status === "success") {
-              this.$q.notify({
+      deleteWeaver(event){
+        console.log(event);
+        axios.delete(`http://localhost/Capstone-Project/backend/api/ProductionMonitoring/Weaver_Queries/weaver.php/${event}`)
+        .then((response) =>{
+          console.log(response.data);
+          const Status = response.data.status;
+          const Message = response.data.message;
+          if (Status === "success") {
+            this.$q.notify({
+                message: `${Message}`,
                 color: 'green',
-                message: `${Message}.`,
-              });
-              this.fetchLogs();
-            }
-            if (Status === "fail") {
-              this.$q.notify({
-                color: 'negative',
-                message: `${Message} Please try again.`,
-              });
-            }
-          })
-          .catch(error => {
-            console.error('Error fetching logs:', error);
-          });
+            });
+            this.editDialog = false;
+            this.loadWeaverData();
+
+          }
+          if (Status === "fail") {
+            this.$q.notify({
+              color: 'negative',
+              message: `${Message} Please try again.`,
+            });
+          }
+        }).catch(error => {
+              console.error('Error fetching data:', error);
+        });
       },
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+      handleClose(){
+          this.v_fname = '';
+          this.v_lname = '';
+          this.v_contactnumber = '';
+          this.v_emailaddress = '';
+
+          this.selectedProvince = null;
+          this.selectedCity = null;
+          this.selectedBarangay = null;
+          this.addWeaver = false;
+      },
+      onSubmit(){
+        const formData = {
+          weaverAddress: this.weaverAddress,
+          v_fname: this.v_fname,
+          v_lname: this.v_lname,
+          v_contactnumber: this.v_contactnumber,
+          v_emailaddress: this.v_emailaddress,
+          type: 1,
+        }
+        axios.post('http://localhost/Capstone-Project/backend/api/ProductionMonitoring/Weaver_Queries/weaver.php/', formData)
+        .then((response) =>{
+          console.log(response.data);
+          const Status = response.data.status;
+          const Message = response.data.message;
+          if (Status === "success") {
+            this.$q.notify({
+                message: `${Message}`,
+                color: 'green',
+            });
+            this.v_fname = '';
+            this.v_lname = '';
+            this.v_contactnumber = '';
+            this.v_emailaddress = '';
+
+            this.selectedProvince = null;
+            this.selectedCity = null;
+            this.selectedBarangay = null;
+            this.addWeaver = false;
+            this.loadWeaverData();
+
+          }
+          if (Status === "fail") {
+            this.$q.notify({
+              color: 'negative',
+              message: `${Message} Please try again.`,
+            });
+          }
+        }).catch(error => {
+              console.error('Error fetching data:', error);
+        });
+      },
+      loadWeaverData(){
+        axios.get(`http://localhost/Capstone-Project/backend/api/ProductionMonitoring/Weaver_Queries/weaver.php?get=weaver`)
+        .then(response => {
+          console.log(response.data);
+          this.w_rows = response.data.weaverData.map(row => {
+            let truncatedAddress = row.weaverAddress.length > 15 ? row.weaverAddress.substring(0, 15) + '...' : row.weaverAddress;
+            return {
+              id: row.weaverID,
+              firstname: row.weaverFname,
+              lastname: row.weaverLname,
+              name: row.weaverFname + ' ' + row.weaverLname,
+              contact: row.weaverContact,
+              emailaddress: row.weaverEmail,
+              address: truncatedAddress,
+              addresses: row.weaverAddress
+              // edited: row.contact,
+              // email: row.email,
+            };
+          })
+        }).catch(error => {
+              console.error('Error fetching data:', error);
+        });
+      },
+      onRegionChange() {
+    //   console.log(this.selectedRegion.value);
+    //   console.log(philippineData[this.selectedRegion.value]);
+    //  // Access the province list for the selected region
+      this.selectedProvince = null;
+      this.selectedCity = null;
+      this.selectedBarangay = null;
+      const regionData = this.philippineData[this.selectedRegion.value].province_list;
+
+      // Map the province names to options format
+      this.provinceOptions = Object.keys(regionData).map(provinceName => ({
+        label: provinceName,
+        value: provinceName
+      }));
+      this.updateSuppAddress();
+      },
+      onProvinceChange() {
+        // Check if selectedProvince is not null before accessing its value
+        if (this.selectedProvince !== null) {
+          this.selectedCity = null;
+          this.selectedBarangay = null;
+          const selectedProvinceData = this.philippineData[this.selectedRegion.value].province_list[this.selectedProvince.value];
+          if (selectedProvinceData) {
+            const municipalityData = selectedProvinceData.municipality_list;
+            console.log(municipalityData);
+
+            this.cityOptions = Object.keys(municipalityData).map(municipalityName => ({
+              label: municipalityName,
+              value: municipalityName
+            }));
+            this.updateSuppAddress();
+          }
+        }
+      },
+      onCityChange() {
+        if (this.selectedCity !== null) {
+          this.selectedBarangay = null;
+          const selectedMunicipalityData = this.philippineData[this.selectedRegion.value].province_list[this.selectedProvince.value].municipality_list[this.selectedCity.value];
+          if (selectedMunicipalityData) {
+            const barangayList = selectedMunicipalityData.barangay_list;
+            console.log(barangayList);
+
+            this.barangayOptions = barangayList.map(barangayName => ({
+              label: barangayName,
+              value: barangayName
+            }));
+            this.updateSuppAddress();
+          }
+        }
+      },
+      onBaranggayChange() {
+        if (this.selectedBarangay !== null) {
+          this.updateSuppAddress();
+        }
+      },
+      updateSuppAddress() {
+
+        let address = '';
+        if (this.selectedRegion) address += `${this.selectedRegion.label}, `;
+        if (this.selectedProvince) address += `${this.selectedProvince.label}, `;
+        if (this.selectedCity) address += `${this.selectedCity.label}, `;
+        if (this.selectedBarangay) address += `${this.selectedBarangay.label}`;
+        this.weaverAddress = address;
+      },
+
+
+
+
+
       // Old Data
       toggleInventoryMenu() {
         this.inventoryMenuVisible = !this.inventoryMenuVisible;
@@ -467,7 +794,7 @@
           // Update the local status and take appropriate action if it has changed
           if (this.status !== latestStatus) {
             this.status = latestStatus;
-  
+
             if (this.status === 0) {
               this.$q.notify({
                 type: 'negative',
@@ -483,7 +810,7 @@
       },
       loadUserData() {
         const userData = SessionStorage.getItem('information');
-  
+
         if (userData) {
           try {
             const userInformation = JSON.parse(userData);
@@ -496,13 +823,13 @@
             this.position = userInformation.position;
             this.status = userInformation.status;
             this.isAdmin = userInformation.isAdmin;
-  
+
             this.fullname = this.firstname + " " + this.lastname;
             if (this.position.toLowerCase() === 'owner') {
-  
+
               this.$router.push('/dashboard/weaver-section');
             } else {
-  
+
               this.$q.notify({
                 type: 'negative',
                 message: 'You do not have permission to access the system.',
@@ -510,9 +837,9 @@
               this.$router.push('/');
               sessionStorage.clear();
             }
-  
+
             if (this.status == 0) {
-  
+
               this.$q.notify({
                 type: 'negative',
                 message: 'Your account is currently inactive. Please contact the account owner for activation.',
@@ -558,4 +885,33 @@
     },
   };
   </script>
-  
+<style lang="sass">
+.my-sticky-header-table
+  /* height or max-height is important */
+  height: 330px
+
+  .q-table__top,
+
+  thead tr:first-child th
+    /* bg color is important for th; just specify one */
+    background-color: #fff
+    text-align: center
+    font-size: 13px
+
+  thead tr th
+    position: sticky
+    z-index: 1
+  thead tr:first-child th
+    top: 0
+
+  /* this is when the loading indicator appears */
+  &.q-table--loading thead tr:last-child th
+    /* height of all previous header rows */
+    top: 48px
+
+  /* prevent scrolling behind sticky top row on focus */
+  tbody
+    /* height of all previous header rows */
+    scroll-margin-top: 48px
+
+</style>

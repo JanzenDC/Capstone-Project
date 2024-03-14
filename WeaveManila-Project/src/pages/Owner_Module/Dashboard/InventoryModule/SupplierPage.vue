@@ -747,7 +747,6 @@ export default {
   },
   mounted() {
     this.loadUserData();
-    console.log(this.philippineData);
     this.statusCheckTimer = setInterval(() => {
       this.checkUserStatus();
     }, 20 * 1000); // 1 second (in milliseconds)

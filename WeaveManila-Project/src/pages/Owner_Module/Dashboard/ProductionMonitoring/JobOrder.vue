@@ -72,9 +72,7 @@
           <router-link to="/dashboard/joborder-section">
             <li class="px-[40px] mt-3">Job Order</li>
           </router-link>
-          <router-link to="/dashboard/weaver-section">
-            <li class="px-[40px] mt-3">Weaver</li>
-          </router-link>
+
           </ul>
         </li>
         <li class="py-[10px] px-[20px]">
@@ -310,145 +308,12 @@ export default {
     };
   },
   mounted() {
-    this.getBackupDump();
     this.loadUserData();
-    this.calculateDaysLeft();
-    this.fetchLogs();
     this.statusCheckTimer = setInterval(() => {
       this.checkUserStatus();
     }, 20 * 1000); // 1 second (in milliseconds)
   },
-  beforeUnmount() {
-    clearInterval(this.statusCheckTimer);
-  },
-  computed: {
-    displayedLogs() {
-      return this.logs.slice(0, 3);
-    },
-  },
-
   methods: {
-    calculateDaysLeft() {
-      const currentDate = moment();
-      const currentDay = currentDate.date();
-      const daysInMonth = moment().daysInMonth();
-      const isLeapYear = moment().isLeapYear();
-      let daysLeft;
-
-      if (currentDay < 28 || (currentDay === 28 && !isLeapYear)) {
-        daysLeft = 28 - currentDay;
-      } else {
-        daysLeft = daysInMonth - currentDay + 28 - (isLeapYear ? 1 : 0);
-      }
-
-      this.daysLeft = daysLeft;
-    },
-    fetchLogs() {
-      axios.get('http://localhost/Capstone-Project/backend/api/BackupAndRestore/backup.php?type=backup')
-        .then(response => {
-          // Current timestamp
-          const currentDate = new Date();
-
-          // Convert timestamp to 12-hour format
-          this.logs = response.data.backupData.map(log => {
-            const timestamp = new Date(log.timestamp); // Assuming timestamp is in ISO format
-            // Check if the timestamp is valid
-            if (!isNaN(timestamp.getTime())) {
-              const date = `${timestamp.getMonth() + 1}/${timestamp.getDate()}/${timestamp.getFullYear()}`; // Extract date component
-              const hours = timestamp.getHours();
-              const minutes = timestamp.getMinutes();
-              const period = hours >= 12 ? 'PM' : 'AM';
-              const formattedHours = hours % 12 || 12; // Convert 0 to 12
-              const formattedMinutes = minutes.toString().padStart(2, '0'); // Add leading zero if needed
-
-              // Check if the log was made today
-              const isToday = timestamp.getDate() === currentDate.getDate() &&
-                            timestamp.getMonth() === currentDate.getMonth() &&
-                            timestamp.getFullYear() === currentDate.getFullYear();
-
-              // Calculate the difference in days between current date and log timestamp
-              const timeDiff = Math.abs(currentDate - timestamp);
-              const diffDays = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
-
-              // Construct the string with days ago information
-              const daysAgo = diffDays === 1 ? '1 day ago' : `${diffDays} days ago`;
-
-              // Construct the final string based on conditions
-              if (isToday) {
-                return `${date} ${formattedHours}:${formattedMinutes} ${period} (Today)`;
-              } else {
-                return `${date} ${formattedHours}:${formattedMinutes} ${period} (${daysAgo})`;
-              }
-            } else {
-              return 'Invalid timestamp';
-            }
-          });
-        })
-        .catch(error => {
-          console.error('Error fetching logs:', error);
-        });
-    },
-    getBackupDump(){
-      axios.get('http://localhost/Capstone-Project/backend/api/BackupAndRestore/backup_second.php?type=dump_sql')
-      .then(response => {
-        console.log(response.data);
-      })
-      .catch(error => {
-        console.error('Error fetching logs:', error);
-      });
-    },
-    backupData() {
-      axios.get(`http://localhost/Capstone-Project/backend/api/BackupAndRestore/backup_second.php?type=backup_dump&email=${this.email}`)
-        .then(response => {
-          const content = response.data.content.substring(response.data.content.indexOf('content":"') + 108);
-          const url = window.URL.createObjectURL(new Blob([content]));
-
-          // Construct filename in Month-Day-Year format
-          const currentDate = new Date();
-          const month = String(currentDate.getMonth() + 1).padStart(2, '0');
-          const day = String(currentDate.getDate()).padStart(2, '0');
-          const year = currentDate.getFullYear();
-          const filename = `backup_${month}-${day}-${year}.sql`;
-
-          const link = document.createElement('a');
-          link.href = url;
-          link.setAttribute('download', filename); // Set the filename
-          document.body.appendChild(link);
-          link.click();
-          this.fetchLogs();
-        })
-        .catch(error => {
-          console.error('Error fetching backup:', error);
-        });
-    },
-
-    SendToEmail() {
-      const formData = {
-        email: this.email,
-      };
-      axios.post('http://localhost/Capstone-Project/backend/api/BackupAndRestore/backup.php/',formData)
-        .then(response => {
-          console.log(response.data);
-          const Status = response.data.status;
-          const Message = response.data.message;
-          if (Status === "success") {
-            this.$q.notify({
-              color: 'green',
-              message: `${Message}.`,
-            });
-            this.fetchLogs();
-          }
-          if (Status === "fail") {
-            this.$q.notify({
-              color: 'negative',
-              message: `${Message} Please try again.`,
-            });
-          }
-        })
-        .catch(error => {
-          console.error('Error fetching logs:', error);
-        });
-    },
 
 
 
