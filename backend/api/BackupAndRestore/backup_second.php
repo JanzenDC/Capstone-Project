@@ -70,7 +70,7 @@
                 exit;
             }
             $fullname = $userData['firstname'] . " " . $userData['lastname'];
-            date_default_timezone_set('Asia/Singapore');
+            //date_default_timezone_set('Asia/Singapore');
 
             $insertData = [
                 'image' => $userData['profile_pic'],

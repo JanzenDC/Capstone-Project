@@ -216,71 +216,24 @@
           class="cursor-pointer max-[1020px]:flex min-[1020px]:hidden"
         />
         <div>
-          <span class="font-bold">Job Order Form</span>
-          <div class="text-[16px] text-[#999999]">Production Monitoring  / <span class='text-black'>Job Order Form</span></div>
-        </div>
-      </div>
-
-
-    </div>
-    <div class="p-4">
-      <div class="bg-white px-4 py-3 rounded h-[500px]">
-        <div class='mt-10 flex justify-between'>
-          <div>
-            Page 1
-          </div>
-          <div>
-            <q-btn label="next" icon-right="arrow_forward_ios" class="text-white bg-[#634832]"/>
-          </div>
-        </div>
-        <q-separator class="mt-3"/>
-        <div class="p-2 text-center w-full">
-          <div class="font-bold text-h6">
-            WEAVEMANILA INC.
-          </div>
-          <div>
-            KM 543 DIVERSION ROAD STO.DOMINGO ALBAY
-          </div>
-          <div class="font-bold text-h5">
-            JOB ORDER FORM - CARPET DIVISION
-          </div>
-        </div>
-        <div class='w-[346px]'>
-          <p>Endorsed<span class="text-red-600">*</span></p>
-          <q-input v-model="v_Endorsed" dense outlined />
-        </div>
-        <div class='grid grid-cols-4 gap-2 mt-3'>
-          <div>
-            <p>J.O Ref. No.</p>
-            <q-input v-model="v_JOrefNo" dense outlined disable class="mt-2"/>
-          </div>
-          <div>
-            <p>Date</p>
-            <q-input v-model="v_date" dense outlined class="mt-2" type="date"/>
-          </div>
-          <div>
-            <p>Reference</p>
-            <q-input v-model="v_Reference" dense outlined disable class="mt-2"/>
-          </div>
-          <div>
-            <p>Delivery Date</p>
-            <q-input v-model="v_deliverydate" dense outlined class="mt-2" type="date"/>
-          </div>
+          <span class="font-bold">Production Job Order</span>
+          <div class="text-[16px] text-[#999999]">Lorem Ipsum</div>
         </div>
       </div>
     </div>
+      <JobOrderPage />
   </q-page>
-  </template>
+</template>
 
 <script>
-import { useQuasar } from 'quasar';
+
 import { SessionStorage } from 'quasar';
 import axios from 'axios';
-import moment from 'moment';
+import JobOrderPage from './job_order/JobOrder.vue';
 
 export default {
-  setup() {
-    const $q = useQuasar();
+  components: {
+    JobOrderPage,
   },
   data() {
     return {

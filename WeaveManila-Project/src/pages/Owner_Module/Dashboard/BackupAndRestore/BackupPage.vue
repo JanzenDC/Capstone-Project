@@ -355,34 +355,32 @@ export default {
     fetchLogs() {
       axios.get('http://localhost/Capstone-Project/backend/api/BackupAndRestore/backup.php?type=backup')
         .then(response => {
-          // Current timestamp
+
           const currentDate = new Date();
 
-          // Convert timestamp to 12-hour format
           this.logs = response.data.backupData.map(log => {
-            const timestamp = new Date(log.timestamp); // Assuming timestamp is in ISO format
-            // Check if the timestamp is valid
+            const timestamp = new Date(log.timestamp);
             if (!isNaN(timestamp.getTime())) {
-              const date = `${timestamp.getMonth() + 1}/${timestamp.getDate()}/${timestamp.getFullYear()}`; // Extract date component
+              const date = `${timestamp.getMonth() + 1}/${timestamp.getDate()}/${timestamp.getFullYear()}`;
               const hours = timestamp.getHours();
               const minutes = timestamp.getMinutes();
               const period = hours >= 12 ? 'PM' : 'AM';
-              const formattedHours = hours % 12 || 12; // Convert 0 to 12
-              const formattedMinutes = minutes.toString().padStart(2, '0'); // Add leading zero if needed
+              const formattedHours = hours % 12 || 12;
+              const formattedMinutes = minutes.toString().padStart(2, '0');
 
-              // Check if the log was made today
+
               const isToday = timestamp.getDate() === currentDate.getDate() &&
                             timestamp.getMonth() === currentDate.getMonth() &&
                             timestamp.getFullYear() === currentDate.getFullYear();
 
-              // Calculate the difference in days between current date and log timestamp
+
               const timeDiff = Math.abs(currentDate - timestamp);
               const diffDays = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
 
               // Construct the string with days ago information
               const daysAgo = diffDays === 1 ? '1 day ago' : `${diffDays} days ago`;
 
-              // Construct the final string based on conditions
+
               if (isToday) {
                 return `${date} ${formattedHours}:${formattedMinutes} ${period} (Today)`;
               } else {
