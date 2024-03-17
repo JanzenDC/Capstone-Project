@@ -195,7 +195,7 @@ bordered
       </div>
     </li>
 
-    
+
       <li class="mt-auto py-[10px]">
           <div class="flex justify-center ">
             <router-link @click="logout" to="/">
@@ -718,7 +718,7 @@ bordered
             if (this.status === 0) {
               this.$q.notify({
                 type: 'negative',
-                message: 'Your account is currently inactive. Please contact the account owner for activation.',
+                message: 'Your account is currently inactive. Please contact the administrator.',
               });
               this.$router.push('/');
               sessionStorage.clear();
@@ -745,7 +745,7 @@ bordered
             this.status = userInformation.status;
             this.id = userInformation.id;
             this.isAdmin = userInformation.isAdmin;
-            
+
             this.fullname = this.firstname + " " + this.lastname;
             if (this.position.toLowerCase() === 'owner') {
               this.$router.push('/dashboard/supplier-restorepoint');
@@ -761,7 +761,7 @@ bordered
             {
               this.$q.notify({
               type: 'negative',
-                message: 'Your account is currently inactive. Please contact the account owner for activation.',
+                message: 'Your account is currently inactive. Please contact the administrator.',
               });
               this.$router.push('/');
               sessionStorage.clear();

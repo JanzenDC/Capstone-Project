@@ -1373,7 +1373,7 @@ export default {
           if (this.status === 0) {
             this.$q.notify({
               type: 'negative',
-              message: 'Your account is currently inactive. Please contact the account owner for activation.',
+              message: 'Your account is currently inactive. Please contact the administrator.',
             });
             this.$router.push('/');
             sessionStorage.clear();
@@ -1417,7 +1417,7 @@ export default {
 
             this.$q.notify({
               type: 'negative',
-              message: 'Your account is currently inactive. Please contact the account owner for activation.',
+              message: 'Your account is currently inactive. Please contact the administrator.',
             });
             this.$router.push('/');
             sessionStorage.clear();
