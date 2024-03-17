@@ -748,7 +748,6 @@
 import axios from 'axios';
 
 export default {
-
   data() {
     return {
       pagination: [

@@ -603,7 +603,7 @@ bordered
     },
     methods: {
       pjoProjects(id,name){
-        this.pjoDialog = true;
+        
         const unitAbbreviations = {
           'Feet': 'ft',
           'Meters': 'm',
@@ -614,16 +614,28 @@ bordered
         axios.get(`http://localhost/Capstone-Project/backend/api/ProductionMonitoring/Weaver_Queries/weaver.php?get=weaverproject&getData=${name}`)
         .then((response) =>{
           console.log(response.data)
-          this.rows_pjo = response.data.pjoProject.map(row => {
-            const sizeSelectedAbbreviated = unitAbbreviations[row.size_selected] || row.size_selected;
-            const jobOrderNoPadded = row.job_order_no.toString().padStart(3, '0');
-            return {
-              jobOrderNo: jobOrderNoPadded,
-              size: row.width + 'x' + row.length + ' ' + sizeSelectedAbbreviated,
-              total_output: row.total_output_sum,
-              checked_by: row.checked_by
-            };
-          })
+          const Status = response.data.status;
+          const Message = response.data.message;
+          if (Status === "fail") {
+            this.$q.notify({
+              color: 'negative',
+              message: `${Message}.`,
+            });
+          }
+          if (Status === "success") {
+            this.pjoDialog = true;
+            this.rows_pjo = response.data.pjoProject.map(row => {
+              const sizeSelectedAbbreviated = unitAbbreviations[row.size_selected] || row.size_selected;
+              const jobOrderNoPadded = row.job_order_no.toString().padStart(3, '0');
+              return {
+                jobOrderNo: jobOrderNoPadded,
+                size: row.width + 'x' + row.length + ' ' + sizeSelectedAbbreviated,
+                total_output: row.total_output_sum,
+                checked_by: row.checked_by
+              };
+            })
+          }
+
         }).catch(error => {
               console.error('Error fetching data:', error);
         });

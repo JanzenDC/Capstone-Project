@@ -234,7 +234,7 @@ import JobOrderPage from './job_order/JobOrder.vue';
 export default {
   components: {
     JobOrderPage,
-  },g
+  },
   data() {
     return {
       isAdmin: 0,
@@ -330,7 +330,7 @@ export default {
           if (this.status === 0) {
             this.$q.notify({
               type: 'negative',
-              message: 'Your account is currently inactive. Please contact the administrator.',
+              message: 'Your account is currently inactive. Please contact the account owner for activation.',
             });
             this.$router.push('/');
             sessionStorage.clear();
@@ -374,7 +374,7 @@ export default {
 
             this.$q.notify({
               type: 'negative',
-              message: 'Your account is currently inactive. Please contact the administrator.',
+              message: 'Your account is currently inactive. Please contact the account owner for activation.',
             });
             this.$router.push('/');
             sessionStorage.clear();
