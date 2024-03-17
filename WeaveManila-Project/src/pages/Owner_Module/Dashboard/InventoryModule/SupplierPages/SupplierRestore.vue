@@ -133,9 +133,9 @@ bordered
             </div>
           </div>
           <div class="flex items-center ">
-            <router-link @click="logout" to="/">
+            <div @click="OpenLogout = true">
               <q-icon name="logout" class="h-[18px] w-[20px] font-bold"/>
-            </router-link>
+            </div>
           </div>
         </div>
       </li>
@@ -198,9 +198,9 @@ bordered
 
       <li class="mt-auto py-[10px]">
           <div class="flex justify-center ">
-            <router-link @click="logout" to="/">
+            <div @click="OpenLogout = true">
               <q-icon name="logout" class="h-[18px] w-[20px] font-bold"/>
-            </router-link>
+            </div>
           </div>
       </li>
   </ul>
@@ -427,7 +427,7 @@ bordered
         drawerWidth: 300,
         drawerIcon: 'arrow_back_ios',
         inventoryMenuVisible: false,
-
+        OpenLogout: false,
         // Add DATA
         initialPagination: {
           page: 1,

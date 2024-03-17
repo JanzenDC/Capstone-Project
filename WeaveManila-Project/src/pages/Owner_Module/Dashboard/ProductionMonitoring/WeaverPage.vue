@@ -129,9 +129,9 @@ bordered
             </div>
           </div>
           <div class="flex items-center ">
-            <router-link @click="logout" to="/">
+            <div @click="OpenLogout = true">
               <q-icon name="logout" class="h-[18px] w-[20px] font-bold"/>
-            </router-link>
+            </div>
           </div>
         </div>
       </li>
@@ -192,9 +192,9 @@ bordered
       </li>
       <li class="mt-auto py-[10px]">
           <div class="flex justify-center ">
-            <router-link @click="logout" to="/">
+            <div @click="OpenLogout = true">
               <q-icon name="logout" class="h-[18px] w-[20px] font-bold"/>
-            </router-link>
+            </div>
           </div>
       </li>
   </ul>
@@ -551,6 +551,7 @@ bordered
           page: 1,
           rowsPerPage: 10
         },
+        OpenLogout: false,
         // New Data
         columns_pjo: [
           {name: 'jobOrderNo', label: 'Job Order No.', field: 'jobOrderNo', sortable: true},

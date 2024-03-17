@@ -132,9 +132,9 @@ bordered
             </div>
           </div>
           <div class="flex items-center ">
-            <router-link @click="logout" to="/">
+            <div @click="OpenLogout = true">
               <q-icon name="logout" class="h-[18px] w-[20px] font-bold"/>
-            </router-link>
+            </div>
           </div>
         </div>
       </li>
@@ -195,108 +195,138 @@ bordered
       </li>
       <li class="mt-auto py-[10px]">
           <div class="flex justify-center ">
-            <router-link @click="logout" to="/">
+            <div @click="OpenLogout = true">
               <q-icon name="logout" class="h-[18px] w-[20px] font-bold"/>
-            </router-link>
+            </div>
           </div>
       </li>
   </ul>
 </q-drawer>
-  <q-page class="bg-[#f5f5f5]">
-    <div class="text-[30px] bg-white p-2">
-      <div class="items-center flex">
-        <q-icon
-          name="menu"
-          v-if="showMenuIcon"
-          @click="toggleDrawer"
-          class="cursor-pointer"
-        />
-        <q-icon
-          name="menu"
-          v-if="!showMenuIcon"
-          @click="toggleDrawer"
-          class="cursor-pointer max-[1020px]:flex min-[1020px]:hidden"
-        />
-        <div class="">
-          <p class="font-bold text-[#755e4a]">{{ category_name }}</p>
-          <p class="text-[16px] text-[#755e4a]">Inventory / {{ category_name }}</p>
-        </div>
-      </div>
-
-
-    </div>
-
-    <div class="p-4">
-      <div class="flex mt-8">
-        <router-link to="/dashboard/inventory-viewpage">
-          <div class="flex bg-white border-e-2 w-[128px] h-[44px] py-3 px-5 gap-[8px] rounded items-center text-[14px] ">
-            <q-icon name="summarize"/>
-            <p>Summary</p>
-          </div>
-        </router-link>
-        <router-link to="/dashboard/inventory-viewlist">
-          <div class="flex text-[#89909e] border-t-2 border-e-2 w-[128px] h-[44px] py-3 px-5 gap-[8px] rounded items-center text-[14px]">
-            <q-icon name="list"/>
-            <p>Items List</p>
-          </div>
-        </router-link>
-      </div>
-      <div class="w-full bg-white p-4">
-        <div class="flex md:items-end md:justify-between">
-          <div class="flex items-center gap-2">
-            <q-input outlined dense placeholder="Search" class="md:w-[400px]">
-              <template v-slot:prepend>
-                <q-icon name="search" />
-              </template>
-            </q-input>
-          </div>
-          <div class="flex items-center gap-2">
-            <q-btn-dropdown square icon="download">
-              <q-list>
-                <q-item clickable v-close-popup @click="downloadExcel">
-                  <q-item-section>
-                    <q-item-label>Excel</q-item-label>
-                  </q-item-section>
-                </q-item>
-                <q-item clickable v-close-popup @click="downloadPDF">
-                  <q-item-section>
-                    <q-item-label>PDF</q-item-label>
-                  </q-item-section>
-                </q-item>
-              </q-list>
-            </q-btn-dropdown>
-            <q-btn square icon="print" />
-            <q-btn square icon="cached" @click="refreshData"/>
-          </div>
-        </div>
-        <q-separator class="mt-3" />
-          <q-table
-            :rows="rows"
-            :columns="columns"
-            row-key="name"
-            class="my-sticky-header-table"
-
-          >
-          <template v-slot:body-cell-status="props">
-            <q-td :props="props">
-              <span v-if="props.row.status === 'In Stock'" class="text-green-600 p-2 rounded-full bg-green-300">
-                ● In Stock
-              </span>
-              <span v-else-if="props.row.status === 'Out of Stock'" class="text-red-600 p-2 rounded-full bg-red-300">
-                ● Out of stock
-              </span>
-              <span v-else-if="props.row.status === 'Low Stock'" class="text-yellow-600 p-2 rounded-full bg-yellow-300">
-                ● Low Stock
-              </span>
-            </q-td>
-          </template>
-
-          </q-table>
+<q-page class="bg-[#f5f5f5]">
+  <div class="text-[30px] bg-white p-2">
+    <div class="items-center flex">
+      <q-icon
+        name="menu"
+        v-if="showMenuIcon"
+        @click="toggleDrawer"
+        class="cursor-pointer"
+      />
+      <q-icon
+        name="menu"
+        v-if="!showMenuIcon"
+        @click="toggleDrawer"
+        class="cursor-pointer max-[1020px]:flex min-[1020px]:hidden"
+      />
+      <div class="">
+        <p class="font-bold text-[#755e4a]">{{ category_name }}</p>
+        <p class="text-[16px] text-[#755e4a]">Inventory / {{ category_name }}</p>
       </div>
     </div>
 
-  </q-page>
-  </template>
+
+  </div>
+
+  <div class="p-4">
+    <div class="flex mt-8">
+      <router-link to="/dashboard/inventory-viewpage">
+        <div class="flex bg-white border-e-2 w-[128px] h-[44px] py-3 px-5 gap-[8px] rounded items-center text-[14px] ">
+          <q-icon name="summarize"/>
+          <p>Summary</p>
+        </div>
+      </router-link>
+      <router-link to="/dashboard/inventory-viewlist">
+        <div class="flex text-[#89909e] border-t-2 border-e-2 w-[128px] h-[44px] py-3 px-5 gap-[8px] rounded items-center text-[14px]">
+          <q-icon name="list"/>
+          <p>Items List</p>
+        </div>
+      </router-link>
+    </div>
+    <div class="w-full bg-white p-4">
+      <div class="flex md:items-end md:justify-between">
+        <div class="flex items-center gap-2">
+          <q-input outlined dense placeholder="Search" class="md:w-[400px]">
+            <template v-slot:prepend>
+              <q-icon name="search" />
+            </template>
+          </q-input>
+        </div>
+        <div class="flex items-center gap-2">
+          <q-btn-dropdown square icon="download">
+            <q-list>
+              <q-item clickable v-close-popup @click="downloadExcel">
+                <q-item-section>
+                  <q-item-label>Excel</q-item-label>
+                </q-item-section>
+              </q-item>
+              <q-item clickable v-close-popup @click="downloadPDF">
+                <q-item-section>
+                  <q-item-label>PDF</q-item-label>
+                </q-item-section>
+              </q-item>
+            </q-list>
+          </q-btn-dropdown>
+          <q-btn square icon="print" />
+          <q-btn square icon="cached" @click="refreshData"/>
+        </div>
+      </div>
+      <q-separator class="mt-3" />
+        <q-table
+          :rows="rows"
+          :columns="columns"
+          row-key="name"
+          class="my-sticky-header-table"
+
+        >
+        <template v-slot:body-cell-status="props">
+          <q-td :props="props">
+            <span v-if="props.row.status === 'In Stock'" class="text-green-600 p-2 rounded-full bg-green-300">
+              ● In Stock
+            </span>
+            <span v-else-if="props.row.status === 'Out of Stock'" class="text-red-600 p-2 rounded-full bg-red-300">
+              ● Out of stock
+            </span>
+            <span v-else-if="props.row.status === 'Low Stock'" class="text-yellow-600 p-2 rounded-full bg-yellow-300">
+              ● Low Stock
+            </span>
+          </q-td>
+        </template>
+
+        </q-table>
+    </div>
+  </div>
+
+</q-page>
+<q-dialog v-model="OpenLogout">
+  <q-card class="w-[500px]">
+    <q-card-section class="gap-3 items-center q-pb-none flex">
+      <div class="py-1 px-2 border text-[24px]"><q-icon name="logout"/></div>
+      <div class="text-h6 font-bold">Logout</div>
+      <q-space />
+    </q-card-section>
+
+    <q-card-section>
+      
+      <p>Are you sure you want to Logout?</p>
+    </q-card-section>
+
+    <q-card-actions class="flex justify-center items-center">
+      <div class="w-1/2 p-1">
+        <q-btn flat label="Cancel" outline v-close-popup class="w-full border"/>
+      </div>
+      <div class="w-1/2 p-1">
+        <q-btn
+          @click="logout"
+          flat
+          label="Logout"
+          size="md"
+          class="bg-red-600 text-white rounded w-full"
+        />
+      </div>
+    </q-card-actions>
+  </q-card>
+</q-dialog>
+
+</template>
 
   <script>
   import { useQuasar } from 'quasar';
@@ -329,7 +359,7 @@ bordered
         drawerIcon: 'arrow_back_ios',
         inventoryMenuVisible: false,
         productionVisible: false,
-
+        OpenLogout: false,
         // Additional Data
         category_id: '',
         category_name: '',
