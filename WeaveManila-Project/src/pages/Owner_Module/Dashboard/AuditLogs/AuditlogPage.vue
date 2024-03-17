@@ -699,7 +699,7 @@ export default {
           this.fullname = this.firstname + " " + this.lastname;
           if (this.position.toLowerCase() === 'owner') {
 
-            this.$router.push('/dashboard/main-dashboard');
+            this.$router.push('/dashboard/auditlogs-section');
           } else {
 
             this.$q.notify({

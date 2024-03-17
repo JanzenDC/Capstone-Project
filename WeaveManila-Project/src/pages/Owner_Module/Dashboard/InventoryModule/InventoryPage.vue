@@ -685,7 +685,7 @@ export default {
           this.fullname = this.firstname + " " + this.lastname;
           if (this.position.toLowerCase() === 'owner') {
 
-            this.$router.push('/dashboard/main-dashboard');
+            this.$router.push('/dashboard/inventory-section');
           } else {
 
             this.$q.notify({

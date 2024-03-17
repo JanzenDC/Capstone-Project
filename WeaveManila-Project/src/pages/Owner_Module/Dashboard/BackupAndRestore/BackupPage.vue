@@ -582,7 +582,7 @@ export default {
           this.fullname = this.firstname + " " + this.lastname;
           if (this.position.toLowerCase() === 'owner') {
 
-            this.$router.push('/dashboard/main-dashboard');
+            this.$router.push('/dashboard/backup-section');
           } else {
 
             this.$q.notify({

@@ -531,7 +531,7 @@ export default {
           this.fullname = this.firstname + " " + this.lastname;
           if (this.position.toLowerCase() === 'owner') {
 
-            this.$router.push('/dashboard/main-dashboard');
+            this.$router.push('/dashboard/joborderlist-section');
           } else {
 
             this.$q.notify({
