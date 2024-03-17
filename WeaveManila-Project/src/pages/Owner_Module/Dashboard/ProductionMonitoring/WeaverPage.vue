@@ -245,7 +245,7 @@ bordered
               </div>
           </router-link>
     </div>
-    <div class="bg-white px-4 py-3 rounded h-[500px]">
+    <div class="bg-white px-4 py-3 rounded h-[400px]">
         <div class="md:flex md:items-center md:justify-between ">
           <div class="grid-cols-2 grid gap-2 md:flex items-center md:gap-5">
             <q-input v-model="search" outlined dense placeholder="Search" class="md:w-[400px] ">
@@ -266,7 +266,7 @@ bordered
           <div class='mt-3'>
             <q-table
               class="my-sticky-header-table"
-              flat bordered
+              dense bordered
               :rows="w_rows"
               :columns="w_columns"
               row-key="weaverID"
@@ -482,6 +482,38 @@ bordered
 
       </q-card>
     </q-dialog>
+    <!-- ON DELETE -->
+    <q-dialog v-model="OpenDelete">
+      <q-card>
+        <q-card-section class="row items-center q-pb-none">
+          <div class="py-1 px-2 border text-[24px]"><q-icon name="delete"/></div>
+          <q-space />
+          <q-btn icon="close" flat round dense v-close-popup />
+        </q-card-section>
+
+        <q-card-section>
+          <div class="text-h6 font-bold">Delete Weaver</div>
+          <p>Are you sure you want to delete this Weaver? This</p>
+          <p>action cannot be undone.</p>
+        </q-card-section>
+
+        <q-card-actions class="flex justify-center items-center">
+          <div class="w-1/2 p-1">
+            <q-btn flat label="Cancel" outline v-close-popup class="w-full border" @click="handleCancel"/>
+          </div>
+          <div class="w-1/2 p-1">
+            <q-btn
+              @click="HandleRemove"
+              flat
+              label="Delete"
+              type="submit"
+              size="md"
+              class="bg-red-600 text-white rounded w-full"
+            />
+          </div>
+        </q-card-actions>
+      </q-card>
+  </q-dialog>
 </q-page>
 </template>
 
@@ -561,6 +593,8 @@ bordered
         editDialog: false,
         isEditing: false,
         pjoDialog: false,
+        OpenDelete: false,
+        deleteget: 0,
       };
     },
     watch: {
@@ -695,9 +729,12 @@ bordered
               console.error('Error fetching data:', error);
         });
       },
-      deleteWeaver(event){
-        console.log(event);
-        axios.delete(`http://localhost/Capstone-Project/backend/api/ProductionMonitoring/Weaver_Queries/weaver.php/${event}`)
+      handleCancel(){
+        this.OpenDelete = false;
+        this.deleteget = null;
+      },
+      HandleRemove(){
+        axios.delete(`http://localhost/Capstone-Project/backend/api/ProductionMonitoring/Weaver_Queries/weaver.php/${this.deleteget}`)
         .then((response) =>{
           console.log(response.data);
           const Status = response.data.status;
@@ -720,6 +757,12 @@ bordered
         }).catch(error => {
               console.error('Error fetching data:', error);
         });
+      },
+      deleteWeaver(event){
+        this.OpenDelete = true;
+        this.deleteget = event;
+        console.log(event);
+
       },
       handleClose(){
           this.v_fname = '';

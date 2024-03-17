@@ -245,7 +245,7 @@ bordered
             </div>
         </router-link>
     </div>
-    <div class="bg-white px-4 py-3 rounded h-[500px]">
+    <div class="bg-white px-4 py-3 rounded h-[400px]">
       <div class='flex justify-between'>
         <div>
           <q-input v-model="filtersearch" label="Search..." dense outlined>
