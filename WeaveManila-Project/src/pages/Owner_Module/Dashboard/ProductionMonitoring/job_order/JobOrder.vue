@@ -144,7 +144,7 @@
               <q-input v-model="v_datefinished" dense outlined class="mt-2" type="date"/>
             </div>
             <div>
-              <label>Leadtime</label>
+              <label>Leadtime (No. Days)</label>
               <q-input v-model="v_leadtime" dense outlined class="mt-2" disable />
             </div>
             <div>

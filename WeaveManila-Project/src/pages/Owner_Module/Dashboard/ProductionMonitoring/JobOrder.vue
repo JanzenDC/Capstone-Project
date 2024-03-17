@@ -234,7 +234,7 @@ import JobOrderPage from './job_order/JobOrder.vue';
 export default {
   components: {
     JobOrderPage,
-  },
+  },g
   data() {
     return {
       isAdmin: 0,
