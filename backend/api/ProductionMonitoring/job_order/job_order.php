@@ -9,7 +9,7 @@
   // Used in response to a preflight request which includes the Access-Control-Request-Headers to indicate which HTTP headers can be used during the actual request
   header("Access-Control-Allow-Headers: Content-Type");
   header('Content-Type: application/json');
-  require_once('../MysqliDb.php');
+  require_once('../../../MysqliDb.php');
 
 
   class API{
@@ -101,8 +101,30 @@
                     echo json_encode($response);
                     exit; 
                 }
-            }
-            else{
+            }else if ($payload['type'] === 'getPJOall'){
+                $sql = "SELECT pjo_tbl.*, SUM(production_monitoring_tbl.total_output) AS total_output_sum
+                            FROM pjo_tbl 
+                            LEFT JOIN production_monitoring_tbl ON pjo_tbl.pjoID = production_monitoring_tbl.pjoID
+                            GROUP BY pjo_tbl.pjoID";
+                
+                $getData = $this->db->rawQuery($sql);
+                if($getData){
+                    $response = [
+                        'status' => 'success',
+                        'message' => 'Successfully fetched data',
+                        'PJOdata' => $getData,
+                    ];
+                    echo json_encode($response);
+                    exit;
+                }else{
+                    $response = [
+                        'status' => 'fail',
+                        'message' => 'Failed to load PJO.',
+                    ];
+                    echo json_encode($response);
+                    exit; 
+                }
+            }else{
                 $response = [
                     'status' => 'fail',
                     'message' => 'Invalid payload.',
@@ -132,7 +154,11 @@
         $desc =             $_POST['v_desc'];
         $descPattern =      $_POST['v_descpattern'];
         $cons =             $_POST['v_cons'];
-        $size =             $_POST['v_size'];
+
+        $sizeselection =    $_POST['v_optionselected'];
+        $sizewidth =        $_POST['v_length'];
+        $sizelength =       $_POST['v_width'];
+
         $dateStarted =      $_POST['v_datestarted'];
         $dateFinished =     $_POST['v_datefinished'];
         $leadTime =         $_POST['v_leadtime'];
@@ -201,7 +227,11 @@
             'design_pattern' => $descPattern,
             'construction' => $cons,
             'quantitiy' => $quantity,
-            'size' => $size,
+
+            'width' => $sizewidth,
+            'length' => $sizelength,
+            'size_selected' => $sizeselection,
+
             'date_started' => $dateStarted,
             'date_finished' => $dateFinished,
             'lead_time' => $leadTime,
@@ -390,7 +420,7 @@
                         $requiredFields = ['date', 'time_in', 'time_out', 'output_am', 'ot_time_in', 'ot_time_out', 'ot_output', 'total_output'];
                         $missingFields = array_diff($requiredFields, array_keys($materialData));
                 
-                
+                        $total = $materialData['output_am'] + $materialData['ot_output'];
                         $designs_insert = [
                             'pjoID' => $getPJOid['pjoID'],
                             'date' => $materialData['date'],
@@ -400,8 +430,9 @@
                             'ot_time_in'  => $materialData['ot_time_in'],
                             'ot_time_out'  => $materialData['ot_time_out'],
                             'ot_output'  => $materialData['ot_output'],
-                            'total_output'  => $materialData['total_output'],
+                            'total_output'  => $total,
                         ];
+                        
                         $test = $this->db->insert('production_monitoring_tbl', $designs_insert);
                         if($test){
                             $response = [

@@ -41,6 +41,59 @@
                 exit;
             }
 
+        }else if($payload['get'] == 'weaverproject'){
+            if (empty($payload['getData'])) {
+                $response = ['status' => 'fail', 'message' => 'The "get" parameter is empty or not provided.'];
+                echo json_encode($response);
+                exit;
+            }
+            
+            // $getWeaverProjects = $this->db->where('endorse', $payload['getData'])->getOne('pjo_tbl');
+            // if($getWeaverProjects){
+
+            //     $getProjects = $this->db->where('pjoID', $getWeaverProjects['pjoID'])->get('production_monitoring_tbl');
+            //     if($getProjects){
+            //         $response = [
+            //          'status' => 'success',
+            //          'message' => 'Weaver data updated successfully.',
+            //          'pjoProject' =>[
+            //           'pjoInfo' => array($getWeaverProjects),
+            //           'projectInfo' => $getProjects],
+            //         ];
+            //         echo json_encode($response);
+            //         exit;
+            //     }else{
+            //         $response = ['status' => 'fail','message' => 'Projects of weaver not found.'];
+            //         echo json_encode($response);
+            //         exit;
+            //     }
+            // }else{
+            //     $response = ['status' => 'fail','message' => 'Projects of the weaver not found.'];
+            //     echo json_encode($response);
+            //     exit;
+            // }
+            $endorsed = $payload['getData'];
+
+            $sql = "SELECT pjo_tbl.*, SUM(production_monitoring_tbl.total_output) AS total_output_sum
+                    FROM pjo_tbl 
+                    LEFT JOIN production_monitoring_tbl ON pjo_tbl.pjoID = production_monitoring_tbl.pjoID
+                    WHERE pjo_tbl.endorse = ?
+                    GROUP BY pjo_tbl.pjoID";
+            
+            $getData = $this->db->rawQuery($sql, array($endorsed));
+                if($getData){
+                    $response = [
+                     'status' => 'success',
+                     'message' => 'Weaver data updated successfully.',
+                     'pjoProject' => $getData,
+                    ];
+                    echo json_encode($response);
+                    exit;
+                }else{
+                    $response = ['status' => 'fail','message' => 'Projects of weaver not found.'];
+                    echo json_encode($response);
+                    exit;
+                }
         }else{
             $response = [
                 'status' => 'fail',
@@ -131,7 +184,9 @@
                 echo json_encode($response);
                 exit;
             }
-        }else{
+        
+        }
+        else{
             $response = ['status' => 'fail', 'message' => 'Invalid Type for payload'];
             echo json_encode($response);
             exit;

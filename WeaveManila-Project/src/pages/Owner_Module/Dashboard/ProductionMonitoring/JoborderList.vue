@@ -38,7 +38,7 @@ bordered
       <li class="py-[10px] px-[20px]" >
         <div class="flex items-center">
           <router-link to="/dashboard/main-dashboard">
-          <q-icon name="dashboard" class="mr-2" /> <span >Dashboard</span>
+          <q-icon name="dashboard" class="mr-2" /> <span>Dashboard</span>
           </router-link>
         </div>
       </li>
@@ -69,9 +69,10 @@ bordered
           <router-link to="/dashboard/productionplan-section">
             <li class="py-[2px] px-[40px] mt-3">Production Plan</li>
           </router-link>
-          <router-link to="/dashboard/joborder-section">
-            <li class="px-[40px] mt-3">Job Order</li>
-          </router-link>
+        <router-link to="/dashboard/joborder-section">
+          <li class="px-[40px] mt-3">Job Order</li>
+        </router-link>
+
         </ul>
       </li>
       <li class="py-[10px] px-[20px]">
@@ -200,8 +201,8 @@ bordered
   </ul>
 </q-drawer>
 <q-page class="bg-[#f5f5f5] ">
-  <div class="text-[30px] bg-white p-2">
-    <div class="items-center flex ">
+  <div class="text-[30px] bg-white p-4">
+    <div class="items-center flex">
       <q-icon
         name="menu"
         v-if="showMenuIcon"
@@ -214,159 +215,86 @@ bordered
         @click="toggleDrawer"
         class="cursor-pointer max-[1020px]:flex min-[1020px]:hidden"
       />
-    <span class="font-bold">Inventory</span>
-    </div>
-    <div class="text-[16px]">Efficiently manage and track your stock for streamlined supply chain operations and optimized inventory.</div>
-  </div>
-  <div class="p-4">
-    <div class="flex md:items-end md:justify-end mt-6 ">
-      <div class="flex items-center gap-5">
-        <q-input v-model="search" outlined dense placeholder="Search" class="md:w-[400px]">
-          <template v-slot:prepend>
-            <q-icon name="search" />
-          </template>
-        </q-input>
-        <q-btn @click="addCategory = true" class="bg-[#281c0f] text-white">
-          <i class="bi bi-plus-lg"></i>
-          Add Category
-        </q-btn>
+      <div>
+        <span class="font-bold">Job Order List</span>
+        <div class="text-[16px] text-[#999999]">Lorem Ipsum</div>
       </div>
     </div>
 
-    <q-dialog v-model="addCategory">
-        <q-card>
-          <q-form @submit="onSubmit">
-          <q-card-section class="row items-center q-pb-none">
-            <div class="text-h6 font-bold">Add Category</div>
-            <q-space />
-            <q-btn icon="close" flat round dense v-close-popup />
-          </q-card-section>
 
-          <q-card-section class="scroll">
-            <label>
-              Category Name<span class="text-red-600">*</span>
-            </label>
-            <q-input type="text" label="Category Name" v-model="title"  outlined dense :rules="[val => !!val || 'Field is required']"/>
-              <label>
-                Procedure<span class="text-red-600">*</span>
-              </label>
-              <q-select
-                outlined dense
-                v-model="selectedProcedure"
-                :options="procedureOptions"
-                label="Select Procedure"
-                :rules="[val => !!val || 'Field is required']"
+  </div>
+  <div class="p-4">
+    <div class="flex mt-3">
+        <router-link to="/dashboard/productionplan-section">
+          <div class="flex  w-[180px] text-[#b8b8b8] border-l-2 border-t-2 border-e-2 h-[44px] py-3 px-5 gap-[8px] rounded items-center text-[14px]">
+
+            <q-icon name="event"/>
+            <p>Production Plan</p>
+          </div>
+        </router-link>
+        <router-link to="/dashboard/joborderlist-section">
+          <div class="flex w-[180px] bg-white h-[44px] py-3 px-5 gap-[8px] rounded items-center text-[14px]">
+            <q-icon name="list"/>
+            <p>Job Order List</p>
+          </div>
+        </router-link>
+        <router-link to="/dashboard/weaver-section">
+          <div class="flex w-[180px] text-[#b8b8b8] border-t-2 border-l-2 border-e-2 h-[44px] py-3 px-5 gap-[8px] rounded items-center text-[14px]">
+              <q-icon name="group"/>
+              <p>Weaver List</p>
+            </div>
+        </router-link>
+    </div>
+    <div class="bg-white px-4 py-3 rounded h-[500px]">
+      <div class='flex justify-between'>
+        <div>
+          <q-input v-model="filtersearch" label="Search..." dense outlined>
+            <template v-slot:prepend>
+              <q-icon name="search" />
+            </template>
+          </q-input>
+        </div>
+        <div classs='flex '>
+          <q-btn icon='download' class='ms-1 me-1'/>
+          <q-btn icon='print' class='ms-1 me-1'/>
+          <q-btn icon='refresh' class='ms-1 me-1'/>
+          <q-btn icon='filter_list' class='ms-1 me-1'/>
+        </div>
+      </div>
+
+      <div class='mt-4'>
+        <q-table
+          class="my-sticky-header-table"
+          dense bordered
+          :rows="rows"
+          :columns="columns"
+          row-key="pjoID"
+          :selected-rows-label="getSelectedString"
+          selection="multiple"
+          :pagination="initialPagination"
+          v-model:selected="selected"
+        >
+          <template v-slot:body-cell-selection="props">
+            <q-td :props="props">
+              <q-checkbox
+                v-model="props.selected"
+                :val="props.row.pjoID"
+                @input="handleCheckboxChange(props.row.pjoID)"
               />
-            <label class="">
-              Item Description<span class="text-red-600">*</span>
-            </label>
-            <q-input
-              type="textarea"
-              label="Item Description"
-              v-model="description"
-              outlined
-              dense
-              :rules="[val => !!val || 'Field is required']"
-              style="width: 300px; resize: none;"
-            />
-          </q-card-section>
-
-          <q-separator />
-
-          <q-card-actions align="right">
-            <q-btn flat label="Cancel" color="primary" v-close-popup />
-            <q-btn
-              flat
-              label="Save"
-              type="submit"
-              icon="save"
-              size="md"
-              class="bg-[#281c0f] text-white rounded"
-            />
-          </q-card-actions>
-        </q-form>
-        </q-card>
-    </q-dialog>
-
-    <q-dialog v-model="OpenDelete">
-        <q-card>
-          <q-card-section class="row items-center q-pb-none">
-            <div class="py-1 px-2 border text-[24px]"><q-icon name="delete"/></div>
-            <q-space />
-            <q-btn icon="close" flat round dense v-close-popup />
-          </q-card-section>
-
-          <q-card-section>
-            <div class="text-h6 font-bold">Delete Card</div>
-            <p>Are you sure you want to delete this card? This</p>
-            <p>action cannot be undone.</p>
-          </q-card-section>
-
-          <q-card-actions class="flex justify-center items-center">
-            <div class="w-1/2 p-1">
-              <q-btn flat label="Cancel" outline v-close-popup class="w-full border"/>
-            </div>
-            <div class="w-1/2 p-1">
-              <q-btn
-                @click="onDelete"
-                flat
-                label="Delete"
-                type="submit"
-                size="md"
-                class="bg-red-600 text-white rounded w-full"
-              />
-            </div>
-          </q-card-actions>
-        </q-card>
-    </q-dialog>
-
-      <div class="max-[390px]:mt-3 md:grid md:grid-cols-4 gap-4 md:p-4 h-[435px] overflow-y-auto overflow-x-hidden" >
-      <!-- Display fetched data in the grid with checkboxes -->
-      <div v-for="item in filteredItems" :key="item.id" style="border: #b09582 2px solid " class=" min-[390px]:mt-3 relative min-[390px]:w-full md:w-[231px] bg-white drop-shadow-lg border-[#b09582] rounded ">
-        <q-card flat>
-          <q-card-section>
-            <div class="row items-center no-wrap">
-              <div class="col">
-                <div class="text-h6">{{ item.title }}</div>
-              </div>
-              <div class="col-auto">
-                <q-btn color="grey-7" round flat icon="more_vert">
-                  <q-menu cover auto-close>
-                    <q-list>
-                      <q-item clickable @click="handleViewClick(item)">
-                        <q-item-section>View Details</q-item-section>
-                      </q-item>
-                      <q-item clickable @click="handleEditClick(item)">
-                        <q-item-section>Edit Card</q-item-section>
-                      </q-item>
-                      <q-item clickable @click="handleDeleteClick(item)">
-                        <q-item-section>Delete Card</q-item-section>
-                      </q-item>
-                    </q-list>
-                  </q-menu>
-                </q-btn>
-              </div>
-            </div>
-          </q-card-section>
-
-          <q-card-section>
-            <div class="items-center flex gap-3">
-              <q-icon name="inventory_2" class="text-[#b09582]"/>
-              <div class="grid grid-cols-2 gap-4">
-                <p>Inventory</p>
-                {{ getItemCount(item.categoryID) }}
-              </div>
-            </div>
-            <div class="flex items-center gap-2">
-              <q-icon name="short_text" class="text-[#b09582]"/>
-              <p>Description:</p>
-              <p class="overflow-hidden whitespace-nowrap overflow-ellipsis w-[86px]">{{ item.description }}asd adasdas</p>
-            </div>
-
-
-
-          </q-card-section>
-        </q-card>
+            </q-td>
+          </template>
+          <template v-slot:body-cell-action="props">
+            <q-td :props="props">
+              <q-btn icon='history' class='bg-[#344054] text-white ms-1 me-1'/>
+              <q-btn icon='assignment' class='bg-[#101828] text-white ms-1 me-1'>
+                <q-tooltip :offset="[0, 8]">View</q-tooltip>
+              </q-btn>
+              <q-btn icon='delete' class='bg-[#B3261E] text-white ms-1 me-1'>
+                <q-tooltip :offset="[0, 8]">Remove</q-tooltip>
+              </q-btn>
+            </q-td>
+          </template>
+        </q-table>
       </div>
     </div>
   </div>
@@ -378,10 +306,10 @@ import { useQuasar } from 'quasar';
 import { SessionStorage } from 'quasar';
 import axios from 'axios';
 
+
 export default {
   setup() {
     const $q = useQuasar();
-
   },
   data() {
     return {
@@ -395,7 +323,6 @@ export default {
       username: '',
       position: '',
       status: '',
-      addCategory: false,
       drawer: false,
       showMenuIcon: false,
       statusCheckTimer: null,
@@ -404,178 +331,96 @@ export default {
       drawerIcon: 'arrow_back_ios',
       inventoryMenuVisible: false,
       productionVisible: false,
+      // New Data
+      columns: [
+        {name: 'jobOrderNo', label: 'Job Order No.', field: 'jobOrderNo', sortable: true},
+        {name: 'commitmentDate', label: 'Commitment Date', field: 'commitmentDate', sortable: true},
+        {name: 'weaver', label: 'Weaver', field: 'weaver', sortable: true},
+        {name: 'size', label: 'Size', field: 'size', sortable: true},
+        {name: 'total_output', label: 'Total Output', field: 'total_output', sortable: true},
+        {name: 'balance', label: 'Balance', field: 'balance', sortable: true},
+        {name: 'status', label: 'Status', field: 'status', sortable: true},
+        {name: 'checked_by', label: 'Checked By', field: 'checked_by', sortable: true},
+        {name: 'edited', label: 'Edited', field: 'edited', sortable: true},
+        {name: 'action', label: 'Action', field: 'action', sortable: true, align: 'center'},
 
-      // Add DATA
-      search: '',
-      title: '',
-      description: '',
-      items: [],
-      countData: {},
-      selectedItems: [],
-      isOptionsOpen: {},
-      selectedProcedure: null,
-      procedureOptions: ["Process & issuance", "Issuance only"],
-
-      OpenDelete: false,
-      targetDelete: '',
-
+      ],
+      rows: [],
+      selected: [],
+      initialPagination: {
+        page: 1,
+        rowsPerPage: 10
+      },
     };
-  },
-  computed: {
-    filteredItems() {
-      // Filter items based on the search input
-      return this.items.filter(item => {
-        const lowerSearch = this.search.toLowerCase();
-        return item.title.toLowerCase().includes(lowerSearch) || item.description.toLowerCase().includes(lowerSearch);
-      });
-    },
   },
   mounted() {
     this.loadUserData();
     this.statusCheckTimer = setInterval(() => {
       this.checkUserStatus();
     }, 20 * 1000); // 1 second (in milliseconds)
-    this.fetchData();
-    this.clearInventoryData();
-  },
-  beforeUnmount() {
-    clearInterval(this.statusCheckTimer);
+    this.fetchallPJO();
   },
   methods: {
-    clearInventoryData() {
-      sessionStorage.removeItem('inventoryData');
-    },
-    onSubmit(){
-      const formData = {
-        title: this.title,
-        procedure: this.selectedProcedure,
-        description: this.description,
+    handleCheckboxChange(rowId) {
+      const index = this.selected.indexOf(rowId);
 
+      if (index === -1) {
+        this.selected.push(rowId);
+      } else {
+        this.selected.splice(index, 1);
       }
-      axios.post('http://localhost/Capstone-Project/backend/api/Inventory_Database/inventory.php/', formData)
-      .then(response => {
 
-        const Status = response.data.status;
-        const Message = response.data.message;
-        if (Status === "success") {
-          this.$q.notify({
-              message: 'Category Added!!',
-              caption: `${Message}`,
-              color: 'green',
-          });
-          this.title = '';
-          this.description = '';
-          this.procedureOptions = [];
-          this.addCategory = false;
-          this.fetchData();
-        }
-        if (Status === "fail") {
-          this.$q.notify({
-            color: 'negative',
-            message: `${Message} Please try again.`,
-          });
-        }
-
-      }).catch(error => {
-            console.error('Error fetching data:', error);
-      });
     },
-    fetchData() {
+    getSelectedString() {
+      return `Selected ${this.selected.length} item(s)`;
+    },
+    extractSelectedIds() {
+      return this.selected.map(item => item.supplierID);
+    },
+    fetchallPJO(){
+      // Define unit abbreviation mapping
+      const unitAbbreviations = {
+        'Feet': 'ft',
+        'Meters': 'm',
+        'Centimeters': 'cm',
+        'Millimeters': 'mm',
+        'Inches': 'in'
+      };
 
-      axios.get('http://localhost/Capstone-Project/backend/api/Inventory_Database/inventory.php?type=1')
-        .then(response => {
-          if (response.data && response.data.status === 'success' && response.data.information) {
-            const fetchedData = response.data.information.rows;
-            const countData = response.data.information.itemCountData;
-            this.countData = countData;
-            this.items = fetchedData;
-          } else {
-            console.error('Failed to fetch data:', response.data.message);
-          }
+      axios.get('http://localhost/Capstone-Project/backend/api/ProductionMonitoring/job_order/job_order.php?type=getPJOall')
+      .then((response) => {
+        console.log(response.data);
+        this.rows = response.data.PJOdata.map(row => {
+          // Check if unit abbreviation exists, if yes, replace with abbreviation
+          const sizeSelectedAbbreviated = unitAbbreviations[row.size_selected] || row.size_selected;
+          const jobOrderNoPadded = row.job_order_no.toString().padStart(3, '0');
+          return {
+            jobOrderNo: jobOrderNoPadded,
+            weaver:  row.endorse,
+            size: row.width + 'x' + row.length + ' ' + sizeSelectedAbbreviated,
+            total_output: row.total_output_sum,
+            checked_by: row.checked_by
+          };
         })
-        .catch(error => {
-          // Handle any errors that occur during the HTTP request
-          console.error('Error fetching data:', error.message);
-        });
-    },
-    toggleOptions(itemId) {
-      // Close dropdown for other items
-      Object.keys(this.isOptionsOpen).forEach(id => {
-        if (id !== itemId) {
-          this.isOptionsOpen[id] = false;
-        }
-      });
-
-      // Toggle the dropdown options for the clicked item
-      this.isOptionsOpen[itemId] = !this.isOptionsOpen[itemId];
-    },
-    getItemCount(categoryID) {
-      return this.countData[categoryID] || 0;
-    },
-    handleViewClick(itemId) {
-      axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/inventory.php?type&id=${itemId.categoryID}`)
-      .then(response => {
-
-        const Status = response.data.status;
-        const Message = response.data.message;
-        if (Status === "success") {
-          const inventoryData = {
-            InventoryId: itemId.categoryID,
-            InventoryName: itemId.title,
-          }
-          SessionStorage.set('inventoryData', JSON.stringify(inventoryData));
-          this.$router.push('/dashboard/inventory-viewpage');
-        }
-        if (Status === "fail") {
-          this.$q.notify({
-            color: 'negative',
-            message: `${Message} Please try again.`,
-          });
-        }
       }).catch(error => {
-            console.error('Error fetching data:', error);
-      });
-    },
-    handleEditClick(itemId) {
-      console.log('Edit button clicked for item ID:', itemId.categoryID);
-    },
-    handleDeleteClick(itemId) {
-      this.targetDelete = itemId.categoryID;
-      this.OpenDelete = true;
-    },
-
-// Execution
-    onDelete(){
-      axios.delete(`http://localhost/Capstone-Project/backend/api/Inventory_Database/inventory.php/${this.targetDelete}`)
-      .then(response => {
-        const Status = response.data.status;
-        const Message = response.data.message;
-        if (Status === "success") {
-          this.$q.notify({
-              message: 'Category deleted successfully!!',
-              color: 'green',
-          });
-        }
-        if (Status === "fail") {
-          this.$q.notify({
-            color: 'negative',
-            message: `${Message} Please try again.`,
-          });
-        }
-        this.OpenDelete = false;
-        this.fetchData();
-      }).catch(error => {
-            console.error('Error fetching data:', error);
+        console.error("Error fetching PJO data:", error);
       });
     },
 
 
 
-    toggleProduction(){
-      this.productionVisible = !this.productionVisible;
-    },
+
+
+
+
+
+
+    // Old Data
     toggleInventoryMenu() {
       this.inventoryMenuVisible = !this.inventoryMenuVisible;
+    },
+    toggleProduction(){
+      this.productionVisible = !this.productionVisible;
     },
     toggleDrawer() {
       if (!this.toggleDrawers) {
@@ -616,17 +461,7 @@ export default {
             isAdmin: information.isAdmin,
           };
           SessionStorage.set('information', JSON.stringify(this.information));
-        const Position = response.data.information.position;
-        if (Position.toLowerCase() === 'owner') {
-          this.$router.push('/dashboard/inventory-section');
-        }else{
-          this.$q.notify({
-          type: 'negative',
-            message: 'You do not have permission to access the system.',
-          });
-          this.$router.push('/');
-          sessionStorage.clear();
-        }
+        // Update the local status and take appropriate action if it has changed
         if (this.status !== latestStatus) {
           this.status = latestStatus;
 
@@ -645,6 +480,7 @@ export default {
     },
     loadUserData() {
       const userData = SessionStorage.getItem('information');
+
       if (userData) {
         try {
           const userInformation = JSON.parse(userData);
@@ -660,25 +496,27 @@ export default {
 
           this.fullname = this.firstname + " " + this.lastname;
           if (this.position.toLowerCase() === 'owner') {
-            this.$router.push('/dashboard/inventory-section');
-          }else{
+
+            this.$router.push('/dashboard/joborderlist-section');
+          } else {
+
             this.$q.notify({
-            type: 'negative',
+              type: 'negative',
               message: 'You do not have permission to access the system.',
             });
             this.$router.push('/');
             sessionStorage.clear();
           }
-          if(this.status == 0)
-          {
+
+          if (this.status == 0) {
+
             this.$q.notify({
-            type: 'negative',
+              type: 'negative',
               message: 'Your account is currently inactive. Please contact the account owner for activation.',
             });
             this.$router.push('/');
             sessionStorage.clear();
           }
-
         } catch (error) {
           console.log('Error parsing user data:', error);
           // Provide user feedback or navigate to an error page
@@ -717,4 +555,3 @@ export default {
   },
 };
 </script>
-

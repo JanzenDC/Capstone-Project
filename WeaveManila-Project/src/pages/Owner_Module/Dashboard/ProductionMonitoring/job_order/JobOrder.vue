@@ -605,11 +605,12 @@
             Page 2
           </div>
           <div>
-            <q-btn label="next" icon-right="arrow_forward_ios" class="text-white bg-[#634832]" @click="clickPage = !clickPage"/>
+            <q-btn label="Previous" icon-right="arrow_forward_ios" class="text-white bg-[#634832]" @click="clickPage = !clickPage"/>
           </div>
         </div>
         <q-separator class="mt-3"/>
         <div class="mt-3">
+          {{ v_globalstore }} / {{ storedata }}
           PRODUCTION MONITORING
         </div>
         <div class='mt-3'>
@@ -685,7 +686,7 @@
                 </q-td>
 
                 <q-td key="total_output" :props="props">
-                  {{ calculateTotal(props.row.output_am, props.row.ot_output) }}
+                  {{ calculateTotalOutput(props.row) }}
                 </q-td>
 
                 <q-td key="action" :props="props">
@@ -872,6 +873,9 @@ export default {
       optionswarehouse: [],
       optionsweaver: [],
       optionsProductionStaff: [],
+
+      v_globalstore: 0,
+      storedata: 0,
     };
   },
   watch: {
@@ -1000,7 +1004,21 @@ export default {
     this.fetchProductionStaff();
   },
   methods: {
+    calculateTotalOutput(row) {
+      // Calculate total output
+      if (!isNaN(row.output_am) && !isNaN(row.ot_output)) {
+        const first = parseFloat(row.output_am) + parseFloat(row.ot_output);
+        this.storedata = parseFloat(this.v_globalstore) - first;
+        return parseFloat(row.output_am) + parseFloat(row.ot_output);
+      } else {
+        return 0;
+      }
+    },
+    updateGlobalStore() {
+      this.v_globalstore = this.convertedLengthInInches;
+    },
     calculateLeadTime() {
+      this.updateGlobalStore()
       if (!this.v_qouta || !this.convertedLengthInInches) return;
 
       const quota = parseFloat(this.v_qouta);
@@ -1180,7 +1198,11 @@ export default {
       formData.append('v_desc', this.v_desc);
       formData.append('v_descpattern', this.v_descpattern);
       formData.append('v_cons', this.v_cons);
-      formData.append('v_size', this.v_size);
+
+      formData.append('v_optionselected', this.v_optionselected);
+      formData.append('v_length', this.v_length);
+      formData.append('v_width', this.v_width);
+
       formData.append('v_datestarted', this.v_datestarted);
       formData.append('v_datefinished', this.v_datefinished);
       formData.append('v_leadtime', this.v_leadtime);
@@ -1285,7 +1307,7 @@ export default {
       });
 
       // query using axios post
-      axios.post(`http://localhost/quasar-trial/PHP-MySQLi-Database-Class/api/job_order.php/`, formData)
+      axios.post(`http://localhost/Capstone-Project/backend/api/ProductionMonitoring/job_order/job_order.php`, formData)
       .then((response) => {
           console.log(response.data);
       }).catch(error => {
@@ -1354,7 +1376,7 @@ export default {
 
     // FETCH QUERY AREA
     fetchWarehouseMan() {
-      axios.get('http://localhost/quasar-trial/PHP-MySQLi-Database-Class/api/job_order.php?type=get')
+      axios.get('http://localhost/Capstone-Project/backend/api/ProductionMonitoring/job_order/job_order.php?type=get')
         .then((response) => {
           if (response.data.status === 'success') {
             const warehouseManData = response.data.WarehouseManData;
@@ -1368,7 +1390,7 @@ export default {
         });
     },
     fetchJOref() {
-      axios.get('http://localhost/quasar-trial/PHP-MySQLi-Database-Class/api/job_order.php?type=pjo')
+      axios.get('http://localhost/Capstone-Project/backend/api/ProductionMonitoring/job_order/job_order.php?type=pjo')
         .then((response) => {
           if (response.data.status === 'success') {
             // Extract the next job order number from the response
@@ -1389,7 +1411,7 @@ export default {
         });
     },
     fetchWeaver(){
-      axios.get('http://localhost/quasar-trial/PHP-MySQLi-Database-Class/api/job_order.php?type=weaver')
+      axios.get('http://localhost/Capstone-Project/backend/api/ProductionMonitoring/job_order/job_order.php?type=weaver')
       .then((response) => {
         if (response.data.status === 'success') {
           const weaverData = response.data.weaver;
@@ -1404,7 +1426,7 @@ export default {
       });
     },
     fetchProductionStaff(){
-      axios.get('http://localhost/quasar-trial/PHP-MySQLi-Database-Class/api/job_order.php?type=production_staff')
+      axios.get('http://localhost/Capstone-Project/backend/api/ProductionMonitoring/job_order/job_order.php?type=production_staff')
       .then((response) => {
         if (response.data.status === 'success') {
           const productionData = response.data.production_staff;

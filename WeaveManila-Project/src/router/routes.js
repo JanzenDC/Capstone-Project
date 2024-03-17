@@ -48,6 +48,7 @@ const routes = [
 
        // Production Monitoring Module
       { path: 'productionplan-section', component: () => import('pages/Owner_Module/Dashboard/ProductionMonitoring/ProductionPlan.vue') },
+      { path: 'joborderlist-section', component: () => import('pages/Owner_Module/Dashboard/ProductionMonitoring/JoborderList.vue') },
       { path: 'joborder-section', component: () => import('pages/Owner_Module/Dashboard/ProductionMonitoring/JobOrder.vue') },
       { path: 'weaver-section', component: () => import('pages/Owner_Module/Dashboard/ProductionMonitoring/WeaverPage.vue') },
 

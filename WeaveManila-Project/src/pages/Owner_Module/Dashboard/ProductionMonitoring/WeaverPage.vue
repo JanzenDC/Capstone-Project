@@ -222,7 +222,29 @@ bordered
 
 
   </div>
+
+
   <div class="p-4">
+    <div class="flex mt-3">
+          <router-link to="/dashboard/productionplan-section">
+            <div class="flex w-[180px] text-[#b8b8b8] border-t-2 border-l-2 border-e-2 h-[44px] py-3 px-5 gap-[8px] rounded items-center text-[14px]">
+              <q-icon name="event"/>
+              <p>Production Plan</p>
+            </div>
+          </router-link>
+          <router-link to="/dashboard/joborderlist-section">
+            <div class="flex  w-[180px] text-[#b8b8b8] border-l-2 border-t-2 border-e-2 h-[44px] py-3 px-5 gap-[8px] rounded items-center text-[14px]">
+              <q-icon name="list"/>
+              <p>Job Order List</p>
+            </div>
+          </router-link>
+          <router-link to="/dashboard/weaver-section">
+              <div class="flex w-[180px] bg-white h-[44px] py-3 px-5 gap-[8px] rounded items-center text-[14px]">
+                <q-icon name="group"/>
+                <p>Weaver List</p>
+              </div>
+          </router-link>
+    </div>
     <div class="bg-white px-4 py-3 rounded h-[500px]">
         <div class="md:flex md:items-center md:justify-between ">
           <div class="grid-cols-2 grid gap-2 md:flex items-center md:gap-5">
@@ -262,7 +284,7 @@ bordered
                   <q-btn icon='edit' class='text-white bg-[#109CF1] w-[32px] h-[32px]' @click='editWeaver(props.row.id, props.row.name, props.row.contact, props.row.emailaddress, props.row.addresses, props.row.firstname, props.row.lastname)'>
                     <q-tooltip :offset="[0, 8]">Edit</q-tooltip>
                   </q-btn>
-                  <q-btn icon='visibility' class='text-white bg-[#999999] w-[32px] h-[32px]'>
+                  <q-btn icon='visibility' class='text-white bg-[#999999] w-[32px] h-[32px]' @click="pjoProjects(props.row.id, props.row.name)">
                     <q-tooltip :offset="[0, 8]">See Details</q-tooltip>
                   </q-btn>
                   <q-btn icon='delete' class='text-white bg-[#B3261E] w-[32px] h-[32px]'
@@ -275,7 +297,7 @@ bordered
             </template>
             </q-table>
           </div>
-        </div>
+    </div>
   </div>
 
 <!-- ONSUBMIT -->
@@ -417,6 +439,49 @@ bordered
         </q-card-section>
       </q-card>
     </q-dialog>
+
+    <q-dialog v-model="pjoDialog" persistent>
+      <q-card class='w-[964px]'>
+        <q-card-section class="row items-center q-pb-none">
+          <div class='flex gap-2 items-center'>
+            <q-icon name="group" class="w-[48px] h-[48px] text-h5 rounded drop-shadow-lg"/>
+            <div class='text-h6'>
+              PJO Projects
+            </div>
+          </div>
+          <q-space />
+          <q-btn icon="close" flat round dense v-close-popup @click='handleClose'/>
+        </q-card-section>
+
+        <q-card-section>
+            <div class='flex justify-between'>
+              <div>
+                <q-input v-model="filtersearch" label="Search..." dense outlined>
+                  <template v-slot:prepend>
+                    <q-icon name="search" />
+                  </template>
+                </q-input>
+              </div>
+              <div classs='flex '>
+                <q-btn icon='download' class='ms-1 me-1'/>
+                <q-btn icon='print' class='ms-1 me-1'/>
+                <q-btn icon='refresh' class='ms-1 me-1'/>
+                <q-btn icon='filter_list' class='ms-1 me-1'/>
+              </div>
+            </div>
+            <q-table
+              class="my-sticky-header-table mt-3"
+              dense bordered
+              :rows="rows_pjo"
+              :columns="columns_pjo"
+              row-key="pjoID"
+              v-model:selected="selected"
+            >
+          </q-table>
+        </q-card-section>
+
+      </q-card>
+    </q-dialog>
 </q-page>
 </template>
 
@@ -450,7 +515,22 @@ bordered
         drawerIcon: 'arrow_back_ios',
         inventoryMenuVisible: false,
         productionVisible: false,
+        initialPagination: {
+          page: 1,
+          rowsPerPage: 10
+        },
         // New Data
+        columns_pjo: [
+          {name: 'jobOrderNo', label: 'Job Order No.', field: 'jobOrderNo', sortable: true},
+          {name: 'commitmentDate', label: 'Commitment Date', field: 'commitmentDate', sortable: true},
+          {name: 'size', label: 'Size', field: 'size', sortable: true},
+          {name: 'total_output', label: 'Total Output', field: 'total_output', sortable: true},
+          {name: 'balance', label: 'Balance', field: 'balance', sortable: true},
+          {name: 'status', label: 'Status', field: 'status', sortable: true},
+          {name: 'checked_by', label: 'Checked By', field: 'checked_by', sortable: true},
+          {name: 'edited', label: 'Edited', field: 'edited', sortable: true},
+        ],
+        rows_pjo: [],
         w_columns: [
           {name: 'name', label: 'Name', field: 'name', sortable: true},
           {name: 'contact', label: 'Contact No.', field: 'contact', sortable: true},
@@ -476,9 +556,11 @@ bordered
         v_contactnumber: '',
         v_emailaddress: '',
         v_selectedID: '',
+        selected: [],
         // EDIT DIALOG
         editDialog: false,
         isEditing: false,
+        pjoDialog: false,
       };
     },
     watch: {
@@ -520,6 +602,32 @@ bordered
       clearInterval(this.statusCheckTimer);
     },
     methods: {
+      pjoProjects(id,name){
+        this.pjoDialog = true;
+        const unitAbbreviations = {
+          'Feet': 'ft',
+          'Meters': 'm',
+          'Centimeters': 'cm',
+          'Millimeters': 'mm',
+          'Inches': 'in'
+        };
+        axios.get(`http://localhost/Capstone-Project/backend/api/ProductionMonitoring/Weaver_Queries/weaver.php?get=weaverproject&getData=${name}`)
+        .then((response) =>{
+          console.log(response.data)
+          this.rows_pjo = response.data.pjoProject.map(row => {
+            const sizeSelectedAbbreviated = unitAbbreviations[row.size_selected] || row.size_selected;
+            const jobOrderNoPadded = row.job_order_no.toString().padStart(3, '0');
+            return {
+              jobOrderNo: jobOrderNoPadded,
+              size: row.width + 'x' + row.length + ' ' + sizeSelectedAbbreviated,
+              total_output: row.total_output_sum,
+              checked_by: row.checked_by
+            };
+          })
+        }).catch(error => {
+              console.error('Error fetching data:', error);
+        });
+      },
       editWeaver(id, name, contact, email, address, firstname, lastname) {
         this.editDialog = true;
         console.log("ID:", id);
