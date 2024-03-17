@@ -198,7 +198,8 @@ export default {
     checkUserStatus() {
         axios.get(`http://localhost/Capstone-Project/backend/api/verification.php?email=${this.email}`)
         .then(response => {
-        const latestStatus = response.data.information.status;
+        console.log(response.data);
+
         const information = response.data.information;
           this.information = {
             id: information.id,
@@ -218,20 +219,25 @@ export default {
             isOnline: information.isOnline,
             status: information.status,
             password: information.password,
+            isAdmin: information.isAdmin,
           };
           SessionStorage.set('information', JSON.stringify(this.information));
-        if (this.status !== latestStatus) {
-          this.status = latestStatus;
 
-          if (this.status === 0) {
-            this.$q.notify({
-              type: 'negative',
-              message: 'Your account is currently inactive. Please contact the administrator.',
-            });
-            this.$router.push('/');
-            sessionStorage.clear();
+          const latestAdmin = response.data.information.isAdmin;
+          const latestStatus = response.data.information.status;
+
+          if (this.status !== latestStatus || (latestAdmin && latestStatus === 0)) {
+            this.status = latestStatus;
+
+            if (this.status === 0 && !latestAdmin) {
+              this.$q.notify({
+                type: 'negative',
+                message: 'Your account is currently inactive. Please contact the administrator.',
+              });
+              this.$router.push('/');
+              sessionStorage.clear();
+            }
           }
-        }
       }).catch(error => {
             console.error('Error fetching data:', error);
       });
@@ -257,7 +263,7 @@ export default {
           {
             this.$q.notify({
             type: 'negative',
-              message: 'Your account is currently inactive. Please contact the administrator.',
+              message: 'Your account is currently inactive. Please contact the account owner for activation.',
             });
             this.$router.push('/');
             sessionStorage.clear();

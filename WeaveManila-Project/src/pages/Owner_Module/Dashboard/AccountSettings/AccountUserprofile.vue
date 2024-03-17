@@ -192,47 +192,6 @@ export default {
     clearInterval(this.statusCheckTimer);
   },
   methods: {
-    checkUserStatus() {
-        axios.get(`http://localhost/Capstone-Project/backend/api/verification.php?email=${this.email}`)
-        .then(response => {
-        const latestStatus = response.data.information.status;
-        const information = response.data.information;
-        this.information = {
-          id: information.id,
-          email: information.email,
-          username: information.username,
-          pfp: information.pfp,
-          firstname: information.firstname,
-          middlename: information.middlename,
-          lastname: information.lastname,
-          gender: information.gender,
-          position: information.position,
-          mobilenumber: information.mobilenumber,
-          birthdate: information.birthdate,
-          age: information.age,
-          address: information.address,
-          otp_code: information.otp_code,
-          isOnline: information.isOnline,
-          status: information.status,
-          password: information.password,
-        };
-        SessionStorage.set('information', JSON.stringify(this.information));
-        if (this.status !== latestStatus) {
-          this.status = latestStatus;
-
-          if (this.status === 0) {
-            this.$q.notify({
-              type: 'negative',
-              message: 'Your account is currently inactive. Please contact the administrator.',
-            });
-            this.$router.push('/');
-            sessionStorage.clear();
-          }
-        }
-      }).catch(error => {
-            console.error('Error fetching data:', error);
-      });
-    },
     getLimitedFullname(fullname, maxLength) {
       if (fullname.length > maxLength) {
         return fullname.substring(0, maxLength) + '...';
@@ -245,6 +204,53 @@ export default {
     toggleDrawer() {
       this.drawer = !this.drawer;
       this.showMenuIcon = !this.showMenuIcon;
+    },
+    checkUserStatus() {
+        axios.get(`http://localhost/Capstone-Project/backend/api/verification.php?email=${this.email}`)
+        .then(response => {
+        console.log(response.data);
+
+        const information = response.data.information;
+          this.information = {
+            id: information.id,
+            email: information.email,
+            username: information.username,
+            pfp: information.pfp,
+            firstname: information.firstname,
+            middlename: information.middlename,
+            lastname: information.lastname,
+            gender: information.gender,
+            position: information.position,
+            mobilenumber: information.mobilenumber,
+            birthdate: information.birthdate,
+            age: information.age,
+            address: information.address,
+            otp_code: information.otp_code,
+            isOnline: information.isOnline,
+            status: information.status,
+            password: information.password,
+            isAdmin: information.isAdmin,
+          };
+          SessionStorage.set('information', JSON.stringify(this.information));
+
+          const latestAdmin = response.data.information.isAdmin;
+          const latestStatus = response.data.information.status;
+
+          if (this.status !== latestStatus || (latestAdmin && latestStatus === 0)) {
+            this.status = latestStatus;
+
+            if (this.status === 0 && !latestAdmin) {
+              this.$q.notify({
+                type: 'negative',
+                message: 'Your account is currently inactive. Please contact the administrator.',
+              });
+              this.$router.push('/');
+              sessionStorage.clear();
+            }
+          }
+      }).catch(error => {
+            console.error('Error fetching data:', error);
+      });
     },
     loadUserData() {
       const userData = SessionStorage.getItem('information');
@@ -265,7 +271,7 @@ export default {
           {
             this.$q.notify({
             type: 'negative',
-              message: 'Your account is currently inactive. Please contact the administrator.',
+              message: 'Your account is currently inactive. Please contact the account owner for activation.',
             });
             this.$router.push('/');
             sessionStorage.clear();

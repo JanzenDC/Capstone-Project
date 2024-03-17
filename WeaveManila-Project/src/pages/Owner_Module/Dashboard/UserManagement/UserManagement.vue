@@ -461,7 +461,7 @@ bordered
         >
           ...
         </q-btn>
-        <q-dialog v-model="showDropdown" persistent transition-show="scale" transition-hide="scale">
+        <q-dialog v-model="showDropdown" transition-show="scale" transition-hide="scale">
           <q-card style="width: 300px">
             <q-card-section>
               <p class="text-h6">User Configuration</p>
@@ -507,7 +507,7 @@ bordered
       </q-table>
     </div>
 
-    <q-dialog v-model="showEditArea" >
+    <q-dialog v-model="showEditArea" persistent >
       <q-card class="w-[600px]">
         <q-card-section class="row items-center q-pb-none">
           <div class="text-h6 font-bold">Edit user</div>
