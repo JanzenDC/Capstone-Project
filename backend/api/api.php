@@ -37,10 +37,13 @@
         $user = $this->db->where("email", $payload['email'])->getOne('personel_tbl');
 
         if ($user === null) {
-            $response = ['status' => 'fail', 'message' => 'Email does not exist.'];
+            $response = [
+                'status' => 'fail',
+                'message' => 'No user with the provided email was found in the system.'
+            ];
             echo json_encode($response);
             exit;
-        }
+        }        
         
         date_default_timezone_set('Asia/Singapore');
 

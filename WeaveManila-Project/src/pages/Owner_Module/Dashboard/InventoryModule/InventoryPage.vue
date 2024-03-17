@@ -621,9 +621,10 @@ export default {
       }
     },
     checkUserStatus() {
-        axios.get(`http://localhost/Capstone-Project/backend/api/verification.php?email=${this.email}`)
-        .then(response => {
-        const latestStatus = response.data.information.status;
+      axios.get(`http://localhost/Capstone-Project/backend/api/verification.php?email=${this.email}`)
+      .then(response => {
+        console.log(response.data);
+
         const information = response.data.information;
           this.information = {
             id: information.id,
@@ -646,35 +647,29 @@ export default {
             isAdmin: information.isAdmin,
           };
           SessionStorage.set('information', JSON.stringify(this.information));
-        const Position = response.data.information.position;
-        if (Position.toLowerCase() === 'owner') {
-          this.$router.push('/dashboard/inventory-section');
-        }else{
-          this.$q.notify({
-          type: 'negative',
-            message: 'You do not have permission to access the system.',
-          });
-          this.$router.push('/');
-          sessionStorage.clear();
-        }
-        if (this.status !== latestStatus) {
-          this.status = latestStatus;
 
-          if (this.status === 0) {
-            this.$q.notify({
-              type: 'negative',
-              message: 'Your account is currently inactive. Please contact the administrator.',
-            });
-            this.$router.push('/');
-            sessionStorage.clear();
+          const latestAdmin = response.data.information.isAdmin;
+          const latestStatus = response.data.information.status;
+
+          if (this.status !== latestStatus || (latestAdmin && latestStatus === 0)) {
+            this.status = latestStatus;
+
+            if (this.status === 0 && !latestAdmin) {
+              this.$q.notify({
+                type: 'negative',
+                message: 'Your account is currently inactive. Please contact the administrator.',
+              });
+              this.$router.push('/');
+              sessionStorage.clear();
+            }
           }
-        }
       }).catch(error => {
             console.error('Error fetching data:', error);
       });
     },
     loadUserData() {
       const userData = SessionStorage.getItem('information');
+
       if (userData) {
         try {
           const userInformation = JSON.parse(userData);
@@ -687,22 +682,23 @@ export default {
           this.position = userInformation.position;
           this.status = userInformation.status;
           this.isAdmin = userInformation.isAdmin;
-
           this.fullname = this.firstname + " " + this.lastname;
           if (this.position.toLowerCase() === 'owner') {
-            this.$router.push('/dashboard/inventory-section');
-          }else{
+
+            this.$router.push('/dashboard/main-dashboard');
+          } else {
+
             this.$q.notify({
-            type: 'negative',
+              type: 'negative',
               message: 'You do not have permission to access the system.',
             });
             this.$router.push('/');
             sessionStorage.clear();
           }
-          if(this.status == 0)
-          {
+
+          if (this.status === 0 && !this.isAdmin) {
             this.$q.notify({
-            type: 'negative',
+              type: 'negative',
               message: 'Your account is currently inactive. Please contact the administrator.',
             });
             this.$router.push('/');

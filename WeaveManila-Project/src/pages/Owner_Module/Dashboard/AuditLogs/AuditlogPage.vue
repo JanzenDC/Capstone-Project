@@ -456,59 +456,7 @@ export default {
         this.drawerIcon = 'arrow_back_ios_new';
       }
     },
-    checkUserStatus() {
-        axios.get(`http://localhost/Capstone-Project/backend/api/verification.php?email=${this.email}`)
-        .then(response => {
-        const latestStatus = response.data.information.status;
-        const information = response.data.information;
-          this.information = {
-            id: information.id,
-            email: information.email,
-            username: information.username,
-            pfp: information.pfp,
-            firstname: information.firstname,
-            middlename: information.middlename,
-            lastname: information.lastname,
-            gender: information.gender,
-            position: information.position,
-            mobilenumber: information.mobilenumber,
-            birthdate: information.birthdate,
-            age: information.age,
-            address: information.address,
-            otp_code: information.otp_code,
-            isOnline: information.isOnline,
-            status: information.status,
-            password: information.password,
-            isAdmin: information.isAdmin,
-          };
-          SessionStorage.set('information', JSON.stringify(this.information));
-        const Position = response.data.information.position;
-        if (Position.toLowerCase() === 'owner') {
-          this.$router.push('/dashboard/auditlogs-section');
-        }else{
-          this.$q.notify({
-          type: 'negative',
-            message: 'You do not have permission to access the system.',
-          });
-          this.$router.push('/');
-          sessionStorage.clear();
-        }
-        if (this.status !== latestStatus) {
-          this.status = latestStatus;
 
-          if (this.status === 0) {
-            this.$q.notify({
-              type: 'negative',
-              message: 'Your account is currently inactive. Please contact the administrator.',
-            });
-            this.$router.push('/');
-            sessionStorage.clear();
-          }
-        }
-      }).catch(error => {
-            console.error('Error fetching data:', error);
-      });
-    },
     filterTableDataByDate(days) {
       this.showDateArea = false;
       this.tableData = [];
@@ -686,6 +634,53 @@ export default {
     });
     },
     // Old Data
+    checkUserStatus() {
+      axios.get(`http://localhost/Capstone-Project/backend/api/verification.php?email=${this.email}`)
+      .then(response => {
+        console.log(response.data);
+
+        const information = response.data.information;
+          this.information = {
+            id: information.id,
+            email: information.email,
+            username: information.username,
+            pfp: information.pfp,
+            firstname: information.firstname,
+            middlename: information.middlename,
+            lastname: information.lastname,
+            gender: information.gender,
+            position: information.position,
+            mobilenumber: information.mobilenumber,
+            birthdate: information.birthdate,
+            age: information.age,
+            address: information.address,
+            otp_code: information.otp_code,
+            isOnline: information.isOnline,
+            status: information.status,
+            password: information.password,
+            isAdmin: information.isAdmin,
+          };
+          SessionStorage.set('information', JSON.stringify(this.information));
+
+          const latestAdmin = response.data.information.isAdmin;
+          const latestStatus = response.data.information.status;
+
+          if (this.status !== latestStatus || (latestAdmin && latestStatus === 0)) {
+            this.status = latestStatus;
+
+            if (this.status === 0 && !latestAdmin) {
+              this.$q.notify({
+                type: 'negative',
+                message: 'Your account is currently inactive. Please contact the administrator.',
+              });
+              this.$router.push('/');
+              sessionStorage.clear();
+            }
+          }
+      }).catch(error => {
+            console.error('Error fetching data:', error);
+      });
+    },
     loadUserData() {
       const userData = SessionStorage.getItem('information');
 
@@ -703,25 +698,27 @@ export default {
           this.isAdmin = userInformation.isAdmin;
           this.fullname = this.firstname + " " + this.lastname;
           if (this.position.toLowerCase() === 'owner') {
-          this.$router.push('/dashboard/auditlogs-section');
-          }else{
+
+            this.$router.push('/dashboard/main-dashboard');
+          } else {
+
             this.$q.notify({
-            type: 'negative',
+              type: 'negative',
               message: 'You do not have permission to access the system.',
             });
             this.$router.push('/');
             sessionStorage.clear();
           }
-          if(this.status == 0)
-          {
+
+          if (this.status === 0 && !this.isAdmin) {
             this.$q.notify({
-            type: 'negative',
+              type: 'negative',
               message: 'Your account is currently inactive. Please contact the administrator.',
             });
             this.$router.push('/');
             sessionStorage.clear();
           }
-          // If another value add here
+
         } catch (error) {
           console.log('Error parsing user data:', error);
           // Provide user feedback or navigate to an error page
