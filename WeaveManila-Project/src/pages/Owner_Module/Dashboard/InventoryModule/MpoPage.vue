@@ -244,7 +244,7 @@ bordered
       </router-link>
     </div>
 
-    <div class="w-full bg-white p-4 h-[380px]">
+    <div class="w-full bg-white p-4 h-[470px]">
       <div class="flex md:items-end md:justify-between">
           <div class="flex items-center gap-2">
             <q-input outlined dense placeholder="Search" class="md:w-[400px]">
@@ -670,7 +670,7 @@ bordered
     </q-card-section>
 
     <q-card-section>
-      
+
       <p>Are you sure you want to Logout?</p>
     </q-card-section>
 
@@ -1455,7 +1455,7 @@ export default {
 <style lang="sass">
 .my-sticky-header-table
   /* height or max-height is important */
-  height: 280px
+  height: 380px
 
   .q-table__top,
 

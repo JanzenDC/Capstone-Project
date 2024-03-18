@@ -72,9 +72,6 @@ bordered
           <router-link to="/dashboard/joborder-section">
             <li class="px-[40px] mt-3">Job Order</li>
           </router-link>
-          <router-link to="/dashboard/weaver-section">
-            <li class="px-[40px] mt-3">Weaver</li>
-          </router-link>
         </ul>
       </li>
       <li class="py-[10px] px-[20px]">
@@ -245,7 +242,7 @@ bordered
           </div>
       </router-link>
     </div>
-    <div class="bg-white px-4 py-3">
+    <div class="bg-white px-4 py-3 ">
 
       <div class="md:flex md:items-center md:justify-between ">
         <div class="grid-cols-2 grid gap-2 md:flex items-center md:gap-5">
@@ -645,7 +642,7 @@ bordered
     </q-card-section>
 
     <q-card-section>
-      
+
       <p>Are you sure you want to Logout?</p>
     </q-card-section>
 

@@ -452,7 +452,6 @@ bordered
               </q-tr>
             </template>
             </q-table>
-
             <div class="flex items-center mt-6">
               <div class="w-1/2 -mt-[90px]">
                 <label>Notes & Instruction<span class="text-red-600">*</span></label>
@@ -469,39 +468,39 @@ bordered
               </div>
               <div class="w-1/2 flex justify-end">
                 <div class="grid grid-cols-2 gap-1 w-[332px] text-[16px] ">
-                    Delivery Charge
-                    <q-input dense outlined v-model="deliver_charge" >
-                      <template v-slot:append>
-                        ₱
-                      </template>
-                    </q-input> <!--base on user input-->
-                    Other Costs
-                    <q-input dense outlined v-model="other_cost">
-                      <template v-slot:append>
-                        ₱
-                      </template>
-                    </q-input> <!--base on user input-->
-                    Sub total
-                    <q-input dense outlined v-model="total_in_table" disable>
-                      <template v-slot:append>
-                        ₱
-                      </template>
-                    </q-input>
-                    Discount
-                    <q-input dense outlined v-model="discount" disable>
-                      <template v-slot:append>
-                        ₱
-                      </template>
-                    </q-input> <!--substraction automatic 10%-->
-                    Vat
-                    <q-input dense outlined v-model="vat" disable>
-                      <template v-slot:append>
-                        ₱
-                      </template>
-                    </q-input><!--substraction automatic 12%-->
+                  Delivery Charge
+                  <q-input dense outlined v-model="deliver_charge" >
+                    <template v-slot:append>
+                      ₱
+                    </template>
+                  </q-input> <!--base on user input-->
+                  Other Costs
+                  <q-input dense outlined v-model="other_cost">
+                    <template v-slot:append>
+                      ₱
+                    </template>
+                  </q-input> <!--base on user input-->
+                  Sub total
+                  <q-input dense outlined v-model="total_in_table" disable>
+                    <template v-slot:append>
+                      ₱
+                    </template>
+                  </q-input>
+                  Discount
+                  <q-input dense outlined v-model="discount">
+                    <template v-slot:append>
+                      ₱
+                    </template>
+                  </q-input> <!--substraction automatic 10%-->
+                  Vat
+                  <q-input dense outlined v-model="vat" >
+                    <template v-slot:append>
+                      ₱
+                    </template>
+                  </q-input><!--substraction automatic 12%-->
 
-                    Total Amount
-                    <q-input dense outlined v-model="total_amount" disable/>
+                  Total Amount
+                  <q-input dense outlined v-model="total_amount" disable/>
                 </div>
               </div>
             </div>
@@ -634,7 +633,7 @@ bordered
     </q-card-section>
 
     <q-card-section>
-      
+
       <p>Are you sure you want to Logout?</p>
     </q-card-section>
 
@@ -732,7 +731,6 @@ export default {
         { name: 'squantity', align: 'left', label: 'Quantity', field: 'squantity', sortable: true },
         { name: 'sunit', align: 'left', label: 'Unit', field: 'sunit', sortable: true },
         { name: 'sunitprice', align: 'left', label: 'Unit Price', field: 'sunitprice', sortable: true },
-        { name: 'sdiscount', align: 'left', label: 'Discount', field: 'sdiscount', sortable: true },
         { name: 'stotal', align: 'left', label: 'Sub Total', field: 'stotal', sortable: true },
         { name: 'sactions', align: 'left', label: 'Actions', field: 'sactions', sortable: true },
       ],
@@ -815,7 +813,6 @@ export default {
       sunitprice: '',
       sdiscount: '',
       stotal: '',
-
     });
   },
   watch: {
@@ -1053,39 +1050,36 @@ export default {
     },
     // COMPUTATION DATA ! IF WORKING DO NOT GALAW GALAW THIS AREA
     updateTotalAmount() {
-      // SUBTOTAL
+      // Calculate total amount from table
       const totalFromTable = this.datarows.reduce((acc, row) => {
         const quantity = parseFloat(row.squantity) || 0;
         const unitPrice = parseFloat(row.sunitprice) || 0;
         return acc + (quantity * unitPrice);
       }, 0);
+
+      // Update total amount in table
       this.total_in_table = totalFromTable;
-      // ALL Discount
-      const discountFromTable = this.datarows.reduce((acc, row) => {
-        const discount = parseFloat(row.sdiscount) || 0;
-        const discountDecimal = discount / 100;
-        const total = parseFloat(row.stotal) || 0;
-        return acc + (discountDecimal * total);
-      }, 0);
-      this.discount = discountFromTable;
 
-      const vatFromTable = this.datarows.reduce((acc, row) => {
-        const VatValue = 12;
-        const vat = parseFloat(VatValue) || 0;
-        const vatDecimal = vat / 100;
-        const total = parseFloat(row.stotal) || 0;
-        return acc + (vatDecimal * total);
-      }, 0);
-      this.vat = vatFromTable;
-      // // Compute the total amount
-      // const discountPercentage = parseFloat(this.discount) / 100;
-      // const vatPercentage = parseFloat(this.vat) / 100;
+      // Parse and calculate additional costs and charges
+      const deliveryCharge = this.deliver_charge ? parseFloat(this.deliver_charge) : 0;
+      const otherCost = this.other_cost ? parseFloat(this.other_cost) : 0;
+      const discountPercentage = this.discount ? parseFloat(this.discount) : 0;
+      const vatPercentage = this.vat ? parseFloat(this.vat) : 0;
 
-      // const discountAmount = discountPercentage * totalFromTable;
-      // const vatAmount = vatPercentage * totalFromTable;
-      const deliveryCharge = parseFloat(this.deliver_charge) || 0;
-      const otherCost = parseFloat(this.other_cost) || 0;
-      this.total_amount = totalFromTable - discountFromTable + vatFromTable + deliveryCharge - otherCost;
+      // Calculate discount amount
+      const discountDecimal = discountPercentage / 100;
+      const discountedTotal = totalFromTable * (1 - discountDecimal);
+
+      // Calculate VAT amount if vatPercentage is provided
+      const vatDecimal = vatPercentage / 100;
+      const vatAmount = vatDecimal * totalFromTable;
+
+      // Calculate total amount including discount, VAT, and delivery charge
+      const totalBeforeOtherCosts = deliveryCharge + vatAmount;
+
+      // Calculate final total amount including other costs
+      this.total_amount = discountedTotal + totalBeforeOtherCosts - otherCost;
+      console.log(this.total_amount);
     },
     addProduct() {
       let maxId = 0;

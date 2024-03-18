@@ -647,7 +647,7 @@ bordered
     </q-card-section>
 
     <q-card-section>
-      
+
       <p>Are you sure you want to Logout?</p>
     </q-card-section>
 
@@ -772,7 +772,8 @@ export default {
       .then(response => {
         console.log(response.data);
         this.tableData = response.data.informations.rows.map(row => {
-          const time = new Date(row.account_created).toLocaleDateString('en-US', { year: 'numeric', month: 'numeric', day: 'numeric' });          const fullname = row.firstname + " " + row.lastname;
+          const time = new Date(row.account_created).toLocaleDateString('en-US', { year: 'numeric', month: 'numeric', day: 'numeric' });
+          const fullname = row.firstname + " " + row.lastname;
           return {
             id: row.personelID,
 
@@ -1082,7 +1083,7 @@ export default {
           this.position = userInformation.position;
           this.status = userInformation.status;
           this.isAdmin = userInformation.isAdmin;
-          this.fullname = this.firstname + " " + this.lastname;
+          this.fullnames = this.firstname + " " + this.lastname;
           if (this.position.toLowerCase() === 'owner') {
 
             this.$router.push('/dashboard/usermanagement-section');
