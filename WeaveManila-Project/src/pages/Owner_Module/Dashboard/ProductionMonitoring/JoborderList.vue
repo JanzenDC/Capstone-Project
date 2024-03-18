@@ -283,13 +283,26 @@ bordered
               />
             </q-td>
           </template>
+          <template v-slot:body-cell-status="props">
+            <q-td :props="props">
+              <span v-if="props.row.status === 'Done'" class="text-green-600 p-2 rounded-full bg-green-300">
+                ● Done
+              </span>
+              <span v-else-if="props.row.status === 'Ongoing'" class="text-yellow-600 p-2 rounded-full bg-yellow-300">
+                ● Ongoing
+              </span>
+              <span v-else-if="props.row.status === 'Pending'" class="text-red-600 p-2 rounded-full bg-red-300">
+                ● Pending
+              </span>
+            </q-td>
+          </template>
           <template v-slot:body-cell-action="props">
             <q-td :props="props">
               <q-btn icon='history' class='bg-[#344054] text-white ms-1 me-1'/>
               <q-btn icon='assignment' class='bg-[#101828] text-white ms-1 me-1'>
                 <q-tooltip :offset="[0, 8]">View</q-tooltip>
               </q-btn>
-              <q-btn icon='delete' class='bg-[#B3261E] text-white ms-1 me-1'>
+              <q-btn icon='delete' class='bg-[#B3261E] text-white ms-1 me-1' @click="handleDeleteClick">
                 <q-tooltip :offset="[0, 8]">Remove</q-tooltip>
               </q-btn>
             </q-td>
@@ -308,7 +321,7 @@ bordered
     </q-card-section>
 
     <q-card-section>
-      
+
       <p>Are you sure you want to Logout?</p>
     </q-card-section>
 
@@ -328,7 +341,37 @@ bordered
     </q-card-actions>
   </q-card>
 </q-dialog>
+<q-dialog v-model="OpenDelete">
+  <q-card>
+    <q-card-section class="row items-center q-pb-none">
+      <div class="py-1 px-2 border text-[24px]"><q-icon name="delete"/></div>
+      <q-space />
+      <q-btn icon="close" flat round dense v-close-popup />
+    </q-card-section>
 
+    <q-card-section>
+      <div class="text-h6 font-bold">Delete</div>
+      <p>Are you sure you want to delete this? This</p>
+      <p>action cannot be undone.</p>
+    </q-card-section>
+
+    <q-card-actions class="flex justify-center items-center">
+      <div class="w-1/2 p-1">
+        <q-btn flat label="Cancel" outline v-close-popup class="w-full border" @click="handleCancel"/>
+      </div>
+      <div class="w-1/2 p-1">
+        <q-btn
+          @click="HandleRemove"
+          flat
+          label="Delete"
+          type="submit"
+          size="md"
+          class="bg-red-600 text-white rounded w-full"
+        />
+      </div>
+    </q-card-actions>
+  </q-card>
+</q-dialog>
 </template>
 
 <script>
@@ -368,8 +411,8 @@ export default {
         {name: 'commitmentDate', label: 'Commitment Date', field: 'commitmentDate', sortable: true},
         {name: 'weaver', label: 'Weaver', field: 'weaver', sortable: true},
         {name: 'size', label: 'Size', field: 'size', sortable: true},
-        {name: 'total_output', label: 'Total Output', field: 'total_output', sortable: true},
-        {name: 'balance', label: 'Balance', field: 'balance', sortable: true},
+        {name: 'total_output', label: 'Total Output (Inches)', field: 'total_output', sortable: true},
+        {name: 'balance', label: 'Balance (Inches)', field: 'balance', sortable: true},
         {name: 'status', label: 'Status', field: 'status', sortable: true},
         {name: 'checked_by', label: 'Checked By', field: 'checked_by', sortable: true},
         {name: 'edited', label: 'Edited', field: 'edited', sortable: true},
@@ -382,6 +425,7 @@ export default {
         page: 1,
         rowsPerPage: 10
       },
+      OpenDelete: false,
     };
   },
   mounted() {
@@ -392,6 +436,9 @@ export default {
     this.fetchallPJO();
   },
   methods: {
+      handleDeleteClick() {
+        this.OpenDelete = true;
+      },
     handleCheckboxChange(rowId) {
       const index = this.selected.indexOf(rowId);
 
@@ -420,22 +467,64 @@ export default {
 
       axios.get('http://localhost/Capstone-Project/backend/api/ProductionMonitoring/job_order/job_order.php?type=getPJOall')
       .then((response) => {
-        console.log(response.data);
-        this.rows = response.data.PJOdata.map(row => {
-          // Check if unit abbreviation exists, if yes, replace with abbreviation
-          const sizeSelectedAbbreviated = unitAbbreviations[row.size_selected] || row.size_selected;
-          const jobOrderNoPadded = row.job_order_no.toString().padStart(3, '0');
-          return {
-            jobOrderNo: jobOrderNoPadded,
-            weaver:  row.endorse,
-            size: row.width + 'x' + row.length + ' ' + sizeSelectedAbbreviated,
-            total_output: row.total_output_sum,
-            checked_by: row.checked_by
-          };
-        })
+          console.log(response.data);
+          this.rows = response.data.PJOdata.map(row => {
+            const sizeSelectedAbbreviated = unitAbbreviations[row.size_selected] || row.size_selected;
+            const jobOrderDate = new Date(row.date);
+            let year = jobOrderDate.getFullYear().toString();
+            year = year.slice(2); // Remove first two digits
+
+            const jobOrderNoPadded = year + '-' + row.job_order_no.toString().padStart(3, '0');
+
+              // Convert length to inches based on unit selected
+              let lengthInInches;
+              switch (sizeSelectedAbbreviated) {
+                  case 'ft':
+                      lengthInInches = row.length * 12; // 1 foot = 12 inches
+                      break;
+                  case 'm':
+                      lengthInInches = row.length * 39.3701; // 1 meter = 39.3701 inches
+                      break;
+                  case 'cm':
+                      lengthInInches = row.length * 0.393701; // 1 centimeter = 0.393701 inches
+                      break;
+                  case 'mm':
+                      lengthInInches = row.length * 0.0393701; // 1 millimeter = 0.0393701 inches
+                      break;
+                  case 'in':
+                      lengthInInches = row.length; // Already in inches
+                      break;
+                  default:
+                      lengthInInches = row.length; // If size_selected is not recognized, keep as it is
+              }
+              // extract the year in row.date and apply in jobOrderNoPadded the format will be row.date-jobOrderNoPadded
+              // Calculate value
+              const value = lengthInInches / row.qouta;
+              const value2 = value - row.total_output_sum;
+              // Determine status
+              let status;
+              if (value === row.total_output_sum) {
+                  status = 'Done';
+              } else if (value > 0) {
+                  status = 'Ongoing';
+              } else {
+                  status = 'Pending';
+              }
+
+              return {
+                  jobOrderNo: jobOrderNoPadded,
+                  weaver: row.endorse,
+                  size: row.width + 'x' + row.length + ' ' + sizeSelectedAbbreviated,
+                  total_output: row.total_output_sum,
+                  balance: value2,
+                  checked_by: row.checked_by,
+                  status: status
+              };
+          });
       }).catch(error => {
-        console.error("Error fetching PJO data:", error);
+          console.error("Error fetching PJO data:", error);
       });
+
     },
 
 

@@ -275,7 +275,7 @@ bordered
     </q-card-section>
 
     <q-card-section>
-      
+
       <p>Are you sure you want to Logout?</p>
     </q-card-section>
 
@@ -505,7 +505,7 @@ bordered
             this.fullname = this.firstname + " " + this.lastname;
             if (this.position.toLowerCase() === 'owner') {
 
-              this.$router.push('/dashboard/backup-section');
+              this.$router.push('/dashboard/restore-section');
             } else {
 
               this.$q.notify({

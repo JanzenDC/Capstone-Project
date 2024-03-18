@@ -610,7 +610,7 @@
         </div>
         <q-separator class="mt-3"/>
         <div class="mt-3">
-          {{ v_globalstore }} / {{ storedata }}
+          <!-- {{ v_globalstore }} / {{ storedata }} -->
           PRODUCTION MONITORING
         </div>
         <div class='mt-3'>
@@ -847,11 +847,11 @@ export default {
         { name: 'date', align: 'left', label: 'Date', field: 'date', sortable: true },
         { name: 'time_in', align: 'left', label: 'Time in', field: 'time_in', sortable: true },
         { name: 'time_out', align: 'left', label: 'Time Out', field: 'time_out', sortable: true },
-        { name: 'output_am', align: 'left', label: 'Output AM', field: 'output_am', sortable: true },
+        { name: 'output_am', align: 'left', label: 'Output AM & PM', field: 'output_am', sortable: true },
         { name: 'ot_time_in', align: 'left', label: 'OT Time -  In', field: 'ot_time_in', sortable: true },
         { name: 'ot_time_out', align: 'left', label: 'OT Time -  Out', field: 'ot_time_out', sortable: true },
         { name: 'ot_output', align: 'left', label: 'OT Output', field: 'ot_output', sortable: true },
-        { name: 'total_output', align: 'left', label: 'Total Output', field: 'total_output', sortable: true },
+        { name: 'total_output', align: 'left', label: 'Total Output (Inches)', field: 'total_output', sortable: true },
         { name: 'action', align: 'center', label: '', field: 'action'},
       ],
       production_monitoring_rows: [],
@@ -1014,13 +1014,14 @@ export default {
       }
     },
     updateGlobalStore() {
-      this.v_globalstore = this.convertedLengthInInches;
+      this.v_globalstore = this.convertedLengthInInches /  parseFloat(this.v_qouta);
     },
     calculateLeadTime() {
       this.updateGlobalStore()
       if (!this.v_qouta || !this.convertedLengthInInches) return;
 
       const quota = parseFloat(this.v_qouta);
+
       this.v_leadtime = Math.round(this.convertedLengthInInches / quota);
     },
     calculateDateFinished() {

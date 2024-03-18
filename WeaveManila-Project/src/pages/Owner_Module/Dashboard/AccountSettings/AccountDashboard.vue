@@ -554,6 +554,8 @@ export default {
           this.status = userInformation.status;
           this.id = userInformation.id;
           this.fullnames = this.firstname + " " + this.lastname;
+          this.isAdmin = userInformation.isAdmin;
+
           if (this.position.toLowerCase() === 'owner') {
           this.$router.push('/dashboard/account-settings');
           }else{
