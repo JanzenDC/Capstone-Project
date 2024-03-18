@@ -143,14 +143,18 @@
         $date =             $_POST['v_date'];
         $reference =        $_POST['v_Reference'];
         $deliveryDate =     $_POST['v_deliverydate'];
-        $weaving =          $_POST['v_weaving'];
-        $tassle =           $_POST['v_tassle'];
-        $trimming =         $_POST['v_trimming'];
-        $cleaning =         $_POST['v_cleaning'];
-        $latexing =         $_POST['v_latexing'];
-        $relatexing =       $_POST['v_relatexing'];
-        $piping =           $_POST['v_piping'];
-        $cutting =          $_POST['v_cutting'];
+
+
+        $selectedServices = $_POST['services'];
+        $weaving = in_array('weaving', $selectedServices) ? 1 : 0;
+        $tassle = in_array('tassle', $selectedServices) ? 1 : 0;
+        $trimming = in_array('trimming', $selectedServices) ? 1 : 0;
+        $cleaning = in_array('cleaning', $selectedServices) ? 1 : 0;
+        $latexing = in_array('latexing', $selectedServices) ? 1 : 0;
+        $relatexing = in_array('re_latexing', $selectedServices) ? 1 : 0;
+        $piping = in_array('piping', $selectedServices) ? 1 : 0;
+        $cutting = in_array('cutting', $selectedServices) ? 1 : 0;
+
         $desc =             $_POST['v_desc'];
         $descPattern =      $_POST['v_descpattern'];
         $cons =             $_POST['v_cons'];
@@ -225,7 +229,7 @@
             'description' => $desc,
             'design_pattern' => $descPattern,
             'construction' => $cons,
-            'quantitiy' => $quantity,
+            'quantity' => $quantity,
 
             'width' => $sizewidth,
             'length' => $sizelength,

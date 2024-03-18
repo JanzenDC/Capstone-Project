@@ -22,70 +22,125 @@
             JOB ORDER FORM - CARPET DIVISION
           </div>
         </div>
-          <div class='w-[346px]'>
-            <p>Endorsed<span class="text-red-600">*</span></p>
-            <q-select outlined v-model="v_Endorsed" dense outline :options="optionsweaver" />
-          </div>
-          <div class='grid grid-cols-4 gap-2 mt-3'>
-            <div>
-              <p>J.O Ref. No.</p>
-              <q-input v-model="v_JOrefNo" dense outlined disable class="mt-2 bg-grey-300"/>
+        <div class='flex'>
+          <div class='w-1/2'>
+            <div class='w-[346px]'>
+              <p>Endorsed<span class="text-red-600">*</span></p>
+              <q-select outlined v-model="v_Endorsed" dense outline :options="optionsweaver" />
             </div>
-            <div>
-              <p>Date</p>
-              <q-input v-model="v_date" dense outlined class="mt-2" type="date"/>
-            </div>
-            <div>
-              <p>Reference</p>
-              <q-input v-model="v_Reference" dense outlined class="mt-2"/>
-            </div>
-            <div>
-              <p>Delivery Date</p>
-              <q-input v-model="v_deliverydate" dense outlined class="mt-2" type="date"
+            <div class='grid grid-cols-4 gap-2 mt-3'>
+              <div>
+                <p>J.O Ref. No.</p>
+                <q-input v-model="v_JOrefNo" dense outlined disable class="mt-2 bg-grey-300"/>
+              </div>
+              <div>
+                <p>Date</p>
+                <q-input v-model="v_date" dense outlined class="mt-2" type="date"/>
+              </div>
+              <div>
+                <p>Reference</p>
+                <q-input v-model="v_Reference" dense outlined class="mt-2"/>
+              </div>
+              <div>
+                <p>Delivery Date</p>
+                <q-input v-model="v_deliverydate" dense outlined class="mt-2" type="date"
 
-              lazy-rules
-              :rules="[ val => val && val.length > 0 || 'Please input valid date']"/>
+                lazy-rules
+                :rules="[ val => val && val.length > 0 || 'Please input valid date']"/>
+              </div>
             </div>
           </div>
+          <div class='w-1/2 p-4'>
+            <div class="mt-3">
+              SERVICES
+            </div>
+            <div class='grid grid-cols-4 gap-2 mt-3 text-center'>
+              <div class='w-[70px]'>
+                <label>Weaving</label>
+                <q-checkbox
+                    v-model="services"
+                    val="weaving"
+                    color="orange"
+                    size="xl"
+                  />
+              </div>
 
-          <div class="mt-3">
-            SERVICES
-          </div>
-          <div class='grid grid-cols-4 gap-2 mt-3'>
-            <div>
-              <label>Weaving</label>
-              <q-input v-model="v_weaving" dense outlined class="mt-2" type='number'/>
-            </div>
-            <div>
-              <label>Tassle</label>
-              <q-input v-model="v_tassle" dense outlined class="mt-2" type='number'/>
-            </div>
-            <div>
-              <label>Trimming</label>
-              <q-input v-model="v_trimming" dense outlined class="mt-2" type='number'/>
-            </div>
-            <div>
-              <label>Cleaning</label>
-              <q-input v-model="v_cleaning" dense outlined class="mt-2" type='number'/>
+              <div class='w-[70px]'>
+                <label>Tassle</label>
+                <q-checkbox
+                    v-model="services"
+                    val="tassle"
+                    color="orange"
+                    size="xl"
+                  />
+              </div>
+
+              <div class='w-[70px]'>
+                <label>Trimming</label>
+                <q-checkbox
+                    v-model="services"
+                    val="trimming"
+                    color="orange"
+                    size="xl"
+                  />
+              </div>
+
+              <div class='w-[70px]'>
+                <label>Cleaning</label>
+                <q-checkbox
+                    v-model="services"
+                    val="cleaning"
+                    color="orange"
+                    size="xl"
+                  />
+              </div>
+              
+              <div class='w-[70px]'>
+                <label>Latexing</label>
+                <q-checkbox
+                    v-model="services"
+                    val="latexing"
+                    color="orange"
+                    size="xl"
+                  />
+              </div>
+
+              <div class='w-[90px]'>
+                <label>Re-latexing</label>
+                <q-checkbox
+                    v-model="services"
+                    val="relatexing"
+                    color="orange"
+                    size="xl"
+                  />
+              </div>
+
+              <div class='w-[70px]'>
+                <label>Piping</label>
+                <q-checkbox
+                    v-model="services"
+                    val="piping"
+                    color="orange"
+                    size="xl"
+                  />
+              </div>
+
+              <div class='w-[70px]'>
+                <label>Cutting</label>
+                <q-checkbox
+                    v-model="services"
+                    val="cutting"
+                    color="orange"
+                    size="xl"
+                  />
+              </div>
             </div>
 
-            <div>
-              <label>Latexing</label>
-              <q-input v-model="v_latexing" dense outlined class="mt-2" type='number'/>
-            </div>
-            <div>
-              <label>Re-latexing</label>
-              <q-input v-model="v_relatexing" dense outlined class="mt-2" type='number'/>
-            </div>
-            <div>
-              <label>Piping</label>
-              <q-input v-model="v_piping" dense outlined class="mt-2" type='number'/>
-            </div>
-            <div>
-              <label>Cutting</label>
-              <q-input v-model="v_cutting" dense outlined class="mt-2" type='number'/>
-            </div>
           </div>
+        </div>
+
+
+
 
           <div class="mt-3">
             PRODUCT SPECIFICATION
@@ -760,14 +815,7 @@ export default {
       v_date: '',
       v_Reference: '',
       v_deliverydate: '',
-      v_weaving: '',
-      v_tassle: '',
-      v_trimming: '',
-      v_cleaning: '',
-      v_latexing: '',
-      v_relatexing: '',
-      v_piping: '',
-      v_cutting: '',
+      services: [],
       v_desc: '',
       v_descpattern: '',
       v_cons: '',
@@ -1187,14 +1235,7 @@ export default {
       formData.append('v_date', this.v_date);
       formData.append('v_Reference', this.v_Reference);
       formData.append('v_deliverydate', this.v_deliverydate);
-      formData.append('v_weaving', this.v_weaving);
-      formData.append('v_tassle', this.v_tassle);
-      formData.append('v_trimming', this.v_trimming);
-      formData.append('v_cleaning', this.v_cleaning);
-      formData.append('v_latexing', this.v_latexing);
-      formData.append('v_relatexing', this.v_relatexing);
-      formData.append('v_piping', this.v_piping);
-      formData.append('v_cutting', this.v_cutting);
+
       formData.append('v_desc', this.v_desc);
       formData.append('v_descpattern', this.v_descpattern);
       formData.append('v_cons', this.v_cons);
@@ -1219,6 +1260,9 @@ export default {
       formData.append('s_approvedby_name', this.s_approvedby_name);
       formData.append('s_prepared_name', this.s_prepared_name);
       formData.append('v_checkedby', this.v_checkedby);
+      this.services.forEach(service => {
+        formData.append('services[]', service);
+      });
 
       this.mats_rows.forEach(row => {
         const matsData = {
@@ -1309,7 +1353,7 @@ export default {
       // query using axios post
       axios.post(`http://localhost/Capstone-Project/backend/api/ProductionMonitoring/job_order/job_order.php`, formData)
       .then((response) => {
-          console.log(response.data);
+          console.log('Your Data:',response.data);
       }).catch(error => {
         // Handle error if request fails
         console.error("Error sending file:", error);

@@ -299,7 +299,7 @@ bordered
           <template v-slot:body-cell-action="props">
             <q-td :props="props">
               <q-btn icon='history' class='bg-[#344054] text-white ms-1 me-1'/>
-              <q-btn icon='assignment' class='bg-[#101828] text-white ms-1 me-1'>
+              <q-btn icon='assignment' class='bg-[#101828] text-white ms-1 me-1' >
                 <q-tooltip :offset="[0, 8]">View</q-tooltip>
               </q-btn>
               <q-btn icon='delete' class='bg-[#B3261E] text-white ms-1 me-1' @click="handleDeleteClick">
@@ -512,6 +512,7 @@ export default {
               }
 
               return {
+                  id: row.pjoID,
                   jobOrderNo: jobOrderNoPadded,
                   weaver: row.endorse,
                   size: row.width + 'x' + row.length + ' ' + sizeSelectedAbbreviated,

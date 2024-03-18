@@ -244,8 +244,30 @@ bordered
             </div>
         </router-link>
     </div>
-    <div class="bg-white px-4 py-3 rounded h-[500px]">
-
+    <div class="bg-white px-4 py-3 rounded h-[460px]">
+        <q-table
+              class="my-sticky-header-table"
+              dense bordered
+              :rows="rows"
+              :columns="columns"
+              row-key="pjoID"
+              :selected-rows-label="getSelectedString"
+              selection="multiple"
+              :pagination="initialPagination"
+              v-model:selected="selected"
+            >
+            <template v-slot:body-cell-action="props">
+              <q-td :props="props">
+                <q-btn icon='history' class='bg-[#344054] text-white ms-1 me-1'/>
+                <q-btn icon='edit' class='bg-[#109CF1] text-white ms-1 me-1' @click='handleEdit(props.row.id, props.row.jo, props.row.client_name, props.row.pattern, props.row.Quantity, props.row.size, props.row.order_date, props.row.commitment_date, props.row.shipment_date)'>
+                  <q-tooltip :offset="[0, 8]">Edit</q-tooltip>
+                </q-btn>
+                <q-btn icon='delete' class='bg-[#B3261E] text-white ms-1 me-1' @click="handleDeleteClick">
+                  <q-tooltip :offset="[0, 8]">Remove</q-tooltip>
+                </q-btn>
+              </q-td>
+            </template>
+        </q-table>
     </div>
   </div>
 </q-page>
@@ -258,7 +280,7 @@ bordered
     </q-card-section>
 
     <q-card-section>
-      
+
       <p>Are you sure you want to Logout?</p>
     </q-card-section>
 
@@ -278,7 +300,62 @@ bordered
     </q-card-actions>
   </q-card>
 </q-dialog>
+<q-dialog v-model="editDialog" persistent>
+      <q-card class='w-[964px]'>
+        <q-card-section class="row items-center q-pb-none">
+          <div class='flex gap-2 items-center'>
+            <q-icon name="group" class="w-[48px] h-[48px] text-h5 rounded drop-shadow-lg"/>
+            <div class='text-h6'>
+              Job Order No. {{ JobOrderNo }}
+            </div>
+          </div>
+          <q-space />
+          <q-btn icon="close" flat round dense v-close-popup @click='handleClose'/>
+        </q-card-section>
 
+        <q-card-section>
+          <q-form @submit='onUpdate'>
+            <div class='font-bold text-[16px]'>Job Order Information</div>
+            <div class='grid grid-cols-2 gap-2 mt-3'>
+              <div>
+                <label>Client Name</label>
+                <q-input v-model='v_clientname' dense outlined/>
+              </div>
+              <div>
+                <label>Pattern</label>
+                <q-input v-model='v_pattern' disable dense outlined class='bg-grey-300'/>
+              </div>
+              <div>
+                <label>Quantity</label>
+                <q-input v-model='v_quantity' disable dense outlined/>
+              </div>
+              <div>
+                <label>Size</label>
+                <q-input v-model='v_size' disable dense outlined/>
+              </div>
+            </div>
+            <div class='font-bold text-[16px]'>Production Time Frame</div>
+            <div class='grid grid-cols-2 gap-2 mt-3'>
+              <div>
+                <label>Order Date</label>
+                <q-input v-model='v_orderdate' type='date' dense outlined/>
+              </div>
+              <div>
+                <label>Commitment Date</label>
+                <q-input v-model='v_commitment' type='date' dense outlined/>
+              </div>
+              <div>
+                <label>Shipped Date</label>
+                <q-input v-model='v_shipment' type='date' dense outlined/>
+              </div>
+            </div>
+            <div class='flex justify-end items-end'>
+              <q-btn label='Submit' type='submit' class='bg-[#634832] text-white'/>
+            </div>
+          </q-form>
+        </q-card-section>
+      </q-card>
+    </q-dialog>
 </template>
 
 <script>
@@ -313,6 +390,33 @@ export default {
       productionVisible: false,
       OpenLogout: false,
       // New Data
+      columns: [
+        {name: 'jobOrderNo', label: 'Job Order No.', field: 'jobOrderNo', sortable: true},
+        {name: 'clientName', label: 'Client Name', field: 'clientName', sortable: true},
+        {name: 'pattern', label: 'Pattern', field: 'pattern', sortable: true},
+        {name: 'Quantity', label: 'Quantity', field: 'Quantity', sortable: true},
+        {name: 'size', label: 'Size', field: 'size', sortable: true},
+        {name: 'order_date', label: 'Order Date', field: 'order_date', sortable: true},
+        {name: 'commitment_date', label: 'Commitment Date', field: 'commitment_date', sortable: true},
+        {name: 'shipment_date', label: 'Shipped Date', field: 'shipment_date', sortable: true},
+        {name: 'edited', label: 'Edited', field: 'edited', },
+        {name: 'action', label: 'Action', field: 'action', },
+      ],
+      rows: [],
+      selected: [],
+            initialPagination: {
+        page: 1,
+        rowsPerPage: 10
+      },
+      editDialog: false,
+      v_clientname: '',
+      v_pattern: '',
+      v_quantity: '',
+      v_size: '',
+      v_orderdate: '',
+      v_commitment: '',
+      v_shipment: '',
+      v_selected: '',
     };
   },
   mounted() {
@@ -320,10 +424,105 @@ export default {
     this.statusCheckTimer = setInterval(() => {
       this.checkUserStatus();
     }, 20 * 1000); // 1 second (in milliseconds)
+    this.fetchallPJO();
   },
   methods: {
+    handleEdit(id, pjoNumber, v_clientname, v_pattern, v_quantity, v_size, v_orderdate, v_commitment, v_shipment) {
+      this.editDialog = true;
+      // Assuming pjoNumber is a string or a number
+      this.JobOrderNo = String(pjoNumber).padStart(3, '0');
+      // Now you can use other parameters as needed
+      this.v_clientname = v_clientname;
+      this.v_pattern = v_pattern;
+      this.v_quantity = v_quantity;
+      this.v_size = v_size;
+      this.v_orderdate = v_orderdate;
+      this.v_commitment = v_commitment;
+      this.v_shipment = v_shipment;
+      this.v_selected = id;
+    },
+    onUpdate(){
+      const formData = {
+        v_selected: this.v_selected,
+        v_clientname: this.v_clientname,
+        v_orderdate: this.v_orderdate,
+        v_commitment: this.v_commitment,
+        v_shipment:   this.v_shipment
+      }
+      axios.post('http://localhost/Capstone-Project/backend/api/ProductionMonitoring/production_job_order/pjo_query.php', formData)
+      .then((response) => {
+        console.log(response.data);
+          const Status = response.data.status;
+          const Message = response.data.message;
+          if (Status === "success") {
+            this.$q.notify({
+                message: `${Message}`,
+                color: 'green',
+            });
+            this.fetchallPJO();
+            this.v_clientname = '';
+            this.v_pattern = '';
+            this.v_quantity = '';
+            this.v_size = '';
+            this.v_orderdate = '';
+            this.v_commitment = '';
+            this.v_shipment = '';
+            this.v_selected = '';
+            this.editDialog = false;
+          }
+          if (Status === "fail") {
+            this.$q.notify({
+              color: 'negative',
+              message: `${Message} Please try again.`,
+            });
+          }
+      }).catch(error => {
+          console.error("Error fetching PJO data:", error);
+      });
 
+    },
+    fetchallPJO(){
+      // Define unit abbreviation mapping
+      const unitAbbreviations = {
+        'Feet': 'ft',
+        'Meters': 'm',
+        'Centimeters': 'cm',
+        'Millimeters': 'mm',
+        'Inches': 'in'
+      };
 
+      axios.get('http://localhost/Capstone-Project/backend/api/ProductionMonitoring/job_order/job_order.php?type=getPJOall')
+      .then((response) => {
+          console.log(response.data);
+          this.rows = response.data.PJOdata.map(row => {
+            const sizeSelectedAbbreviated = unitAbbreviations[row.size_selected] || row.size_selected;
+            const jobOrderDate = new Date(row.date);
+            let year = jobOrderDate.getFullYear().toString();
+            year = year.slice(2); // Remove first two digits
+
+            const jobOrderNoPadded = year + '-' + row.job_order_no.toString().padStart(3, '0');
+
+              return {
+                  id: row.pjoID,
+                  jobOrderNo: jobOrderNoPadded,
+                  jo: row.job_order_no,
+                  pattern: row.design_pattern,
+                  Quantity: row.quantity,
+                  size: row.width + 'x' + row.length + ' ' + sizeSelectedAbbreviated,
+                  order_date: row.order_date,
+                  commitment_date: row.commitment_date,
+                  shipment_date: row.shipped_date,
+                  clientName: row.client_name,
+              };
+          });
+      }).catch(error => {
+          console.error("Error fetching PJO data:", error);
+      });
+
+    },
+    getSelectedString() {
+      return `Selected ${this.selected.length} item(s)`;
+    },
 
 
 
@@ -475,3 +674,33 @@ export default {
   },
 };
 </script>
+<style lang="sass">
+.my-sticky-header-table
+  /* height or max-height is important */
+  height: 330px
+
+  .q-table__top,
+
+  thead tr:first-child th
+    /* bg color is important for th; just specify one */
+    background-color: #fff
+    text-align: center
+    font-size: 13px
+
+  thead tr th
+    position: sticky
+    z-index: 1
+  thead tr:first-child th
+    top: 0
+
+  /* this is when the loading indicator appears */
+  &.q-table--loading thead tr:last-child th
+    /* height of all previous header rows */
+    top: 48px
+
+  /* prevent scrolling behind sticky top row on focus */
+  tbody
+    /* height of all previous header rows */
+    scroll-margin-top: 48px
+
+</style>
