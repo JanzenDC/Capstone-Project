@@ -475,11 +475,19 @@ bordered
                     </template>
                   </q-input> <!--base on user input-->
                   Other Costs
-                  <q-input dense outlined v-model="other_cost">
-                    <template v-slot:append>
-                      ₱
-                    </template>
-                  </q-input> <!--base on user input-->
+                  <div clas='flex grid-cols-2 grid'>
+                    <div class='w-1/2'>
+                      <q-select v-model="selectedOptions" :options="addorless" dense outlined />
+                    </div>
+                    <div class='w-1/2'>
+                      <q-input dense outlined v-model="other_cost">
+                        <template v-slot:append>
+                          ₱
+                        </template>
+                      </q-input> <!--base on user input-->
+                    </div>
+                  </div>
+
                   Sub total
                   <q-input dense outlined v-model="total_in_table" disable>
                     <template v-slot:append>
@@ -787,6 +795,10 @@ export default {
       ProvinceDeliverySelected: null,
       CityDeliverySelected: null,
       BaranggayDeliverySelected: null,
+
+      //
+      addorless: ['add', 'less'],
+      selectedOptions: 'less',
     };
   },
   mounted() {
@@ -1065,22 +1077,29 @@ export default {
       const otherCost = this.other_cost ? parseFloat(this.other_cost) : 0;
       const discountPercentage = this.discount ? parseFloat(this.discount) : 0;
       const vatPercentage = this.vat ? parseFloat(this.vat) : 0;
-
-      // Calculate discount amount
-      const discountDecimal = discountPercentage / 100;
-      const discountedTotal = totalFromTable * (1 - discountDecimal);
-
-      // Calculate VAT amount if vatPercentage is provided
       const vatDecimal = vatPercentage / 100;
-      const vatAmount = vatDecimal * totalFromTable;
 
-      // Calculate total amount including discount, VAT, and delivery charge
-      const totalBeforeOtherCosts = deliveryCharge + vatAmount;
+      // Calculate total amount including delivery charge and other costs
+      let total;
+      // Adjust total based on selectedOptions using if-else
+      if (this.selectedOptions === 'add') {
+        total = totalFromTable + deliveryCharge + otherCost;
+      } else {
+        total = totalFromTable + deliveryCharge - otherCost;
+      }
 
-      // Calculate final total amount including other costs
-      this.total_amount = discountedTotal + totalBeforeOtherCosts - otherCost;
+      // Apply discount
+      const discountDecimal = discountPercentage / 100;
+      total -= totalFromTable * discountDecimal;
+
+      // Calculate VAT
+      const vatAmount = total * vatDecimal;
+
+      // Calculate final total amount including VAT
+      this.total_amount = total + vatAmount;
       console.log(this.total_amount);
     },
+
     addProduct() {
       let maxId = 0;
       this.datarows.forEach(row => {
