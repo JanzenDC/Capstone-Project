@@ -94,7 +94,7 @@
                     size="xl"
                   />
               </div>
-              
+
               <div class='w-[70px]'>
                 <label>Latexing</label>
                 <q-checkbox
@@ -1100,7 +1100,6 @@ export default {
           delete: true
         }
       };
-
       // Insert the new row at the index of the last occurrence plus one
       this.mats_rows.splice(lastIndex + 1, 0, newRow);
     },
@@ -1353,7 +1352,7 @@ export default {
       // query using axios post
       axios.post(`http://localhost/Capstone-Project/backend/api/ProductionMonitoring/job_order/job_order.php`, formData)
       .then((response) => {
-          console.log('Your Data:',response.data);
+          console.log('Your Data:', response.data);
       }).catch(error => {
         // Handle error if request fails
         console.error("Error sending file:", error);

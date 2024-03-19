@@ -177,12 +177,20 @@
         $checked_by = $_POST['v_checkedby'];              
         
         $files = ['e_signatureP', 'e_signatureA', 's_esignatureP'];
+        $uploadDir = 'C:/xampp/htdocs/Capstone-Project/WeaveManila-Project/public/signature/';
+
+        $files = ['e_signatureP', 'e_signatureA', 's_esignatureP'];
         foreach ($files as $key => $file) {
-            $file_data = $_FILES[$file];
-            $uploadDir = 'C:/xampp/htdocs/Capstone-Project/WeaveManila-Project/public/signature/';
-            $uploadPath = $uploadDir . basename($file_data['name']);
-            
-            if (move_uploaded_file($file_data['tmp_name'], $uploadPath)) {
+            // Check if the file is uploaded
+            if (isset($_FILES[$file]) && $_FILES[$file]['error'] !== UPLOAD_ERR_NO_FILE) {
+                $file_data = $_FILES[$file];
+                $uploadPath = $uploadDir . basename($file_data['name']);
+            } else {
+                // Set default upload path to 'default.png'
+                $uploadPath = $uploadDir . 'default.png';
+            }
+        
+            if (isset($file_data) && move_uploaded_file($file_data['tmp_name'], $uploadPath)) {
                 $response = [
                     'status' => 'success',
                     'message' => 'Success moving the image to designated path.',
@@ -190,17 +198,22 @@
             } else {
                 $response = [
                     'status' => 'fail',
-                    'message' => 'Error uploading file one.',
+                    'message' => "Error uploading file $file.",
                 ];
                 echo json_encode($response);
             }
         }
-        $file_one = $_FILES['e_signatureP'];
-        $uploadPath_one = basename($file_one['name']);
-        $file_two = $_FILES['e_signatureA'];
-        $uploadPath_two = basename($file_two['name']);
-        $file_three = $_FILES['s_esignatureP'];
-        $uploadPath_three = basename($file_three['name']);
+        
+        
+        $file_one = $_FILES['e_signatureP'] ?? null;
+        $uploadPath_one = isset($file_one) ? basename($file_one['name']) : 'default.png';
+        
+        $file_two = $_FILES['e_signatureA'] ?? null;
+        $uploadPath_two = isset($file_two) ? basename($file_two['name']) : 'default.png';
+        
+        $file_three = $_FILES['s_esignatureP'] ?? null;
+        $uploadPath_three = isset($file_three) ? basename($file_three['name']) : 'default.png';
+        
         $dataPJO = [
             'personelID' => 1,
             'endorse' => $endorsed,
@@ -472,6 +485,7 @@
                         $material_specs_insert = [
                             'pjoID' => $getPJOid['pjoID'],
                             'consumption_in_wt_kg' => $materialData['consumption'],
+                            'type' => $materialData['type'],
                             'material_used'  => $materialData['material_used'],
                             'waste_allow'  => $materialData['waste_allow'],
                             'total_allow_issuance' => $materialData['total'],
