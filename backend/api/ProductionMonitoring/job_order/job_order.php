@@ -176,7 +176,7 @@
         $b_preparedby =        $_POST['s_prepared_name'];
         $checked_by = $_POST['v_checkedby'];              
         
-        $files = ['e_signatureP', 'e_signatureA', 's_esignatureP'];
+
         $uploadDir = 'C:/xampp/htdocs/Capstone-Project/WeaveManila-Project/public/signature/';
 
         $files = ['e_signatureP', 'e_signatureA', 's_esignatureP'];

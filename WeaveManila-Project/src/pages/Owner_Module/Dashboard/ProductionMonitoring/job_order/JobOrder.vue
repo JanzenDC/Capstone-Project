@@ -1227,6 +1227,7 @@ export default {
     },
 
     sendingForm() {
+      console.log('clicked');
       const formData = new FormData();
 
       formData.append('v_Endorsed', this.v_Endorsed);
@@ -1259,6 +1260,7 @@ export default {
       formData.append('s_approvedby_name', this.s_approvedby_name);
       formData.append('s_prepared_name', this.s_prepared_name);
       formData.append('v_checkedby', this.v_checkedby);
+
       this.services.forEach(service => {
         formData.append('services[]', service);
       });
@@ -1350,7 +1352,7 @@ export default {
       });
 
       // query using axios post
-      axios.post(`http://localhost/Capstone-Project/backend/api/ProductionMonitoring/job_order/job_order.php`, formData)
+      axios.post(`http://localhost/Capstone-Project/backend/api/ProductionMonitoring/job_order/job_order.php/`, formData)
       .then((response) => {
           console.log('Your Data:', response.data);
       }).catch(error => {

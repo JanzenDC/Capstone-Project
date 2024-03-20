@@ -404,9 +404,9 @@ bordered
                 <div class="w-1/2">
                     <div class="p-10 text-center">
                         <q-img
-                          :src="getDefaultImage('prepared')"
+                          :src="getDefaultImage('logo')"
                           alt="Description of the image"
-                          class="w-[50px] h-[50px]"
+                          class="w-[250px] h-[50px]"
                         />
                         <p class="text-[14px] mt-8">{{ company_address }}</p>
                     </div>

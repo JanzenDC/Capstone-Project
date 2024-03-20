@@ -380,7 +380,7 @@ bordered
     </q-card-section>
 
     <q-card-section>
-      
+
       <p>Are you sure you want to Logout?</p>
     </q-card-section>
 
@@ -444,7 +444,7 @@ export default {
       selectedItems: [],
       isOptionsOpen: {},
       selectedProcedure: null,
-      procedureOptions: ["Process & issuance", "Issuance only"],
+      procedureOptions: ["Segregate & issuance", "Issuance only"],
 
       OpenDelete: false,
       targetDelete: '',

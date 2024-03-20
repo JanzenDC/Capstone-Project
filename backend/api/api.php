@@ -141,7 +141,7 @@
                 'message' => 'OTP record updated for the user.',
                 'info' => [
                     'email' => $user['email'],
-                    'code' => $existingRecord['otpcode'],
+                    'code' => $code,
                     'isChangingPass' => 1,
                     
                 ]

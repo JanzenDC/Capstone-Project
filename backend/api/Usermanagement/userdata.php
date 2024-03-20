@@ -30,36 +30,36 @@
         }
         if ($payload['select'] === 'all') {
             $sqlQuery = "
-                        SELECT 
-                        personel_tbl.personelID, 
-                        personel_tbl.firstname, 
-                        personel_tbl.lastname, 
-                        personel_tbl.position, 
-                        personel_tbl.email, 
-                        personel_tbl.profile_pic, 
-                        personel_tbl.account_created, 
-                        personel_tbl.status, 
-                        personel_tbl.password,          
-                        personel_tbl.gender,            
-                        personel_tbl.middlename,        
-                        personel_tbl.mobile_number,      
-                        personel_tbl.birthdate,          
-                        personel_tbl.age,                
-                        personel_tbl.address,            
-                        personel_tbl.civil_status,      
-                        audit_logs.action
-                        FROM 
-                            personel_tbl
-                        JOIN (
-                            SELECT 
-                                uid, 
-                                action
-                            FROM 
-                                audit_logs
-                            WHERE 
-                                id IN (SELECT MAX(id) FROM audit_logs GROUP BY uid)
-                        ) AS audit_logs ON personel_tbl.personelID = audit_logs.uid;
-                    ";
+                SELECT 
+                    personel_tbl.personelID, 
+                    personel_tbl.firstname, 
+                    personel_tbl.lastname, 
+                    personel_tbl.position, 
+                    personel_tbl.email, 
+                    personel_tbl.profile_pic, 
+                    personel_tbl.account_created, 
+                    personel_tbl.status, 
+                    personel_tbl.password,          
+                    personel_tbl.gender,            
+                    personel_tbl.middlename,        
+                    personel_tbl.mobile_number,      
+                    personel_tbl.birthdate,          
+                    personel_tbl.age,                
+                    personel_tbl.address,            
+                    personel_tbl.civil_status,      
+                    COALESCE(audit_logs.action, 'none') AS action
+                FROM 
+                    personel_tbl
+                LEFT JOIN (
+                    SELECT 
+                        uid, 
+                        action
+                    FROM 
+                        audit_logs
+                    WHERE 
+                        id IN (SELECT MAX(id) FROM audit_logs GROUP BY uid)
+                ) AS audit_logs ON personel_tbl.personelID = audit_logs.uid;
+            ";
         
             
             $users = $this->db->rawQuery($sqlQuery);

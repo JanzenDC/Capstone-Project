@@ -278,27 +278,6 @@
                                     $requiredFields = ['sproduct', 'sdescription', 'squantity', 'sunit', 'sunitprice', 'stotal'];
                                     $missingFields = array_diff($requiredFields, array_keys($productData));
                             
-                                    if (!empty($missingFields)) {
-                                        if (!empty($missingFields)) {
-                                            $response = [
-                                                'status' => 'fail',
-                                                'message' => 'Error: Missing required fields for product: ' . implode(', ', $missingFields),
-                                            ];
-                                            echo json_encode($response);
-                                            exit;
-                                        }
-                                    }
-                            
-                                    foreach ($productData as $key => $value) {
-                                        if ($value === '') {
-                                            $response = [
-                                                'status' => 'fail',
-                                                'message' => 'Error: Missing or invalid "products" data.',
-                                            ];
-                                            echo json_encode($response);
-                                            exit;
-                                        }
-                                    }
                             
                                     $discount = isset($productData['sdiscount']) ? floatval($productData['sdiscount']) : 0;
                             

@@ -1217,7 +1217,10 @@ export default {
     fetchMPOdata(){
       axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/MPO_Queries/mpo_data.php?get=mpo`)
       .then(response => {
-        const nextMPOID = response.data.nextMPOID;
+        let nextMPOID = response.data.nextMPOID;
+        if (nextMPOID === undefined) {
+            nextMPOID = 1;
+        }
         // const currentDate = new Date();
         // const year = currentDate.getFullYear();
         // const month = ('0' + (currentDate.getMonth() + 1)).slice(-2);
