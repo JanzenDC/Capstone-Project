@@ -12,6 +12,8 @@
   require_once('../../MysqliDb.php');
   require_once('./Ifsnop/vendor/autoload.php');
   require_once(__DIR__ . '/SendInBlue/vendor/autoload.php');
+  require_once(__DIR__ . '/php-zip-master/vendor/autoload.php');
+  use PhpZip\ZipFile;
   use Ifsnop\Mysqldump as IMysqldump;
   class API{
     public function __construct()
@@ -60,15 +62,12 @@
         $outputFile = 'backup_' . date("Y-m-d") . '.sql';
         $dump->start($outputFile);
 
-        $zip = new ZipArchive();
+        $zipFile = new ZipFile();
         $zipFileName = 'backup_' . date("Y-m-d") . '.zip'; 
-        if ($zip->open($zipFileName, ZipArchive::CREATE) === TRUE) {
-            $zip->addFile($outputFile);
-            $zip->close();
-        } else {
-            throw new Exception("Failed to create zip file");
-        }
-
+        $zipFile->addFile($outputFile, basename($outputFile));
+        $zipFile->saveAsFile($zipFileName);
+        $zipFile->close();
+        
         $content = file_get_contents($zipFileName);
 
         $credentials = SendinBlue\Client\Configuration::getDefaultConfiguration()->setApiKey('api-key', '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');

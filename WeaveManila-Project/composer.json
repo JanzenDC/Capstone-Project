@@ -1,5 +1,6 @@
 {
     "require": {
-        "ifsnop/mysqldump-php": "^2.12"
+        "ifsnop/mysqldump-php": "^2.12",
+        "nelexa/zip": "^4.0"
     }
 }

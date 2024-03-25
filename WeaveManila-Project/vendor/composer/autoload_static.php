@@ -7,6 +7,15 @@ namespace Composer\Autoload;
 class ComposerStaticInit89d5c39d972557dc137af23558d8d0c1
 {
     public static $prefixLengthsPsr4 = array (
+        'S' => 
+        array (
+            'Symfony\\Component\\Finder\\' => 25,
+        ),
+        'P' => 
+        array (
+            'Psr\\Http\\Message\\' => 17,
+            'PhpZip\\' => 7,
+        ),
         'I' => 
         array (
             'Ifsnop\\' => 7,
@@ -14,6 +23,18 @@ class ComposerStaticInit89d5c39d972557dc137af23558d8d0c1
     );
 
     public static $prefixDirsPsr4 = array (
+        'Symfony\\Component\\Finder\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/finder',
+        ),
+        'Psr\\Http\\Message\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/psr/http-message/src',
+        ),
+        'PhpZip\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/nelexa/zip/src',
+        ),
         'Ifsnop\\' => 
         array (
             0 => __DIR__ . '/..' . '/ifsnop/mysqldump-php/src/Ifsnop',

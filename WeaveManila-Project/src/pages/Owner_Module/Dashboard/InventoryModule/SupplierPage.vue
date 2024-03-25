@@ -1107,8 +1107,6 @@ export default {
     checkUserStatus() {
       axios.get(`http://localhost/Capstone-Project/backend/api/verification.php?email=${this.email}`)
       .then(response => {
-        console.log(response.data);
-
         const information = response.data.information;
           this.information = {
             id: information.id,
