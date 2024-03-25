@@ -36,16 +36,35 @@
                 // Get the temporary file location
                 $tmpFilePath = $fileData['tmp_name'];
     
-                // Read the contents of the uploaded file
-                $sqlCommands = file_get_contents($tmpFilePath);
-    
                 // Create a new mysqli object
-                $mysqli = new mysqli('localhost', 'root', '', 'test');
+                $mysqli = new mysqli('localhost', 'root', '', 'weavemanila_main');
     
                 // Check if the connection was successful
                 if ($mysqli->connect_error) {
                     return ['status' => 'fail', 'message' => 'Connection failed: ' . $mysqli->connect_error];
                 }
+    
+                // Disable foreign key checks
+                $mysqli->query("SET foreign_key_checks = 0");
+    
+                // Drop all tables
+                $dropTablesQuery = "SHOW TABLES";
+                $result = $mysqli->query($dropTablesQuery);
+    
+                if ($result) {
+                    while ($row = $result->fetch_row()) {
+                        $tableName = $row[0];
+                        $dropTableQuery = "DROP TABLE IF EXISTS $tableName";
+                        $mysqli->query($dropTableQuery);
+                    }
+                    $result->free();
+                }
+    
+                // Enable foreign key checks
+                $mysqli->query("SET foreign_key_checks = 1");
+    
+                // Read the contents of the uploaded file
+                $sqlCommands = file_get_contents($tmpFilePath);
     
                 // Execute the SQL commands using multi_query
                 if ($mysqli->multi_query($sqlCommands)) {
@@ -71,6 +90,8 @@
         echo json_encode($response);
         exit;
     }
+    
+    
     
     
     
