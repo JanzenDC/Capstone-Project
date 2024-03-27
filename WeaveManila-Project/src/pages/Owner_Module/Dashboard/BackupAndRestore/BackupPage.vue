@@ -246,7 +246,7 @@ bordered
             </div>
             <div class="text-h3 p-4">
               <p class="text-h4">Next Automatic Backup:</p>
-              <p class="">{{ daysLeft }} days left</p>
+              <p class="">{{ daysLeft }} day(s) left</p>
             </div>
           </div>
           <div class="w-full border border-[#281A0D] h-auto relative p-4 mt-10">
