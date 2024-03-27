@@ -297,224 +297,204 @@ bordered
 </q-dialog>
 </template>
 
-  <script>
-  import { useQuasar } from 'quasar';
-  import { SessionStorage } from 'quasar';
-  import axios from 'axios';
-  import moment from 'moment';
+<script>
+import { useQuasar } from 'quasar';
+import { SessionStorage } from 'quasar';
+import axios from 'axios';
 
-  export default {
-    setup() {
-      const $q = useQuasar();
-    },
-    data() {
-      return {
-        isAdmin: 0,
-        email: '',
-        fullname: '',
-        firstname: '',
-        middlename: '',
-        lastname: '',
-        userProfileImage: null,
-        username: '',
-        position: '',
-        status: '',
-        drawer: false,
-        showMenuIcon: false,
-        statusCheckTimer: null,
-        toggleDrawers: true,
-        drawerWidth: 300,
-        drawerIcon: 'arrow_back_ios',
-        inventoryMenuVisible: false,
-        productionVisible: false,
-        OpenLogout: false,
-        // New Data
-        selectedFileName: '',
-      };
-    },
-    mounted() {
-      this.loadUserData();
-      this.statusCheckTimer = setInterval(() => {
-        this.checkUserStatus();
-      }, 20 * 1000); // 1 second (in milliseconds)
-    },
-    beforeUnmount() {
-      clearInterval(this.statusCheckTimer);
-    },
-    methods: {
-      handleFileUpload(event) {
-      const file = event.target.files[0];
-      if (file) {
-        if (file.name.endsWith('.sql')) {
-          // Set the selected file name to display in the input
-          this.selectedFileName = file.name;
-          // You can add further processing here such as sending the file to the server for restoration
-          console.log('File uploaded successfully.');
-        } else {
-          this.$q.notify({
-            color: 'negative',
-            message: 'Please choose a file with .sql extension.',
-          });
-        }
+
+export default {
+  setup() {
+    const $q = useQuasar();
+    
+  },
+  data() {
+    return {
+      isAdmin: 0,
+      email: '',
+      fullname: '',
+      firstname: '',
+      middlename: '',
+      lastname: '',
+      userProfileImage: null,
+      username: '',
+      position: '',
+      status: '',
+      drawer: false,
+      showMenuIcon: false,
+      statusCheckTimer: null,
+      toggleDrawers: true,
+      drawerWidth: 300,
+      drawerIcon: 'arrow_back_ios',
+      inventoryMenuVisible: false,
+      productionVisible: false,
+      OpenLogout: false,
+      // New Data
+      selectedFileName: '',
+    };
+  },
+  mounted() {
+    this.loadUserData();
+    this.statusCheckTimer = setInterval(() => {
+      this.checkUserStatus();
+    }, 20 * 1000); // 1 second (in milliseconds)
+  },
+  beforeUnmount() {
+    clearInterval(this.statusCheckTimer);
+  },
+  methods: {
+    handleFileUpload(event) {
+    const file = event.target.files[0];
+    if (file) {
+      if (file.name.endsWith('.sql')) {
+        // Set the selected file name to display in the input
+        this.selectedFileName = file.name;
+        // You can add further processing here such as sending the file to the server for restoration
+        console.log('File uploaded successfully.');
       } else {
         this.$q.notify({
           color: 'negative',
-          message: 'Please choose a file.',
+          message: 'Please choose a file with .sql extension.',
         });
       }
-    },
-    triggerFileInput() {
-      this.$refs.fileInput.click();
-    },
-    RestoreSQL() {
-      if (!this.selectedFileName) {
-        this.$q.notify({
-          color: 'negative',
-          message: 'Please select a file to restore.',
-        });
-        return;
-      }
-
-      const formData = new FormData();
-      formData.append('sql_file', this.$refs.fileInput.files[0]);
-
-      axios.post('http://localhost/Capstone-Project/backend/api/BackupAndRestore/restore.php/', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      })
-      .then(response => {
-          console.log(response.data);
-          const Status = response.data.status;
-          const Message = response.data.message;
-          if (Status === "success") {
-            this.$q.notify({
-              color: 'positive',
-              message: 'SQL data restored successfully.',
-            });
-            this.selectedFileName = '';
-          }
-          if (Status === "fail") {
-            this.$q.notify({
-              color: 'negative',
-              message: `${Message} Please try again.`,
-            });
-          }
-      })
-      .catch(error => {
-        // Handle errors
-        console.error('Error restoring SQL:', error);
-        // Show error message
-        this.$q.notify({
-          color: 'negative',
-          message: 'An error occurred while restoring SQL data.',
-        });
+    } else {
+      this.$q.notify({
+        color: 'negative',
+        message: 'Please choose a file.',
       });
-    },
+    }
+  },
+  triggerFileInput() {
+    this.$refs.fileInput.click();
+  },
+  RestoreSQL() {
+    if (!this.selectedFileName) {
+      this.$q.notify({
+        color: 'negative',
+        message: 'Please select a file to restore.',
+      });
+      return;
+    }
 
+    // Show loading indicator
+    this.$q.loading.show({
+      message: 'Uploading SQL file. This may take a moment...', // Updated message
+      boxClass: 'bg-grey-2 text-grey-9',
+      spinnerColor: 'primary'
+    });
 
+    const formData = new FormData();
+    formData.append('sql_file', this.$refs.fileInput.files[0]);
 
+    axios.post('http://localhost/Capstone-Project/backend/api/BackupAndRestore/restore.php/', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
+    .then(response => {
+      console.log(response.data);
+      const Status = response.data.status;
+      const Message = response.data.message;
 
-
-
-
-
-
-      // Old Data
-      toggleProduction(){
-        this.productionVisible = !this.productionVisible;
-      },
-      toggleInventoryMenu() {
-        this.inventoryMenuVisible = !this.inventoryMenuVisible;
-      },
-      toggleDrawer() {
-        if (!this.toggleDrawers) {
-          this.drawer = true;
-          this.drawerWidth = 300;
-          this.drawerIcon = 'arrow_forward_ios';
-          this.toggleDrawers = true;
-        } else {
-          this.drawer = true;
-          this.drawerWidth = 80;
-          this.toggleDrawers = false;
-          this.drawerIcon = 'arrow_back_ios_new';
+      // Schedule success notification after 30 seconds
+      setTimeout(() => {
+        if (Status === "success") {
+          this.$q.notify({
+            color: 'positive',
+            message: 'SQL data restored successfully.',
+          });
+          this.selectedFileName = '';
         }
-      },
-      checkUserStatus() {
-        axios.get(`http://localhost/Capstone-Project/backend/api/verification.php?email=${this.email}`)
-        .then(response => {
-          const information = response.data.information;
-            this.information = {
-              id: information.id,
-              email: information.email,
-              username: information.username,
-              pfp: information.pfp,
-              firstname: information.firstname,
-              middlename: information.middlename,
-              lastname: information.lastname,
-              gender: information.gender,
-              position: information.position,
-              mobilenumber: information.mobilenumber,
-              birthdate: information.birthdate,
-              age: information.age,
-              address: information.address,
-              otp_code: information.otp_code,
-              isOnline: information.isOnline,
-              status: information.status,
-              password: information.password,
-              isAdmin: information.isAdmin,
-            };
-            SessionStorage.set('information', JSON.stringify(this.information));
+      }, 30000); // 30 seconds
 
-            const latestAdmin = response.data.information.isAdmin;
-            const latestStatus = response.data.information.status;
-
-            if (this.status !== latestStatus || (latestAdmin && latestStatus === 0)) {
-              this.status = latestStatus;
-
-              if (this.status === 0 && !latestAdmin) {
-                this.$q.notify({
-                  type: 'negative',
-                  message: 'Your account is currently inactive. Please contact the administrator.',
-                });
-                this.$router.push('/');
-                sessionStorage.clear();
-              }
-            }
-        }).catch(error => {
-              console.error('Error fetching data:', error);
+      // Show failure notification immediately without delay
+      if (Status === "fail") {
+        this.$q.notify({
+          color: 'negative',
+          message: `${Message} Please try again.`,
         });
-      },
-      loadUserData() {
-        const userData = SessionStorage.getItem('information');
+      }
+    })
+    .catch(error => {
+      // Handle errors
+      console.error('Error restoring SQL:', error);
+      // Show error message
+      this.$q.notify({
+        color: 'negative',
+        message: 'An error occurred while restoring SQL data.',
+      });
+    })
+    .finally(() => {
+      // Hide loading indicator after 30 seconds
+      setTimeout(() => {
+        this.$q.loading.hide();
+      }, 30000); // 30 seconds
+    });
+  },
 
-        if (userData) {
-          try {
-            const userInformation = JSON.parse(userData);
-            this.email = userInformation.email;
-            this.username = userInformation.username;
-            this.userProfileImage = userInformation.pfp;
-            this.firstname = userInformation.firstname;
-            this.middlename = userInformation.middlename;
-            this.lastname = userInformation.lastname;
-            this.position = userInformation.position;
-            this.status = userInformation.status;
-            this.isAdmin = userInformation.isAdmin;
-            this.fullname = this.firstname + " " + this.lastname;
-            if (this.position.toLowerCase() === 'owner') {
 
-              this.$router.push('/dashboard/restore-section');
-            } else {
 
-              this.$q.notify({
-                type: 'negative',
-                message: 'You do not have permission to access the system.',
-              });
-              this.$router.push('/');
-              sessionStorage.clear();
-            }
 
-            if (this.status === 0 && !this.isAdmin) {
+
+
+
+
+
+
+
+    // Old Data
+    toggleProduction(){
+      this.productionVisible = !this.productionVisible;
+    },
+    toggleInventoryMenu() {
+      this.inventoryMenuVisible = !this.inventoryMenuVisible;
+    },
+    toggleDrawer() {
+      if (!this.toggleDrawers) {
+        this.drawer = true;
+        this.drawerWidth = 300;
+        this.drawerIcon = 'arrow_forward_ios';
+        this.toggleDrawers = true;
+      } else {
+        this.drawer = true;
+        this.drawerWidth = 80;
+        this.toggleDrawers = false;
+        this.drawerIcon = 'arrow_back_ios_new';
+      }
+    },
+    checkUserStatus() {
+      axios.get(`http://localhost/Capstone-Project/backend/api/verification.php?email=${this.email}`)
+      .then(response => {
+        const information = response.data.information;
+          this.information = {
+            id: information.id,
+            email: information.email,
+            username: information.username,
+            pfp: information.pfp,
+            firstname: information.firstname,
+            middlename: information.middlename,
+            lastname: information.lastname,
+            gender: information.gender,
+            position: information.position,
+            mobilenumber: information.mobilenumber,
+            birthdate: information.birthdate,
+            age: information.age,
+            address: information.address,
+            otp_code: information.otp_code,
+            isOnline: information.isOnline,
+            status: information.status,
+            password: information.password,
+            isAdmin: information.isAdmin,
+          };
+          SessionStorage.set('information', JSON.stringify(this.information));
+
+          const latestAdmin = response.data.information.isAdmin;
+          const latestStatus = response.data.information.status;
+
+          if (this.status !== latestStatus || (latestAdmin && latestStatus === 0)) {
+            this.status = latestStatus;
+
+            if (this.status === 0 && !latestAdmin) {
               this.$q.notify({
                 type: 'negative',
                 message: 'Your account is currently inactive. Please contact the administrator.',
@@ -522,43 +502,85 @@ bordered
               this.$router.push('/');
               sessionStorage.clear();
             }
+          }
+      }).catch(error => {
+            console.error('Error fetching data:', error);
+      });
+    },
+    loadUserData() {
+      const userData = SessionStorage.getItem('information');
 
-          } catch (error) {
-            console.log('Error parsing user data:', error);
-            // Provide user feedback or navigate to an error page
+      if (userData) {
+        try {
+          const userInformation = JSON.parse(userData);
+          this.email = userInformation.email;
+          this.username = userInformation.username;
+          this.userProfileImage = userInformation.pfp;
+          this.firstname = userInformation.firstname;
+          this.middlename = userInformation.middlename;
+          this.lastname = userInformation.lastname;
+          this.position = userInformation.position;
+          this.status = userInformation.status;
+          this.isAdmin = userInformation.isAdmin;
+          this.fullname = this.firstname + " " + this.lastname;
+          if (this.position.toLowerCase() === 'owner') {
+
+            this.$router.push('/dashboard/restore-section');
+          } else {
+
             this.$q.notify({
               type: 'negative',
-              message: 'Error loading user data. Please try again.',
+              message: 'You do not have permission to access the system.',
             });
             this.$router.push('/');
             sessionStorage.clear();
           }
-        } else {
-          // Handle the case when user data is not available
+
+          if (this.status === 0 && !this.isAdmin) {
+            this.$q.notify({
+              type: 'negative',
+              message: 'Your account is currently inactive. Please contact the administrator.',
+            });
+            this.$router.push('/');
+            sessionStorage.clear();
+          }
+
+        } catch (error) {
+          console.log('Error parsing user data:', error);
+          // Provide user feedback or navigate to an error page
+          this.$q.notify({
+            type: 'negative',
+            message: 'Error loading user data. Please try again.',
+          });
           this.$router.push('/');
           sessionStorage.clear();
         }
-      },
-      getLimitedFullname(fullname, maxLength) {
-        if (fullname.length > maxLength) {
-          return fullname.substring(0, maxLength) + '...';
-        }
-        return fullname;
-      },
-      getUserProfileImagePath() {
-        // Ensure userProfileImage is not null before creating the path
-        if (this.userProfileImage) {
-          return `/pfp/${this.userProfileImage}`;
-        } else {
-          // Return a default path or handle it as per your requirement
-          return '/default_profile.png';
-        }
-      },
-      logout() {
-        sessionStorage.clear();
+      } else {
+        // Handle the case when user data is not available
         this.$router.push('/');
-      },
+        sessionStorage.clear();
+      }
     },
-  };
-  </script>
+    getLimitedFullname(fullname, maxLength) {
+      if (fullname.length > maxLength) {
+        return fullname.substring(0, maxLength) + '...';
+      }
+      return fullname;
+    },
+    getUserProfileImagePath() {
+      // Ensure userProfileImage is not null before creating the path
+      if (this.userProfileImage) {
+        return `/pfp/${this.userProfileImage}`;
+      } else {
+        // Return a default path or handle it as per your requirement
+        return '/default_profile.png';
+      }
+    },
+    logout() {
+      sessionStorage.clear();
+      this.$router.push('/');
+    },
+  },
+};
+</script>
 
