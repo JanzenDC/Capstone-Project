@@ -246,166 +246,167 @@ bordered
           <q-space />
           <q-btn icon="close" flat round dense v-close-popup />
         </q-card-section>
-
-        <q-card-section>
-          <q-form @submit="onSubmit">
-          <div class="text-h6 font-bold text-[#667085]">Personal Information</div>
-          <div class="grid grid-cols-2 gap-5">
-            <!-- Firstname -->
-            <div>
-              <p class="text-[15px]">First Name</p>
-              <q-input
-                v-model="fname"
-                label="First Name"
-                type="text"
-                outlined
-                dense
-                :no-error-icon="true"
-                :rules="[val => !!val || 'First Name is required']"
-              ></q-input>
-            </div>
-            <!-- Lastname -->
-            <div>
-              <p class="text-[15px]">Last Name</p>
-              <q-input
-                v-model="lname"
-                label="Last Name"
-                type="text"
-                outlined
-                dense
-                :no-error-icon="true"
-                :rules="[val => !!val || 'Last Name is required']"
-              ></q-input>
-            </div>
-            <!-- Birthdate -->
-            <div>
-              <p class="text-[15px]">Birthday</p>
-              <q-input
-                v-model="bdate"
-                label="Birthday"
-                type="date"
-                outlined
-                dense
-                :no-error-icon="true"
-                :rules="[val => !!val || 'Birthday is required']"
-              ></q-input>
-            </div>
-            <!-- Gender -->
-            <div>
-              Gender
-              <q-select
-                outlined
-                dense
-                v-model="gInput"
-                :options="options"
-                label="Gender"
-                :rules="[val => !!val || 'Gender is required']"
-              />
-            </div>
-            <!-- Civil Status -->
-            <div>
-              Civil Status
-              <q-select
-                outlined
-                dense
-                v-model="cInput"
-                :options="civilOptions"
-                label="Select option for civil status"
-                :rules="[val => !!val || 'Civil Status is required']"
-              />
-            </div>
-            <!-- Address -->
-            <div>
-              <p class="text-[15px]">Address</p>
-              <q-input
-                v-model="avalue"
-                label="Address"
-                type="text"
-                outlined
-                dense
-                :no-error-icon="true"
-                :rules="[val => !!val || 'Address is required']"
-              ></q-input>
-            </div>
-          </div>
-          <div class="text-h6 font-bold text-[#667085]">Contact Information</div>
-          <div class="grid grid-cols-2 gap-5">
-            <!-- Email -->
-            <div>
-              <p class="text-[15px]">Email Address</p>
-              <q-input
-                v-model="evalue"
-                label="Email Address"
-                type="email"
-                outlined
-                dense
-                :no-error-icon="true"
-                :rules="[val => !!val || 'Email Address is required',
-                          val => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val) || 'Invalid Email Address']"
-              ></q-input>
-            </div>
-            <!-- Contact/Phone -->
-            <div>
-              <p class="text-[15px]">Contact Number</p>
-              <q-input
-                v-model="cvalue"
-                label="Contact Number"
-                type="tel"
-                outlined
-                dense
-                :no-error-icon="true"
-                :rules="[val => !!val || 'Contact Number is required',
-                        val => /^09\d{9}$/.test(val) || 'Invalid Philippine contact number']"
-                pattern="09[0-9]{9}"
-              ></q-input>
-            </div>
-          </div>
-          <div class="text-h6 font-bold text-[#667085]">Security</div>
-          <div class="grid grid-cols-2 gap-5">
-            <!-- Password -->
-            <div>
-              <p class="text-[15px]">Password</p>
+        <q-form @submit="onSubmit">
+          <q-card-section style="max-height: 150vh" class="scroll">
+            <div class="text-h6 font-bold text-[#667085]">Personal Information</div>
+            <div class="grid grid-cols-2 gap-5">
+              <!-- Firstname -->
+              <div>
+                <p class="text-[15px]">First Name</p>
                 <q-input
-                  class="w-full"
-                  v-model="pvalue"
-                  label="Password"
+                  v-model="fname"
+                  label="First Name"
+                  type="text"
                   outlined
                   dense
-                  :type="showPassword ? 'text' : 'password'"
                   :no-error-icon="true"
-                  :rules="[val => !!val || 'Password is required',
-                            val => val.length >= 8 || 'Password must be at least 8 characters']"
+                  :rules="[val => !!val || 'First Name is required']"
+                ></q-input>
+              </div>
+              <!-- Lastname -->
+              <div>
+                <p class="text-[15px]">Last Name</p>
+                <q-input
+                  v-model="lname"
+                  label="Last Name"
+                  type="text"
+                  outlined
+                  dense
+                  :no-error-icon="true"
+                  :rules="[val => !!val || 'Last Name is required']"
+                ></q-input>
+              </div>
+              <!-- Birthdate -->
+              <div>
+                <p class="text-[15px]">Birthday</p>
+                <q-input
+                  v-model="bdate"
+                  label="Birthday"
+                  type="date"
+                  outlined
+                  dense
+                  :no-error-icon="true"
+                  :rules="[val => !!val || 'Birthday is required']"
+                ></q-input>
+              </div>
+              <!-- Gender -->
+              <div>
+                Gender
+                <q-select
+                  outlined
+                  dense
+                  v-model="gInput"
+                  :options="options"
+                  label="Gender"
+                  :rules="[val => !!val || 'Gender is required']"
+                />
+              </div>
+              <!-- Civil Status -->
+              <div>
+                Civil Status
+                <q-select
+                  outlined
+                  dense
+                  v-model="cInput"
+                  :options="civilOptions"
+                  label="Select option for civil status"
+                  :rules="[val => !!val || 'Civil Status is required']"
+                />
+              </div>
+              <!-- Address -->
+              <div>
+                <p class="text-[15px]">Address</p>
+                <q-input
+                  v-model="avalue"
+                  label="Address"
+                  type="text"
+                  outlined
+                  dense
+                  :no-error-icon="true"
+                  :rules="[val => !!val || 'Address is required']"
+                ></q-input>
+              </div>
+            </div>
+            <div class="text-h6 font-bold text-[#667085]">Contact Information</div>
+            <div class="grid grid-cols-2 gap-5">
+              <!-- Email -->
+              <div>
+                <p class="text-[15px]">Email Address</p>
+                <q-input
+                  v-model="evalue"
+                  label="Email Address"
+                  type="email"
+                  outlined
+                  dense
+                  :no-error-icon="true"
+                  :rules="[val => !!val || 'Email Address is required',
+                            val => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val) || 'Invalid Email Address']"
+                ></q-input>
+              </div>
+              <!-- Contact/Phone -->
+              <div>
+                <p class="text-[15px]">Contact Number</p>
+                <q-input
+                  v-model="cvalue"
+                  label="Contact Number"
+                  type="tel"
+                  outlined
+                  dense
+                  :no-error-icon="true"
+                  :rules="[val => !!val || 'Contact Number is required',
+                          val => /^09\d{9}$/.test(val) || 'Invalid Philippine contact number']"
+                  pattern="09[0-9]{9}"
+                ></q-input>
+              </div>
+            </div>
+            <div class="text-h6 font-bold text-[#667085]">Security</div>
+            <div class="grid grid-cols-2 gap-5">
+              <!-- Password -->
+              <div>
+                <p class="text-[15px]">Password</p>
+                  <q-input
+                    class="w-full"
+                    v-model="pvalue"
+                    label="Password"
+                    outlined
+                    dense
+                    :type="showPassword ? 'text' : 'password'"
+                    :no-error-icon="true"
+                    :rules="[val => !!val || 'Password is required',
+                              val => val.length >= 8 || 'Password must be at least 8 characters']"
+                  >
+                  <template v-slot:append>
+                    <span @click="togglePasswordVisibility">
+                      <i class="bi" :class="showPassword ? 'bi-eye-slash' : 'bi-eye'"></i>
+                    </span>
+                  </template>
+                  <template v-slot:after>
+                    <q-btn class="bg-[#667085] text-white text-[10px] w-[100px]" label="Generate Password" @click="generatePassword" size="xs"/>
+                  </template>
+                  </q-input>
+              </div>
+              <!-- Confirm Password -->
+              <div>
+                <p class="text-[15px]">Confirm Password</p>
+                <q-input
+                  v-model="cpvalue"
+                  label="Confirm Password"
+                  type='password'
+                  outlined
+                  dense
+                  :no-error-icon="true"
+                  :rules="[val => !!val || 'Confirm Password is required',
+                            val => val === pvalue || 'Passwords do not match']"
                 >
-                <template v-slot:append>
-                  <span @click="togglePasswordVisibility">
-                    <i class="bi" :class="showPassword ? 'bi-eye-slash' : 'bi-eye'"></i>
-                  </span>
-                </template>
-                <template v-slot:after>
-                  <q-btn class="bg-[#667085] text-white text-[10px] w-[100px]" label="Generate Password" @click="generatePassword" size="xs"/>
-                </template>
                 </q-input>
+              </div>
             </div>
-            <!-- Confirm Password -->
-            <div>
-              <p class="text-[15px]">Confirm Password</p>
-              <q-input
-                v-model="cpvalue"
-                label="Confirm Password"
-                type='password'
-                outlined
-                dense
-                :no-error-icon="true"
-                :rules="[val => !!val || 'Confirm Password is required',
-                          val => val === pvalue || 'Passwords do not match']"
-              >
-              </q-input>
-            </div>
-          </div>
-          <q-btn label="Submit" type="submit" />
-        </q-form>
 
-        </q-card-section>
+          </q-card-section>
+          <q-card-actions align="right">
+            <q-btn label="Submit" type="submit" />
+          </q-card-actions>
+        </q-form>
       </q-card>
     </q-dialog>
 
@@ -435,19 +436,19 @@ bordered
       <!-- Status Components -->
       <template v-slot:body-cell-statuss="props">
         <q-td :props="props">
-          <span v-if="props.row.statuss === 1" class="text-green-600 p-2 rounded-full bg-green-300">
-            ● Active
-          </span>
-          <span v-else class="text-red-600 p-2 rounded-full bg-red-300">
-            ● Inactive
-          </span>
+          <q-toggle
+            v-model="props.row.value"
+            :color="props.row.value ? 'green' : 'red'"
+            @click="toggleClicked(props.row.id, props.row.value)"
+            keep-color
+          />
         </q-td>
       </template>
 
       <!-- Action Components -->
       <template v-slot:body-cell-action="props">
       <q-td :props="props">
-        <q-btn
+        <div class="flex text-[13px] items-center cursor-pointer" 
           @click="openDropdown(props.row.id, props.row.user.name,   props.row.userInfo.firstname,
           props.row.userInfo.lastname,
           props.row.userInfo.birthday,
@@ -456,51 +457,9 @@ bordered
           props.row.userInfo.address,
           props.row.userInfo.email,
           props.row.userInfo.mobile_number,
-          props.row.userInfo.password)"
-          class="font-bold text-[15px]"
-        >
-          ...
-        </q-btn>
-        <q-dialog v-model="showDropdown" transition-show="scale" transition-hide="scale">
-          <q-card style="width: 300px">
-            <q-card-section>
-              <p class="text-h6">User Configuration</p>
-              <p class="q-mb-md">Choose the operational status for User ID {{ selectedUserId }} - {{ selectedUserName }}.</p>
-
-              <q-item clickable v-on:click="setStatus(1, selectedUserId)">
-                <q-item-section>
-                  <div class="flex text-[16px] gap-2 items-center">
-                    <q-icon name="check" color="positive" />
-                    Active
-                  </div>
-                </q-item-section>
-              </q-item>
-
-              <q-item clickable v-on:click="setStatus(0, selectedUserId)">
-                <q-item-section>
-                  <div class="flex text-[16px] items-center">
-                    <q-icon name="close" color="negative" />
-                    <span class="q-ml-sm">Inactive</span>
-                  </div>
-                </q-item-section>
-              </q-item>
-
-              <q-item clickable>
-                <q-item-section>
-                  <div class="flex text-[16px] items-center" @click="openEditDialog()">
-                    <q-icon name="edit_square" color="black" />
-                    <span class="q-ml-sm">Edit</span>
-                  </div>
-                </q-item-section>
-              </q-item>
-            </q-card-section>
-            <q-card-actions align="right">
-              <q-btn flat color="primary" @click="closeDialog">Close</q-btn>
-            </q-card-actions>
-          </q-card>
-        </q-dialog>
-
-
+          props.row.userInfo.password)">
+          <q-btn icon="edit_square"/>
+        </div>
       </q-td>
       </template>
 
@@ -515,7 +474,7 @@ bordered
           <q-btn icon="close" flat round dense v-close-popup @click="closeEditDialog"/>
         </q-card-section>
 
-        <q-card-section>
+        <q-card-section style="max-height: 150vh" class="scroll">
           <q-form @submit="onSubmitEdit">
           <div class="text-h6 font-bold text-[#667085]">Personal Information</div>
           <div class="grid grid-cols-2 gap-5">
@@ -730,7 +689,7 @@ export default {
       lname: '',
       bdate: '',
       gInput: null, // Gender Input
-      cInput: null,
+      cInput: '',
       avalue: '', // Address Value
       evalue: '', // Email Value
       cvalue: '', // Contact Value
@@ -744,6 +703,7 @@ export default {
       ],
       showPassword: false,
       showEditArea: false,
+      value: false,
     };
   },
   computed: {
@@ -766,7 +726,43 @@ export default {
     clearInterval(this.statusCheckTimer);
   },
   methods: {
-
+    toggleClicked(id,value) {
+      console.log(id);
+      let storeValue = 0;
+      if(value === true){
+        storeValue = 1;
+        console.log(storeValue);
+      }else if(value === false){
+        storeValue = 0;
+        console.log(storeValue);
+      }
+      const formData = {
+        userId: id,
+        status: storeValue,
+        type: 3
+      }
+      axios.post(`http://localhost/Capstone-Project/backend/api/Usermanagement/userdata.php/`, formData)
+      .then(response => {
+        const Status = response.data.status;
+        const message = response.data.message;
+        if (Status === "success") {
+          this.$q.notify({
+              message: 'Status Updated!!',
+              caption: `${message}`,
+              color: 'green',
+          });
+          this.FetchUser();
+        }
+        if (Status === "fail") {
+          this.$q.notify({
+            color: 'negative',
+            message: `${message} Please try again.`,
+          });
+        }
+      }).catch(error => {
+            console.error('Error fetching data:', error);
+      });
+    },
     FetchUser(){
       axios.get('http://localhost/Capstone-Project/backend/api/Usermanagement/userdata.php?select=all')
       .then(response => {
@@ -797,6 +793,7 @@ export default {
               last_activity: row.action,
               account_created: time, // Add the formatted time property
               statuss: row.status,
+              value: row.status === 1 ? true : false
             };
         });
       }).catch(error => {
@@ -816,7 +813,7 @@ export default {
       this.openDropdownRow = this.showDropdown ? index : -1; // Update the openDropdownRow
     },
     openDropdown(userId, userName, firstname, lastname, birthday, gender, civil_status, address,email,mobile_number,password) {
-      this.showDropdown = true;
+      this.showEditArea = true;
       this.selectedUserId = userId;
       this.selectedUserName = userName;
 
@@ -825,39 +822,10 @@ export default {
       this.bdate = birthday;
       this.gInput = gender;
       this.cInput = civil_status;
+      console.log(this.cInput);
       this.avalue = address;
       this.evalue = email;
       this.cvalue = mobile_number;
-    },
-
-    setStatus(status, userId) {
-      this.showDropdown = false;
-      const formData = {
-        userId: userId,
-        status: status,
-        type: 1
-      }
-      axios.post(`http://localhost/Capstone-Project/backend/api/Usermanagement/userdata.php/`, formData)
-      .then(response => {
-        const Status = response.data.status;
-        const message = response.data.message;
-        if (Status === "success") {
-          this.$q.notify({
-              message: 'Status Updated!!',
-              caption: `${message}`,
-              color: 'green',
-          });
-          this.FetchUser();
-        }
-        if (Status === "fail") {
-          this.$q.notify({
-            color: 'negative',
-            message: `${message} Please try again.`,
-          });
-        }
-      }).catch(error => {
-            console.error('Error fetching data:', error);
-      });
     },
     generatePassword() {
       const length = 12;
@@ -1001,6 +969,9 @@ export default {
       // Add your logic to hide the edit area
       this.showEditArea = false;
     },
+
+
+    
     // Old Data
     toggleProduction(){
       this.productionVisible = !this.productionVisible;
@@ -1161,12 +1132,9 @@ export default {
   .q-table__top,
 
   thead tr:first-child th
-    /* bg color is important for th; just specify one */
-    background-color: #667085
-    color: #fff
+    background: white
     text-align: center
     font-size: 13px
-    font-weight: bold
 
   thead tr th
     position: sticky

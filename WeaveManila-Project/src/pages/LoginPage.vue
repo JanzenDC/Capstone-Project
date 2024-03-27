@@ -7,12 +7,13 @@
     />
     <div class="bg-[#9e896a]  md:bg-white md:w-[800px] p-4 h-64 md:h-screen">
       <q-img
-      src="../assets/favicon-128x128.png"
-      alt="Description of the image"
-      class="w-[46px] md:w-[96px]"
+        src="../assets/favicon-128x128.png"
+        alt="Description of the image"
+        class="w-[46px] md:w-[42px] mt-8"
       />
       <div class="flex justify-center items-center w-[550px]">
-        <div class="p-4 mt-3 w-[340px] min-[390px]:hidden sm:hidden md:block">
+        <div class="p-4 mt-8 w-[340px] min-[390px]:hidden sm:hidden md:block">
+
           <div>
             <p class="text-[15px] ">Welcome to <span class="text-[#9e896a]">Online Production</span>
             <br><span class="text-[#9e896a]">Monitoring & Inventory Management</span>

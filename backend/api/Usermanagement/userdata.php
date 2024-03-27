@@ -58,8 +58,10 @@
                         audit_logs
                     WHERE 
                         id IN (SELECT MAX(id) FROM audit_logs GROUP BY uid)
-                ) AS audit_logs ON personel_tbl.personelID = audit_logs.uid;
+                ) AS audit_logs ON personel_tbl.personelID = audit_logs.uid
+                ORDER BY personel_tbl.status DESC;
             ";
+        
         
             
             $users = $this->db->rawQuery($sqlQuery);
@@ -88,31 +90,6 @@
     
     public function httpPost($payload)
     {
-        if($payload['type'] == '1'){
-            $requiredFields = ['userId','status'];
-            foreach ($requiredFields as $field) {
-                if (!isset($payload[$field])) {
-                    $response = ['status' => 'fail', 'message' => 'Missing required field: ' . $field];
-                    echo json_encode($response);
-                    exit;
-                }
-            }
-            $existingRecord = $this->db->where("personelID", $payload['userId'])->getOne('personel_tbl');
-            if($existingRecord)
-            {
-                $updateData = ['status' => $payload['status']];
-                $updateStatus = $this->db->where('personelID', $existingRecord['personelID'])->update('personel_tbl', $updateData);
-                $response = [
-                    'status' => 'success',
-                    'message' => 'The status for the user has been successfully set.',
-                ];
-                echo json_encode($response);
-                exit;        
-            }else{
-                $response = ['status' => 'fail', 'message' => 'Fail submitting data'];
-                echo json_encode($response);            
-            }
-        }
         if($payload['type'] == '2'){
             $requiredFields = ['fname', 'lname', 'bdate', 'gInput', 'cInput', 'avalue', 'evalue', 'cvalue', 'pvalue', 'cpvalue'];
             foreach ($requiredFields as $field) {
@@ -233,6 +210,31 @@
                     echo json_encode($response);
                     exit;
                 }
+            }
+        }
+        if($payload['type'] == '3'){
+            $requiredFields = ['userId','status'];
+            foreach ($requiredFields as $field) {
+                if (!isset($payload[$field])) {
+                    $response = ['status' => 'fail', 'message' => 'Missing required field: ' . $field];
+                    echo json_encode($response);
+                    exit;
+                }
+            }
+            $existingRecord = $this->db->where("personelID", $payload['userId'])->getOne('personel_tbl');
+            if($existingRecord)
+            {
+                $updateData = ['status' => $payload['status']];
+                $updateStatus = $this->db->where('personelID', $existingRecord['personelID'])->update('personel_tbl', $updateData);
+                $response = [
+                    'status' => 'success',
+                    'message' => 'The status for the user has been successfully set.',
+                ];
+                echo json_encode($response);
+                exit;        
+            }else{
+                $response = ['status' => 'fail', 'message' => 'Fail submitting data'];
+                echo json_encode($response);            
             }
         }
     }
