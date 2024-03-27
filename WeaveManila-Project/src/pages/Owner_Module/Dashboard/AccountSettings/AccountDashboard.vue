@@ -44,7 +44,7 @@ bordered
       </li>
 
       <li class="py-[10px] px-[20px]" @click="toggleInventoryMenu">
-        <div class="flex items-center gap-2 justify-between">
+        <div class="flex items-center cursor-pointer gap-2 justify-between">
           <div><q-icon name="inventory"/> <span >Inventory</span></div>
           <div><q-icon name="expand_more"  /> </div>
         </div>
@@ -59,7 +59,7 @@ bordered
       </li>
 
       <li class="py-[10px] px-[20px]" @click="toggleProduction">
-        <div class="flex items-center gap-2 justify-between">
+        <div class="flex items-center cursor-pointer gap-2 justify-between">
           <div>
             <i class="bi bi-box-seam"></i> <span >Product Monitoring</span>
           </div>
@@ -154,7 +154,7 @@ bordered
       <!-- Process Section -->
 
       <li class="py-[10px] px-[20px]" @click="toggleDrawer">
-        <div class="flex items-center gap-2 justify-between">
+        <div class="flex items-center cursor-pointer gap-2 justify-between">
           <div><q-icon name="inventory"/></div>
         </div>
       </li>
