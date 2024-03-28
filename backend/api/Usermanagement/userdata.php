@@ -1,5 +1,5 @@
 <?php
-    // alows sharing resource sharing
+// allows sharing resource sharing
   // Tells the browser to allow code from any origin to access
   header('Access-Control-Allow-Origin: *');
   // Tells browsers whether to expose the response to the frontend JavaScript code when the request's credentials mode (Request.credentials) is include
@@ -145,51 +145,68 @@
                     $validEmail = $payload['evalue'];
                     
                     $htmlContent = '<!DOCTYPE html>
-                        <html lang="en">
-                        <head>
-                            <meta charset="UTF-8">
-                            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                            <style>
-                                body {
-                                    font-family: Arial, sans-serif;
-                                    margin: 0;
-                                    padding: 0;
-                                    background-color: #f4f4f4;
-                                }
-                                .container {
-                                    max-width: 600px;
-                                    margin: 0 auto;
-                                    background-color: #ffffff;
-                                    padding: 20px;
-                                    border-radius: 5px;
-                                    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-                                }
-                                .title {
-                                    font-size: 24px;
-                                    font-weight: bold;
-                                    margin-bottom: 20px;
-                                }
-                                .info {
-                                    font-size: 16px;
-                                    margin-bottom: 10px;
-                                }
-                            </style>
-                        </head>
-                        <body>
-                            <div class="container">
-                                <div class="title">User Account</div>
-                                <div class="info">First Name: ' . $payload['fname'] . '</div>
-                                <div class="info">Last Name: ' . $payload['lname'] . '</div>
-                                <div class="info">Birthday: ' . $payload['bdate'] . '</div>
-                                <div class="info">Gender: ' . $payload['gInput'] . '</div>
-                                <div class="info">Civil Status: ' . $payload['cInput'] . '</div>
-                                <div class="info">Address: ' . $payload['avalue'] . '</div>
-                                <div class="info">Email: ' . $payload['evalue'] . '</div>
-                                <div class="info">Contact Number: ' . $payload['cvalue'] . '</div>
-                                <div class="info">Password: ' . $payload['pvalue'] . '</div>
-                            </div>
-                        </body>
-                        </html>';
+                    <html lang="en">
+                    <head>
+                      <meta charset="UTF-8">
+                      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                      <title>Document</title>
+                      <style type="text/css">
+                        body {
+                          display: flex;
+                          justify-content: center;
+                          align-items: center;
+                          height: 100vh;
+                          margin: 0;
+                          font-family: Arial, sans-serif;
+                          font-size:  13px;
+                        }
+                        .card{
+                          border: 2px solid #000;
+                          width: 400px;
+                          font-weight: bold;
+                          border-radius: 5px;
+                        }
+                        .card-2{
+                          padding: 30px;
+                        }
+                        footer {
+                          background: #000;
+                          padding: 5px;
+                          color: white;
+                          text-align: center;
+                        }
+                      </style>
+                    </head>
+                    <body>
+                    <div class="card">
+                      <div class="card-2">
+                        Please remember not to share any personal or sensitive user information to ensure privacy and security.
+                        <div>
+                          <h1>User Information:</h1>
+                          <div>
+                            <p>Email: ' . $payload['evalue'] . '</p>
+                            <p>Name: ' . $payload['fname'] .' '. $payload['lname'] . ' </p>
+                            <p>Birthdate: ' . $payload['bdate'] . '</p>
+                            <p>Gender: ' . $payload['gInput'] . '</p>
+                            <p>Civil Status: ' . $payload['cInput'] . '</p>
+                            <p>Address: ' . $payload['avalue'] . '</p>
+                            <p>Position:</p>
+                            <p>Password: ' . $payload['pvalue'] . '</p>
+                            <p>Contact Number: ' . $payload['cvalue'] . '</p>
+                          </div>
+                          <div>
+                            Kindly visit this link <a href="#">weavemanila.com</a> if you wish to log in.
+                          </div>
+                        </div>
+                      </div>
+
+                      <footer>
+                        <p>&copy; 2024 Weavemanila Co. All rights reserved.</p>
+                      </footer>
+                    </div>
+
+                    </body>
+                    </html>';
                 
                     $sendSmtpEmail = new \SendinBlue\Client\Model\SendSmtpEmail([
                         'subject' => 'User Account',

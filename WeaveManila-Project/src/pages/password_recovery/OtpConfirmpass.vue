@@ -198,7 +198,6 @@ export default {
         this.responseStatus = response.data.status;
         if (this.responseStatus === 'success') {
             this.$router.push('/forgot/otp-success');
-            SessionStorage.clear();
         }
 
       })

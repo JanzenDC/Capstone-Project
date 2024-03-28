@@ -75,59 +75,66 @@
                  'replyTo' => ['name' => 'Sendinblue', 'email' => 'no-reply@gmail.com'],
                  'to' => [[ 'name' => $recipient, 'email' => $validEmail]],
                  'htmlContent' => '
-                 <!DOCTYPE html>
+                    <!DOCTYPE html>
                     <html lang="en">
                     <head>
-                        <meta charset="UTF-8">
-                        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                        <title>Verification Code</title>
-                        <style>
-                            body {
-                                font-family: Arial, sans-serif;
-                                background-color: #171a21;
-                                margin: 0;
-                                padding: 0;
-                                display: flex;
-                                justify-content: center;
-                                align-items: center;
-                                height: 100vh;
-                            }
-                            .container {
-                                background-color: #2c2f38;
-                                padding: 30px;
-                                border-radius: 10px;
-                                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-                                color: #fff;
-                                text-align: center;
-                                max-width: 400px;
-                                width: 100%;
-                            }
-                            h1 {
-                                font-size: 28px;
-                                margin-bottom: 20px;
-                            }
-                            p {
-                                font-size: 18px;
-                                margin-bottom: 20px;
-                            }
-                            strong {
-                                font-weight: bold;
-                            }
-                            .verification-code {
-                                font-size: 24px;
-                                background-color: #3a3d47;
-                                padding: 10px 20px;
-                                border-radius: 5px;
-                                margin-bottom: 20px;
-                            }
-                        </style>
+                      <meta charset="UTF-8">
+                      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                      <title>Document</title>
+                      <style>
+                        body {
+                          display: flex;
+                          justify-content: center;
+                          align-items: center;
+                          height: 100vh;
+                          margin: 0;
+                          font-family: Arial, sans-serif; /* Change the font family here */
+                          font-size:  20px;
+                        }
+
+                        .card {
+                          text-align: center; /* Optional: to center the image within the card */
+                          width: 480px;
+                        }
+                        .card-2 {
+                          gap: 15px;
+                          display: flex;
+                          place-items: center;
+                          text-align: center; /* Optional: to center the text horizontally */
+                        }
+                        .card-3 {
+                          text-align: left;
+                          margin-top: 25px;
+                          font-size:  15px;
+
+                        }
+                        .text-code {
+                          text-align: center;
+                          margin-top: 25px;
+                          font-size: 45px;
+                        }
+                      </style>
                     </head>
                     <body>
-                        <div class="container">
-                            <h1>Verify code</h1>
-                            <p>We received a request to access your Account <strong>' . $validEmail . '</strong> through your email address. Your verification code is:</p>
-                            <p class="verification-code"><strong>' . $code . '</p>
+                      <div class="card">
+                        <div class="card-2">
+                          <img src="https://i.imgur.com/Hq6U0SG.png" alt="weavemanila.png" style="width: 50px;">
+                          <p>Weavemanila Co.</p>
                         </div>
+                          <!-- CHANGE PASSWORD -->
+                        <div class="card-3">
+                            Hi,<br><br>
+
+                            We received a request to change the password for the WeaveManila Co. account associated with ' . $validEmail . '. If this was initiated by you, please use the confirmation code provided below to complete the password change process:
+                            <br>
+                        </div>
+                        <div class="text-code">' . $code . '</div>
+                        <div style="text-align: center; font-size: 12px; margin-top: 20px;">
+                          from<br><br>
+                          Weavemanila Company<br><br>
+                          This message was sent to ' . $validEmail . '.
+                        </div>
+                      </div>
                     </body>
                     </html>
                     ',

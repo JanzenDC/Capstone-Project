@@ -321,11 +321,11 @@ bordered
               </q-btn>
             </div>
           </div>
-          <div class="md:grid md:grid-cols-2 md:gap-10 -mt-4">
+          <div class="md:grid md:grid-cols-2">
             <div>
               <p>Email:</p> {{ email }}
             </div>
-            <div class="min-[390px]:mt-3">
+            <div>
               <p>Mobile Number:</p> {{ mobilenumber }}
             </div>
           </div>
