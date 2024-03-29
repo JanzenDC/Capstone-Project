@@ -82,25 +82,26 @@
                       <meta name="viewport" content="width=device-width, initial-scale=1.0">
                       <title>Document</title>
                       <style>
-                        body {
+                        .container {
                           display: flex;
-                          justify-content: center;
-                          align-items: center;
-                          height: 100vh;
-                          margin: 0;
-                          font-family: Arial, sans-serif; /* Change the font family here */
-                          font-size:  20px;
+                          justify-content: center; /* Horizontally center */
+                          align-items: center; /* Vertically center */
+                          height: 100vh; /* Adjust height as needed */
                         }
-
+                        .text {
+                          font-family: Brush Script MT, Brush Script Std, cursive;
+                        }
                         .card {
-                          text-align: center; /* Optional: to center the image within the card */
+                          text-align: center; 
                           width: 480px;
+                          font-family: Arial, sans-serif;
+                          font-size:  20px;
                         }
                         .card-2 {
                           gap: 15px;
                           display: flex;
                           place-items: center;
-                          text-align: center; /* Optional: to center the text horizontally */
+                          text-align: center;
                         }
                         .card-3 {
                           text-align: left;
@@ -112,27 +113,36 @@
                           text-align: center;
                           margin-top: 25px;
                           font-size: 45px;
+                          font-family: Impact, fantasy;
+                        }
+                        #image {
+                          margin-top: 30px;
+                          margin-right: 30px;
+                          width: 50px;
+                          height: 50px
                         }
                       </style>
                     </head>
                     <body>
-                      <div class="card">
-                        <div class="card-2">
-                          <img src="https://i.imgur.com/Hq6U0SG.png" alt="weavemanila.png" style="width: 50px;">
-                          <p>Weavemanila Co.</p>
-                        </div>
-                          <!-- CHANGE PASSWORD -->
-                        <div class="card-3">
-                            Hi,<br><br>
+                      <div class="container">
+                        <div class="card">
+                          <div class="card-2">
+                            <img src="https://i.imgur.com/Hq6U0SG.png" alt="weavemanila.png" id="image">
+                            <h1 class="text">Weavemanila Co.</h1>
+                          </div>
+                            <!-- CHANGE PASSWORD -->
+                          <div class="card-3">
+                              Hi,<br><br>
 
-                            We received a request to change the password for the WeaveManila Co. account associated with ' . $validEmail . '. If this was initiated by you, please use the confirmation code provided below to complete the password change process:
-                            <br>
-                        </div>
-                        <div class="text-code">' . $code . '</div>
-                        <div style="text-align: center; font-size: 12px; margin-top: 20px;">
-                          from<br><br>
-                          Weavemanila Company<br><br>
-                          This message was sent to ' . $validEmail . '.
+                              We received a request to change the password for the WeaveManila Co. account associated with ' . $validEmail . '. If this was initiated by you, please use the confirmation code provided below to complete the password change process:
+                              <br>
+                          </div>
+                          <div class="text-code">' . $code . '</div>
+                          <div style="text-align: center; font-size: 12px; margin-top: 20px;">
+                            from<br><br>
+                            Weavemanila Company<br><br>
+                            This message was sent to ' . $validEmail . '.
+                          </div>
                         </div>
                       </div>
                     </body>
