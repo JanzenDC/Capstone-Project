@@ -378,7 +378,7 @@ export default {
 
     // Show loading indicator
     this.$q.loading.show({
-      message: 'Uploading SQL file. This may take a moment...', // Updated message
+      message: 'Uploading SQL file. This may take a while...', // Updated message
       boxClass: 'bg-grey-2 text-grey-9',
       spinnerColor: 'primary'
     });
