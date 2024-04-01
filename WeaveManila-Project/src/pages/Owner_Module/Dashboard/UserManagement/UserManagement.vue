@@ -247,9 +247,9 @@ bordered
           <q-btn icon="close" flat round dense v-close-popup />
         </q-card-section>
         <q-form @submit="onSubmit">
-          <q-card-section style="max-height: 150vh" class="scroll">
+          <q-card-section class='overflow-x-hidden overflow-y-auto h-[500px]'>
             <div class="text-h6 font-bold text-[#667085]">Personal Information</div>
-            <div class="grid grid-cols-2 gap-5">
+            <div class="grid grid-cols-2 gap-1">
               <!-- Firstname -->
               <div>
                 <p class="text-[15px]">First Name</p>
@@ -286,8 +286,8 @@ bordered
                   outlined
                   dense
                   :no-error-icon="true"
-                  :rules="[val => !!val || 'Birthday is required']"
-                ></q-input>
+                  :rules="[val => !!val || 'Birthday is required', val => validateAge(val) || 'He/She must be 18 years or older to register']">
+                </q-input>
               </div>
               <!-- Gender -->
               <div>
@@ -326,6 +326,17 @@ bordered
                   :rules="[val => !!val || 'Address is required']"
                 ></q-input>
               </div>
+              <!-- Position Status -->
+              <div>
+                Position
+                <q-select
+                  outlined
+                  dense
+                  v-model="posvalue"
+                  :options="posOptions"
+                  :rules="[val => !!val || 'Position value is empty']"
+                />
+              </div>
             </div>
             <div class="text-h6 font-bold text-[#667085]">Contact Information</div>
             <div class="grid grid-cols-2 gap-5">
@@ -360,7 +371,6 @@ bordered
               </div>
             </div>
             <div class="text-h6 font-bold text-[#667085]">Security</div>
-            <div class="grid grid-cols-2 gap-5">
               <!-- Password -->
               <div>
                 <p class="text-[15px]">Password</p>
@@ -381,30 +391,14 @@ bordered
                     </span>
                   </template>
                   <template v-slot:after>
-                    <q-btn class="bg-[#667085] text-white text-[10px] w-[100px]" label="Generate Password" @click="generatePassword" size="xs"/>
+                    <q-btn class="h-[35px] text-white text-[13px] bg-[#967259] w-[180px]" label="Generate Password" @click="generatePassword"/>
                   </template>
                   </q-input>
-              </div>
-              <!-- Confirm Password -->
-              <div>
-                <p class="text-[15px]">Confirm Password</p>
-                <q-input
-                  v-model="cpvalue"
-                  label="Confirm Password"
-                  type='password'
-                  outlined
-                  dense
-                  :no-error-icon="true"
-                  :rules="[val => !!val || 'Confirm Password is required',
-                            val => val === pvalue || 'Passwords do not match']"
-                >
-                </q-input>
-              </div>
             </div>
 
           </q-card-section>
           <q-card-actions align="right">
-            <q-btn label="Submit" type="submit" />
+            <q-btn label="Submit" type="submit" class='text-white bg-[#967259]'/>
           </q-card-actions>
         </q-form>
       </q-card>
@@ -448,7 +442,7 @@ bordered
       <!-- Action Components -->
       <template v-slot:body-cell-action="props">
       <q-td :props="props">
-        <div class="flex text-[13px] items-center cursor-pointer" 
+        <div class="flex text-[13px] items-center cursor-pointer"
           @click="openDropdown(props.row.id, props.row.user.name,   props.row.userInfo.firstname,
           props.row.userInfo.lastname,
           props.row.userInfo.birthday,
@@ -457,7 +451,8 @@ bordered
           props.row.userInfo.address,
           props.row.userInfo.email,
           props.row.userInfo.mobile_number,
-          props.row.userInfo.password)">
+          props.row.userInfo.password,
+          props.row.userInfo.position)">
           <q-btn icon="edit_square"/>
         </div>
       </q-td>
@@ -477,7 +472,7 @@ bordered
         <q-card-section style="max-height: 150vh" class="scroll">
           <q-form @submit="onSubmitEdit">
           <div class="text-h6 font-bold text-[#667085]">Personal Information</div>
-          <div class="grid grid-cols-2 gap-5">
+          <div class="grid grid-cols-2 gap-1">
             <!-- Firstname -->
             <div>
               <p class="text-[15px]">First Name</p>
@@ -554,6 +549,17 @@ bordered
                 :rules="[val => !!val || 'Address is required']"
               ></q-input>
             </div>
+              <!-- Position Status -->
+              <div>
+                Position
+                <q-select
+                  outlined
+                  dense
+                  v-model="posvalue"
+                  :options="posOptions"
+                  :rules="[val => !!val || 'Position value is empty']"
+                />
+              </div>
           </div>
           <div class="text-h6 font-bold text-[#667085]">Contact Information</div>
           <div class="grid grid-cols-2 gap-5">
@@ -694,12 +700,15 @@ export default {
       evalue: '', // Email Value
       cvalue: '', // Contact Value
       pvalue: '', //Password Value
-      cpvalue: '', //Confirm Password Value
+      posvalue: '',
       options: [
         'Male','Female','Rather not to say'
       ],
       civilOptions: [
         'Single', 'Married'
+      ],
+      posOptions: [
+        'Owner', 'Warehouseman', 'Production Staff'
       ],
       showPassword: false,
       showEditArea: false,
@@ -726,6 +735,20 @@ export default {
     clearInterval(this.statusCheckTimer);
   },
   methods: {
+    validateAge(birthdate) {
+        // Calculate the user's age based on the provided birthdate
+        const today = new Date();
+        const dob = new Date(birthdate);
+        const age = today.getFullYear() - dob.getFullYear();
+        const monthDiff = today.getMonth() - dob.getMonth();
+        
+        // Check if the user is 18 years or older
+        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
+            return age - 1 >= 18;
+        }
+        
+        return age >= 18;
+    },
     toggleClicked(id,value) {
       console.log(id);
       let storeValue = 0;
@@ -783,6 +806,7 @@ export default {
                 civil_status: row.civil_status,
                 mobile_number: row.mobile_number,
                 password: row.password,
+                position: row.position,
               },
               user: {
                 name: row.firstname + " " + row.lastname,
@@ -812,7 +836,7 @@ export default {
     toggleDropdown(index) {
       this.openDropdownRow = this.showDropdown ? index : -1; // Update the openDropdownRow
     },
-    openDropdown(userId, userName, firstname, lastname, birthday, gender, civil_status, address,email,mobile_number,password) {
+    openDropdown(userId, userName, firstname, lastname, birthday, gender, civil_status, address,email,mobile_number,password, position) {
       this.showEditArea = true;
       this.selectedUserId = userId;
       this.selectedUserName = userName;
@@ -826,6 +850,7 @@ export default {
       this.avalue = address;
       this.evalue = email;
       this.cvalue = mobile_number;
+      this.posvalue = position;
     },
     generatePassword() {
       const length = 12;
@@ -836,7 +861,6 @@ export default {
         password += charset.charAt(randomIndex);
       }
       this.pvalue = password;
-      this.cpvalue = password;
     },
     togglePasswordVisibility() {
       this.showPassword = !this.showPassword;
@@ -852,7 +876,7 @@ export default {
         evalue: this.evalue,
         cvalue: this.cvalue,
         pvalue: this.pvalue,
-        cpvalue: this.cpvalue,
+        posvalue: this.posvalue,
         type: 2
       };
       axios.post(`http://localhost/Capstone-Project/backend/api/Usermanagement/userdata.php`, formData)
@@ -874,7 +898,8 @@ export default {
           this.evalue = '';
           this.cvalue = '';
           this.pvalue = '';
-          this.cpvalue = '';
+          this.posvalue = '';
+          this.addUserModal = false;
           this.FetchUser();
         }
         if (Status === "fail") {
@@ -898,6 +923,7 @@ export default {
         avalue: this.avalue,
         evalue: this.evalue,
         cvalue: this.cvalue,
+        posvalue: this.posvalue,
         type: 3
       };
       axios.put(`http://localhost/Capstone-Project/backend/api/Usermanagement/userdata.php/${this.selectedUserId}`, formData)
@@ -922,7 +948,9 @@ export default {
           this.evalue = '';
           this.cvalue = '';
           this.pvalue = '';
-          this.cpvalue = '';
+          this.posvalue = '';
+          this.showEditArea = false;
+
           this.FetchUser();
         }
         if (Status === "fail") {
@@ -950,8 +978,7 @@ export default {
       this.evalue = '';
       this.cvalue = '';
       this.pvalue = '';
-      this.cpvalue = '';
-      // Add your logic to hide the edit area
+      this.posvalue = '';
       this.showDropdown = false;
     },
     closeEditDialog() {
@@ -965,13 +992,13 @@ export default {
       this.evalue = '';
       this.cvalue = '';
       this.pvalue = '';
-      this.cpvalue = '';
+      this.posvalue = '';
       // Add your logic to hide the edit area
       this.showEditArea = false;
     },
 
 
-    
+
     // Old Data
     toggleProduction(){
       this.productionVisible = !this.productionVisible;

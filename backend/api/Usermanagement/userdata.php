@@ -91,7 +91,7 @@
     public function httpPost($payload)
     {
         if($payload['type'] == '2'){
-            $requiredFields = ['fname', 'lname', 'bdate', 'gInput', 'cInput', 'avalue', 'evalue', 'cvalue', 'pvalue', 'cpvalue'];
+            $requiredFields = ['fname', 'lname', 'bdate', 'gInput', 'cInput', 'avalue', 'evalue', 'cvalue', 'pvalue', 'posvalue'];
             foreach ($requiredFields as $field) {
                 if (!isset($payload[$field])) {
                     $response = ['status' => 'fail', 'message' => 'Missing required field: ' . $field];
@@ -118,6 +118,12 @@
                 exit;
             }else{
                 $hashedPassword = password_hash($payload['pvalue'], PASSWORD_DEFAULT);
+                $birth_date = $payload['bdate'];
+
+                $birthdate = new DateTime($birth_date);
+                $today = new DateTime();
+                $age = $today->diff($birthdate)->y;
+                
                 $data = [
                     'firstname' => $payload['fname'],
                     'lastname' => $payload['lname'],
@@ -127,10 +133,14 @@
                     'civil_status' => $payload['cInput'],
                     'address' => $payload['avalue'],
                     'mobile_number' => $payload['cvalue'],
+                    'position' => $payload['posvalue'],
                     'password' => $hashedPassword,
+                    'age' => $age, // Calculated age
                     'profile_pic' => 'default_pfp.png',
+                    'account_created' => date('Y-m-d H:i:s'), // current date and time
                     'status' => 0,
                 ];
+              
                 $id = $this->db->insert('personel_tbl', $data);
                 
                 // Check if the insertion was successful
@@ -190,7 +200,7 @@
                             <p>Gender: ' . $payload['gInput'] . '</p>
                             <p>Civil Status: ' . $payload['cInput'] . '</p>
                             <p>Address: ' . $payload['avalue'] . '</p>
-                            <p>Position:</p>
+                            <p>Position: ' . $payload['posvalue'] . '</p>
                             <p>Password: ' . $payload['pvalue'] . '</p>
                             <p>Contact Number: ' . $payload['cvalue'] . '</p>
                           </div>
@@ -265,7 +275,7 @@
             exit;
         }
         if ($payload['type'] == '3') {
-            $requiredFields = ['fname', 'lname', 'bdate', 'gInput', 'cInput', 'avalue', 'evalue', 'cvalue'];
+            $requiredFields = ['fname', 'lname', 'bdate', 'gInput', 'cInput', 'avalue', 'evalue', 'cvalue', 'posvalue'];
             foreach ($requiredFields as $field) {
                 if (!isset($payload[$field])) {
                     $response = ['status' => 'fail', 'message' => 'Missing required field: ' . $field];
@@ -296,7 +306,8 @@
                     'gender' => $payload['gInput'],
                     'civil_status' => $payload['cInput'],
                     'address' => $payload['avalue'],
-                    'mobile_number' => $mobileNumber
+                    'mobile_number' => $mobileNumber,
+                    'position' => $payload['posvalue'],
                 ];
                 $addData = $this->db->where('personelID', $ids)->update('personel_tbl', $updateData);
                 if($addData){
