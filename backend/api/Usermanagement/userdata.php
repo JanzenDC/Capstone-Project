@@ -161,14 +161,10 @@
                       <meta name="viewport" content="width=device-width, initial-scale=1.0">
                       <title>Document</title>
                       <style type="text/css">
-                        body {
+                        .container {
+                          width: 100%;
                           display: flex;
                           justify-content: center;
-                          align-items: center;
-                          height: 100vh;
-                          margin: 0;
-                          font-family: Arial, sans-serif;
-                          font-size:  13px;
                         }
                         .card{
                           border: 2px solid #000;
@@ -188,33 +184,34 @@
                       </style>
                     </head>
                     <body>
-                    <div class="card">
-                      <div class="card-2">
-                        Please remember not to share any personal or sensitive user information to ensure privacy and security.
-                        <div>
-                          <h1>User Information:</h1>
-                          <div>
-                            <p>Email: ' . $payload['evalue'] . '</p>
-                            <p>Name: ' . $payload['fname'] .' '. $payload['lname'] . ' </p>
-                            <p>Birthdate: ' . $payload['bdate'] . '</p>
-                            <p>Gender: ' . $payload['gInput'] . '</p>
-                            <p>Civil Status: ' . $payload['cInput'] . '</p>
-                            <p>Address: ' . $payload['avalue'] . '</p>
-                            <p>Position: ' . $payload['posvalue'] . '</p>
-                            <p>Password: ' . $payload['pvalue'] . '</p>
-                            <p>Contact Number: ' . $payload['cvalue'] . '</p>
+                      <div class="container">
+                        <div class="card">
+                          <div class="card-2">
+                            Please remember not to share any personal or sensitive user information to ensure privacy and security.
+                            <div>
+                              <h1>User Information:</h1>
+                              <div>
+                                <p>Name: ' . $payload['fname'] .' '. $payload['lname'] . ' </p>
+                                <p>Birthdate: ' . $payload['bdate'] . '</p>
+                                <p>Gender: ' . $payload['gInput'] . '</p>
+                                <p>Civil Status: ' . $payload['cInput'] . '</p>
+                                <p>Address: ' . $payload['avalue'] . '</p>
+                                <p>Email: ' . $payload['evalue'] . '</p>
+                                <p>Position: ' . $payload['posvalue'] . '</p>
+                                <p>Password: ' . $payload['pvalue'] . '</p>
+                                <p>Contact Number: ' . $payload['cvalue'] . '</p>
+                              </div>
+                              <div>
+                                Kindly visit this link <a href="#">weavemanila.com</a> if you wish to log in.
+                              </div>
+                            </div>
                           </div>
-                          <div>
-                            Kindly visit this link <a href="#">weavemanila.com</a> if you wish to log in.
-                          </div>
+
+                          <footer>
+                            <p>&copy; 2024 Weavemanila Co. All rights reserved.</p>
+                          </footer>
                         </div>
                       </div>
-
-                      <footer>
-                        <p>&copy; 2024 Weavemanila Co. All rights reserved.</p>
-                      </footer>
-                    </div>
-
                     </body>
                     </html>';
                 
