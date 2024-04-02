@@ -193,7 +193,7 @@
                               <div>
                                 <p>Name: ' . $payload['fname'] .' '. $payload['lname'] . ' </p>
                                 <p>Birthdate: ' . $payload['bdate'] . '</p>
-                                <p>Gender: ' . $payload['gInput'] . '</p>
+                                <p>Gender: ' . $payload['   gInput'] . '</p>
                                 <p>Civil Status: ' . $payload['cInput'] . '</p>
                                 <p>Address: ' . $payload['avalue'] . '</p>
                                 <p>Email: ' . $payload['evalue'] . '</p>
