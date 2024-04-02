@@ -221,7 +221,7 @@ bordered
     <div class="w-full md:flex md:justify-center mt-3 overflow-y-auto overflow-x-hidden h-[480px]">
     <div>
         <!-- User Area -->
-        <div class="p-4 md:w-[600px] min-[390px]:h-[160px] border border-[#ddb7ab] rounded-[15px] drop-shadow-md flex md:justify-between
+        <div class="bg-white p-4 md:w-[600px] min-[390px]:h-[160px] border border-[#ddb7ab] rounded-[15px] drop-shadow-md flex md:justify-between
         min-[390px]:justify-center">
           <div class="md:flex items-center gap-2">
             <div>
@@ -266,7 +266,7 @@ bordered
         </q-dialog>
 
         <!-- Personal Information -->
-        <div class="mt-3 md:w-[600px] p-5 border border-[#ddb7ab] rounded-[15px] drop-shadow-md">
+        <div class="bg-white mt-3 md:w-[600px] p-5 border border-[#ddb7ab] rounded-[15px] drop-shadow-md">
           <div class="flex justify-between -mt-8">
             <h1 class="md:text-[19px] font-bold">Personal Information</h1>
             <div class="w-[84px] flex items-center justify-center ">
@@ -312,7 +312,7 @@ bordered
         </q-dialog>
 
         <!-- Contact Information -->
-        <div class="mt-3 md:w-[600px] p-5 border border-[#ddb7ab] rounded-[15px] drop-shadow-md">
+        <div class="mt-3 md:w-[600px] p-5 border border-[#ddb7ab] rounded-[15px] drop-shadow-md bg-white">
           <div class="flex justify-between -mt-8">
             <h1 class="md:text-[19px] font-bold">Contact Information</h1>
             <div class="w-[84px] flex items-center justify-center ">
@@ -346,7 +346,7 @@ bordered
         </q-dialog>
 
         <!-- Password Information -->
-        <div class="mt-3 md:w-[600px] p-5 border border-[#ddb7ab] rounded-[15px] drop-shadow-md">
+        <div class="bg-white mt-3 md:w-[600px] p-5 border border-[#ddb7ab] rounded-[15px] drop-shadow-md">
           <div class="flex justify-between -mt-8">
             <h1 class="md:text-[19px] font-bold">Security</h1>
             <div class="w-[84px] flex items-center justify-center ">

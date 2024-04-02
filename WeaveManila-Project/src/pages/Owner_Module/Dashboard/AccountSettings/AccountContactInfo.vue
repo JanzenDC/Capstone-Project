@@ -101,7 +101,7 @@
               Please enter your new email address.
               <q-input
                 v-model="newEmail"
-                filled
+                dense outlined
                 label="New Email Address"
                 type="email"
                 :rules="[val => !!val || 'Email is required', val => /.+@.+\..+/.test(val) || 'Invalid email']"
@@ -111,7 +111,7 @@
               <!-- Re-enter new email for confirmation -->
               <q-input
                 v-model="confirmNewEmail"
-                filled
+                dense outlined
                 label="Confirm New Email Address"
                 type="email"
                 :rules="[val => !!val || 'Confirmation email is required', val => val === newEmail || 'Email addresses do not match']"
@@ -259,6 +259,7 @@ export default {
           this.code = userInformation.otp_code;
           this.status = userInformation.status;
           this.fullnames = this.firstname + " " + this.lastname;
+          this.currentEmail = userInformation.email;
           if(this.status == 0)
           {
             this.$q.notify({
@@ -383,7 +384,6 @@ export default {
           this.otpDialog = false;
           this.changeEmail = true;
           this.loadUserData();
-          window.location.reload();
         }
         if (this.responseStatus === "fail") {
           // Notify when the status is "fail" with the response message
@@ -423,7 +423,6 @@ export default {
               });
               SessionStorage.set('information', JSON.stringify(existingInformation));
               this.loadUserData();
-              window.location.reload();
           }
         }).catch(error => {
           console.error('Error submitting form:', error);

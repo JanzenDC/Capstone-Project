@@ -72,55 +72,76 @@
                         'replyTo' => ['name' => 'Sendinblue', 'email' => 'no-reply@gmail.com'],
                         'to' => [[ 'name' => $recipient, 'email' => $validEmail]],
                         'htmlContent' => '<!DOCTYPE html>
-                        <html>
+                        <html lang="en">
                         <head>
-                            <style>
-                                body {
-                                    font-family: Arial, sans-serif;
-                                    margin: 0;
-                                    padding: 0;
-                                    background-color: #f0f0f0;
-                                }
-                                
-                                .container {
-                                    max-width: 600px;
-                                    margin: 0 auto;
-                                    padding: 20px;
-                                    background-color: #F6F8FC;
-                                    border-radius: 5px;
-                                    box-shadow: 5px 10px #888888;
-                                }
-                                
-                                .title {
-                                    color: #333333;
-                                    font-size: 24px;
-                                    margin-bottom: 20px;
-                                    border-bottom: 1px solid black;
-                                }
-                                
-                                .email {
-                                    color: #333333;
-                                    font-size: 16px;
-                                    margin-bottom: 20px;
-                                }
-                                
-                                .verification-code {
-                                    color: #333333;
-                                    font-size: 24px;
-                                    font-weight: bold;
-                                    margin-bottom: 20px;
-                                    text-align: center;
-                                }
-                            </style>
+                          <meta charset="UTF-8">
+                          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                          <title>Document</title>
+                          <style>
+                            .container {
+                              display: flex;
+                              justify-content: center;
+                              align-items: center;
+                              height: 100vh;
+                              margin: 0;
+                        
+                            }
+                        
+                            .card {
+                              text-align: center; /* Optional: to center the image within the card */
+                              width: 480px;
+                              font-family: Arial, sans-serif; /* Change the font family here */
+                              font-size:  20px;
+                            }
+                            .text {
+                              font-family: Brush Script MT, Brush Script Std, cursive;
+                            }
+                            .card-2 {
+                              gap: 15px;
+                              display: flex;
+                              place-items: center;
+                              text-align: center; /* Optional: to center the text horizontally */
+                            }
+                            .card-3 {
+                              text-align: left;
+                              margin-top: 25px;
+                              font-size:  15px;
+                        
+                            }
+                            .text-code {
+                              text-align: center;
+                              margin-top: 25px;
+                              font-size: 45px;
+                              font-family: Impact, fantasy;
+                            }
+                          </style>
                         </head>
                         <body>
-                            <div class="container">
-                                <div class="title">Verify code</div>
-                                <div class="email">We received a request to access your Account <span>' . $validEmail . '</span> through your email address. Your verification code is:</div>
-                                <div class="verification-code">' . $code . '</div>
+                          <div class="container">
+                            <div class="card">
+                              <div class="card-2">
+                                <img src="https://i.imgur.com/Hq6U0SG.png" alt="weavemanila.png" style="width: 50px; height: 50px; margin-top: 30px;">
+                                <h2 class="text">Weavemanila Co.</h2>
+                              </div>
+                               <div class="card-3">
+                                    Hi,<br><br>
+                                
+                                    You have attempted to change the email address associated with your WeaveManila Co. account to ' . $validEmail . '. If this action was initiated by you, please use the confirmation code provided below to verify and complete the email address change process:
+                                    <br>
+                                
+                                </div>
+                        
+                              <div class="text-code">' . $code . '</div>
+                              <div style="text-align: center; font-size: 12px; margin-top: 20px;">
+                                from<br><br>
+                                Weavemanila Company<br><br>
+                                This message was sent to ' . $validEmail . '.
+                              </div>
                             </div>
+                          </div>
                         </body>
-                        </html>',
+                        </html>
+                        ',
     
                         'params' => ['bodyMessage' => "test"]
                 ]);
