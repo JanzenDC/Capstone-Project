@@ -38,7 +38,7 @@
                     'message' => 'Failed to fetch data.',
                 ];
             }
-    
+
             echo json_encode($response);
             exit;
         }
@@ -58,14 +58,38 @@
                     'message' => 'Failed to fetch data.',
                 ];
             }
-    
+
             echo json_encode($response);
             exit;
         }
+        if ($payload['get'] === 'supplier') {
+          if(empty($payload['id'])){
+            $response = ['status' => 'fail', 'message' => 'Empty payload ID.'];
+            echo json_encode($response);
+            exit;
+          }
+          $getSupplier = $this->db->where('supplierID', $payload['id'])->getOne('w_supplierlist');
+          if($getSupplier){
+            $getSupplierItem = $this->db->where('supplierID', $payload['id'])->get('w_supplierlist_item');
+            $response = [
+              'status' => 'success',
+              'message' => 'Fetch succesfully',
+              'supplierData' => $getSupplier,
+              'itemData' => $getSupplierItem,
+            ];
+            echo json_encode($response);
+            exit;
+
+          }else{
+            $response = ['status' => 'fail', 'message' => 'Supplier not exist'];
+            echo json_encode($response);
+            exit;
+          }
+        }
     }
-    
-    
-    
+
+
+
     public function httpPost($payload)
     {
         $requiredFields = ['supplier_Name', 'supplier_Address', 'supplier_ContactName', 'supplier_Cp', 'supplier_Email'];
@@ -74,7 +98,7 @@
                 $response = ['status' => 'fail', 'message' => 'Missing required field: ' . $field];
                 echo json_encode($response);
                 exit;
-            }   
+            }
         }
         if (!filter_var($payload['supplier_Email'], FILTER_VALIDATE_EMAIL)) {
             $response = ['status' => 'fail', 'message' => 'Invalid email format'];
@@ -82,11 +106,6 @@
             exit;
         }
 
-        if (!is_numeric($payload['supplier_Cp'])) {
-            $response = ['status' => 'fail', 'message' => 'Supplier_Cp must be a numeric value'];
-            echo json_encode($response);
-            exit;
-        }
         $getData = $this->db->where('supplier_name', $payload['supplier_Name'])->getOne('w_supplierlist');
 
         if (!$getData) {
@@ -112,12 +131,12 @@
             echo json_encode($response);
             exit;
         }
-        
+
 
     }
-    
-    
-    
+
+
+
     public function httpPut($ids, $payload)
     {
         // Check if $ids is a valid array of IDs
@@ -161,7 +180,7 @@
         }
 
     }
-    
+
 
     public function httpDelete($ids, $payload)
     {
@@ -170,16 +189,16 @@
             echo json_encode($response);
             exit;
         }
-    
+
         $requiredFields = ['selectedIds']; // Update field names here
         foreach ($requiredFields as $field) {
             if (!isset($payload[$field])) {
                 $response = ['status' => 'fail', 'message' => 'Missing required field: ' . $field];
                 echo json_encode($response);
                 exit;
-            }   
+            }
         }
-    
+
         $existingData = $this->db->where('personelID', $ids)->getOne('personel_tbl');
         if ($existingData) {
             if (strtolower($existingData['position']) === 'owner') {
@@ -207,14 +226,14 @@
                     'message' => 'Records deleted successfully.',
                 ];
                 echo json_encode($response);
-                exit;  
+                exit;
             } else {
                 $response = [
                     'status' => 'fail',
                     'message' => 'You do not have permission to remove supplier.',
                 ];
                 echo json_encode($response);
-                exit;           
+                exit;
             }
         } else {
             $response = [
@@ -227,7 +246,7 @@
     }
 
   }
- 
+
   $received_data = json_decode(file_get_contents('php://input'), true);
 
   $api = new API;
@@ -241,18 +260,18 @@ if (isset($_SERVER['REQUEST_METHOD'])) {
     //check if method is PUT or DELETE, and get the ids on URL
     if ($request_method === 'PUT' || $request_method === 'DELETE') {
         $request_uri = $_SERVER['REQUEST_URI'];
-    
-    
+
+
         $ids = null;
         $exploded_request_uri = array_values(explode("/", $request_uri));
-    
-    
+
+
         $last_index = count($exploded_request_uri) - 1;
-    
-    
+
+
         $ids = $exploded_request_uri[$last_index];
-    
-    
+
+
         }
     }
     //Checking if what type of request and designating to specific functions
@@ -270,7 +289,7 @@ if (isset($_SERVER['REQUEST_METHOD'])) {
             $api->httpDelete($ids,$received_data);
             break;
     }
-  
+
 }
 
 ?>
