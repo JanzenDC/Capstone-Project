@@ -495,6 +495,7 @@ bordered
               <q-icon
                 name="assignment"
                 class="w-[18px] h-[21px] p-1 text-white bg-[#4844A0] rounded cursor-pointer"
+                @click="ViewSupplierItem(props.row.supplierID)"
               >
               <q-tooltip :offset="[0, 8]">View</q-tooltip>
               </q-icon>
@@ -706,6 +707,35 @@ bordered
           </q-card>
       </q-dialog>
 
+      <q-dialog v-model="ShowItemData">
+          <q-card style="width: 900px; max-width: 80vw;">
+            <q-card-section class="row items-center q-pb-none">
+
+              <div class="text-h6 font-bold flex items-center gap-2">
+                <q-icon name="group" class="p-2 border"/>
+                {{ selectedSupplierName }}
+              </div>
+              <q-space />
+              <q-btn icon="close" flat round dense v-close-popup />
+            </q-card-section>
+
+            <q-card-section>
+              <q-table
+                class="my-sticky-header-table"
+                flat bordered
+                :rows="items_rows"
+                :columns="items_columns"
+                row-key="itemID"
+                :pagination="initialPagination"
+              >
+              </q-table>
+            </q-card-section>
+
+            <q-separator />
+
+          </q-card>
+      </q-dialog>
+
     </div>
   </div>
 
@@ -789,6 +819,14 @@ export default {
       {name: 'actions', label: 'Actions', field: 'actions', sortable: true, align: 'center'},
     ],
     rows : [],
+    items_columns : [
+      {name: 'no', label: 'No', field: 'no', headerStyle: 'width: 44px',},
+      {name: 'item', label: 'Item', field: 'item', sortable: true, align:'left'},
+      {name: 'description', label: 'Description', field: 'description', sortable: true, align:'left'},
+      {name: 'unit', label: 'Unit', field: 'unit', sortable: true, headerStyle: 'width: 100px', align:'left'},
+      {name: 'unit_price', label: 'Unit Price', field: 'unit_price', sortable: true, align: 'center', headerStyle: 'width: 100px'},
+    ],
+    items_rows : [],
     columns_add : [
       {name: 'no', label: 'No', field: 'no', headerStyle: 'width: 44px',},
       {name: 'item', label: 'Item', field: 'item', sortable: true, align:'left'},
@@ -816,7 +854,7 @@ export default {
     suppName: '',
     suppAddress: '',
     suppContactName: '',
-
+    selectedSupplierName: '',
     suppEmail: '',
     showDropdown: false,
     suppUnit: '',
@@ -827,6 +865,7 @@ export default {
     supplierAddressValue: '',
     supplierAddress: false,
     showAddressEdit: false,
+    ShowItemData: false,
     // Location Data
       selectedRegion: null,
       selectedProvince: null,
@@ -1031,14 +1070,31 @@ export default {
       // Trim trailing comma and space
       this.supplierAddressValue = address.replace(/,\s*$/, '');
     },
+    ViewSupplierItem(targetID){
+      this.ShowItemData = true;
+      axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/Supplier_Database/supplier.php?get=item&id=${targetID}`)
+      .then((response) =>{
+        console.log(response.data)
+        this.selectedSupplierName = response.data.supplierData.supplier_name;
+        if (Array.isArray(response.data.itemData)) {
+          this.items_rows = response.data.itemData.map((row, index) => {
+            return {
+              supplierID: row.itemID,
+              no: index + 1,
+              item: row.itemName,
+              description: row.description,
+              unit: row.unit,
+              unit_price: row.unit_price
+            };
+          });
+        } else {
+          console.error("response.data.itemData is not an array.");
+        }
+      }).catch(error => {
+        console.error('Error fetching data:', error);
+      });          
+    },
     EditSupplier(targetID) {
-      this.$q.loading.show({
-        spinnerColor: 'primary'
-      });
-      setTimeout(() => {
-        this.$q.loading.hide();
-        this.showDropdown = true;
-      }, 1500); // 30 seconds
       this.showDropdown = true;
       axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/Supplier_Database/supplier.php?get=supplier&id=${targetID}`)
       .then((response) =>{

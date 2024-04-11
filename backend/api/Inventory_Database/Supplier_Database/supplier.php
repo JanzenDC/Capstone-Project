@@ -86,6 +86,30 @@
             exit;
           }
         }
+        if ($payload['get'] === 'item') {
+            if(empty($payload['id'])){
+                $response = ['status' => 'fail', 'message' => 'Empty payload ID.'];
+                echo json_encode($response);
+                exit;
+            }
+            $getSupplier = $this->db->where('supplierID', $payload['id'])->getOne('w_supplierlist');
+            if($getSupplier){
+              $get = $this->db->where('itemID', $payload['id'])->get('w_supplierlist_item');
+
+                $response = [
+                  'status' => 'success', 
+                  'message' => 'Successfully fetch data.',
+                  'itemData' => $get,
+                  'supplierData'=> $getSupplier
+                ];
+                echo json_encode($response);
+                exit;
+            }else{
+                $response = ['status' => 'fail', 'message' => 'Invalid Data.'];
+                echo json_encode($response);
+                exit;
+            }
+        }
     }
 
 
