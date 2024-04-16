@@ -110,6 +110,83 @@
                 exit;
             }
         }
+        if ($payload['get'] === 'supplierGet') {
+          if(empty($payload['supplierGet'])){
+            $response = ['status' => 'fail', 'message' => 'Empty payload.'];
+            echo json_encode($response);
+            exit;
+          }
+          $getSupplier = $this->db->where('category', $payload['supplierGet'])->get('w_supplierlist');
+          if($getSupplier){
+            $response = [
+              'status' => 'success',
+              'message' => 'Fetch succesfully',
+              'supplierData' => $getSupplier,
+            ];
+            echo json_encode($response);
+            exit;
+
+          }else{
+            $response = ['status' => 'fail', 'message' => 'Supplier not exist'];
+            echo json_encode($response);
+            exit;
+          }
+        }
+        if ($payload['get'] === 'address') {
+          if(empty($payload['addressget'])){
+            $response = ['status' => 'fail', 'message' => 'Empty payload.'];
+            echo json_encode($response);
+            exit;
+          }
+          $getSupplier = $this->db->where('supplier_name', $payload['addressget'])->getOne('w_supplierlist');
+          if($getSupplier){
+            $getSupplierItem = $this->db->where('supplierID', $getSupplier['supplierID'])->get('w_supplierlist_item');
+            $response = [
+              'status' => 'success',
+              'message' => 'Fetch succesfully',
+              'supplierData' => $getSupplier,
+              'informations' => $getSupplierItem,
+            ];
+            echo json_encode($response);
+            exit;
+
+          }else{
+            $response = ['status' => 'fail', 'message' => 'Supplier not exist'];
+            echo json_encode($response);
+            exit;
+          }
+        }
+        if ($payload['get'] === 'itemData') {
+            if(empty($payload['id'])){
+                $response = ['status' => 'fail', 'message' => 'Empty payload.'];
+                echo json_encode($response);
+                exit;
+            }
+            $getItem = $this->db->where('itemID', $payload['id'])->getOne('w_supplierlist_item');
+            if($getItem){
+              $response = [
+                'status' => 'success',
+                'message' => 'Successfully fetch data.',
+                'itemData' => [
+                  'itemID' => $getItem['itemID'],
+                  'supplierID' => $getItem['supplierID'],
+                  'itemName' => $getItem['itemName'],
+                  'description' => $getItem['description'],
+                  'unit' => $getItem['unit'],
+                  'unit_price' => $getItem['unit_price'],
+                ],
+              ];
+              echo json_encode($response);
+              exit;
+            }else{
+              $response = [
+                'status' => 'fail',
+                'message' => 'Failed fetch data.',
+              ];
+              echo json_encode($response);
+              exit;
+            }
+        }
     }
 
 

@@ -245,393 +245,192 @@ bordered
     </div>
 
     <div class="w-full bg-white p-4 h-[470px] overflow-x-hidden overflow-y-auto">
-     <q-form @submit="sendingForm">
-        <div>
-                <label>Category</label>
-                <q-select
-                  v-model="selectedCategory"
-                  :options="categories"
-                  emit-value
-                  map-options
-                  outlined
-                  dense
-                  class="w-[230px]"
-                  lazy-rules
-                  :rules="SelectionRules"
-                />
-        </div>
-        <p class="text-[24px] font-semibold mb-8">Material Purchase Order</p>
-
-        <div class="flex">
-          <div class="w-1/4">
+      <div class=''>
+          <div>
+            <div>Material Purchase Order</div>
+            <div class='p-2'>Category
+              <div class='w-[200px]'>
+                <q-select dense outlined v-model="categories" :options="options"></q-select>
+              </div>
+            </div>
+            <div class='grid grid-cols-5 gap-1 p-2'>
               <div>
-                <label>MPO Ref. No</label>
-                <q-input dense outlined v-model="mpo_ref" class="w-[230px]" disable lazy-rules :rules="[ val => val && val.length > 0 || 'Please input something']"/>
+                <p>Mpo Ref. No.</p>
+                <q-input disable dense outlined v-model='mpo_ref'/>
               </div>
-
               <div>
-                <label>Date Purchased</label>
-                <q-input dense outlined v-model="date_purchased" type="date" class="w-[230px]" lazy-rules :rules="[ val => val && val.length > 0 || 'Please input something']"/>
+                <p>Date Purchased</p>
+                <q-input type="date" dense outlined required v-model='date_purchased'/>
               </div>
-
               <div>
-                <label>Client Ref. NO.</label>
-                <q-input dense outlined v-model="client_ref" class="w-[230px]"/>
+                <p>Client Ref. No.</p>
+                <q-input type="text" dense outlined v-model='client_ref'/>
               </div>
-
-              <div class="mt-5">
-                <label>W.O Ref. No.</label>
-                <q-input dense outlined v-model="wo_purchased" class="w-[230px]"/>
+              <div>
+                <p>W.O Ref. No.</p>
+                <q-input type="text" dense outlined v-model='wo_ref'/>
               </div>
-
-              <div class="mt-5">
-                <label>Delivery Date</label>
-                <q-input dense outlined v-model="delivery_date_val" type="date" class="w-[230px]" lazy-rules :rules="[ val => val && val.length > 0 || 'Please input something']"/>
+              <div>
+                <p>Delivery Date</p>
+                <q-input type="date" dense outlined required v-model='delivery_date'/>
               </div>
-          </div>
-          <div class="w-3/4">
-            <div class="flex justify-center items-center h-[250px]">
-              <q-img
-                :src="previewLogo || defaultImageLogo()"
-                alt="Description of the image"
-                class="w-[930px] max-h-[250px]"
-              />
             </div>
-
-            <div class="flex items-center gap-2 mt-3">
-              <q-input v-model="uploadedFileName" outlined dense label="Logo" disabled />
-              <q-btn @click="triggerFileInput('logo')" class="text-white bg-[#634832]">Change Photo</q-btn>
-              <input ref="logoInput" type="file" style="display: none" @change="handleFileChange('logo', $event)">
-            </div>
-
-            <div class="mt-5">
-                <label>Company Address</label>
-                <q-input v-model="company_address" dense disable outlined class="w-full" lazy-rules :rules="[ val => val && val.length > 0 || 'Please input something']">
-                  <template v-slot:after>
-                    <q-icon name="edit" class="cursor-pointer" @click="openCompany = true"/>
-                  </template>
-                </q-input>
-            </div>
-          </div>
-        </div>
-        <!-- Deliver Area -->
-        <div>
-          <label>Delivery Address</label>
-          <q-input dense outlined v-model="delivery_add_val"  class="w-full" disable lazy-rules :rules="[ val => val && val.length > 0 || 'Please type something']">
-            <template v-slot:after>
-              <q-icon name="edit" class="cursor-pointer" @click="openDelivery = true"/>
-            </template>
-          </q-input>
-        </div>
-        <!-- Supplier Area -->
-        <label class="text-h6 font-bold">To:</label>
-        <div class="flex">
-          <div class="w-1/4">
-              <label>Supplier</label>
-              <q-select
-                v-model="selectedSupplier"
-                :options="supplier_list"
-                emit-value
-                map-options
-                outlined
-                dense
-                class="w-[230px]"
-                lazy-rules :rules="SelectionRules"
-              />
-          </div>
-          <div class="w-3/4">
-            <label>Supplier Address</label>
-            <q-input dense outlined v-model="supplier_address" disable class="w-full" lazy-rules :rules="[ val => val && val.length > 0 || 'Please input something']"/>
-          </div>
-        </div>
-        <!-- Process -->
-        <label class="text-h6 font-bold">Process:</label>
-        <div class="grid grid-cols-4 gap-5">
-          <div>
-            <label>Segregation</label>
-            <q-input dense outlined v-model="segregation" class="w-[230px]"/>
-          </div>
-          <div>
-            <label>Cleaning</label>
-            <q-input dense outlined v-model="cleaning" class="w-[230px]"/>
-          </div>
-          <div>
-            <label>Drying</label>
-            <q-input dense outlined v-model="drying" class="w-[230px]"/>
-          </div>
-          <div>
-            <label>Weighting</label>
-            <q-input dense outlined v-model="weighting" class="w-[230px]"/>
-          </div>
-        </div>
-        <!-- Add Product -->
-        <div>
-          <div class="q-pa-md">
-            <div class="mb-3 flex items-center justify-end">
-              <q-btn label="Add Product" icon="add" class="bg-[#634832] text-white" @click="addProduct" />
-            </div>
-
-            <q-table
-              dense bordered
-              :rows="datarows"
-              :columns="datacolumns"
-              row-key="name"
-              :pagination="initialPagination"
-              no-data-label="Please provide the necessary data to continue."
-              class="my-sticky-header-table-second"
-            >
-
-            <template v-slot:body="props">
-              <q-tr :props="props">
-                <q-td key="id" :props="props">
-                  {{ props.row.id }}
-                </q-td>
-                <q-td key="sproduct" :props="props">
-                  <template v-if="selectedCategory === 'Raw Materials'">
-                    {{ props.row.sproduct }}
-                    <q-popup-edit v-model="props.row.sproduct" title="Update Product" buttons v-slot="scope">
-                      <q-select
-                        v-model="scope.value"
-                        :options="rawMaterialsOptions"
-                        outlined
-                        dense
-                        autofocus
-                      />
-                    </q-popup-edit>
-                  </template>
-                  <template v-else>
-                    {{ props.row.sproduct }}
-                    <q-popup-edit v-model="props.row.sproduct" title="Update Product" buttons v-slot="scope">
-                      <q-input type="text" v-model="scope.value" dense autofocus />
-                    </q-popup-edit>
-                  </template>
-                </q-td>
-
-                <q-td key="sdescription" :props="props">
-                  {{ props.row.sdescription }}
-                  <q-popup-edit v-model="props.row.sdescription" title="Update Description" buttons v-slot="scope">
-                    <q-input type="text" v-model="scope.value" dense autofocus />
-                  </q-popup-edit>
-                </q-td>
-                <q-td key="squantity" :props="props">
-                  {{ props.row.squantity }}
-                  <q-popup-edit v-model="props.row.squantity" title="Update Quantity" buttons v-slot="scope">
-                    <q-input type="number" v-model="scope.value" dense autofocus />
-                  </q-popup-edit>
-                </q-td>
-                <q-td key="sunit" :props="props">
-                  {{ props.row.sunit }}
-                  <q-popup-edit v-model="props.row.sunit" title="Update Unit" buttons v-slot="scope">
-                    <q-select
-                        v-model="scope.value"
-                        :options="unitOptions"
-                        outlined
-                        dense
-                        autofocus
-                      />
-                  </q-popup-edit>
-                </q-td>
-                <q-td key="sunitprice" :props="props">
-                  {{ props.row.sunitprice }}
-                  <q-popup-edit v-model="props.row.sunitprice" title="Update Unit Price" buttons v-slot="scope">
-                    <q-input type="number" v-model="scope.value" dense autofocus />
-                  </q-popup-edit>
-                </q-td>
-                <q-td key="sdiscount" :props="props">
-                  {{ props.row.sdiscount }}
-                  <q-popup-edit v-model="props.row.sdiscount" title="Update Discount" buttons v-slot="scope">
-                    <q-input type="number" v-model="scope.value" dense autofocus />
-                  </q-popup-edit>
-                </q-td>
-                <q-td key="stotal" :props="props">
-                  ₱ {{ computeTotal(props.row) }}
-                </q-td>
-                <q-td key="sactions" :props="props">
-                  <q-icon name="delete" @click="deleteRow(props.row.id)" class="cursor-pointer p-2 bg-red text-white"/>
-                </q-td>
-              </q-tr>
-            </template>
-            </q-table>
-            <div class="flex items-center mt-6">
-              <div class="w-1/2 -mt-[90px]">
-                <label>Notes & Instruction<span class="text-red-600">*</span></label>
-
-                <q-input
-                  type="textarea"
-                  v-model="notes_instructions"
-                  outlined
-                  :maxlength="120"
-                  class="w-full h-[128px] resize-none"
-                >
-                </q-input>
-                <span class="mt-3 text-sm text-gray-400 flex justify-end">{{ characterCount }}/120 characters</span>
+            <div>
+              To:
+              <div class='flex'>
+                <div class='w-1/3 p-2'>
+                  <p>
+                    Supplier
+                  </p>
+                  <q-select :disable="isInputDisabled" dense outlined v-model="supplierValue" :options='supplierList' />
+                </div>
+                <div class='w-2/3 p-2'>
+                  <p>
+                    Supplier Address
+                  </p>
+                  <q-input disable dense outlined v-model='supplierAddress'/>
+                </div>
               </div>
-              <div class="w-1/2 flex justify-end">
-                <div class="grid grid-cols-2 gap-1 w-[332px] text-[16px] ">
-                  Delivery Charge
-                  <q-input dense outlined v-model="deliver_charge" >
-                    <template v-slot:append>
-                      ₱
-                    </template>
-                  </q-input> <!--base on user input-->
-                  Other Costs
-                  <div clas='flex grid-cols-2 grid'>
-                    <div class='w-1/2'>
-                      <q-select v-model="selectedOptions" :options="addorless" dense outlined />
-                    </div>
-                    <div class='w-1/2'>
-                      <q-input dense outlined v-model="other_cost">
-                        <template v-slot:append>
-                          ₱
-                        </template>
-                      </q-input> <!--base on user input-->
-                    </div>
+            </div>
+            <div class="p-2">
+              <q-table
+              dense
+              :rows='rows'
+              :columns='columns'
+              hide-bottom
+              row-key="id"
+              virtual-scroll
+              v-model:pagination="pagination"
+              :rows-per-page-options="[0]"
+              >
+                <template v-slot:header-cell-actions="props">
+                  <q-th :props="props">
+                    <q-btn icon="add_box" size="1.5em" dense class="bg-orange-500 text-white" @click="addRow"/>
+                  </q-th>
+                </template>
+                <template v-slot:body="props">
+                  <q-tr :props="props">
+                    <q-td key="actions" :props="props">
+                      <q-btn icon='delete' class='bg-red text-white p-2' @click="deleteRow(props.row)"/>
+                    </q-td>
+                    <q-td key="id" :props="props">
+                      {{ props.row.id }}
+                    </q-td>
+                    <q-td key="product" :props="props">
+                      {{ props.row.product.label }}
+                      <q-popup-edit v-model="props.row.product" v-slot="scope">
+                        <q-select v-model="scope.value" autofocus :options='products' dense outlined @keyup.enter="scope.set" />
+                      </q-popup-edit>
+                    </q-td>
+                    <q-td key="description" :props="props">
+                      {{ props.row.description }}
+                    </q-td>
+                    <q-td key="quantity" :props="props">
+                      {{ props.row.quantity }}
+                      <q-popup-edit v-model="props.row.quantity" v-slot="scope">
+                        <q-input v-model="scope.value" autofocus type='number' dense outlined @keyup.enter="scope.set" />
+                      </q-popup-edit>
+                    </q-td>
+                    <q-td key="unit" :props="props">
+                      {{ props.row.unit }}
+                    </q-td>
+                    <q-td key="unit_price" :props="props">
+                      {{ props.row.unit_price }}
+                    </q-td>
+                    <q-td key="total" :props="props">
+                      {{ computeTotal(props.row) }}
+                    </q-td>
+                  </q-tr>
+                </template>
+              </q-table>
+              <div class='items-end justify-end flex mt-3'>
+                <div class='grid grid-cols-2 gap-1'>
+                  <div>
+                    Sub Total
+                  </div>
+                  <div>
+                    ₱ {{ subtotal }}
                   </div>
 
-                  Sub total
-                  <q-input dense outlined v-model="total_in_table" disable>
-                    <template v-slot:append>
-                      ₱
-                    </template>
-                  </q-input>
-                  Discount
-                  <q-input dense outlined v-model="discount">
-                    <template v-slot:append>
-                      ₱
-                    </template>
-                  </q-input> <!--substraction automatic 10%-->
-                  Vat
-                  <q-input dense outlined v-model="vat" >
-                    <template v-slot:append>
-                      ₱
-                    </template>
-                  </q-input><!--substraction automatic 12%-->
+                  <div>
+                    Delivery Charge
+                  </div>
+                  <div>
+                    <q-input v-model='delivery_charge' type='number' dense outlined/>
+                  </div>
 
-                  Total Amount
-                  <q-input dense outlined v-model="total_amount" disable/>
+                  <div>
+                    Other Cost
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <q-select v-model="other_cost_operator" dense outlined :options="otherCostOptions" class='w-[80px]'/>
+                    <q-input v-model='other_cost' type='number' dense outlined/>
+                  </div>
+
+                  <div>
+                    Discount (%)
+                  </div>
+                  <div class='flex items-center gap-2'>
+                    <q-input v-model='discount' type='number' dense outlined class='w-[80px]'/>
+                    <p>₱ {{ discount_value.toFixed(2) }}</p>
+                  </div>
+
+                  <div>
+                    Tax/Vat (%)
+                  </div>
+                  <div class='flex items-center gap-2'>
+                    <q-input v-model='tax_vat' type='number' dense outlined class='w-[80px]'/>
+                    <p>₱ {{ tax_vat_value.toFixed(2) }}</p>
+                  </div>
+
+                  <div>
+                    Total
+                  </div>
+                  <div>
+                    ₱ {{ total }}
+                  </div>
                 </div>
               </div>
-            </div>
-
-            <div class="flex gap-2">
-              <div>
-                <label>Upload E-signature</label>
-                <div class="flex items-center gap-2 mt-3 ">
-                  <q-input v-model="uploadPreparedName" outlined dense label="Prepared By" disable />
-                  <q-btn @click="triggerFileInput('prepared')" class="text-white bg-[#634832]">Change Photo</q-btn>
-                  <input ref="preparedInput" type="file" style="display: none" @change="handleFileChange('prepared', $event)">
+              <div class='mt-3'>
+                <div>
+                  Notes & Instructions
                 </div>
-                <label class="mt-3">Prepared By:</label>
-                <q-input v-model="prepared_name" dense outlined lazy-rules :rules="[ val => val && val.length > 0 || 'Please input something']"/>
-              </div>
-              <div>
-                <label>Upload E-signature</label>
-                <div class="flex items-center gap-2 mt-3">
-                  <q-input v-model="uploadApproveName" outlined dense label="Approved By" disable />
-                  <q-btn @click="triggerFileInput('approve')" class="text-white bg-[#634832]">Change Photo</q-btn>
-                  <input ref="approveInput" type="file" style="display: none" @change="handleFileChange('approve', $event)">
-                </div>
-                <label class="mt-3">Approved By:</label>
-                <q-input v-model="approvedby_name" dense outlined lazy-rules :rules="[ val => val && val.length > 0 || 'Please input something']"/>
+                <q-input
+                  outlined
+                  class='w-[470px]'
+                  type="textarea"
+                  required
+                  v-model='notes_instructions'
+                />
               </div>
             </div>
           </div>
-        </div>
+          <div class='flex justify-end items-end gap-2 p-2'>
+            <q-btn label="Reset" class="q-mt-md" @click='ResetData'/>
+            <q-btn label="Submit" class="q-mt-md bg-[#634832] text-white" @click='submitDialog'/>
+          </div>
+          <q-dialog
+            v-model="medium"
+          >
+            <q-card style="width: 500px; max-width: 80vw;">
+              <q-card-section>
+                <div class="text-h6">Do you wish to continue?</div>
+              </q-card-section>
 
-        <div class="justify-end flex mt-3 gap-3 ">
-              <q-btn label="Save" type="submit" class="bg-[#634832] rounded-md text-white"/>
-        </div>
-      </q-form>
+              <q-card-section class="q-pt-none">
+                It seems you want to send the form. You can double-check it by clicking "Cancel," or if you're ready to send it now, click "Submit."
+              </q-card-section>
+
+              <q-card-actions align="right" class="bg-white">
+                <q-btn flat label="Cancel" v-close-popup />
+                <q-btn flat label="Submit" v-close-popup class='text-teal' @click='handleSubmit'/>
+              </q-card-actions>
+            </q-card>
+          </q-dialog>
+      </div>
     </div>
   </div>
 
-<!-- MODAL COMPANY ADDRESS -->
-<q-dialog
-  v-model="openCompany"
->
-  <q-card style="width: 700px;">
-    <q-card-section class="row items-center q-pb-none">
-          <div class="flex items-center gap-2">
-            <q-icon name="apartment" class="text-[18px] p-2"/>
-            <div class="text-h6">
-            Company Address
-            </div>
-          </div>
-          <q-space />
-          <q-btn icon="close" flat round dense v-close-popup />
-    </q-card-section>
-
-    <q-card-section class="q-pt-none">
-      <div class="grid grid-cols-2 gap-4">
-        <div>
-          <label>Region<span class="text-red-600">*</span></label>
-          <q-select v-model="selectedRegion" :options="regionOptions" label="Region" @input="onRegionChange" dense outlined class='flex-wrap' />
-        </div>
-        <div>
-          <label>Province<span class="text-red-600">*</span></label>
-          <q-select v-model="selectedProvince" :options="provinceOptions" label="Province" dense outlined :disable="!selectedRegion" class='flex-wrap'/>
-        </div>
-        <div>
-          <label>City<span class="text-red-600">*</span></label>
-          <q-select v-model="selectedCity" :options="cityOptions" label="City" dense outlined :disable="!selectedProvince" class='flex-wrap'/>
-        </div>
-        <div>
-          <label>Barangay<span class="text-red-600">*</span></label>
-          <q-select v-model="selectedBarangay" :options="barangayOptions" label="Barangay" dense outlined :disable="!selectedCity" />
-        </div>
-      </div>
-    </q-card-section>
-
-    <q-card-actions align="right" class="bg-white text-teal">
-      <q-btn flat label="Save" v-close-popup />
-    </q-card-actions>
-  </q-card>
-</q-dialog>
-<!-- End of Company Address -->
-
-<!-- MODAL DELIVERY ADDRESS -->
-<q-dialog
-  v-model="openDelivery"
->
-  <q-card style="width: 700px;">
-    <q-card-section class="row items-center q-pb-none">
-          <div class="flex items-center gap-2">
-            <q-icon name="apartment" class="text-[18px] p-2"/>
-            <div class="text-h6">
-            Delivery Address
-            </div>
-          </div>
-          <q-space />
-          <q-btn icon="close" flat round dense v-close-popup />
-    </q-card-section>
-
-    <q-card-section class="q-pt-none">
-      <div class="grid grid-cols-2 gap-4">
-        <div>
-          <label>Region<span class="text-red-600">*</span></label>
-          <q-select v-model="RegionDeliverySelected" :options="regionOptions" label="Region" @input="onUserRegionSelect" dense outlined class='flex-wrap' />
-        </div>
-        <div>
-          <label>Province<span class="text-red-600">*</span></label>
-          <q-select v-model="ProvinceDeliverySelected" :options="provinceOptions" label="Province" dense outlined :disable="!RegionDeliverySelected" class='flex-wrap'/>
-        </div>
-        <div>
-          <label>City<span class="text-red-600">*</span></label>
-          <q-select v-model="CityDeliverySelected" :options="cityOptions" label="City" dense outlined :disable="!ProvinceDeliverySelected" class='flex-wrap'/>
-        </div>
-        <div>
-          <label>Barangay<span class="text-red-600">*</span></label>
-          <q-select v-model="BaranggayDeliverySelected" :options="barangayOptions" label="Barangay" dense outlined :disable="!CityDeliverySelected" />
-        </div>
-      </div>
-    </q-card-section>
-
-    <q-card-actions align="right" class="bg-white text-teal">
-      <q-btn flat label="Save" v-close-popup />
-    </q-card-actions>
-  </q-card>
-</q-dialog>
-<!-- End of Delivery Address -->
 <q-dialog v-model="OpenLogout">
   <q-card class="w-[500px]">
     <q-card-section class="gap-3 items-center q-pb-none flex">
@@ -666,13 +465,8 @@ bordered
 </template>
 
 <script>
-
 import { SessionStorage } from 'quasar';
 import axios from 'axios';
-
-import jsPDF from 'jspdf';
-import html2canvas from 'html2canvas';
-import philippineData from '../../../../javascript/philippine_provinces_cities_municipalities_and_barangays_2019v2.json';
 
 export default {
   data() {
@@ -697,522 +491,230 @@ export default {
       productionVisible: false,
       OpenLogout: false,
       // Additional Data
-      columns : [
-        { name: 'mpo_number', align: 'left', label: 'MPO No.', field: 'mpo_number', sortable: true },
-        { name: 'supplier', align: 'left', label: 'Supplier', field: 'supplier', sortable: true },
-        { name: 'product', align: 'left', label: 'Product', field: 'product', sortable: true },
-        { name: 'date_purchase', align: 'left', label: 'Date Purchase', field: 'date_purchase', sortable: true },
-        { name: 'qty', align: 'left', label: 'Qty', field: 'qty', sortable: true },
-        { name: 'qty_recieved', align: 'left', label: 'Qty Recieved', field: 'qty_recieved', sortable: true },
-        { name: 'amount', align: 'left', label: 'Amount', field: 'amount', sortable: true },
-        { name: 'status', align: 'left', label: 'Status', field: 'status', sortable: true },
-        { name: 'actions', align: 'left', label: 'Actions', field: 'actions', sortable: true },
+
+           columns: [
+        { name: 'actions', label: '', field: 'actions'},
+        { name: 'id', label: 'ID', field: 'id', sortable: true },
+        { name: 'product', label: 'Product', field: 'product', sortable: true },
+        { name: 'description', label: 'Description', field: 'description', sortable: true },
+        { name: 'quantity', label: 'Quantity', field: 'quantity', sortable: true },
+        { name: 'unit', label: 'Unit', field: 'unit', sortable: true },
+        { name: 'unit_price', label: 'Unit Price', field: 'unit_price', sortable: true },
+        { name: 'total', label: 'Total', field: 'total', sortable: true },
       ],
       rows: [],
-      selected: [],
-
-      // First Process Data
-      company_address: '',
+      categories: '',
+      options: [],
+      isInputDisabled: true,
+      supplierValue: '',
+      supplierList: [],
+      supplierAddress: '',
       mpo_ref: '',
       date_purchased: '',
-      selectedCategory: '',
-      categories: [],
       client_ref: '',
-      wo_purchased: '',
-      delivery_date_val: '',
-      delivery_add_val: '',
-
-      selectedSupplier: '',
-      supplier_list: [],
-      supplier_address: '',
-
-      segregation: '',
-      cleaning: '',
-      drying: '',
-      weighting: '',
-
-      // Second Process Data
-      datacolumns: [
-        { name: 'id', align: 'left', label: '#', field: 'id', sortable: true },
-        { name: 'sproduct', align: 'left', label: 'Product', field: 'sproduct', sortable: true },
-        { name: 'sdescription', align: 'left', label: 'Description', field: 'sdescription', sortable: true },
-        { name: 'squantity', align: 'left', label: 'Quantity', field: 'squantity', sortable: true },
-        { name: 'sunit', align: 'left', label: 'Unit', field: 'sunit', sortable: true },
-        { name: 'sunitprice', align: 'left', label: 'Unit Price', field: 'sunitprice', sortable: true },
-        { name: 'stotal', align: 'left', label: 'Sub Total', field: 'stotal', sortable: true },
-        { name: 'sactions', align: 'left', label: 'Actions', field: 'sactions', sortable: true },
-      ],
-      datarows: [],
-      initialPagination: {
-        page: 1,
-        rowsPerPage: 5
-      },
-      deliver_charge: 0,
-      discount: 0,
-      vat: 0,
-      other_cost: 0,
-      total_amount: 0,
-      total_in_table: 0,
-      // THIRD PROCESS
+      wo_ref: '',
+      delivery_date: '',
       notes_instructions: '',
-      characterCount: 0,
-      approvedby_name: '',
-      prepared_name: '',
-
-
-      pdfData: '',
-      MpoIDValue: '',
-      rawMaterialsOptions: [
-        'JK Fiber', 'M1 Fiber', 'S2 Fiber', 'S3 Fiber', 'G Fiber'
+      products: [],
+      pagination: {
+        rowsPerPage: 0
+      },
+      delivery_charge: 0,
+      other_cost: 0,
+      discount: 0,
+      discount_value: 0,
+      tax_vat: 0,
+      tax_vat_value: 0,
+      total: 0,
+      otherCostOptions: [
+        { label: 'Add', value: 'Add' },
+        { label: 'Less', value: 'Less' }
       ],
-      unitOptions: [
-        'Kilogram','Liter','Box','Rim','Rolls','Drum','Bundles','Bag','CBY','Sacks'
-      ],
-      // philippineData json
-      philippineData: philippineData,
-      // DIALOG PROPERTIES
-      openCompany: false,
-      openDelivery: false,
-      // Picture Properties
-      uploadedFileName: null,
-      uploadPreparedName: null,
-      uploadApproveName: null,
-      previewLogo: null,
-      e_signatureP: null,
-      e_signatureA: null,
-      uploadPhoto: null,
-
-      // Location Data
-      selectedRegion: null,
-      selectedProvince: null,
-      selectedCity: null,
-      selectedBarangay: null,
-      regionOptions: [],
-      provinceOptions: [],
-      cityOptions: [],
-      barangayOptions: [],
-      RegionDeliverySelected: null,
-      ProvinceDeliverySelected: null,
-      CityDeliverySelected: null,
-      BaranggayDeliverySelected: null,
-
-      //
-      addorless: ['add', 'less'],
-      selectedOptions: 'less',
+      other_cost_operator: 'Add',
+      medium: false,
     };
   },
   mounted() {
-    this.regionOptions = Object.keys(this.philippineData)
-    .map(regionCode => ({
-      label: /^(0[1-9]|1[0-3]|[4][A-B]|[1-3]?[0-9])$/.test(regionCode) ? `Region ${regionCode}` : regionCode,
-      value: regionCode
-    }))
-    .sort((a, b) => a.label.localeCompare(b.label));
     this.loadUserData();
     this.fetchMPOdata();
     this.statusCheckTimer = setInterval(() => {
       this.checkUserStatus();
     }, 20 * 1000); // 1 second (in milliseconds)
     this.fetchCategoryData();
-    this.fetchSupplierData();
-    this.datarows.push(
-    {
-      id: 1,
-      sproduct: '',
-      sdescription: '',
-      squantity: '',
-      sunit: '',
-      sunitprice: '',
-      sdiscount: '',
-      stotal: '',
-    });
   },
   watch: {
-    datarows: {
-      handler: function(newRows, oldRows) {
-        this.updateTotalAmount();
-      },
-      deep: true // This ensures that changes to nested properties in datarows are detected
-    },
-    deliver_charge: 'updateTotalAmount',
-    discount: 'updateTotalAmount',
-    vat: 'updateTotalAmount',
-    other_cost: 'updateTotalAmount',
-
-    notes_instructions(newValue) {
-      this.characterCount = newValue.length;
-    },
-    selectedCategory: {
-      immediate: true // to call it on component mount
-    },
-    selectedSupplier(newValue) {
-      if (newValue) {
-        this.fetchSupplierAddress(newValue);
-      }
-    },
-    selectedRegion: function(newValue, oldValue) {
-      if (newValue !== oldValue) {
-        this.onRegionChange();
-      }
-    },
-    selectedProvince: function(newValue, oldValue) {
-      if (newValue !== oldValue) {
-        this.onProvinceChange();
-      }
-    },
-    selectedCity: function(newValue, oldValue) {
-      if (newValue !== oldValue) {
-        this.onCityChange();
-      }
-    },
-    selectedBarangay: function(newValue, oldValue) {
-      if (newValue !== oldValue) {
-        this.onBaranggayChange();
-      }
-    },
-
-    RegionDeliverySelected: function(newValue, oldValue) {
-      if (newValue !== oldValue) {
-        this.onUserRegionSelect();
-      }
-    },
-    ProvinceDeliverySelected: function(newValue, oldValue) {
-      if (newValue !== oldValue) {
-        this.onUserProvinceSelect();
-      }
-    },
-    CityDeliverySelected: function(newValue, oldValue) {
-      if (newValue !== oldValue) {
-        this.onUserCitySelect();
-      }
-    },
-    BaranggayDeliverySelected: function(newValue, oldValue) {
-      if (newValue !== oldValue) {
-        this.onUserBarangaySelect();
-      }
-    },
+    delivery_charge: 'calculateTotal',
+    other_cost: 'calculateTotal',
+    discount: 'calculateTotal',
+    tax_vat: 'calculateTotal',
+    other_cost_operator: 'calculateTotal',
     date_purchased(newValue, oldValue) {
       if (newValue !== oldValue) {
         this.fetchMPOdata();
       }
-    }
-  },
-  computed: {
-    SelectionRules() {
-      return [
-        (val) => !!val || 'Please select a category'
-      ];
     },
+    categories(newVal) {
+      // Check if a category is selected
+      this.isInputDisabled = newVal ? false : true;
+      this.rows = [];
+      axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/Supplier_Database/supplier.php?get=supplierGet&supplierGet=${this.categories.label}`)
+      .then(response => {
+        const message = response.data.status;
+        if(message === 'success'){
+          this.supplierList = response.data.supplierData.map(category => ({
+            value: category.supplier_name,
+            label: category.supplier_name
+          }));
+          this.rows = [];
+        }
+        if(message === 'fail'){
+          this.supplierAddress = '';
+          this.supplierValue = '';
+          this.supplierList = [];
+          this.isInputDisabled = true;
+          this.rows = [];
+        }
+      })
+      .catch(error => {
+        // Handle any errors that occur during the HTTP request
+        console.error('Error fetching data:', error.message);
+      });
+    },
+    supplierValue() {
+      // console.log(this.supplierValue.label);
+      axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/Supplier_Database/supplier.php?get=address&addressget=${this.supplierValue.label}`)
+      .then(response => {
+        // console.log(response.data);
+        const newData = response.data.supplierData;
+        this.supplierAddress = newData.address;
+        this.products = response.data.informations.map(category => ({
+          label: category.itemName,
+          value: category.itemID
+        }));
+        // console.log(this.products);
+        this.rows = [];
+      })
+      .catch(error => {
+        // Handle any errors that occur during the HTTP request
+        console.error('Error fetching data:', error.message);
+      });
+    },
+    rows: {
+      deep: true,
+      handler(newRows, oldRows) {
+        newRows.forEach(row => {
+            const selectedProduct = row.product.value; // Get the selected product from row
+            axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/Supplier_Database/supplier.php?get=itemData&id=${selectedProduct}`)
+              .then((response) => {
+                const data = response.data.itemData;
+
+                row.description = data.description;
+                // console.log(data)
+                row.unit = data.unit;
+                row.unit_price = data.unit_price;
+              }).catch(error => {
+                console.error('Error fetching data:', error);
+              });
+        });
+      }
+    },
+  },
+
+
+
+  computed: {
+    subtotal() {
+      return this.rows.reduce((acc, row) => acc + this.computeTotal(row), 0);
+    }
   },
   beforeUnmount() {
     clearInterval(this.statusCheckTimer);
   },
   methods: {
-    generatePDF() {
-      const pdf = new jsPDF();
-      const content = document.getElementById('content');
-
-      // Use html2canvas to render HTML to canvas
-      html2canvas(content).then(canvas => {
-        // Convert canvas to base64 image data
-        const imgData = canvas.toDataURL('image/jpeg');
-
-        const pageWidth = 210; // A4 width in mm
-        const pageHeight = 297; // A4 height in mm
-
-        const imgWidth = pageWidth;
-        const imgHeight = (canvas.height * pageWidth) / canvas.width;
-
-
-        let position = 0;
-        if (imgHeight > pageHeight) {
-
-          pdf.addPage();
-          position = -pageHeight;
-
-          pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
-        } else {
-          pdf.addImage(imgData, 'JPEG', 0, 0, imgWidth, imgHeight);
-        }
-
-        while (position + pageHeight < imgHeight) {
-          position += pageHeight;
-          pdf.addPage();
-          pdf.addImage(imgData, 'JPEG', 0, -position, imgWidth, imgHeight);
-        }
-
-        // Save PDF
-        pdf.save('document.pdf');
-        // this.pdfData = pdf.output('blob');
-        // console.log("PDF Data",this.pdfData);
-      });
+    submitDialog(){
+      this.medium = true;
     },
-    sendingForm() {
-      const formData = new FormData();
-
-      formData.append('personnel_Email', this.email);
-      formData.append('company_address', this.company_address);
-      formData.append('uploadPhoto', this.uploadPhoto);
-      formData.append('mpo_ref', this.MpoIDValue);
-      formData.append('date_purchased', this.date_purchased);
-      formData.append('selectedCategory', this.selectedCategory);
-      formData.append('client_ref', this.client_ref);
-      formData.append('wo_purchased', this.wo_purchased);
-      formData.append('delivery_date_val', this.delivery_date_val);
-      formData.append('delivery_add_val', this.delivery_add_val);
-      formData.append('selectedSupplier', this.selectedSupplier);
-      formData.append('supplier_address', this.supplier_address);
-      formData.append('segregation', this.segregation);
-      formData.append('cleaning', this.cleaning);
-      formData.append('drying', this.drying);
-      formData.append('weighting', this.weighting);
-      formData.append('deliver_charge', this.deliver_charge);
-      formData.append('discount', this.discount);
-      formData.append('vat', this.vat);
-      formData.append('other_cost', this.other_cost);
-      formData.append('total_amount', this.total_amount);
-      formData.append('total_in_table', this.total_in_table);
-      formData.append('notes_instructions', this.notes_instructions);
-      formData.append('prepareSig', this.prepared_name);
-      formData.append('approveSig', this.approvedby_name);
-      formData.append('uploadPreparedName', this.e_signatureP);
-      formData.append('uploadApproveName', this.e_signatureA);
-
-      this.datarows.forEach(row => {
-          const productData = {
-              sproduct: row.sproduct,
-              sdescription: row.sdescription,
-              squantity: row.squantity,
-              sunit: row.sunit,
-              sunitprice: row.sunitprice,
-              sdiscount: row.sdiscount,
-              stotal: row.stotal,
-          };
-          console.log('Product Data:', productData);
-          formData.append('products[]', JSON.stringify(productData));
-      });
-
-
-      console.log(formData);
-
-      axios.post('http://localhost/Capstone-Project/backend/api/Inventory_Database/MPO_Queries/mpo_data.php/', formData)
-        .then(response => {
-          console.log(response.data);
-          const Status = response.data.status;
-          const Message = response.data.message;
-          if (Status === "success") {
-            this.$q.notify({
-              message: `MPO ${this.MpoIDValue} save successfully!`,
-              color: 'green',
-              type: 'positive',
-            });
-            this.handleCancel();
-          }
-          if (Status === "fail") {
-            this.$q.notify({
-              color: 'negative',
-              message: `${Message} Please try again.`,
-            });
-            this.handleCancel();
-          }
-        }).catch(error => {
-          console.error('Error fetching data:', error.message);
-        });
-    },
-
-    // Image Upload Properties
-    triggerFileInput(type) {
-      this.$refs[`${type}Input`].click();
-    },
-    handleFileChange(type, event) {
-      const file = event.target.files[0];
-      if (file) {
-        // Convert file to URL if it's for logo
-        if (type === 'logo') {
-          this.previewLogo = URL.createObjectURL(file);
-        }
-
-        // Save the uploaded file reference based on type
-        switch (type) {
-          case 'logo':
-            this.uploadPhoto = file;
-            this.uploadedFileName = file.name;
-            break;
-          case 'prepared':
-            this.e_signatureP = file;
-            this.uploadPreparedName = file.name;
-            break;
-          case 'approve':
-            this.e_signatureA = file;
-            this.uploadApproveName = file.name;
-            break;
-        }
-
-        console.log("Uploaded file:", file);
-      }
-    },
-
-
-
-    defaultImageLogo(){
-      return `/default_logo.png`;
-    },
-    defaultImage(){
-      return `/default.png`;
-    },
-    // COMPUTATION DATA ! IF WORKING DO NOT GALAW GALAW THIS AREA
-    updateTotalAmount() {
-      // Calculate total amount from table
-      const totalFromTable = this.datarows.reduce((acc, row) => {
-        const quantity = parseFloat(row.squantity) || 0;
-        const unitPrice = parseFloat(row.sunitprice) || 0;
-        return acc + (quantity * unitPrice);
-      }, 0);
-
-      // Update total amount in table
-      this.total_in_table = totalFromTable;
-
-      // Parse and calculate additional costs and charges
-      const deliveryCharge = this.deliver_charge ? parseFloat(this.deliver_charge) : 0;
-      const otherCost = this.other_cost ? parseFloat(this.other_cost) : 0;
-      const discountPercentage = this.discount ? parseFloat(this.discount) : 0;
-      const vatPercentage = this.vat ? parseFloat(this.vat) : 0;
-      const vatDecimal = vatPercentage / 100;
-
-      // Calculate total amount including delivery charge and other costs
-      let total;
-      // Adjust total based on selectedOptions using if-else
-      if (this.selectedOptions === 'add') {
-        total = totalFromTable + deliveryCharge + otherCost;
-      } else {
-        total = totalFromTable + deliveryCharge - otherCost;
-      }
-
-      // Apply discount
-      const discountDecimal = discountPercentage / 100;
-      total -= totalFromTable * discountDecimal;
-
-      // Calculate VAT
-      const vatAmount = total * vatDecimal;
-
-      // Calculate final total amount including VAT
-      this.total_amount = total + vatAmount;
-      console.log(this.total_amount);
-    },
-
-    addProduct() {
-      let maxId = 0;
-      this.datarows.forEach(row => {
-        if (row.id > maxId) {
-          maxId = row.id;
-        }
-      });
-      const newId = maxId + 1;
-      this.datarows.push({
-        id: newId,
-        sproduct: '',
-        sdescription: '',
-        squantity: '',
-        sunit: '',
-        sunitprice: '',
-        stotal: '',
-      });
-    },
-    deleteRow(id) {
-      this.datarows = this.datarows.filter(row => row.id !== id);
-    },
-    computeTotal(row) {
-      const quantity = parseFloat(row.squantity);
-      const unitPrice = parseFloat(row.sunitprice);
-      const discount = parseFloat(row.sdiscount);
-
-      let total = quantity * unitPrice;
-      if (!isNaN(discount) && discount >= 0) {
-        const discountDecimal = discount / 100;
-        const discountAmount = total * discountDecimal;
-        total -= discountAmount;
-      }
-
-      row.stotal = isNaN(total) ? 0 : total;
-
-      return row.stotal;
-    },
-    handleCancel(){
-      this.personnel_Email = '';
-      this.company_address = '';
-      this.uploadPhoto = '';
+    ResetData(){
+      this.categories = '';
+      this.supplierValue = '';
       this.mpo_ref = '';
       this.date_purchased = '';
-      this.selectedCategory = '';
       this.client_ref = '';
-      this.wo_purchased = '';
-      this.delivery_date_val = '';
-      this.delivery_add_val = '';
-      this.selectedSupplier = '';
-      this.supplier_address = '';
-      this.segregation = '';
-      this.cleaning = '';
-      this.drying = '';
-      this.weighting = '';
-      this.deliver_charge = '';
-      this.discount = '';
-      this.vat = '';
-      this.other_cost = '';
-      this.total_amount = '';
-      this.total_in_table = '';
+      this.wo_ref = '';
+      this.delivery_date = '';
       this.notes_instructions = '';
-      this.prepareSig = '';
-      this.approvedby_name = '';
-      this.e_signatureP = '';
-      this.e_signatureA = '';
-      this.datarows = [];
+      this.rows = [];
     },
-    fetchCategoryData(){
-      axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/MPO_Queries/mpo_data.php?get=category`)
-      .then(response => {
-          this.categories = response.data.categoryData.map(category => ({
-            value: category.title,
-            label: category.title
-          }));
-      })
-      .catch(error => {
-        // Handle any errors that occur during the HTTP request
-        console.error('Error fetching data:', error.message);
-      });
-    },
-
-    fetchSupplierData(){
-      axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/MPO_Queries/mpo_data.php?get=supplier`)
-      .then(response => {
-          this.supplier_list = response.data.categoryData.map(supplier => ({
-            value: supplier.supplier_name,
-            label: supplier.supplier_name
-          }));
-      })
-      .catch(error => {
-        // Handle any errors that occur during the HTTP request
-        console.error('Error fetching data:', error.message);
-      });
-    },
-    fetchSupplierAddress(supplierName) {
-      console.log(supplierName);
-      const formData = {
-        supplier: supplierName,
-      };
-      axios
-        .post(
-          `http://localhost/Capstone-Project/backend/api/Inventory_Database/MPO_Queries/supplier_address.php/`, formData
-        )
-        .then(response => {
-          console.log(response.data.address);
-          this.supplier_address = response.data.address;
-        })
-        .catch(error => {
-          console.error("Error fetching supplier address:", error.message);
+    handleSubmit() {
+      if (!this.date_purchased || !this.delivery_date || !this.notes_instructions) {
+        // Notify the user if any of the required fields are empty
+        this.$q.notify({
+          color: 'negative',
+          message: 'Please fill in all required fields (Date Purchased, Delivery Date, Notes & Instructions).',
         });
+        return; // Stop further execution
+      }
+      const formData = new FormData();
+      // Append form data to the FormData object
+      formData.append('categories', this.categories.label);
+      formData.append('supplierValue', this.supplierValue.label);
+      formData.append('supplierAddress', this.supplierAddress);
+      formData.append('mpo_ref', this.mpo_ref);
+      formData.append('date_purchased', this.date_purchased);
+      formData.append('client_ref', this.client_ref);
+      formData.append('wo_ref', this.wo_ref);
+      formData.append('delivery_date', this.delivery_date);
+      formData.append('notes_instructions', this.notes_instructions);
+      formData.append('total', this.total);
+      const subtotal = this.rows.reduce((acc, row) => acc + this.computeTotal(row), 0);
+      formData.append('subtotal', subtotal);
+      formData.append('delivery_charge', this.delivery_charge);
+      formData.append('other_cost', this.other_cost);
+      formData.append('discount_value', this.discount);
+      formData.append('tax_vat', this.tax_vat);
+      formData.append('tax_vat_value', this.tax_vat_value);
+
+      this.rows.forEach(row => {
+        const total = row.quantity * row.unit_price;
+        const productData = {
+            product: row.product.label,
+            description: row.description,
+            quantity: row.quantity,
+            unit: row.unit,
+            unit_price: row.unit_price,
+            total: total,
+        };
+        console.log('Product Data:', productData);
+        formData.append('products[]', JSON.stringify(productData));
+    });
+
+      axios.post('http://localhost/Capstone-Project/backend/api/Inventory_Database/MPO_Queries/mpo_data.php/', formData)
+      .then(response => {
+        console.log(response.data);
+        // const Status = response.data.status;
+        // const Message = response.data.message;
+        // if (Status === "success") {
+        //   this.$q.notify({
+        //     message: `MPO ${this.MpoIDValue} save successfully!`,
+        //     color: 'green',
+        //     type: 'positive',
+        //   });
+        //   this.handleCancel();
+        // }
+        // if (Status === "fail") {
+        //   this.$q.notify({
+        //     color: 'negative',
+        //     message: `${Message} Please try again.`,
+        //   });
+        //   this.handleCancel();
+        // }
+      }).catch(error => {
+        console.error('Error fetching data:', error.message);
+      });
     },
-    refreshData(){
-      this.fetchMPOdata();
+    deleteRow(rowIndex) {
+      // Remove the row at the given index from the rows array
+      this.rows.splice(rowIndex, 1);
     },
     fetchMPOdata(){
       axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/MPO_Queries/mpo_data.php?get=mpo`)
@@ -1221,11 +723,13 @@ export default {
         if (nextMPOID === undefined) {
             nextMPOID = 1;
         }
+        console.log(response.data);
+        const startingNo = response.data.nextMPOStartingNo[0];
         // const currentDate = new Date();
         // const year = currentDate.getFullYear();
         // const month = ('0' + (currentDate.getMonth() + 1)).slice(-2);
         // const day = ('0' + currentDate.getDate()).slice(-2);
-        const mpo_ref = `WEMA-MPO-${this.date_purchased}-${nextMPOID}`;
+        const mpo_ref = `WEMA${startingNo.maxStartingNo}-MPO-${this.date_purchased}-${nextMPOID}`;
         this.MpoIDValue = nextMPOID;
         this.mpo_ref = mpo_ref;
       })
@@ -1234,135 +738,55 @@ export default {
         console.error('Error fetching data:', error.message);
       });
     },
+    calculateTotal() {
+      let total = this.subtotal + parseFloat(this.delivery_charge);
+      const operator = this.other_cost_operator;
+      if (operator === 'Add') {
+        total += parseFloat(this.other_cost);
+      } else if (operator === 'Less') {
+        total -= parseFloat(this.other_cost);
+      }
+      const discountDecimal = parseFloat(this.discount) / 100;
+      total -= this.subtotal * discountDecimal;
+      this.discount_value = this.subtotal * discountDecimal;
+      const tax_vat = parseFloat(this.tax_vat) / 100;
+      const vatAmount = total * tax_vat;
+      this.tax_vat_value = this.subtotal * tax_vat;
 
-    onRegionChange() {
-    //   console.log(this.selectedRegion.value);
-    //   console.log(philippineData[this.selectedRegion.value]);
-    //  // Access the province list for the selected region
-      this.selectedProvince = null;
-      this.selectedCity = null;
-      this.selectedBarangay = null;
-      const regionData = this.philippineData[this.selectedRegion.value].province_list;
-
-      // Map the province names to options format
-      this.provinceOptions = Object.keys(regionData).map(provinceName => ({
-        label: provinceName,
-        value: provinceName
-      }));
-      this.updateSuppAddress();
+      this.total = total + vatAmount;
     },
-    onProvinceChange() {
-      // Check if selectedProvince is not null before accessing its value
-      if (this.selectedProvince !== null) {
-        this.selectedCity = null;
-        this.selectedBarangay = null;
-        const selectedProvinceData = this.philippineData[this.selectedRegion.value].province_list[this.selectedProvince.value];
-        if (selectedProvinceData) {
-          const municipalityData = selectedProvinceData.municipality_list;
-          console.log(municipalityData);
-
-          this.cityOptions = Object.keys(municipalityData).map(municipalityName => ({
-            label: municipalityName,
-            value: municipalityName
+    computeTotal(row) {
+      // Calculate total by multiplying quantity and unit_price
+      return row.quantity * row.unit_price;
+    },
+    addRow() {
+      if (this.supplierValue === '') {
+        return;
+      }
+      const newRow = {
+        id: this.rows.length + 1,
+        product: '',
+        description: '',
+        quantity: '',
+        unit: '',
+        unit_price: '',
+        total: '',
+      };
+      this.rows.push(newRow);
+    },
+    fetchCategoryData(){
+      axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/MPO_Queries/mpo_data.php?get=category`)
+      .then(response => {
+        console.log(response.data);
+          this.options = response.data.categoryData.map(category => ({
+            value: category.title,
+            label: category.title
           }));
-          this.updateSuppAddress();
-        }
-      }
-    },
-    onCityChange() {
-      if (this.selectedCity !== null) {
-        this.selectedBarangay = null;
-        const selectedMunicipalityData = this.philippineData[this.selectedRegion.value].province_list[this.selectedProvince.value].municipality_list[this.selectedCity.value];
-        if (selectedMunicipalityData) {
-          const barangayList = selectedMunicipalityData.barangay_list;
-          console.log(barangayList);
-
-          this.barangayOptions = barangayList.map(barangayName => ({
-            label: barangayName,
-            value: barangayName
-          }));
-          this.updateSuppAddress();
-        }
-      }
-    },
-    onBaranggayChange() {
-      if (this.selectedBarangay !== null) {
-        this.updateSuppAddress();
-      }
-    },
-    updateSuppAddress() {
-
-      let address = '';
-      if (this.selectedRegion) address += `${this.selectedRegion.label}, `;
-      if (this.selectedProvince) address += `${this.selectedProvince.label}, `;
-      if (this.selectedCity) address += `${this.selectedCity.label}, `;
-      if (this.selectedBarangay) address += `${this.selectedBarangay.label}`;
-      this.company_address = address;
-    },
-
-    onUserRegionSelect() {
-  //   console.log(this.RegionDeliverySelected.value);
-  //   console.log(philippineData[this.RegionDeliverySelected.value]);
-  //  // Access the province list for the selected region
-    this.ProvinceDeliverySelected = null;
-    this.CityDeliverySelected = null;
-    this.BaranggayDeliverySelected = null;
-    const regionData = this.philippineData[this.RegionDeliverySelected.value].province_list;
-
-    // Map the province names to options format
-    this.provinceOptions = Object.keys(regionData).map(provinceName => ({
-      label: provinceName,
-      value: provinceName
-    }));
-    this.updateDeliverAddress();
-    },
-    onUserProvinceSelect() {
-      // Check if ProvinceDeliverySelected is not null before accessing its value
-      if (this.ProvinceDeliverySelected !== null) {
-        this.CityDeliverySelected = null;
-        this.BaranggayDeliverySelected = null;
-        const ProvinceDeliverySelectedData = this.philippineData[this.RegionDeliverySelected.value].province_list[this.ProvinceDeliverySelected.value];
-        if (ProvinceDeliverySelectedData) {
-          const municipalityData = ProvinceDeliverySelectedData.municipality_list;
-          console.log(municipalityData);
-
-          this.cityOptions = Object.keys(municipalityData).map(municipalityName => ({
-            label: municipalityName,
-            value: municipalityName
-          }));
-          this.updateDeliverAddress();
-        }
-      }
-    },
-    onUserCitySelect() {
-      if (this.CityDeliverySelected !== null) {
-        this.BaranggayDeliverySelected = null;
-        const selectedMunicipalityData = this.philippineData[this.RegionDeliverySelected.value].province_list[this.ProvinceDeliverySelected.value].municipality_list[this.CityDeliverySelected.value];
-        if (selectedMunicipalityData) {
-          const barangayList = selectedMunicipalityData.barangay_list;
-          console.log(barangayList);
-
-          this.barangayOptions = barangayList.map(barangayName => ({
-            label: barangayName,
-            value: barangayName
-          }));
-          this.updateDeliverAddress();
-        }
-      }
-    },
-    onUserBarangaySelect() {
-      if (this.BaranggayDeliverySelected !== null) {
-        this.updateDeliverAddress();
-      }
-    },
-    updateDeliverAddress() {
-
-      let address = '';
-      if (this.RegionDeliverySelected) address += `${this.RegionDeliverySelected.label}, `;
-      if (this.ProvinceDeliverySelected) address += `${this.ProvinceDeliverySelected.label}, `;
-      if (this.CityDeliverySelected) address += `${this.CityDeliverySelected.label}, `;
-      if (this.BaranggayDeliverySelected) address += `${this.BaranggayDeliverySelected.label}`;
-      this.delivery_add_val = address;
+      })
+      .catch(error => {
+        // Handle any errors that occur during the HTTP request
+        console.error('Error fetching data:', error.message);
+      });
     },
 
 // OLD DATA

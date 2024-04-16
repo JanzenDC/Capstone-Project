@@ -118,11 +118,12 @@
                 }
 
                 $nextMPOID = $maxMPOID + 1;
-
+                $maxStartingNo = $this->db->rawQuery("SELECT MAX(startingNo) AS maxStartingNo FROM mpo_starting_date");
                 $response = [
                     'status' => 'success',
                     'message' => 'Data has been fetched successfully',
                     'nextMPOID' => $nextMPOID,
+                    'nextMPOStartingNo' => $maxStartingNo,
                 ];
                 echo json_encode($response);
                 exit;
@@ -167,7 +168,6 @@
 
     public function httpPost($payload)
     {
-
         $mpodata = $this->db->get('mpo_tbl');
         $maxMPOID = 0;
         foreach ($mpodata as $row) {
@@ -177,178 +177,93 @@
             }
         }
         $nextMPOID = $maxMPOID + 1;
-        $getUser = $this->db->where('email', $_POST['personnel_Email'])->getOne('personel_tbl');
-        if($getUser){
-            $selectedCategory = $_POST['selectedCategory'];
-            $category = $this->db->where('title',  $selectedCategory)->getOne('w_category');
-            if($category){
-                $supplierfetch = $this->db->where('supplier_name', $_POST['selectedSupplier'])->getOne('w_supplierlist');
-                if($supplierfetch){
-                    $uploadDir = 'C:/xampp/htdocs/Capstone-Project/WeaveManila-Project/public/Important_Images/';
-                    if (!isset($_FILES['uploadPhoto'])) {
-                        $file_one = 'default_logo.png'; // Set default logo image path
-                        $file_value = 'default_logo.png';
-                    } else {
-                        $file_value = basename($file_one['name']);
-                        $file_one = $_FILES['uploadPhoto'];
-                        $uploadPath_one = $uploadDir . basename($file_one['name']);
-                        if (move_uploaded_file($file_one['tmp_name'], $uploadPath_one)) {
-                            $response = [
-                                'status' => 'success',
-                                'message' => 'Success moving the image to designated path.',
-                            ];
-                        } else {
-                            $response = [
-                                'status' => 'fail',
-                                'message' => 'Error uploading file one.',
-                            ];
-                            echo json_encode($response);
-                        }
-                    }
-                    
-                    $file_two = isset($_FILES['uploadPreparedName']) ? $_FILES['uploadPreparedName'] : '';
-                    $file_three = isset($_FILES['uploadApproveName']) ? $_FILES['uploadApproveName'] : '';
-                    $filetwo_value = basename($file_two['name']);
-                    $filethree_value = basename($file_three['name']);
-                    $isertData = [
-                        'mpoID' => $nextMPOID,
-                        'categoryID' => $category['categoryID'],
-                        'supplierID' => $supplierfetch['supplierID'],
-                        'personelID' => $getUser['personelID'],
-                        'company_address' => $_POST['company_address'],
-                        'mpo_ref_no' => $_POST['mpo_ref'],
-                        'date_purchased' => $_POST['date_purchased'],     
-                        'client_ref_no' => $_POST['client_ref'],
-                        'w_o_ref_no' => $_POST['wo_purchased'],
-                        'delivery_date' => $_POST['delivery_date_val'],
-                        'delivery_address' => $_POST['delivery_add_val'],   
-                        'supplier_address' => $_POST['supplier_address'],
-                        'delivery_charge' => $_POST['deliver_charge'],
-                        'discount' => $_POST['discount'],
-                        'vat' => $_POST['vat'],
-                        'other_costs' => $_POST['other_cost'],
-                        'total_amount' => $_POST['total_amount'],
-                        'notes_instructions' => $_POST['notes_instructions'],
-                        'prepared_by' => $_POST['prepareSig'],
-                        'approved_by' => $_POST['approveSig'],
-                        'file_logo' => $file_value,
-                        'file_esignaturep' => $filetwo_value,
-                        'file_esignaturea' => $filethree_value,
-                    ];
-                    $dataHolder = $this->db->insert('mpo_tbl', $isertData);
-
-// Query that will holds the picture don't galaw galaw this area
-                    // Upload file_two
-                    $uploadPath_two = $uploadDir . basename($file_two['name']);
-                    if (move_uploaded_file($file_two['tmp_name'], $uploadPath_two)) {
-                        $response = [
-                            'status' => 'success',
-                            'message' => 'Success moving the image to designated path.',
+        
+        //get supplier id
+        $supplierID = $this->db->where('supplier_name', $_POST['supplierValue'])->getOne('w_supplierlist');
+        $categoryID = $this->db->where('title', $_POST['categories'])->getOne('w_category');
+        $personnel = $this->db->where('isAdmin', '1')->getOne('personel_tbl');
+        if ($supplierID) {
+            $insertData = [
+                'mpoID' => $nextMPOID,
+                'supplierID' => $supplierID['supplierID'],
+                'categoryID' => $categoryID['categoryID'],
+                'mpo_ref_no' => $_POST['mpo_ref'],
+                'date_purchased' => $_POST['date_purchased'],
+                'client_ref_no' => $_POST['client_ref'],
+                'w_o_ref_no' => $_POST['wo_ref'],
+                'delivery_date' => $_POST['delivery_date'],
+                'delivery_address' => $personnel['address'],
+                'supplier_address' => $_POST['supplierAddress'],
+                'company_address' => $personnel['address'],
+                'total' => $_POST['subtotal'],
+                'delivery_charge' => $_POST['delivery_charge'],
+                'discount' => $_POST['discount_value'],
+                'other_costs' => $_POST['other_cost'],
+                'vat' => $_POST['tax_vat'],
+                'total_amount' => $_POST['total'],
+                'notes_instructions' => $_POST['notes_instructions'],
+            ];
+            $test = $this->db->insert('mpo_tbl', $insertData);
+            if($test){
+              if (isset($_POST['products']) && is_array($_POST['products'])) {
+                $insertedProducts = [];
+                foreach ($_POST['products'] as $productJSON) {
+                    $productData = json_decode($productJSON, true);
+                    if ($productData !== null) { 
+                        $requiredFields = ['product', 'description', 'quantity', 'unit', 'unit_price', 'total'];
+                        $missingFields = array_diff($requiredFields, array_keys($productData));
+                
+                
+                        $productDataToInsert = [
+                            'mpoID' => $nextMPOID,
+                            'item_name' => $productData['product'],
+                            'description' => $productData['description'],
+                            'quantity' => $productData['quantity'],
+                            'unit' => $productData['unit'],
+                            'unit_price' => $productData['unit_price'],
+                            'subtotal' => $productData['total'],
                         ];
+                        $test = $this->db->insert('mpo_base', $productDataToInsert);
+                        $insertedProducts[] = $productDataToInsert;
                     } else {
                         $response = [
                             'status' => 'fail',
-                            'message' => 'Error uploading file two.',
-                        ];
-                        echo json_encode($response);
-                    }
-
-                    // Upload file_three
-                    $uploadPath_three = $uploadDir . basename($file_three['name']);
-                    if (move_uploaded_file($file_three['tmp_name'], $uploadPath_three)) {
-                        $response = [
-                            'status' => 'success',
-                            'message' => 'Success moving the image to designated path.',
-                        ];
-                    } else {
-                        $response = [
-                            'status' => 'fail',
-                            'message' => 'Error uploading file three.',
-                        ];
-                        echo json_encode($response);
-                    }
-
-
-                    if ($dataHolder) {
-                        if (isset($_POST['products']) && is_array($_POST['products'])) {
-                            $insertedProducts = [];
-                            foreach ($_POST['products'] as $productJSON) {
-                                $productData = json_decode($productJSON, true);
-                                if ($productData !== null) { 
-                                    $requiredFields = ['sproduct', 'sdescription', 'squantity', 'sunit', 'sunitprice', 'stotal'];
-                                    $missingFields = array_diff($requiredFields, array_keys($productData));
-                            
-                            
-                                    $discount = isset($productData['sdiscount']) ? floatval($productData['sdiscount']) : 0;
-                            
-                                    $productDataToInsert = [
-                                        'mpoID' => $nextMPOID,
-                                        'item_name' => $productData['sproduct'],
-                                        'description' => $productData['sdescription'],
-                                        'quantity' => $productData['squantity'],
-                                        'unit' => $productData['sunit'],
-                                        'unit_price' => $productData['sunitprice'],
-                                        'discounts' => $discount,
-                                        'subtotal' => $productData['stotal'],
-                                    ];
-                                    $test = $this->db->insert('mpo_base', $productDataToInsert);
-                                    $insertedProducts[] = $productDataToInsert;
-                                } else {
-                                    $response = [
-                                        'status' => 'fail',
-                                        'message' => 'Error: Missing or invalid "products" data.',
-                                    ];
-                                    echo json_encode($response);
-                                    exit;
-                                }
-                            }                            
-                            $response = [
-                                'status' => 'success',
-                            ];
-                            echo json_encode($response);
-                            exit;
-                        } else {
-                            $response = [
-                                'status' => 'fail',
-                                'message' => 'Error: Missing or invalid "products" data.',
-                            ];
-                            echo json_encode($response);
-                            exit;
-                        }
-                    }else {
-                        $response = [
-                            'status' => 'fail',
-                            'message' => 'Fail to insert data into MPO_TBL.',
+                            'message' => 'Error: Missing or invalid "products" data.',
                         ];
                         echo json_encode($response);
                         exit;
                     }
-                } else {
-                    $response = [
-                        'status' => 'fail',
-                        'message' => 'Fail there is no supplier data.',
-                    ];
-                    echo json_encode($response);
-                    exit;
-                }
-
-                
-            }else{
+                }                            
                 $response = [
-                    'status' => 'fail',
-                    'message' => 'There is no category.',
+                  'status' => 'success',
+                  'message' => 'Inserted succesfully',
+                  'info' => $insertData,
                 ];
                 echo json_encode($response);
-                exit;      
+                exit;
+              } else {
+                  $response = [
+                      'status' => 'fail',
+                      'message' => 'Error: Missing or invalid "products" data.',
+                  ];
+                  echo json_encode($response);
+                  exit;
+              }
+              $response = [
+                'status' => 'success',
+                'message' => 'Inserted succesfully'
+              ];
+              echo json_encode($response);
+              exit;
             }
         }else{
-            $response = [
-                'status' => 'fail',
-                'message' => 'There is no email.',
-            ];
-            echo json_encode($response);
-            exit;      
-        }
+          $response = [
+            'status' => 'fail',
+            'message' => 'No Data'
+          ];
+          echo json_encode($response);
+          exit;
+        }      
     }
 
 
