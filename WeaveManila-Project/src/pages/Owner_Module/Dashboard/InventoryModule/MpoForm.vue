@@ -532,6 +532,7 @@ export default {
       ],
       other_cost_operator: 'Add',
       medium: false,
+      MpoIDValue: '',
     };
   },
   mounted() {
@@ -646,14 +647,25 @@ export default {
       this.rows = [];
     },
     handleSubmit() {
-      if (!this.date_purchased || !this.delivery_date || !this.notes_instructions) {
-        // Notify the user if any of the required fields are empty
+      const missingFields = [];
+
+      if (!this.date_purchased) {
+        missingFields.push('Date Purchased');
+      }
+      if (!this.delivery_date) {
+        missingFields.push('Delivery Date');
+      }
+      if (!this.notes_instructions) {
+        missingFields.push('Notes & Instructions');
+      }
+      if (missingFields.length > 0) {
         this.$q.notify({
           color: 'negative',
-          message: 'Please fill in all required fields (Date Purchased, Delivery Date, Notes & Instructions).',
+          message: `Please fill in all required fields: ${missingFields.join(', ')}.`,
         });
         return; // Stop further execution
       }
+
       const formData = new FormData();
       // Append form data to the FormData object
       formData.append('categories', this.categories.label);
@@ -691,29 +703,28 @@ export default {
       axios.post('http://localhost/Capstone-Project/backend/api/Inventory_Database/MPO_Queries/mpo_data.php/', formData)
       .then(response => {
         console.log(response.data);
-        // const Status = response.data.status;
-        // const Message = response.data.message;
-        // if (Status === "success") {
-        //   this.$q.notify({
-        //     message: `MPO ${this.MpoIDValue} save successfully!`,
-        //     color: 'green',
-        //     type: 'positive',
-        //   });
-        //   this.handleCancel();
-        // }
-        // if (Status === "fail") {
-        //   this.$q.notify({
-        //     color: 'negative',
-        //     message: `${Message} Please try again.`,
-        //   });
-        //   this.handleCancel();
-        // }
+        const Status = response.data.status;
+        const Message = response.data.message;
+        if (Status === "success") {
+          this.$q.notify({
+            message: `MPO ${this.MpoIDValue} save successfully!`,
+            color: 'green',
+            type: 'positive',
+          });
+          this.ResetData();
+        }
+        if (Status === "fail") {
+          this.$q.notify({
+            color: 'negative',
+            message: `${Message} Please try again.`,
+          });
+          this.ResetData();
+        }
       }).catch(error => {
         console.error('Error fetching data:', error.message);
       });
     },
     deleteRow(rowIndex) {
-      // Remove the row at the given index from the rows array
       this.rows.splice(rowIndex, 1);
     },
     fetchMPOdata(){

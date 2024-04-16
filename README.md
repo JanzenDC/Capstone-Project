@@ -1,8 +1,7 @@
 
 # WeaveManila - Capstone Project by Visionary Innovator
 
-![Visionary Innovator Logo](![image](https://github.com/JanzenDC/Capstone-Project/assets/145821913/cd178b9c-5f00-4dde-920d-cc301d325e0c)
-)
+
 ```markdown
 ## Table of Contents
 - [Introduction](#introduction)
@@ -50,7 +49,7 @@ Follow these steps to get WeaveManila up and running on your local machine:
    npm run dev
    ```
 
-   The application should now be accessible at `http://localhost:8080` by default.
+   The application should now be accessible at `http://localhost:9090` by default.
 
 ## Usage
 
