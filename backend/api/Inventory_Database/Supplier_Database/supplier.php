@@ -94,7 +94,7 @@
             }
             $getSupplier = $this->db->where('supplierID', $payload['id'])->getOne('w_supplierlist');
             if($getSupplier){
-              $get = $this->db->where('itemID', $payload['id'])->get('w_supplierlist_item');
+              $get = $this->db->where('supplierID', $payload['id'])->get('w_supplierlist_item');
 
                 $response = [
                   'status' => 'success', 
