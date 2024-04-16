@@ -1064,7 +1064,7 @@ export default {
               if (!acc[row.mpoID]) {
                   acc[row.mpoID] = {
                       mpo_id: row.mpoID,
-                      mpo_number: row.mpo_ref_no,
+                      mpo_number: row.mpoID,
                       supplier: row.supplier_name,
                       date_purchase: row.date_purchased,
                       product: [],
