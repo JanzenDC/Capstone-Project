@@ -352,7 +352,7 @@ bordered
         <template v-slot:body-cell-actions="props">
               <q-td :props="props">
                 <div class="flex items-center justify-center w-[221px] gap-1">
-                  <div @click="ProductReceived(props.row.mpo_id)" class="bg-[#ddffcd] rounded py-1 px-2 text-green-600 rounded font-bold cursor-pointer">
+                  <div @click="ProductReceived(props.row.mpo_id)" class="bg-[#ddffcd] py-1 px-2 text-green-600 rounded font-bold cursor-pointer">
                     Received
                   </div>
                   <div class="bg-[#475467] rounded text-white cursor-pointer w-[32px] h-[32px] text-[20px]">

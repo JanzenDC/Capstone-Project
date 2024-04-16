@@ -385,11 +385,6 @@ bordered
                     :rules="[val => !!val || 'Password is required',
                               val => val.length >= 8 || 'Password must be at least 8 characters']"
                   >
-                  <template v-slot:append>
-                    <span @click="togglePasswordVisibility">
-                      <i class="bi" :class="showPassword ? 'bi-eye-slash' : 'bi-eye'"></i>
-                    </span>
-                  </template>
                   <template v-slot:after>
                     <q-btn class="h-[35px] text-white text-[13px] bg-[#967259] w-[180px]" label="Generate Password" @click="generatePassword"/>
                   </template>
@@ -741,12 +736,12 @@ export default {
         const dob = new Date(birthdate);
         const age = today.getFullYear() - dob.getFullYear();
         const monthDiff = today.getMonth() - dob.getMonth();
-        
+
         // Check if the user is 18 years or older
         if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
             return age - 1 >= 18;
         }
-        
+
         return age >= 18;
     },
     toggleClicked(id,value) {
