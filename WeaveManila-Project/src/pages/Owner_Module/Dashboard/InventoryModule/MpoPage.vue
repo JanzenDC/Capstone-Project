@@ -269,7 +269,27 @@ bordered
               </q-list>
             </q-btn-dropdown>
             <q-btn square icon="print"/>
-            <q-btn square icon="cached" @click="refreshData"/>
+            <q-btn-dropdown label="Category">
+              <q-list>
+                <q-item clickable v-close-popup @click="onItemClick">
+                  <q-item-section>
+                    <q-item-label>Photos</q-item-label>
+                  </q-item-section>
+                </q-item>
+
+                <q-item clickable v-close-popup @click="onItemClick">
+                  <q-item-section>
+                    <q-item-label>Videos</q-item-label>
+                  </q-item-section>
+                </q-item>
+
+                <q-item clickable v-close-popup @click="onItemClick">
+                  <q-item-section>
+                    <q-item-label>Articles</q-item-label>
+                  </q-item-section>
+                </q-item>
+              </q-list>
+            </q-btn-dropdown>
           </div>
         </div>
       <div class="q-pa-md">
@@ -329,7 +349,10 @@ bordered
 
         <template v-slot:body-cell-date_received="props">
           <q-td :props="props">
-            <div v-for="date_received in props.row.date_received" :key="date_received">{{ date_received }}</div>
+            <div v-for="date_received in props.row.date_received" :key="date_received" :class="{ 'cursor-pointer': isValidDate(date_received) }" @click="handleDateClick(date_received, props.row.mpo_id)">
+              {{ date_received }}
+              <q-tooltip v-if="isValidDate(date_received)" :offset="[0, 8]">View More</q-tooltip>
+            </div>
           </q-td>
         </template>
 
@@ -354,15 +377,20 @@ bordered
                 <div class="flex items-center justify-center w-[221px] gap-1">
                   <div @click="ProductReceived(props.row.mpo_id)" class="bg-[#ddffcd] py-1 px-2 text-green-600 rounded font-bold cursor-pointer">
                     Received
+
                   </div>
                   <div class="bg-[#475467] rounded text-white cursor-pointer w-[32px] h-[32px] text-[20px]">
                     <q-icon name="history" />
                   </div>
                   <div class="bg-[#26218e] rounded text-white cursor-pointer w-[32px] h-[32px] text-[20px]">
-                    <q-icon name="assignment" @click="ViewForm(props.row.mpo_id)"/>
+                    <q-icon name="assignment" @click="ViewForm(props.row.mpo_id)">
+                      <q-tooltip :offset="[0, 8]">View Form</q-tooltip>
+                    </q-icon>
                   </div>
                   <div class="bg-[#b3261e] rounded text-white cursor-pointer text-[20px] w-[32px] h-[32px]">
-                    <q-icon name="delete"/>
+                    <q-icon name="delete">
+                      <q-tooltip :offset="[0, 8]">Delete</q-tooltip>
+                    </q-icon>
                   </div>
                   <div class="w-[32px] h-[32px] cursor-pointer text-[20px]">
                     <q-icon name="arrow_forward_ios" @click="toNextPage(props.row.mpo_id)"/>
@@ -375,6 +403,49 @@ bordered
     </div>
   </div>
 
+  <q-dialog
+      v-model="medium"
+    >
+      <q-card style="width: 700px; max-width: 80vw;">
+        <q-card-section>
+          <div class="gap-2 text-h6 items-center flex">
+            <q-icon name='calendar_month'/>
+            <p>Date received logs</p>
+          </div>
+        </q-card-section>
+
+        <q-card-section class="q-pt-none">
+          <q-input class='mb-3' v-model="searchQuery" label="Search..." dense outlined>
+            <template v-slot:prepend>
+              <q-icon name="search" />
+            </template>
+          </q-input>
+          <q-table
+            style="height: 400px"
+            flat bordered
+            :rows="filteredRows"
+            :columns="datecolumns"
+            row-key="index"
+            virtual-scroll
+            v-model:pagination="pagination"
+            :rows-per-page-options="[0]"
+          >
+            <template v-slot:body-cell-status="props">
+              <q-td :props="props">
+                <span v-if="props.row.status === 'Received'" class="bg-green-500 text-white p-1 text-center rounded">{{ props.row.status }}</span>
+                <span v-else-if="props.row.status === 'Partial Received'" class="bg-yellow-500 text-white text-center rounded p-1">{{ props.row.status }}</span>
+                <span v-else class="bg-red-500 text-white text-center rounded">{{ props.row.status }}</span>
+              </q-td>
+            </template>
+          </q-table>
+
+        </q-card-section>
+
+        <q-card-actions align="right" class="bg-white text-teal">
+          <q-btn flat label="OK" v-close-popup />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
 <!-- MODAL FORM -->
 <q-dialog
     v-model="previewForm"
@@ -596,7 +667,7 @@ bordered
       </div>
       <div>
         <label>Date Received</label>
-        <q-input dense outlined v-model="date_received" type='date'/>
+        <q-input dense outlined v-model="date_received" type='date' required/>
       </div>
     </div>
     <q-table
@@ -702,6 +773,12 @@ import axios from 'axios';
 export default {
   data() {
     return {
+      searchQuery: '',
+      pagination: {
+        page: 1,
+        rowsPerPage: 10
+      },
+      medium: false,
       isAdmin: 0,
       email: '',
       fullname: '',
@@ -723,6 +800,13 @@ export default {
       // Additional Data
       firstStep: false,
       secondStep: false,
+      datecolumns: [
+        { name: 'index', align: 'left', label: 'No.', field: 'index', sortable: true, headerStyle: 'width: 20px;' },
+        { name: 'product', align: 'left', label: 'Product', field: 'product', sortable: true, headerStyle: 'width: 150px;' },
+        { name: 'date', align: 'left', label: 'Date', field: 'date', sortable: true, headerStyle: 'width: 100px;' },
+        { name: 'status', align: 'left', label: 'Status', field: 'status', sortable: true, headerStyle: 'width: 100px;' },
+      ],
+      daterows: [],
       columns: [
         { name: 'mpo_number', align: 'left', label: 'MPO No.', field: 'mpo_number', sortable: true, headerStyle: 'width: 44px;' },
         { name: 'supplier', align: 'left', label: 'Supplier', field: 'supplier', sortable: true, headerStyle: 'width: 100px;' },
@@ -825,6 +909,20 @@ export default {
       deep: true
     }
   },
+  computed: {
+    filteredRows() {
+      if (!this.searchQuery) return this.daterows;
+      const query = this.searchQuery.toLowerCase();
+      return this.daterows.filter(row =>
+        Object.values(row).some(val => {
+          if (typeof val === 'string') {
+            return val.toLowerCase().includes(query);
+          }
+          return false;
+        })
+      );
+    }
+  },
   mounted() {
     this.loadUserData();
     this.fetchMPOData();
@@ -836,6 +934,61 @@ export default {
     clearInterval(this.statusCheckTimer);
   },
   methods: {
+    handleDateClick(date_received, event) {
+      if (this.isValidDate(date_received)) {
+        axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/MPO_Queries/mpo_data.php?get=datelogs&id=${event}`)
+        .then(response => {
+          console.log(response.data);
+          this.medium = true;
+          this.daterows = response.data.dateLogs[0].map((row, index) => {
+            // Convert the timestamp column to a Date object
+            const timestamp = new Date(row.timestamp_column);
+            
+            // Format the date to a readable string
+            const formattedDate = timestamp.toLocaleString('en-US', {
+              month: 'short',
+              day: 'numeric',
+              year: 'numeric',
+              hour: 'numeric',
+              minute: 'numeric',
+              hour12: true // Use 12-hour clock with AM/PM
+            });
+            let statusLabel = '';
+            switch (row.status) {
+              case 2:
+                statusLabel = 'Received';
+                break;
+              case 1:
+                statusLabel = 'Partial Received';
+                break;
+              case 0:
+                statusLabel = 'Pending';
+                break;
+              default:
+                statusLabel = '';
+            }
+            return {
+              index: index + 1,
+              product: row.item_name,
+              date: formattedDate,
+              status: statusLabel // in status 2 = Recieved 1 = Partial Received and 0 for Pending
+            };
+          });
+
+        }).catch(error => {
+          console.error('Error fetching data:', error);
+        });
+      } else {
+        console.log('No Data clicked, cannot proceed.');
+      }
+    },
+    isValidDate(dateString) {
+      // Attempt to create a Date object from the dateString
+      const date = new Date(dateString);
+      // Check if the date object is valid
+      // If it's an invalid date or "No Data", return false
+      return !isNaN(date.getTime()) && dateString !== 'No Data';
+    },
     toNextPage(targetID) {
       axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/MPO_Queries/mpopage_segregation.php?select=${targetID}`)
           .then(response => {
@@ -1079,7 +1232,6 @@ export default {
               acc[row.mpoID].amount.push(row.subtotal);
               acc[row.mpoID].product.push(row.item_name);
               acc[row.mpoID].qty.push(row.quantity);
-
               // Check if date_received is null
               if (row.date_received !== null) {
                 acc[row.mpoID].date_received.push(row.date_received);
@@ -1261,6 +1413,13 @@ export default {
       }
     },
     submitHandler() {
+      if (!this.date_received) {
+        this.$q.notify({
+          color: 'negative',
+          message: 'Please select a date before submitting.',
+        });
+        return; 
+      }
       const formData = new FormData();
 
       const endpoint = 'http://localhost/Capstone-Project/backend/api/Inventory_Database/MPO_Queries/mpopage_productionlist.php/';
