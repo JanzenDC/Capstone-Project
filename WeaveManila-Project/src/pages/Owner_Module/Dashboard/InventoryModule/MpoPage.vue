@@ -347,14 +347,18 @@ bordered
           </q-td>
         </template>
 
-        <template v-slot:body-cell-date_received="props">
-          <q-td :props="props">
-            <div v-for="date_received in props.row.date_received" :key="date_received" :class="{ 'cursor-pointer': isValidDate(date_received) }" @click="handleDateClick(date_received, props.row.mpo_id)">
+      <template v-slot:body-cell-date_received="props">
+        <q-td :props="props">
+          <!-- <div v-for="product in props.row.product" :key="product"> -->
+            <div v-for="(date_received, dateIndex) in props.row.date_received" :key="dateIndex" :class="{ 'cursor-pointer': isValidDate(date_received) }" @click="handleDateClick(date_received, props.row.mpo_id, props.row, dateIndex)">
               {{ date_received }}
               <q-tooltip v-if="isValidDate(date_received)" :offset="[0, 8]">View More</q-tooltip>
             </div>
-          </q-td>
-        </template>
+
+          <!-- </div> -->
+        </q-td>
+      </template>
+
 
         <template v-slot:body-cell-status="props">
           <q-td :props="props">
@@ -406,23 +410,33 @@ bordered
   <q-dialog
       v-model="medium"
     >
-      <q-card style="width: 700px; max-width: 80vw;">
-        <q-card-section>
+      <q-card style="width: 500px; max-width: 80vw;">
+        <q-card-section class="row q-pb-none">
           <div class="gap-2 text-h6 items-center flex">
-            <q-icon name='calendar_month'/>
-            <p>Date received logs</p>
+            <q-icon name='local_mall' class='p-2 border me-2 rounded'/>
+            <div>            
+              <p class='font-bold'>{{ mpoProductName.charAt(0).toUpperCase() + mpoProductName.slice(1) }}</p>
+              <p class='text-[15px] -mt-4'>MPO {{ mposelectedID }}</p>
+            </div>
           </div>
+          <q-space />
+          <q-btn icon="close" flat round dense v-close-popup />
         </q-card-section>
 
+        <q-separator class='mb-3'/>
         <q-card-section class="q-pt-none">
-          <q-input class='mb-3' v-model="searchQuery" label="Search..." dense outlined>
+          <q-input class='mb-3 hidden' disabled v-model="searchQuery" label="Search..." dense outlined>
             <template v-slot:prepend>
               <q-icon name="search" />
             </template>
           </q-input>
+          <div class='mb-3'>
+            <p class='text-[16px]'><span class='font-bold'>Quantity Purchased: </span>{{ qtyReceived }}</p>
+          </div>
           <q-table
             style="height: 400px"
             flat bordered
+            separator="cell"
             :rows="filteredRows"
             :columns="datecolumns"
             row-key="index"
@@ -441,9 +455,6 @@ bordered
 
         </q-card-section>
 
-        <q-card-actions align="right" class="bg-white text-teal">
-          <q-btn flat label="OK" v-close-popup />
-        </q-card-actions>
       </q-card>
     </q-dialog>
 <!-- MODAL FORM -->
@@ -798,13 +809,14 @@ export default {
       inventoryMenuVisible: false,
       productionVisible: false,
       // Additional Data
+      mposelectedID: '',
+      mpoProductName: '',
+      qtyReceived: '',
       firstStep: false,
       secondStep: false,
       datecolumns: [
-        { name: 'index', align: 'left', label: 'No.', field: 'index', sortable: true, headerStyle: 'width: 20px;' },
-        { name: 'product', align: 'left', label: 'Product', field: 'product', sortable: true, headerStyle: 'width: 150px;' },
+        { name: 'qty_received', align: 'left', label: 'Quantity Received', field: 'qty_received', sortable: true, headerStyle: 'width: 100px;' },
         { name: 'date', align: 'left', label: 'Date', field: 'date', sortable: true, headerStyle: 'width: 100px;' },
-        { name: 'status', align: 'left', label: 'Status', field: 'status', sortable: true, headerStyle: 'width: 100px;' },
       ],
       daterows: [],
       columns: [
@@ -934,25 +946,17 @@ export default {
     clearInterval(this.statusCheckTimer);
   },
   methods: {
-    handleDateClick(date_received, event) {
+    handleDateClick(date_received, event, product, dateIndex) {
+      const a = dateIndex; 
+      console.log(product);
       if (this.isValidDate(date_received)) {
         axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/MPO_Queries/mpo_data.php?get=datelogs&id=${event}`)
         .then(response => {
           console.log(response.data);
           this.medium = true;
+          
           this.daterows = response.data.dateLogs[0].map((row, index) => {
-            // Convert the timestamp column to a Date object
             const timestamp = new Date(row.timestamp_column);
-            
-            // Format the date to a readable string
-            const formattedDate = timestamp.toLocaleString('en-US', {
-              month: 'short',
-              day: 'numeric',
-              year: 'numeric',
-              hour: 'numeric',
-              minute: 'numeric',
-              hour12: true // Use 12-hour clock with AM/PM
-            });
             let statusLabel = '';
             switch (row.status) {
               case 2:
@@ -968,13 +972,17 @@ export default {
                 statusLabel = '';
             }
             return {
-              index: index + 1,
+              // index: index + 1,
               product: row.item_name,
-              date: formattedDate,
-              status: statusLabel // in status 2 = Recieved 1 = Partial Received and 0 for Pending
+              date: row.date_received,
+              qty_received: row.qty_received,
+              // status: statusLabel // in status 2 = Recieved 1 = Partial Received and 0 for Pending
             };
           });
-
+          this.searchQuery = product.product[a];
+          this.mpoProductName = product.product[a];
+          this.qtyReceived = product.qty_received[a];
+          this.mposelectedID = product.mpo_id;
         }).catch(error => {
           console.error('Error fetching data:', error);
         });
@@ -1418,7 +1426,7 @@ export default {
           color: 'negative',
           message: 'Please select a date before submitting.',
         });
-        return; 
+        return;
       }
       const formData = new FormData();
 
@@ -1436,7 +1444,7 @@ export default {
           sreceived: row.sreceived,
           sstatus: row.sstatus,
         };
-        console.log(rowData);
+        // console.log(rowData);
         formData.append('products[]', JSON.stringify(rowData));
       });
 

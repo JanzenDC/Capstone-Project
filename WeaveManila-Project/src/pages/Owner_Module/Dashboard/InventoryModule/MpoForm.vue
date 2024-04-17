@@ -253,7 +253,7 @@ bordered
                 <q-select dense outlined v-model="categories" :options="options"></q-select>
               </div>
             </div>
-            <div class='grid grid-cols-5 gap-1 p-2'>
+            <div class='grid grid-cols-4 gap-1 p-2'>
               <div>
                 <p>Mpo Ref. No.</p>
                 <q-input disable dense outlined v-model='mpo_ref'/>
@@ -270,10 +270,10 @@ bordered
                 <p>W.O Ref. No.</p>
                 <q-input type="text" dense outlined v-model='wo_ref'/>
               </div>
-              <div>
+              <!-- <div>
                 <p>Delivery Date</p>
                 <q-input type="date" dense outlined required v-model='delivery_date'/>
-              </div>
+              </div> -->
             </div>
             <div>
               To:
@@ -513,7 +513,7 @@ export default {
       date_purchased: '',
       client_ref: '',
       wo_ref: '',
-      delivery_date: '',
+      // delivery_date: '',
       notes_instructions: '',
       products: [],
       pagination: {
@@ -642,7 +642,7 @@ export default {
       this.date_purchased = '';
       this.client_ref = '';
       this.wo_ref = '';
-      this.delivery_date = '';
+      // this.delivery_date = '';
       this.notes_instructions = '';
       this.rows = [];
     },
@@ -652,9 +652,9 @@ export default {
       if (!this.date_purchased) {
         missingFields.push('Date Purchased');
       }
-      if (!this.delivery_date) {
-        missingFields.push('Delivery Date');
-      }
+      // if (!this.delivery_date) {
+      //   missingFields.push('Delivery Date');
+      // }
       if (!this.notes_instructions) {
         missingFields.push('Notes & Instructions');
       }
@@ -675,7 +675,7 @@ export default {
       formData.append('date_purchased', this.date_purchased);
       formData.append('client_ref', this.client_ref);
       formData.append('wo_ref', this.wo_ref);
-      formData.append('delivery_date', this.delivery_date);
+      // formData.append('delivery_date', this.delivery_date);
       formData.append('notes_instructions', this.notes_instructions);
       formData.append('total', this.total);
       const subtotal = this.rows.reduce((acc, row) => acc + this.computeTotal(row), 0);

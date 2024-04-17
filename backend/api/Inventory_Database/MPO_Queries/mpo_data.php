@@ -56,7 +56,7 @@
                         base.subtotal,
                         COALESCE(received_logs.datareceivedID, "") AS datareceivedID,
                         received_logs.baseID,
-                        COALESCE(received_logs.date_received, "No data.") AS date_received,            received_logs.status
+                        COALESCE(received_logs.date_received, "No data.") AS date_received
                     FROM 
                         mpo_tbl AS mpo
                     LEFT JOIN 
@@ -174,7 +174,9 @@
             $query = 'SELECT mpo_datereceived_logs.*, mpo_base.item_name
             FROM mpo_datereceived_logs
             INNER JOIN mpo_base ON mpo_datereceived_logs.baseID = mpo_base.baseID
-            WHERE mpo_datereceived_logs.mpoID = ?';
+            WHERE mpo_datereceived_logs.mpoID = ?
+            ORDER BY mpo_datereceived_logs.date_received DESC';
+  
 
             $results = $this->db->rawQuery($query, [$selectedID]);
             if ($results) {
@@ -223,7 +225,7 @@
                 'date_purchased' => $_POST['date_purchased'],
                 'client_ref_no' => $_POST['client_ref'],
                 'w_o_ref_no' => $_POST['wo_ref'],
-                'delivery_date' => $_POST['delivery_date'],
+                // 'delivery_date' => $_POST['delivery_date'],
                 'delivery_address' => $personnel['address'],
                 'supplier_address' => $_POST['supplierAddress'],
                 'company_address' => $personnel['address'],

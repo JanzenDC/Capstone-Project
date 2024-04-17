@@ -58,6 +58,7 @@
                                   'mpoID' => $selectedData['mpoID'],
                                   'date_received' => $date_received,
                                   'status' => $status,
+                                  'qty_received' => $productData['sreceived']
                               ];
 
                               // Insert new data
