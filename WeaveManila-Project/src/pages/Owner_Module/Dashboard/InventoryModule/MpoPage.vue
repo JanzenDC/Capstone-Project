@@ -271,22 +271,11 @@ bordered
             <q-btn square icon="print"/>
             <q-btn-dropdown label="Category">
               <q-list>
-                <q-item clickable v-close-popup @click="onItemClick">
-                  <q-item-section>
-                    <q-item-label>Photos</q-item-label>
-                  </q-item-section>
+                <q-item @click="onItemClick(null)">
+                  <q-item-label class='cursor-pointer' >All Categories</q-item-label>
                 </q-item>
-
-                <q-item clickable v-close-popup @click="onItemClick">
-                  <q-item-section>
-                    <q-item-label>Videos</q-item-label>
-                  </q-item-section>
-                </q-item>
-
-                <q-item clickable v-close-popup @click="onItemClick">
-                  <q-item-section>
-                    <q-item-label>Articles</q-item-label>
-                  </q-item-section>
+                <q-item v-for="(category, index) in categories" :key="index" >
+                  <q-item-label class='cursor-pointer' @click="onItemClick(category.categoryID)">{{ category.title }}</q-item-label>
                 </q-item>
               </q-list>
             </q-btn-dropdown>
@@ -414,7 +403,7 @@ bordered
         <q-card-section class="row q-pb-none">
           <div class="gap-2 text-h6 items-center flex">
             <q-icon name='local_mall' class='p-2 border me-2 rounded'/>
-            <div>            
+            <div>
               <p class='font-bold'>{{ mpoProductName.charAt(0).toUpperCase() + mpoProductName.slice(1) }}</p>
               <p class='text-[15px] -mt-4'>MPO {{ mposelectedID }}</p>
             </div>
@@ -890,6 +879,7 @@ export default {
       ],
       selectedRows: [],
       date_received: '',
+      categories: [],
     };
   },
   watch: {
@@ -936,6 +926,7 @@ export default {
     }
   },
   mounted() {
+    this.fetchCategory();
     this.loadUserData();
     this.fetchMPOData();
     this.statusCheckTimer = setInterval(() => {
@@ -946,15 +937,97 @@ export default {
     clearInterval(this.statusCheckTimer);
   },
   methods: {
+    onItemClick(category) {
+      if (!category) {
+        this.fetchMPOData();
+      } else {
+        axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/MPO_Queries/mpo_data.php?get=targetCategory&id=${category}`)
+        .then(response => {
+          console.log(response.data)
+          try {
+            const groupedData = response.data.categoryData.reduce((acc, row) => {
+                if (!acc[row.mpoID]) {
+                    acc[row.mpoID] = {
+                        mpo_id: row.mpoID,
+                        mpo_number: row.mpoID,
+                        supplier: row.supplier_name,
+                        date_purchase: row.date_purchased,
+                        product: [],
+                        qty: [],
+                        total: [],
+                        amount: [],
+                        status: [],
+                        qty_received: [],
+                        date_received: [],
+                    };
+                }
+                acc[row.mpoID].amount.push(row.subtotal);
+                acc[row.mpoID].product.push(row.item_name);
+                acc[row.mpoID].qty.push(row.quantity);
+                // Check if date_received is null
+                if (row.date_received !== null) {
+                  acc[row.mpoID].date_received.push(row.date_received);
+                } else {
+                  acc[row.mpoID].date_received.push(''); // Pushing an empty string for null values
+                }
+
+                acc[row.mpoID].qty_received.push(row.quantity_received);
+
+                // Calculate status based on received quantity
+                let status = '';
+                if (row.quantity_received === row.quantity) {
+                    status = '● Received';
+                } else if (!row.quantity_received || row.quantity_received === '0') {
+                  status = '● Pending';
+                } else if (row.quantity_received < row.quantity) {
+                    status = '● Partial Received';
+                }
+                acc[row.mpoID].status.push(status);
+                return acc;
+            }, {});
+
+            const groupedArray = Object.values(groupedData);
+
+            // Filter out ungrouped data (where only one data point exists)
+            const ungroupedData = response.data.categoryData.filter(row => !groupedData[row.mpoID]);
+
+            // Combine grouped and ungrouped data
+            const combinedData = groupedArray.concat(ungroupedData);
+
+            this.rows = combinedData;
+          } catch (error) {
+            console.error('Error processing data:', error);
+            this.$q.notify({
+              color: 'negative',
+              position: 'bottom',
+              message: 'There is no data in this category.',
+            });
+          }
+        })
+        .catch(error => {
+          console.error('Error fetching data:', error);
+        });
+      }
+    },
+    fetchCategory() {
+      axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/MPO_Queries/mpo_data.php?get=category`)
+        .then(response => {
+          // Assuming response.data is an array of categories
+          this.categories = response.data.categoryData;
+        })
+        .catch(error => {
+          console.error('Error fetching categories:', error);
+        });
+    },
     handleDateClick(date_received, event, product, dateIndex) {
-      const a = dateIndex; 
+      const a = dateIndex;
       console.log(product);
       if (this.isValidDate(date_received)) {
         axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/MPO_Queries/mpo_data.php?get=datelogs&id=${event}`)
         .then(response => {
           console.log(response.data);
           this.medium = true;
-          
+
           this.daterows = response.data.dateLogs[0].map((row, index) => {
             const timestamp = new Date(row.timestamp_column);
             let statusLabel = '';
@@ -1219,62 +1292,62 @@ export default {
     },
     fetchMPOData() {
       axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/MPO_Queries/mpo_data.php?get=alldata`)
-        .then(response => {
-          console.log(response.data)
-          const groupedData = response.data.categoryData.reduce((acc, row) => {
-              if (!acc[row.mpoID]) {
-                  acc[row.mpoID] = {
-                      mpo_id: row.mpoID,
-                      mpo_number: row.mpoID,
-                      supplier: row.supplier_name,
-                      date_purchase: row.date_purchased,
-                      product: [],
-                      qty: [],
-                      total: [],
-                      amount: [],
-                      status: [],
-                      qty_received: [],
-                      date_received: [],
-                  };
-              }
-              acc[row.mpoID].amount.push(row.subtotal);
-              acc[row.mpoID].product.push(row.item_name);
-              acc[row.mpoID].qty.push(row.quantity);
-              // Check if date_received is null
-              if (row.date_received !== null) {
-                acc[row.mpoID].date_received.push(row.date_received);
-              } else {
-                acc[row.mpoID].date_received.push(''); // Pushing an empty string for null values
-              }
+      .then(response => {
+        console.log(response.data)
+        const groupedData = response.data.categoryData.reduce((acc, row) => {
+            if (!acc[row.mpoID]) {
+                acc[row.mpoID] = {
+                    mpo_id: row.mpoID,
+                    mpo_number: row.mpoID,
+                    supplier: row.supplier_name,
+                    date_purchase: row.date_purchased,
+                    product: [],
+                    qty: [],
+                    total: [],
+                    amount: [],
+                    status: [],
+                    qty_received: [],
+                    date_received: [],
+                };
+            }
+            acc[row.mpoID].amount.push(row.subtotal);
+            acc[row.mpoID].product.push(row.item_name);
+            acc[row.mpoID].qty.push(row.quantity);
+            // Check if date_received is null
+            if (row.date_received !== null) {
+              acc[row.mpoID].date_received.push(row.date_received);
+            } else {
+              acc[row.mpoID].date_received.push(''); // Pushing an empty string for null values
+            }
 
-              acc[row.mpoID].qty_received.push(row.quantity_received);
+            acc[row.mpoID].qty_received.push(row.quantity_received);
 
-              // Calculate status based on received quantity
-              let status = '';
-              if (row.quantity_received === row.quantity) {
-                  status = '● Received';
-              } else if (!row.quantity_received || row.quantity_received === '0') {
-                status = '● Pending';
-              } else if (row.quantity_received < row.quantity) {
-                  status = '● Partial Received';
-              }
-              acc[row.mpoID].status.push(status);
-              return acc;
-          }, {});
+            // Calculate status based on received quantity
+            let status = '';
+            if (row.quantity_received === row.quantity) {
+                status = '● Received';
+            } else if (!row.quantity_received || row.quantity_received === '0') {
+              status = '● Pending';
+            } else if (row.quantity_received < row.quantity) {
+                status = '● Partial Received';
+            }
+            acc[row.mpoID].status.push(status);
+            return acc;
+        }, {});
 
-          const groupedArray = Object.values(groupedData);
+        const groupedArray = Object.values(groupedData);
 
-          // Filter out ungrouped data (where only one data point exists)
-          const ungroupedData = response.data.categoryData.filter(row => !groupedData[row.mpoID]);
+        // Filter out ungrouped data (where only one data point exists)
+        const ungroupedData = response.data.categoryData.filter(row => !groupedData[row.mpoID]);
 
-          // Combine grouped and ungrouped data
-          const combinedData = groupedArray.concat(ungroupedData);
+        // Combine grouped and ungrouped data
+        const combinedData = groupedArray.concat(ungroupedData);
 
-          this.rows = combinedData;
-        })
-        .catch(error => {
-          console.error('Error fetching data:', error);
-        });
+        this.rows = combinedData;
+      })
+      .catch(error => {
+        console.error('Error fetching data:', error);
+      });
     },
 
 

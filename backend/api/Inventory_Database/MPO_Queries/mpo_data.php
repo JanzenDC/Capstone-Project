@@ -188,6 +188,81 @@
                 echo json_encode($response);
                 exit;
             }
+        }
+        if($payload['get'] == 'targetCategory'){
+            $targetCategory = $payload['id'];
+            $sqlQuery = 'SELECT 
+                mpo.mpoID,
+                mpo.personelID,
+                mpo.supplierID,
+                mpo.categoryID,
+                mpo.mpo_ref_no,
+                mpo.date_purchased,
+                mpo.client_ref_no,
+                mpo.w_o_ref_no,
+                mpo.delivery_date,
+                mpo.delivery_address,
+                mpo.supplier_address,
+                mpo.total,
+                mpo.delivery_charge,
+                mpo.discount,
+                mpo.other_costs,
+                mpo.total_amount,
+                mpo.notes_instructions,
+                mpo.prepared_by,
+                mpo.approved_by,
+                supplier.supplier_name,
+                supplier.address AS supplier_address,
+                base.baseID,
+                base.item_name,
+                base.quantity,
+                base.unit,
+                base.quantity_received,
+                base.unit_price,
+                base.status,
+                base.discounts,
+                base.subtotal,
+                COALESCE(received_logs.datareceivedID, "") AS datareceivedID,
+                received_logs.baseID,
+                COALESCE(received_logs.date_received, "No data.") AS date_received
+            FROM 
+                mpo_tbl AS mpo
+            LEFT JOIN 
+                w_supplierlist AS supplier ON mpo.supplierID = supplier.supplierID
+            LEFT JOIN 
+                mpo_base AS base ON mpo.mpoID = base.mpoID
+            LEFT JOIN 
+            (
+                SELECT 
+                    baseID, 
+                    MAX(date_received) AS max_date_received
+                FROM 
+                    mpo_datereceived_logs
+                GROUP BY 
+                    baseID
+            ) AS latest_dates ON base.baseID = latest_dates.baseID
+            LEFT JOIN 
+            mpo_datereceived_logs AS received_logs ON base.baseID = received_logs.baseID AND latest_dates.max_date_received = received_logs.date_received
+            WHERE 
+                mpo.categoryID = ?';
+
+            $queryResult = $this->db->rawQuery($sqlQuery, Array($targetCategory));
+            if($queryResult){
+                $response = [
+                    'status' => 'success',
+                    'message' => 'Data has been fetch successfully',
+                    'categoryData' => $queryResult
+                ];
+                echo json_encode($response);
+                exit;
+            }else{
+                $response = [
+                    'status' => 'fail',
+                    'message' => 'There is no data in here.',
+                ];
+                echo json_encode($response);
+                exit;
+            }
         }else {
             $response = [
                 'status' => 'fail',
