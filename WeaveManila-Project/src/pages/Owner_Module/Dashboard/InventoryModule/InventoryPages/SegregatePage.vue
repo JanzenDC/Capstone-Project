@@ -239,10 +239,24 @@ bordered
       </router-link>
     </div>
     <div class="w-full bg-white p-4  h-[390px]">
-      <div class="flex justify-end items-end gap-4">
-        <q-btn icon="download" />
-        <q-btn icon="print" />
-        <q-btn icon="add" label='Issue' class='bg-[#634832] text-white'/>
+      <div class="flex justify-between">
+        <div class='flex gap-4'>
+          <p>Quantity In: {{ qty_in }}</p>
+          <p>Quantity Balance: {{ qty_bal }}</p>
+        </div>
+        <div class='flex gap-4'>
+          <q-btn icon="download" />
+          <q-btn icon="print" />
+          <q-btn-dropdown label="Items">
+            <q-list>
+              <q-item v-for="(category, index) in categories" :key="index" >
+                <q-item-label class='cursor-pointer' @click="onItemClick(category.baseID)">{{ category.item_name }}</q-item-label>
+              </q-item>
+            </q-list>
+          </q-btn-dropdown>
+          <q-btn icon="add" label='Issue' class='bg-[#634832] text-white'/>
+        </div>
+
 
       </div>
       <q-separator class="mt-9 "/>
@@ -256,7 +270,16 @@ bordered
             <q-input dense outlined v-model="item.value"/>
             
           </div>
-          <q-table :rows="item.rows" :columns="columns" class='mt-2'/>
+          <q-table :rows="item.rows" :columns="columns" class='mt-2'>
+            <template v-slot:body-cell-action="props">
+              <q-td :props="props">
+                <q-icon name='visibility' class='text-h6 text-black' @click="handleVisibilityClick(item, props.row)">
+                  <q-tooltip :offset="[0, 8]">View</q-tooltip>
+                </q-icon>
+                
+              </q-td>
+            </template>
+          </q-table>
         </div>
         <q-btn label='Add Product' class='bg-[#634832] text-white mt-4'/>
       </div>
@@ -265,115 +288,7 @@ bordered
     </div>
   </div>
 
-  <!-- MODAL -->
-  <q-dialog v-model="ShowFolder" persistent transition-show="scale" transition-hide="scale">
-    <q-card style="width: 900px; max-width: 80vw;">
-      <q-card-section class="row items-center q-pb-none">
-        <div class="flex items-center">
-
-          <q-icon name='stacks'/>
-          <div class="text-h6">{{ selectedIDName }}</div>
-        </div>
-
-        <q-space />
-        <q-btn icon="close" flat round dense @click='CloseFolder' />
-      </q-card-section>
-      <q-separator />
-      <q-card-section>
-        <div class="flex items-end justify-end mb-3 gap-4">
-          <q-btn icon="download" />
-          <q-btn icon="print" />
-          <q-btn icon="refresh" />
-          <q-btn icon="add" label="Add table" class="bg-[#634832] text-white"/>
-        </div>
-        <q-separator />
-        <div class="mt-3">
-          <p>Product Name: <span class="text-gray-900"> {{ selectedIDName }} Taknis</span></p>
-          <p>Quantity Stocks: <span class="text-gray-900"> {{ selected_Quantity }} </span> </p>
-          <p class="hidden">Quantity Balance: <span class="text-gray-900 "> {{ totalBalance }} </span></p>
-          <p>Quantity Balance: <span class="text-gray-900"> {{ totalBalanceRaw }} </span></p>
-
-        </div>
-        <div>
-
-          <q-table
-            flat bordered
-            :rows="rows"
-            :columns="columns"
-            row-key="baseID"
-          >
-
-          <template v-slot:body="props">
-            <q-tr :props="props">
-
-
-              <q-td key="date" :props="props">
-                {{ props.row.date }}
-                <q-popup-edit v-model="props.row.date" title="Update Description" buttons v-slot="scope">
-                  <q-input type="date" v-model="scope.value" dense autofocus />
-                </q-popup-edit>
-              </q-td>
-
-              <q-td key="segregator" :props="props">
-                {{ props.row.segregator }}
-                <q-popup-edit v-model="props.row.segregator" title="Update Description" buttons v-slot="scope">
-                  <q-input type="text" v-model="scope.value" dense autofocus />
-                </q-popup-edit>
-              </q-td>
-
-              <q-td key="qty_raw" :props="props">
-                {{ props.row.qty_raw }}
-                <q-popup-edit v-model="props.row.qty_raw" title="Update Description" buttons v-slot="scope">
-                  <q-input type="number" v-model="scope.value" dense autofocus />
-                </q-popup-edit>
-              </q-td>
-
-              <q-td key="balance_raw" :props="props">
-                {{ props.row.balance_raw }}
-              </q-td>
-
-              <q-td key="qty_received" :props="props">
-                {{ props.row.qty_received }}
-                <q-popup-edit v-model="props.row.qty_received" title="Update Description" buttons v-slot="scope">
-                  <q-input type="number" v-model="scope.value" dense autofocus/>
-                </q-popup-edit>
-              </q-td>
-
-              <q-td key="waste_gumon" :props="props">
-                {{ props.row.waste_gumon }}
-                <q-popup-edit v-model="props.row.waste_gumon" title="Update Description" buttons v-slot="scope">
-                  <q-input type="number" v-model="scope.value" dense autofocus />
-                </q-popup-edit>
-              </q-td>
-
-              <q-td key="balance" :props="props">
-                {{ stored_Variable }}
-              </q-td>
-
-
-              <q-td key="action" :props="props" >
-                <div class="w-[70px] flex gap-3">
-                  <q-icon
-                  name="edit"
-                  class="w-[18px] h-[21px] p-1 text-white bg-yellow rounded"
-                />
-                <q-icon
-                  name="delete"
-                  class="w-[18px] h-[21px] p-1 text-white bg-red rounded"
-                  @click="deleteRow(props.row)"
-                />
-                </div>
-
-              </q-td>
-
-            </q-tr>
-          </template>
-          </q-table>
-
-        </div>
-      </q-card-section>
-    </q-card>
-  </q-dialog>
+ 
 </q-page>
 <q-dialog v-model="OpenLogout">
   <q-card class="w-[500px]">
@@ -438,6 +353,8 @@ bordered
         productionVisible: false,
         OpenLogout: false,
         // Another Data
+        qty_in: '',
+        qty_bal: '',
         mpoSelect: '',
         columns: [
         { name: 'segregator', align: 'left', label: 'Segregator', field: 'segregator', sortable: true,},
@@ -468,6 +385,7 @@ bordered
           qty_received: '',
           waste_gumon: ''
         },
+        categories: [],
       };
     },
     mounted() {
@@ -504,7 +422,44 @@ bordered
     //   }
     // },
     methods: {
-
+      onItemClick(event){
+        console.log(event);
+        axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/MPO_Queries/mpo_details.php?targetdata=onedata&targetdatas=${event}`)
+            .then(response => {
+              console.log(response.data);
+              // Populate items array from the 'information' array
+              // this.categories = response.data.information3;
+              this.qty_in = response.data.information[0].quantity;
+              console.log(response.data.information)
+              this.qty_bal = response.data.information[0].quantity_balance;
+              this.items = response.data.information.map(category => ({
+                  value: category.item_name,
+                  base: category.baseID,
+                  rows: response.data.information2
+                      .filter(category2 => category2.baseID === category.baseID) // Filter by matching baseID
+                      .map(category2 => ({
+                          segregateID: category2.segregateID,
+                          base: category2.baseID,
+                          segregator: category2.segregator,
+                          date: category2.date,
+                          qty_raw: category2.qty_raw_for_issuance,
+                          qty_received: category2.qty_for_received_taknis,
+                          waste_gumon: category2.waste_gumon_for_received_taknis,
+                          balance: category2.balance_for_received_taknis,
+                          // action: category2.action,
+                      }))
+              }));
+            }).catch(error => {
+                console.error('Error fetching data:', error);
+            });
+      },
+      handleVisibilityClick(item, rowData) {
+        // Log the clicked item and row data
+        console.log(rowData.segregateID);
+        
+        // Add your logic here to show/hide details or perform other actions
+      },
+      
       loadFetchData() {
         const MPOData = SessionStorage.getItem('MPOData');
         if (MPOData) {
@@ -524,24 +479,29 @@ bordered
             this.discount = mpoInfo.discount;
             this.other_costs = mpoInfo.other_costs;
 
-            axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/MPO_Queries/mpo_details.php?targetdata=${this.mpoIDnumber}`)
+            axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/MPO_Queries/mpo_details.php?targetdata=moredata&targetdatas=${this.mpoIDnumber}`)
             .then(response => {
               console.log(response.data);
               // Populate items array from the 'information' array
+              this.categories = response.data.information3;
+              this.qty_in = response.data.information[0].quantity;
+              console.log(response.data.information)
+              this.qty_bal = response.data.information[0].quantity_balance;
               this.items = response.data.information.map(category => ({
                   value: category.item_name,
                   base: category.baseID,
                   rows: response.data.information2
                       .filter(category2 => category2.baseID === category.baseID) // Filter by matching baseID
                       .map(category2 => ({
+                          segregateID: category2.segregateID,
                           base: category2.baseID,
                           segregator: category2.segregator,
                           date: category2.date,
-                          qty_raw: category2.qty_raw,
-                          qty_received: category2.qty_received,
-                          waste_gumon: category2.waste_gumon,
-                          balance: category2.balance,
-                          action: category2.action,
+                          qty_raw: category2.qty_raw_for_issuance,
+                          qty_received: category2.qty_for_received_taknis,
+                          waste_gumon: category2.waste_gumon_for_received_taknis,
+                          balance: category2.balance_for_received_taknis,
+                          // action: category2.action,
                       }))
               }));
             }).catch(error => {

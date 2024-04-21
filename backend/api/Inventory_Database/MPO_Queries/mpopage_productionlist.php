@@ -38,6 +38,7 @@
                     if($selectedData){
                         $data = [
                             'quantity_received' => $productData['sreceived'],
+                            'quantity_balance' => $productData['sreceived'],
                             'status' => $productData['sstatus'],
                         ];
                         $result = $this->db->where('baseID', $productData['sqlid'])->update('mpo_base', $data);

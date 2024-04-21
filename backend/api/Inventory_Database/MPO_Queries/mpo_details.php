@@ -22,9 +22,10 @@
 
     public function httpGet($payload)
     {
-        if($payload['targetdata']){
-            $getData = $this->db->where('mpoID', $payload['targetdata'])->get('mpo_base');
-            $getData2 = $this->db->where('mpoID', $getData[0]['mpoID'])->get('mpo_segregate_tbl');
+        if($payload['targetdata'] ==='moredata'){
+            $getData = $this->db->where('mpoID', $payload['targetdatas'])->getOne('mpo_base');
+            $getData3 = $this->db->where('mpoID', $payload['targetdatas'])->get('mpo_base');
+            $getData2 = $this->db->where('mpoID', $getData['mpoID'])->get('mpo_segregate_tbl');
             // $target = $payload['targetdata'];
             // $sqlQuery = 'SELECT * FROM mpo_base AS b JOIN mpo_segregate_tbl AS s ON b.baseID = s.baseID WHERE b.baseID = ?';
             // $query = $this->db->rawQuery($sqlQuery, Array($target));
@@ -32,8 +33,9 @@
                 $response = [
                     'status' => 'success',
                     'message' => 'Success getting Data',
-                    'information' => $getData,
+                    'information' => Array($getData),
                     'information2' => $getData2,
+                    'information3' => $getData3,
                 ];
                 echo json_encode($response);
                 exit;
@@ -45,6 +47,29 @@
                 echo json_encode($response);
                 exit;
             }
+        }
+        else if($payload['targetdata'] ==='onedata'){
+          $getData = $this->db->where('baseID', $payload['targetdatas'])->getOne('mpo_base');
+          $getData2 = $this->db->where('baseID', $getData['baseID'])->get('mpo_segregate_tbl');
+          $getData3 = $this->db->where('mpoID', $payload['targetdatas'])->get('mpo_base');
+          if($getData){
+              $response = [
+                  'status' => 'success',
+                  'message' => 'Success getting Data',
+                  'information' => Array($getData),
+                  'information2' => $getData2,
+                  'information3' => $getData3,
+              ];
+              echo json_encode($response);
+              exit;
+          }else{
+              $response = [
+                  'status' => 'fail',
+                  'message' => 'Failed to fetch data.',
+              ];
+              echo json_encode($response);
+              exit;
+          }
         }
         else{
             $response = [
