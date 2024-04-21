@@ -37,6 +37,7 @@ const routes = [
       { path: 'inventory-section', component: () => import('pages/Owner_Module/Dashboard/InventoryModule/InventoryPage.vue') },
       { path: 'mpoform-section', component: () => import('pages/Owner_Module/Dashboard/InventoryModule/MpoForm.vue') },
       { path: 'mpo-section', component: () => import('pages/Owner_Module/Dashboard/InventoryModule/MpoPage.vue') },
+      { path: 'segregator-section', component: () => import('pages/Owner_Module/Dashboard/InventoryModule/SegregatorPage.vue') },
       { path: 'supplier-section', component: () => import('pages/Owner_Module/Dashboard/InventoryModule/SupplierPage.vue') },
 
       // Inventory Pages
