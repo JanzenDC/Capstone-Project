@@ -24,11 +24,16 @@
     {
         if($payload['targetdata']){
             $getData = $this->db->where('mpoID', $payload['targetdata'])->get('mpo_base');
+            $getData2 = $this->db->where('mpoID', $getData[0]['mpoID'])->get('mpo_segregate_tbl');
+            // $target = $payload['targetdata'];
+            // $sqlQuery = 'SELECT * FROM mpo_base AS b JOIN mpo_segregate_tbl AS s ON b.baseID = s.baseID WHERE b.baseID = ?';
+            // $query = $this->db->rawQuery($sqlQuery, Array($target));
             if($getData){
                 $response = [
                     'status' => 'success',
                     'message' => 'Success getting Data',
-                    'information' => $getData
+                    'information' => $getData,
+                    'information2' => $getData2,
                 ];
                 echo json_encode($response);
                 exit;

@@ -242,25 +242,23 @@ bordered
       <div class="flex justify-end items-end gap-4">
         <q-btn icon="download" />
         <q-btn icon="print" />
-        <q-btn icon="refresh" />
+        <q-btn icon="add" label='Issue' class='bg-[#634832] text-white'/>
 
       </div>
       <q-separator class="mt-9 "/>
-      <div class="overflox-y-auto overflow-x-hidden h-[300px] mt-3 flex gap-8">
-        <!-- Use loop here using quasar -->
-        <div v-for="item in items" :key="item.id" class="gap-2">
-            <div class="w-[123px]">
-              <q-img
-                src="../../../../../assets/folder_name.png"
-                alt="Description of the image"
-                class="w-[60px] md:w-[120px] cursor-pointer"
-                @click="handleImageClick(item.baseID)"
-              />
-              <p class="text-center">
-                {{ item.item_name }}
-              </p>
-            </div>
+      <div class="overflow-y-auto overflow-x-hidden h-[300px] mt-3">
+
+        <div v-for="item in items" :key="item.id" class="gap-2 mt-3">
+          <div class='flex items-center gap-2 mt-2'>
+            <p>Product
+              <span class='text-red-600'>*</span>
+            </p>
+            <q-input dense outlined v-model="item.value"/>
+            
+          </div>
+          <q-table :rows="item.rows" :columns="columns" class='mt-2'/>
         </div>
+        <q-btn label='Add Product' class='bg-[#634832] text-white mt-4'/>
       </div>
 
 
@@ -442,13 +440,12 @@ bordered
         // Another Data
         mpoSelect: '',
         columns: [
-          { name: 'date', align: 'left', label: 'Date', field: 'date', sortable: true, },
-          { name: 'segregator', align: 'left', label: 'Segregator', field: 'segregator', sortable: true,},
-          { name: 'qty_raw', align: 'left', label: 'Qty Raw', field: 'qty_raw', sortable: true,},
-          { name: 'balance_raw', align: 'left', label: 'Balance Raw', field: 'balance_raw', sortable: true,},
+        { name: 'segregator', align: 'left', label: 'Segregator', field: 'segregator', sortable: true,},
+          { name: 'date', align: 'left', label: 'Latest date of issuance', field: 'date', sortable: true, },
+          { name: 'qty_raw', align: 'left', label: 'Qty Raw Issued', field: 'qty_raw', sortable: true,},
           { name: 'qty_received', align: 'left', label: 'Qty Received', field: 'qty_received', sortable: true,},
           { name: 'waste_gumon', align: 'left', label: 'Waste / Gumon', field: 'waste_gumon', sortable: true,},
-          { name: 'balance', align: 'left', label: 'Balance', field: 'balance', sortable: true,},
+          { name: 'balance', align: 'left', label: 'Qty Balance', field: 'balance', sortable: true,},
           { name: 'action', align: 'center', label: 'Actions', field: 'action'},
         ],
         rows: [],
@@ -484,28 +481,28 @@ bordered
     beforeUnmount() {
       clearInterval(this.statusCheckTimer);
     },
-    watch: {
-      rows: {
-        handler(newRows, oldRows) {
-          let previousBalance = parseFloat(this.totalBalance);
-          let totalQtyRaw = 0;
-          newRows.forEach(row => {
-            if (parseFloat(row.qty_raw) > parseFloat(previousBalance)) {
+    // watch: {
+    //   rows: {
+    //     handler(newRows, oldRows) {
+    //       let previousBalance = parseFloat(this.totalBalance);
+    //       let totalQtyRaw = 0;
+    //       newRows.forEach(row => {
+    //         if (parseFloat(row.qty_raw) > parseFloat(previousBalance)) {
 
-              row.qty_raw = parseFloat(previousBalance);
-            }
-            row.balance_raw = previousBalance - parseFloat(row.qty_raw);
-            previousBalance = parseFloat(row.balance_raw);
-            totalQtyRaw += parseFloat(row.qty_raw);
+    //           row.qty_raw = parseFloat(previousBalance);
+    //         }
+    //         row.balance_raw = previousBalance - parseFloat(row.qty_raw);
+    //         previousBalance = parseFloat(row.balance_raw);
+    //         totalQtyRaw += parseFloat(row.qty_raw);
 
-            row.balance = this.calculateBalance(row);
-          });
-          this.totalBalanceRaw = previousBalance;
-          // this.totalBalanceRaw = this.totalBalance;
-        },
-        deep: true
-      }
-    },
+    //         row.balance = this.calculateBalance(row);
+    //       });
+    //       this.totalBalanceRaw = previousBalance;
+    //       // this.totalBalanceRaw = this.totalBalance;
+    //     },
+    //     deep: true
+    //   }
+    // },
     methods: {
 
       loadFetchData() {
@@ -529,9 +526,24 @@ bordered
 
             axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/MPO_Queries/mpo_details.php?targetdata=${this.mpoIDnumber}`)
             .then(response => {
-              console.log(response.data.information);
-              const info =  response.data.information;
-              this.items = response.data.information;
+              console.log(response.data);
+              // Populate items array from the 'information' array
+              this.items = response.data.information.map(category => ({
+                  value: category.item_name,
+                  base: category.baseID,
+                  rows: response.data.information2
+                      .filter(category2 => category2.baseID === category.baseID) // Filter by matching baseID
+                      .map(category2 => ({
+                          base: category2.baseID,
+                          segregator: category2.segregator,
+                          date: category2.date,
+                          qty_raw: category2.qty_raw,
+                          qty_received: category2.qty_received,
+                          waste_gumon: category2.waste_gumon,
+                          balance: category2.balance,
+                          action: category2.action,
+                      }))
+              }));
             }).catch(error => {
                 console.error('Error fetching data:', error);
             });
@@ -552,99 +564,6 @@ bordered
           SessionStorage.removeItem('MPOData');
           SessionStorage.removeItem('RetrieveData');
         }
-      },
-      CloseFolder(){
-        this.ShowFolder = false;
-        this.rows = [];
-      },
-      handleImageClick(event){
-        this.ShowFolder = true;
-        console.log(event)
-        axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/MPO_Queries/segregation_queries/segregation.php?type=1&id=${event}`)
-        .then(response => {
-          const Info = response.data.result;
-          this.selectedIDName = Info.item_name;
-          this.selected_Quantity = Info.quantity_received;
-
-          // Balance
-          this.totalBalance = Info.quantity_received;
-          this.totalBalanceRaw = Info.quantity_received;
-          // this.rows.push({
-          //   date: '',
-          //   segregator: '',
-          //   qty_raw: 0,
-          //   balance_raw: parseFloat(this.totalBalance), // Ensure totalBalance is parsed as float
-          //   qty_received: 0,
-          //   waste_gumon: 0,
-          //   balance: 0
-          // });
-          console.log(Info);
-        }).catch(error => {
-            console.error('Error fetching data:', error);
-        });
-      },
-      addRow() {
-        if (parseFloat(this.totalBalanceRaw) == 0) {
-          this.$q.notify({
-            type: 'negative',
-            message: 'Cannot add another table.',
-          });
-          return;
-        }
-
-        this.rows.push({
-          date: '',
-          segregator: '',
-          qty_raw: 0,
-          balance_raw: parseFloat(this.totalBalance), // Ensure totalBalance is parsed as float
-          qty_received: 0,
-          waste_gumon: 0,
-          balance: parseFloat(this.updatedBalance)
-        });
-        console.log(this.totalBalance);
-        console.log(this.rows);
-      },
-      deleteRow(row) {
-        // Implement logic to delete the specified row
-        const index = this.rows.indexOf(row);
-        if (index !== -1) {
-          this.rows.splice(index, 1);
-        }
-      },
-      AddData() {
-        // Convert inputs to numbers using parseFloat
-        const newRowQtyRaw = parseFloat(this.newRow.qty_raw) || 0;
-        const newRowQtyReceived = parseFloat(this.newRow.qty_received) || 0;
-        const newRowWasteGumon = parseFloat(this.newRow.waste_gumon) || 0;
-
-        // if(newRowQtyRaw < newRowQtyReceived)
-        // {
-        //   this.$q.notify({
-        //     type: 'negative',
-        //     message: 'Wrong Input: Quantity Received is greater than Quantity Raw. Please try again.',
-        //   });
-        //   return;
-        // }
-        // Calculate balance_raw
-        const balanceRaw = this.totalBalanceRaw - newRowQtyRaw;
-
-        // Calculate balance
-        const totalReceivedAndWaste = newRowQtyReceived + newRowWasteGumon;
-        const balance = newRowQtyRaw - totalReceivedAndWaste;
-        this.stored_Variable = balance;
-        // Push new row to rows array
-        this.rows.push({
-          date: this.newRow.date,
-          segregator: this.newRow.segregator,
-          qty_raw: newRowQtyRaw,
-          balance_raw: balanceRaw,
-          qty_received: newRowQtyReceived,
-          waste_gumon: newRowWasteGumon,
-          //balance: balance,
-        });
-
-        // Update total balance
-        this.totalBalanceRaw = balanceRaw;
       },
 
 
