@@ -74,9 +74,28 @@
           'length' => $payload['v_length'],
           'width' =>  $payload['v_width'],
           'size_selected' => $payload['v_size'],
+          'status' => 0
         ];
         $query = $this->db->insert('pjo_tbl', $insertData);
         if($query){
+          $audit = $this->db->where('email', $payload['email'])->getOne('personel_tbl');
+          $fullname = $audit['firstname'] . ' ' . $audit['lastname'];
+          $query = "SELECT MAX(pjoID) AS max_pjoID FROM pjo_tbl";
+    
+          // Execute the query
+          $result = $this->db->rawQuery($query);
+          $max_pjoID = $result[0]['max_pjoID'];
+
+          $message = 'Create a PJO Form ID:' . $max_pjoID;
+          $insertData = [
+            'fullname' => $fullname,
+            'position' => $audit['position'],
+            'action' => $message,
+            'date' => date('Y-m-d'),
+            'image' => $audit['profile_pic'],
+            'timestamp' => date('Y-m-d H:i:s')
+          ];
+          $query = $this->db->insert('audit_logs', $insertData);
           $response = [
             'status' => 'success',
             'message' => 'Data inserted successfully.'
@@ -95,8 +114,25 @@
     {
     }
 
-    public function httpDelete($payload)
+    public function httpDelete($ids, $payload)
     {
+      if(empty($ids)){
+        $response = ['status' => 'fail', 'message' => 'Error: Invalid Payload.'];
+        echo json_encode($response);
+        exit;
+      }
+
+      $remove = $this->db->where('pjoID', $ids)->delete('pjo_tbl');
+      if($remove){
+        $response = ['status' => 'success', 'message' => 'Successfully removed.',
+        'data' => $ids];
+        echo json_encode($response);
+        exit;
+      }else{
+        $response = ['status' => 'fail', 'message' => 'Error: Invalid to delete the data.'];
+        echo json_encode($response);
+        exit;
+      }
     }
     
 

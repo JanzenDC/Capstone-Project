@@ -261,9 +261,6 @@ bordered
                 <q-btn icon='edit' class='bg-[#109CF1] text-white ms-1 me-1' @click='handleEdit(props.row.id, props.row.jobOrderNo, props.row.client_name, props.row.pattern, props.row.Quantity, props.row.size, props.row.order_date, props.row.commitment_date, props.row.shipment_date, props.row.clientName, props.row.size_selected, props.row.width, props.row.length )'>
                   <q-tooltip :offset="[0, 8]">Edit</q-tooltip>
                 </q-btn>
-                <q-btn icon='delete' class='bg-[#B3261E] text-white ms-1 me-1' @click="handleDeleteClick">
-                  <q-tooltip :offset="[0, 8]">Remove</q-tooltip>
-                </q-btn>
               </q-td>
             </template>
         </q-table>
@@ -547,6 +544,7 @@ export default {
         return;
       }
       const formData = {
+        email: this.email,
         v_clientname: this.v_clientname,
         v_pattern: this.v_pattern,
         v_quantity: this.v_quantity,
