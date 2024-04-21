@@ -56,7 +56,7 @@
             </div>
             <div class='grid grid-cols-4 gap-2 mt-3 text-center'>
               <div class='w-[70px]'>
-                <label>Weaving</label>
+                <p>Weaving</p>
                 <q-checkbox
                     v-model="services"
                     val="weaving"
@@ -66,7 +66,7 @@
               </div>
 
               <div class='w-[70px]'>
-                <label>Tassle</label>
+                <p>Tassle</p>
                 <q-checkbox
                     v-model="services"
                     val="tassle"
@@ -76,7 +76,7 @@
               </div>
 
               <div class='w-[70px]'>
-                <label>Trimming</label>
+                <p>Trimming</p>
                 <q-checkbox
                     v-model="services"
                     val="trimming"
@@ -86,7 +86,7 @@
               </div>
 
               <div class='w-[70px]'>
-                <label>Cleaning</label>
+                <p>Cleaning</p>
                 <q-checkbox
                     v-model="services"
                     val="cleaning"
@@ -96,7 +96,7 @@
               </div>
 
               <div class='w-[70px]'>
-                <label>Latexing</label>
+                <p>Latexing</p>
                 <q-checkbox
                     v-model="services"
                     val="latexing"
@@ -106,7 +106,7 @@
               </div>
 
               <div class='w-[90px]'>
-                <label>Re-latexing</label>
+                <p>Re-latexing</p>
                 <q-checkbox
                     v-model="services"
                     val="relatexing"
@@ -116,7 +116,7 @@
               </div>
 
               <div class='w-[70px]'>
-                <label>Piping</label>
+                <p>Piping</p>
                 <q-checkbox
                     v-model="services"
                     val="piping"
@@ -126,7 +126,7 @@
               </div>
 
               <div class='w-[70px]'>
-                <label>Cutting</label>
+                <p>Cutting</p>
                 <q-checkbox
                     v-model="services"
                     val="cutting"
@@ -147,27 +147,27 @@
           </div>
           <div class='grid grid-cols-4 gap-2 mt-3'>
             <div>
-              <label>Description*</label>
+              <p>Description*</p>
               <q-input v-model="v_desc" dense outlined class="mt-2"
               lazy-rules
               :rules="[ val => val && val.length > 0 || 'Please input a value for description']"/>
             </div>
             <div>
-              <label>Design/Pattern*</label>
+              <p>Design/Pattern*</p>
               <q-input v-model="v_descpattern" dense outlined class="mt-2"
 
               lazy-rules
               :rules="[ val => val && val.length > 0 || 'Please input a value for design/pattern']"/>
             </div>
             <div>
-              <label>Construction*</label>
+              <p>Construction*</p>
               <q-input v-model="v_cons" dense outlined class="mt-2"
 
               lazy-rules
               :rules="[ val => val && val.length > 0 || 'Please input a value for construction']"/>
             </div>
             <div>
-              <label>Size*</label>
+              <p>Size*</p>
               <div class='flex gap-2 mt-3'>
                 <q-input v-model='v_width' type='number' dense outlined class='w-[80px]'
                     lazy-rules
@@ -188,41 +188,41 @@
             </div>
 
             <div>
-              <label>Date Started*</label>
+              <p>Date Started*</p>
               <q-input v-model="v_datestarted" dense outlined class="mt-2" type="date"
 
               lazy-rules
               :rules="[ val => val && val.length > 0 || 'Please input a value for date started']"/>
             </div>
             <div>
-              <label>Date Finished</label>
+              <p>Date Finished</p>
               <q-input v-model="v_datefinished" dense outlined class="mt-2" type="date"/>
             </div>
             <div>
-              <label>Leadtime (No. Days)</label>
+              <p>Leadtime (No. Days)</p>
               <q-input v-model="v_leadtime" dense outlined class="mt-2" disable />
             </div>
             <div>
-              <label>Qouta (Inches)</label>
+              <p>Qouta (Inches)</p>
               <q-input v-model="v_qouta" dense outlined class="mt-2" type='number'/>
             </div>
 
             <div>
-              <label>Quantity*</label>
+              <p>Quantity*</p>
               <q-input v-model="v_quantity" dense outlined class="mt-2" type='number'
 
               lazy-rules
               :rules="[ val => val && val.length > 0 || 'Please input a value for quantity.']"/>
             </div>
             <div>
-              <label>Looms*</label>
+              <p>Looms*</p>
               <q-input v-model="v_looms" dense outlined class="mt-2"
               type='number'
               lazy-rules
               :rules="[ val => val && val.length > 0 || 'Please input a value for looms']"/>
             </div>
             <div>
-              <label>Color*</label>
+              <p>Color*</p>
               <q-input v-model="v_color" dense outlined class="mt-2"
 
               lazy-rules
@@ -632,7 +632,7 @@
 
           <div class="flex gap-2 mt-3">
               <div>
-                <label>Upload E-signature</label>
+                <p>Upload E-signature</p>
                 <div class="flex items-center gap-2 mt-3 ">
                   <q-input v-model="uploadPreparedName" outlined dense label="Prepared By" disable />
                   <q-btn @click="triggerFileInput('prepared')" class="text-white bg-[#634832]">Change Photo</q-btn>
@@ -642,7 +642,7 @@
                 <q-input v-model="prepared_name" dense outlined lazy-rules :rules="[ val => val && val.length > 0 || 'Please input something']"/>
               </div>
               <div>
-                <label>Upload E-signature</label>
+                <p>Upload E-signature</p>
                 <div class="flex items-center gap-2 mt-3">
                   <q-input v-model="uploadApproveName" outlined dense label="Approved By" disable />
                   <q-btn @click="triggerFileInput('approve')" class="text-white bg-[#634832]">Change Photo</q-btn>
@@ -766,7 +766,7 @@
             <div class='flex justify-end w-full items-end'>
               <div class="flex gap-2 mt-[100px]">
                 <div>
-                  <label>Upload E-signature</label>
+                  <p>Upload E-signature</p>
                   <div class="flex items-center gap-2 mt-3 ">
                     <q-input v-model="s_uploadPreparedName" outlined dense label="BPrepared By" disable />
                     <q-btn @click="triggerFileInput('bprepared')" class="text-white bg-[#634832]">Change Photo</q-btn>

@@ -242,7 +242,7 @@ bordered
     </div>
     <div class="bg-white px-4 py-3 rounded h-[460px]">
       <div class='justify-end items-end flex mb-3'>
-        <q-btn label='Add Plan' icon='add' @click="addPlan = true"/>
+        <q-btn label='Add Plan' icon='add' @click="addPJO"/>
       </div>
         <q-table
               class="my-sticky-header-table"
@@ -250,14 +250,10 @@ bordered
               :rows="rows"
               :columns="columns"
               row-key="pjoID"
-              :selected-rows-label="getSelectedString"
-              selection="multiple"
               :pagination="initialPagination"
-              v-model:selected="selected"
             >
             <template v-slot:body-cell-action="props">
               <q-td :props="props">
-                <q-btn icon='history' class='bg-[#344054] text-white ms-1 me-1'/>
                 <q-btn icon='edit' class='bg-[#109CF1] text-white ms-1 me-1' @click='handleEdit(props.row.id, props.row.jobOrderNo, props.row.client_name, props.row.pattern, props.row.Quantity, props.row.size, props.row.order_date, props.row.commitment_date, props.row.shipment_date, props.row.clientName, props.row.size_selected, props.row.width, props.row.length )'>
                   <q-tooltip :offset="[0, 8]">Edit</q-tooltip>
                 </q-btn>
@@ -281,7 +277,7 @@ bordered
             <p class='text-h6'>{{ pjoIDlatest }}</p>
           </div>
           <q-space />
-          <q-btn icon="close" flat round dense v-close-popup />
+          <q-btn icon="close" flat round dense @click='closeModal' />
     </q-card-section>
 
     <q-card-section class="q-pt-none">
@@ -594,6 +590,30 @@ export default {
       }).catch(error => {
           console.error("Error fetching PJO data:", error);
       });
+    },
+    addPJO(){
+      this.v_clientname = '';
+      this.v_pattern = '';
+      this.v_quantity = '';
+      this.v_orderdate = '';
+      this.v_commitment = '';
+      this.v_shipment = '';
+      this.v_length = '';
+      this.v_width = '';
+      this.v_size = '';
+      this.addPlan = true;
+    },
+    closeModal(){
+      this.v_clientname = '';
+      this.v_pattern = '';
+      this.v_quantity = '';
+      this.v_orderdate = '';
+      this.v_commitment = '';
+      this.v_shipment = '';
+      this.v_length = '';
+      this.v_width = '';
+      this.v_size = '';
+      this.addPlan = false;
     },
     handleEdit(id, jobOrderNo, v_clientname, v_pattern, v_quantity, v_size, v_orderdate, v_commitment, v_shipment, clientname, size_select, x, y) {
       this.editDialog = true;

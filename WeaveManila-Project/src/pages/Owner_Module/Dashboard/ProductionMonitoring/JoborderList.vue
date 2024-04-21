@@ -265,12 +265,9 @@ bordered
           :rows="rows"
           :columns="columns"
           row-key="pjoID"
-          :selected-rows-label="getSelectedString"
-          selection="multiple"
           :pagination="initialPagination"
-          v-model:selected="selected"
         >
-          <template v-slot:body-cell-selection="props">
+          <!-- <template v-slot:body-cell-selection="props">
             <q-td :props="props">
               <q-checkbox
                 v-model="props.selected"
@@ -278,7 +275,7 @@ bordered
                 @input="handleCheckboxChange(props.row.pjoID)"
               />
             </q-td>
-          </template>
+          </template> -->
           <template v-slot:body-cell-status="props">
             <q-td :props="props">
               <span v-if="props.row.status === 'Done'" class="text-green-600 p-2 rounded-full bg-green-300">
@@ -294,12 +291,11 @@ bordered
           </template>
           <template v-slot:body-cell-action="props">
             <q-td :props="props">
-              <q-btn icon='history' class='bg-[#344054] text-white ms-1 me-1'/>
               <q-btn icon='assignment' class='bg-[#101828] text-white ms-1 me-1' @click='ViewForm(props.row.jobOrder)'>
                 <q-tooltip :offset="[0, 8]">View</q-tooltip>
               </q-btn>
-              <q-btn icon='delete' class='bg-[#B3261E] text-white ms-1 me-1' @click="handleDeleteClick">
-                <q-tooltip :offset="[0, 8]">Remove</q-tooltip>
+              <q-btn icon='edit' class='bg-blue-600 text-white ms-1 me-1' @click='EditForm(props.row.jobOrder)'>
+                <q-tooltip :offset="[0, 8]">Edit</q-tooltip>
               </q-btn>
             </q-td>
           </template>
@@ -330,37 +326,6 @@ bordered
           @click="logout"
           flat
           label="Logout"
-          size="md"
-          class="bg-red-600 text-white rounded w-full"
-        />
-      </div>
-    </q-card-actions>
-  </q-card>
-</q-dialog>
-<q-dialog v-model="OpenDelete">
-  <q-card>
-    <q-card-section class="row items-center q-pb-none">
-      <div class="py-1 px-2 border text-[24px]"><q-icon name="delete"/></div>
-      <q-space />
-      <q-btn icon="close" flat round dense v-close-popup />
-    </q-card-section>
-
-    <q-card-section>
-      <div class="text-h6 font-bold">Delete</div>
-      <p>Are you sure you want to delete this? This</p>
-      <p>action cannot be undone.</p>
-    </q-card-section>
-
-    <q-card-actions class="flex justify-center items-center">
-      <div class="w-1/2 p-1">
-        <q-btn flat label="Cancel" outline v-close-popup class="w-full border" @click="handleCancel"/>
-      </div>
-      <div class="w-1/2 p-1">
-        <q-btn
-          @click="HandleRemove"
-          flat
-          label="Delete"
-          type="submit"
           size="md"
           class="bg-red-600 text-white rounded w-full"
         />
@@ -606,8 +571,33 @@ bordered
           </div>
         </div>
       </div>
+    </q-card-section>
+</q-card>
+</q-dialog>
 
+<q-dialog
+    v-model="editForm"
+    full-width
+    full-height
+>
+<q-card>
+    <q-card-section class="row items-center q-pb-none">
+      <div class="text-h6 flex items-center">
+        <q-icon name="assignment_add" class="w-[48px] h-[48px]"/>
+        JO {{ joNumber }}
 
+      </div>
+      <q-space />
+      <q-btn icon="close" flat round dense v-close-popup />
+    </q-card-section>
+    <q-card-section>
+      <div class="flex items-end justify-end gap-2">
+        <q-btn icon="download" @click="generatePDF"/>
+        <q-btn icon="print" @click="printContent"/>
+      </div>
+    </q-card-section>
+    <q-card-section class="overflow-y-auto overflow-x-hidden h-[460px]">
+      <JobOrderPage />
     </q-card-section>
 </q-card>
 </q-dialog>
@@ -619,13 +609,15 @@ import { SessionStorage } from 'quasar';
 import axios from 'axios';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
+import JobOrderPage from './job_order/JobOrder.vue';
 
 export default {
-  setup() {
-    const $q = useQuasar();
+  components: {
+    JobOrderPage,
   },
   data() {
     return {
+      editForm: false,
       previewForm: false,
       isAdmin: 0,
       email: '',
@@ -666,7 +658,6 @@ export default {
         page: 1,
         rowsPerPage: 4
       },
-      OpenDelete: false,
 
 
       joNumber: '',
@@ -754,6 +745,9 @@ export default {
     this.fetchallPJO();
   },
   methods: {
+    EditForm(event){
+      this.editForm = true;
+    },
     ViewForm(event){
       const unitAbbreviations = {
         'Feet': 'ft',
@@ -851,9 +845,6 @@ export default {
       }).catch(error => {
           console.error("Error fetching PJO data:", error);
       });
-    },
-    handleDeleteClick() {
-      this.OpenDelete = true;
     },
     handleCheckboxChange(rowId) {
       const index = this.selected.indexOf(rowId);
@@ -1143,3 +1134,33 @@ export default {
   },
 };
 </script>
+<style lang="sass">
+.my-sticky-header-table
+  /* height or max-height is important */
+  height: 330px
+
+  .q-table__top,
+
+  thead tr:first-child th
+    /* bg color is important for th; just specify one */
+    background-color: #fff
+    text-align: center
+    font-size: 13px
+
+  thead tr th
+    position: sticky
+    z-index: 1
+  thead tr:first-child th
+    top: 0
+
+  /* this is when the loading indicator appears */
+  &.q-table--loading thead tr:last-child th
+    /* height of all previous header rows */
+    top: 48px
+
+  /* prevent scrolling behind sticky top row on focus */
+  tbody
+    /* height of all previous header rows */
+    scroll-margin-top: 48px
+
+</style>
