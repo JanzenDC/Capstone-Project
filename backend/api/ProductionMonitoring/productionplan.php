@@ -9,7 +9,7 @@
   // Used in response to a preflight request which includes the Access-Control-Request-Headers to indicate which HTTP headers can be used during the actual request
   header("Access-Control-Allow-Headers: Content-Type");
   header('Content-Type: application/json');
-  require_once('../../../MysqliDb.php');
+  require_once('../../MysqliDb.php');
 
 
   class API{
@@ -20,14 +20,42 @@
     }
     public function httpGet($payload)
     {
+        // Query to retrieve the maximum pjoID
+        $query = "SELECT MAX(pjoID) AS max_pjoID FROM pjo_tbl";
+    
+        // Execute the query
+        $result = $this->db->rawQuery($query);
+    
+        // Check if the query was successful
+        if ($result) {
+            $max_pjoID = $result[0]['max_pjoID'];
+            $next_pjoID = $max_pjoID + 1;
 
+            $query = "SELECT companyDate FROM mpo_starting_date ORDER BY companyDate DESC LIMIT 1";
+ 
+            $latestMPOresult = $this->db->rawQuery($query);
+            $latestMPOdata = ($latestMPOresult) ? $latestMPOresult[0] : null;
+
+            $response = [
+                'status' => 'success',
+                'pjoID' => $next_pjoID,
+                'mpo' => $latestMPOdata,
+                ];
+            echo json_encode($response);
+            exit;
+        } else {
+            $response = ['status' => 'fail', 'message' => 'Error: Failed to retrieve the next pjoID'];
+            echo json_encode($response);
+            exit;
+        }
     }
+    
     
     
 
     public function httpPost($payload)
     {
-        $requiredFields = ['v_selected','v_clientname','v_orderdate', 'v_commitment', 'v_shipment'];
+        $requiredFields = ['v_clientname','v_pattern','v_quantity', 'v_orderdate', 'v_commitment', 'v_shipment', 'v_length', 'v_width', 'v_size'];
         foreach ($requiredFields as $field) {
             if (!isset($payload[$field])) {
                 $response = ['status' => 'fail', 'message' => 'Missing required field: ' . $field];
@@ -35,43 +63,31 @@
                 exit;
             }
         }
-        $getData = $this->db->where('pjoID', $payload['v_selected'])->getOne('pjo_tbl');
-        if ($getData) {
-            $updateData = [
-                'client_name' => $payload['v_clientname'], 
-                'design_pattern' => $payload['v_pattern'],
-                'quantity' => $payload['v_quantity'],
-                'order_date' => $payload['v_orderdate'],
-                'commitment_date' => $payload['v_commitment'],
-                'shipped_date' => $payload['v_shipment'],
-                'length' => $payload['v_length'],
-                'width' =>  $payload['v_width'],
-                'size_selected' => $payload['v_size'],
-            ];
-            $update = $this->db->where('pjoID', $getData['pjoID'])->update('pjo_tbl', $updateData);
-            if ($update) {
-                $response = [
-                    'status' => 'success',
-                    'message' => 'Data updated successfully',
-                ];
-                echo json_encode($response);
-                exit;
-            } else {
-                $response = [
-                    'status' => 'fail',
-                    'message' => 'Failed to update data',
-                ];
-                echo json_encode($response);
-                exit;
-            }
-        } else {
-            $response = [
-                'status' => 'fail',
-                'message' => 'Invalid ID',
-            ];
-            echo json_encode($response);
-            exit;
-        }        
+
+        $insertData = [
+          'client_name' => $payload['v_clientname'], 
+          'design_pattern' => $payload['v_pattern'],
+          'quantity' => $payload['v_quantity'],
+          'order_date' => $payload['v_orderdate'],
+          'commitment_date' => $payload['v_commitment'],
+          'shipped_date' => $payload['v_shipment'],
+          'length' => $payload['v_length'],
+          'width' =>  $payload['v_width'],
+          'size_selected' => $payload['v_size'],
+        ];
+        $query = $this->db->insert('pjo_tbl', $insertData);
+        if($query){
+          $response = [
+            'status' => 'success',
+            'message' => 'Data inserted successfully.'
+          ];
+          echo json_encode($response);
+          exit;
+        }else{
+          $response = ['status' => 'fail', 'message' => 'Error: Failed to insert data.'];
+          echo json_encode($response);
+          exit;
+        }
     }
     
     

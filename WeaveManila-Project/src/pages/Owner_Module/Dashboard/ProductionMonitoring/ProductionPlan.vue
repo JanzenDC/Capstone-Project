@@ -241,6 +241,9 @@ bordered
         </router-link>
     </div>
     <div class="bg-white px-4 py-3 rounded h-[460px]">
+      <div class='justify-end items-end flex mb-3'>
+        <q-btn label='Add Plan' icon='add' @click="addPlan = true"/>
+      </div>
         <q-table
               class="my-sticky-header-table"
               dense bordered
@@ -255,7 +258,7 @@ bordered
             <template v-slot:body-cell-action="props">
               <q-td :props="props">
                 <q-btn icon='history' class='bg-[#344054] text-white ms-1 me-1'/>
-                <q-btn icon='edit' class='bg-[#109CF1] text-white ms-1 me-1' @click='handleEdit(props.row.id, props.row.jo, props.row.client_name, props.row.pattern, props.row.Quantity, props.row.size, props.row.order_date, props.row.commitment_date, props.row.shipment_date)'>
+                <q-btn icon='edit' class='bg-[#109CF1] text-white ms-1 me-1' @click='handleEdit(props.row.id, props.row.jobOrderNo, props.row.client_name, props.row.pattern, props.row.Quantity, props.row.size, props.row.order_date, props.row.commitment_date, props.row.shipment_date, props.row.clientName, props.row.size_selected, props.row.width, props.row.length )'>
                   <q-tooltip :offset="[0, 8]">Edit</q-tooltip>
                 </q-btn>
                 <q-btn icon='delete' class='bg-[#B3261E] text-white ms-1 me-1' @click="handleDeleteClick">
@@ -267,6 +270,73 @@ bordered
     </div>
   </div>
 </q-page>
+
+<q-dialog
+  v-model="addPlan"
+  persistent transition-show="scale" transition-hide="scale"
+>
+  <q-card style="width: 650px; max-width: 80vw;">
+    <q-card-section class="row items-center q-pb-none">
+          <div class="flex gap-2">
+            <div class='p-2 border '>
+              <q-icon name='group' class='text-[16px]'/>
+            </div>
+            <p class='text-h6'>{{ pjoIDlatest }}</p>
+          </div>
+          <q-space />
+          <q-btn icon="close" flat round dense v-close-popup />
+    </q-card-section>
+
+    <q-card-section class="q-pt-none">
+      <p class='text-bold'>Job Order Information</p>
+      <div class='grid grid-cols-2 gap-2 mt-3'>
+        <div>
+          <label>Client Name</label>
+          <q-input v-model='v_clientname' dense outlined/>
+        </div>
+        <div>
+          <label>Pattern</label>
+          <q-input v-model='v_pattern'  dense outlined class='bg-grey-300'/>
+        </div>
+        <div>
+          <label>Quantity</label>
+          <q-input v-model='v_quantity'  dense outlined/>
+        </div>
+        <div>
+          <label>Size</label>
+          <!-- <q-input v-model='v_size'  dense outlined/> -->
+          <div class='flex gap-2 items-center'>
+            <q-input v-model='v_length' dense outlined type='number' class='w-[60px]'/>
+            <p class='text-h6'>:</p>
+            <q-input v-model='v_width' dense outlined type='number' class='w-[60px]'/>
+            <q-select v-model="v_size" :options="v_optionssize" dense outlined class='w-[155px]'/>
+          </div>
+        </div>
+      </div>
+
+      <div class='font-bold text-[16px]'>Production Time Frame</div>
+      <div class='grid grid-cols-2 gap-2 mt-3'>
+        <div>
+          <label>Order Date</label>
+          <q-input v-model='v_orderdate' type='date' dense outlined/>
+        </div>
+        <div>
+          <label>Commitment Date</label>
+          <q-input v-model='v_commitment' type='date' dense outlined/>
+        </div>
+        <div>
+          <label>Shipped Date</label>
+          <q-input v-model='v_shipment' type='date' dense outlined/>
+        </div>
+      </div>
+    </q-card-section>
+
+    <q-card-actions align="right" class="bg-white text-teal">
+        <q-btn label='Submit' class='bg-[#634832] text-white' @click='sendPjoData'/>
+    </q-card-actions>
+  </q-card>
+</q-dialog>
+
 <q-dialog v-model="OpenLogout">
   <q-card class="w-[500px]">
     <q-card-section class="gap-3 items-center q-pb-none flex">
@@ -296,7 +366,7 @@ bordered
     </q-card-actions>
   </q-card>
 </q-dialog>
-<q-dialog v-model="editDialog" persistent>
+<q-dialog v-model="editDialog" persistent transition-show="scale" transition-hide="scale">
       <q-card class='w-[964px]'>
         <q-card-section class="row items-center q-pb-none">
           <div class='flex gap-2 items-center'>
@@ -319,15 +389,21 @@ bordered
               </div>
               <div>
                 <label>Pattern</label>
-                <q-input v-model='v_pattern' disable dense outlined class='bg-grey-300'/>
+                <q-input v-model='v_pattern' dense outlined class='bg-grey-300'/>
               </div>
               <div>
                 <label>Quantity</label>
-                <q-input v-model='v_quantity' disable dense outlined/>
+                <q-input v-model='v_quantity' dense outlined/>
               </div>
               <div>
                 <label>Size</label>
-                <q-input v-model='v_size' disable dense outlined/>
+                <!-- <q-input v-model='v_size'  dense outlined/> -->
+                <div class='flex gap-2 items-center'>
+                  <q-input v-model='v_length' dense outlined type='number' class='w-[60px]'/>
+                  <p class='text-h6'>:</p>
+                  <q-input v-model='v_width' dense outlined type='number' class='w-[60px]'/>
+                  <q-select v-model="v_size" :options="v_optionssize" dense outlined class='w-[155px]'/>
+                </div>
               </div>
             </div>
             <div class='font-bold text-[16px]'>Production Time Frame</div>
@@ -386,6 +462,7 @@ export default {
       productionVisible: false,
       OpenLogout: false,
       // New Data
+      addPlan: false,
       columns: [
         {name: 'jobOrderNo', label: 'Job Order No.', field: 'jobOrderNo', sortable: true},
         {name: 'clientName', label: 'Client Name', field: 'clientName', sortable: true},
@@ -413,37 +490,143 @@ export default {
       v_commitment: '',
       v_shipment: '',
       v_selected: '',
+
+      v_length: '',
+      v_width: '',
+      v_optionssize: ['Feet', 'Meters', 'Centimeters', 'Millimeters','Inches'],
+      pjoIDlatest: '',
     };
   },
   mounted() {
+    this.fetchPJOLatestID();
     this.loadUserData();
     this.statusCheckTimer = setInterval(() => {
       this.checkUserStatus();
     }, 20 * 1000); // 1 second (in milliseconds)
     this.fetchallPJO();
   },
+  watch: {
+    v_commitment(newDate) {
+      if (newDate < this.v_orderdate) {
+        this.v_commitment = this.v_orderdate;
+        this.$q.notify({
+            message: 'Commitment Date cannot be earlier than Order Date.',
+            color: 'negative',
+        });
+      }
+    },
+    v_shipment(newDate) {
+      if (newDate < this.v_commitment) {
+        this.v_shipment = this.v_commitment;
+        this.$q.notify({
+            message: 'Shipped Date cannot be earlier than Commitment Date. ',
+            color: 'negative',
+        });
+      }
+    }
+  },
   methods: {
-    handleEdit(id, pjoNumber, v_clientname, v_pattern, v_quantity, v_size, v_orderdate, v_commitment, v_shipment) {
+    fetchPJOLatestID(){
+      axios.get('http://localhost/Capstone-Project/backend/api/ProductionMonitoring/productionplan.php')
+      .then((response) => {
+        const latestData = response.data.mpo;
+        const latestPJO = response.data.pjoID;
+        const lastTwoDigits = latestData.companyDate.slice(2, 4);
+        const PjoFormat = `PJO${lastTwoDigits}-${latestPJO}`;
+        this.pjoIDlatest = `PJO${lastTwoDigits}-${latestPJO}`;
+      }).catch(error => {
+          console.error("Error fetching PJO data:", error);
+      });
+    },
+    sendPjoData() {
+      if (!this.v_clientname || !this.v_pattern || !this.v_quantity || !this.v_size || !this.v_orderdate || !this.v_commitment || !this.v_shipment) {
+        this.$q.notify({
+          message: 'Please fill in all required fields.',
+          color: 'negative',
+        });
+        return;
+      }
+      const formData = {
+        v_clientname: this.v_clientname,
+        v_pattern: this.v_pattern,
+        v_quantity: this.v_quantity,
+        v_orderdate: this.v_orderdate,
+        v_commitment: this.v_commitment,
+        v_shipment:   this.v_shipment,
+        v_length: this.v_length,
+        v_width: this.v_width,
+        v_size: this.v_size
+      }
+      axios.post('http://localhost/Capstone-Project/backend/api/ProductionMonitoring/productionplan.php', formData)
+      .then((response) => {
+        const Message = response.data.message;
+        if(response.data.status === 'success'){
+          this.$q.notify({
+              message: `${Message}`,
+              color: 'green',
+          });
+          this.fetchallPJO();
+          this.addPlan = false;
+          this.v_clientname = '';
+          this.v_pattern = '';
+          this.v_quantity = '';
+          this.v_orderdate = '';
+          this.v_commitment = '';
+          this.v_shipment = '';
+          this.v_length = '';
+          this.v_width = '';
+          this.v_size = '';
+        }else if(response.data.status === 'fail'){
+          this.$q.notify({
+              message: `${Message}`,
+              color: 'negative',
+          });
+          this.fetchallPJO();
+          this.addPlan = false;
+          this.v_clientname = '';
+          this.v_pattern = '';
+          this.v_quantity = '';
+          this.v_orderdate = '';
+          this.v_commitment = '';
+          this.v_shipment = '';
+          this.v_length = '';
+          this.v_width = '';
+          this.v_size = '';
+        }
+      }).catch(error => {
+          console.error("Error fetching PJO data:", error);
+      });
+    },
+    handleEdit(id, jobOrderNo, v_clientname, v_pattern, v_quantity, v_size, v_orderdate, v_commitment, v_shipment, clientname, size_select, x, y) {
       this.editDialog = true;
       // Assuming pjoNumber is a string or a number
-      this.JobOrderNo = String(pjoNumber).padStart(3, '0');
+      this.JobOrderNo = jobOrderNo;
       // Now you can use other parameters as needed
       this.v_clientname = v_clientname;
       this.v_pattern = v_pattern;
       this.v_quantity = v_quantity;
-      this.v_size = v_size;
+      this.v_size = size_select;
       this.v_orderdate = v_orderdate;
       this.v_commitment = v_commitment;
       this.v_shipment = v_shipment;
       this.v_selected = id;
+      this.v_clientname = clientname;
+      this.v_width = x;
+      this.v_length = y;
     },
     onUpdate(){
+
       const formData = {
         v_selected: this.v_selected,
         v_clientname: this.v_clientname,
+        v_pattern: this.v_pattern,
+        v_quantity: this.v_quantity,
         v_orderdate: this.v_orderdate,
         v_commitment: this.v_commitment,
-        v_shipment:   this.v_shipment
+        v_shipment:   this.v_shipment,
+        v_length: this.v_length,
+        v_width: this.v_width,
+        v_size: this.v_size
       }
       axios.post('http://localhost/Capstone-Project/backend/api/ProductionMonitoring/production_job_order/pjo_query.php', formData)
       .then((response) => {
@@ -492,19 +675,20 @@ export default {
           console.log(response.data);
           this.rows = response.data.PJOdata.map(row => {
             const sizeSelectedAbbreviated = unitAbbreviations[row.size_selected] || row.size_selected;
-            const jobOrderDate = new Date(row.date);
-            let year = jobOrderDate.getFullYear().toString();
-            year = year.slice(2); // Remove first two digits
-
-            const jobOrderNoPadded = year + '-' + row.job_order_no.toString().padStart(3, '0');
-
+            const latestData = response.data.mpo;
+            const latestPJO = response.data.pjoID;
+            const lastTwoDigits = latestData.companyDate.slice(2, 4);
+            const PjoFormat = `PJO${lastTwoDigits}-${row.pjoID}`;
               return {
                   id: row.pjoID,
-                  jobOrderNo: jobOrderNoPadded,
+                  jobOrderNo: PjoFormat,
                   jo: row.job_order_no,
                   pattern: row.design_pattern,
                   Quantity: row.quantity,
                   size: row.width + 'x' + row.length + ' ' + sizeSelectedAbbreviated,
+                  size_selected: row.size_selected,
+                  width: row.width,
+                  length: row.length,
                   order_date: row.order_date,
                   commitment_date: row.commitment_date,
                   shipment_date: row.shipped_date,

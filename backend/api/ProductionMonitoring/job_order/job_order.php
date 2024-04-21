@@ -102,17 +102,25 @@
                     exit; 
                 }
             }else if ($payload['type'] === 'getPJOall'){
-                $sql = "SELECT pjo_tbl.*, SUM(production_monitoring_tbl.total_output) AS total_output_sum
-                            FROM pjo_tbl 
-                            LEFT JOIN production_monitoring_tbl ON pjo_tbl.pjoID = production_monitoring_tbl.pjoID
-                            GROUP BY pjo_tbl.pjoID";
+                // $sql = "SELECT pjo_tbl.*, SUM(production_monitoring_tbl.total_output) AS total_output_sum
+                //             FROM pjo_tbl 
+                //             LEFT JOIN production_monitoring_tbl ON pjo_tbl.pjoID = production_monitoring_tbl.pjoID
+                //             GROUP BY pjo_tbl.pjoID";
                 
-                $getData = $this->db->rawQuery($sql);
+                // $getData = $this->db->rawQuery($sql);
+                $getData = $this->db->get('pjo_tbl');
+                
                 if($getData){
+                  $query = "SELECT companyDate FROM mpo_starting_date ORDER BY companyDate DESC LIMIT 1";
+ 
+                  $latestMPOresult = $this->db->rawQuery($query);
+                  $latestMPOdata = ($latestMPOresult) ? $latestMPOresult[0] : null;
+
                     $response = [
                         'status' => 'success',
                         'message' => 'Successfully fetched data',
                         'PJOdata' => $getData,
+                        'mpo' => $latestMPOdata,
                     ];
                     echo json_encode($response);
                     exit;
