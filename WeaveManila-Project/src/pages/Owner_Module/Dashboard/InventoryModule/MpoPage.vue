@@ -590,7 +590,7 @@ bordered
               </div>
               <div class="w-full p-2 flex items-center">
                 <div class="w-1/2">
-                  <div class="border bg-[#f6f8fa] p-2 ">
+                  <div class="border bg-[#f6f8fa] p-2 w-[500px]">
                     Notes & Instructions
                   </div>
                   <div class="w-[500px] whitespace-pre-line h-[200px] border p-2">
@@ -606,9 +606,9 @@ bordered
                     <div class="font-bold">Sub Total</div>
                     <div>₱ {{ total_in_table }}</div>
                     <div class="font-bold">Discount</div>
-                    <div>₱ {{ discount }}</div>
+                    <div>% {{ discount }}</div>
                     <div class="font-bold">TAX/VAT</div>
-                    <div>₱ {{ vat }}</div>
+                    <div>% {{ vat }}</div>
                     <div class="font-bold">Total Amount</div>
                     <div>₱ {{ total_amount }}</div>
                   </div>
@@ -1417,7 +1417,7 @@ export default {
           this.deliver_charge = mpoData.delivery_charge ?? 0;
           this.discount = mpoData.discount ?? 0;
           this.vat = mpoData.vat ?? 0;
-          this.other_cost = mpoData.other_cost ?? 0;
+          this.other_cost = mpoData.other_costs ?? 0;
           this.total_amount = mpoData.total_amount ?? 0;
 
           // Calculate total in table
