@@ -69,9 +69,6 @@ bordered
           <router-link to="/dashboard/productionplan-section">
             <li class="py-[2px] px-[40px] mt-3">Production Plan</li>
           </router-link>
-          <router-link to="/dashboard/joborder-section">
-            <li class="px-[40px] mt-3">Job Order</li>
-          </router-link>
         </ul>
       </li>
 

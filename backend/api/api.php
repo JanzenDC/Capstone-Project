@@ -61,7 +61,7 @@
         }
         
         if ($addotp) {
-            $credentials = SendinBlue\Client\Configuration::getDefaultConfiguration()->setApiKey('api-key', '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');
+            $credentials = SendinBlue\Client\Configuration::getDefaultConfiguration()->setApiKey('api-key', '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');
             $apiInstance = new SendinBlue\Client\Api\TransactionalEmailsApi(
                 new GuzzleHttp\Client(),
                 $credentials
