@@ -41,7 +41,29 @@
                 exit;
             }
 
-        }else{
+        }if($payload['get'] === 'onesegregator'){
+          $getData = $this->db->where('segregateID', $payload['id'])->getOne('mpo_segregate_tbl');
+          $getData2 = $this->db->where('segregatorName', $getData['segregator'])->get('mpo_segregator_projects');
+          if($getData){
+              $response = [
+                  'status' => 'success',
+                  'message' => 'Successfully fetch data.',
+                  'segregatorData' => $getData2,
+                  'mpoSeg' => $getData
+              ];
+              echo json_encode($response);
+              exit;
+          }else{
+              $response = [
+                  'status' => 'fail',
+                  'message' => 'There is no Data.',
+              ];
+              echo json_encode($response);
+              exit;
+          }
+
+        }
+        else{
             $response = [
                 'status' => 'fail',
                 'message' => 'Invalid Payload.',
@@ -132,6 +154,33 @@
                 exit;
             }
         
+        }else if($payload['type'] == '3'){
+            $getMpoID = $this->db->where('baseID', $payload['selectedBaseID'])->getOne('mpo_base');
+
+            $insertData = [
+                'mpoID' => $getMpoID['mpoID'],
+                'baseID' => $payload['selectedBaseID'],
+                'date' => $payload['vData'],
+                'segregator' => $payload['selectSegregator'],
+                'qty_raw_for_issuance' => $payload['qty_raw_issuance'],
+                'qty_for_received_taknis' => $payload['qty_received'],
+                'waste_gumon_for_received_taknis' => $payload['vWaste'],
+                'balance_for_received_taknis' => $payload['mpobalance']
+            ];
+            $insertQuery = $this->db->insert('mpo_segregate_tbl', $insertData);
+            if($insertQuery){
+              $updateData = ['quantity_balance' => $payload['quantitybal']];
+              $updateMPO = $this->db->where('mpoID', $getMpoID['mpoID'])->update('mpo_base', $updateData);
+              $response = ['status' => 'success', 'message' => 'Data inserted successfully'];
+              echo json_encode($response);
+              exit;
+            }else{
+              $response = ['status' => 'fail', 'message' => 'There is a problem to insert data'];
+              echo json_encode($response);
+              exit;
+            }
+        }else if($payload['type'] == '4'){
+
         }
         else{
             $response = ['status' => 'fail', 'message' => 'Invalid Type for payload'];

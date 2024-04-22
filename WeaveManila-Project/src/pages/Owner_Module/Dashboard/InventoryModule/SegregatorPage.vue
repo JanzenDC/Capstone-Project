@@ -797,7 +797,6 @@ bordered
             this.selectedBarangay = null;
             this.addSegregator = false;
             this.loadWeaverData();
-
           }
           if (Status === "fail") {
             this.$q.notify({
