@@ -71,6 +71,25 @@
               exit;
           }
         }
+        else if($payload['targetdata'] ==='rawmats'){
+              $getData = $this->db->where('mpoID', $payload['targetdatas'])->get('mpo_base');
+              if($getData){
+                $response = [
+                    'status' => 'success',
+                    'message' => 'Success getting Data',
+                    'information' => $getData,
+                ];
+                echo json_encode($response);
+                exit;
+            }else{
+                $response = [
+                    'status' => 'fail',
+                    'message' => 'Failed to fetch data.',
+                ];
+                echo json_encode($response);
+                exit;
+            }
+        }
         else{
             $response = [
                 'status' => 'fail',

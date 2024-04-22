@@ -398,10 +398,10 @@ export default {
           this.discount = mpoInfo.discount;
           this.other_costs = mpoInfo.other_costs;
 
-          axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/MPO_Queries/mpo_details.php?targetdata=${this.mpoIDnumber}`)
+          axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/MPO_Queries/mpo_details.php?targetdata=rawmats&targetdatas=${this.mpoIDnumber}`)
           .then(response => {
-            console.log(response.data.information3);
-            this.rows = response.data.information3.map(row => {
+            console.log(response.data.information);
+            this.rows = response.data.information.map(row => {
               return {
                 product: row.item_name,
                 qtypurchased: row.quantity,
