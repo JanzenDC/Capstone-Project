@@ -67,14 +67,14 @@
                     (
                         SELECT 
                             baseID, 
-                            MAX(date_received) AS max_date_received
+                            MAX(timestamp) AS max_date_received
                         FROM 
                             mpo_datereceived_logs
                         GROUP BY 
                             baseID
                     ) AS latest_dates ON base.baseID = latest_dates.baseID
                     LEFT JOIN 
-            mpo_datereceived_logs AS received_logs ON base.baseID = received_logs.baseID AND latest_dates.max_date_received = received_logs.date_received;';
+            mpo_datereceived_logs AS received_logs ON base.baseID = received_logs.baseID AND latest_dates.max_date_received = received_logs.timestamp;';
         
         
         

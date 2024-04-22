@@ -940,7 +940,6 @@ export default {
       } else {
         axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/MPO_Queries/mpo_data.php?get=targetCategory&id=${category}`)
         .then(response => {
-          console.log(response.data)
           try {
             const groupedData = response.data.categoryData.reduce((acc, row) => {
                 if (!acc[row.mpoID]) {
@@ -1018,13 +1017,11 @@ export default {
     },
     handleDateClick(date_received, event, product, dateIndex) {
       const a = dateIndex;
-      console.log(product);
       if (this.isValidDate(date_received)) {
         axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/MPO_Queries/mpo_data.php?get=datelogs&id=${event}`)
         .then(response => {
-          console.log(response.data);
           this.medium = true;
-
+          console.log(response.data)
           this.daterows = response.data.dateLogs[0].map((row, index) => {
             const timestamp = new Date(row.timestamp_column);
             let statusLabel = '';
@@ -1045,7 +1042,7 @@ export default {
               // index: index + 1,
               product: row.item_name,
               date: row.date_received,
-              qty_received: row.qty_received,
+              qty_received: row.received,
               // status: statusLabel // in status 2 = Recieved 1 = Partial Received and 0 for Pending
             };
           });
@@ -1104,7 +1101,6 @@ export default {
                           approved_by: mpoInfo.approved_by,
                           supplier_name: mpoInfo.supplier_name,
                       };
-                      console.log(mpoDataRestrieve);
                       SessionStorage.set('MPOData', JSON.stringify(mpoDataRestrieve));
                     });
 
@@ -1310,12 +1306,8 @@ export default {
             acc[row.mpoID].amount.push(row.subtotal);
             acc[row.mpoID].product.push(row.item_name);
             acc[row.mpoID].qty.push(row.quantity);
-            // Check if date_received is null
-            if (row.date_received !== null) {
-              acc[row.mpoID].date_received.push(row.date_received);
-            } else {
-              acc[row.mpoID].date_received.push(''); // Pushing an empty string for null values
-            }
+            acc[row.mpoID].date_received.push(row.date_received);
+
 
             acc[row.mpoID].qty_received.push(row.quantity_received);
 
@@ -1514,7 +1506,6 @@ export default {
           sreceived: row.sreceived,
           sstatus: row.sstatus,
         };
-        // console.log(rowData);
         formData.append('products[]', JSON.stringify(rowData));
       });
 
