@@ -291,7 +291,21 @@ bordered
             <div>
               <p>Position:</p> {{ position }}
             </div>
+                    <!-- Contact Information -->
+
           </div>
+            <div class="">
+              <div class="flex justify-between mt-3">
+                <div>
+                  <p>Email:</p> {{ email }}
+                </div>
+                <div>
+                  <q-btn @click="editContactInfo = true" unelevated rounded outline size="sm" class="rounded-full w-[80px] text-[#9e896a] text-[12px]">
+                    <q-icon name="edit"/> Edit
+                  </q-btn>
+                </div>
+              </div>
+            </div>
         </div>
         <q-dialog v-model="editBasicInfo">
           <q-card>
@@ -308,25 +322,7 @@ bordered
           </q-card>
         </q-dialog>
 
-        <!-- Contact Information -->
-        <div class="mt-3 md:w-[600px] p-5 border border-[#ddb7ab] rounded-[15px] drop-shadow-md bg-white">
-          <div class="flex justify-between -mt-8">
-            <h1 class="md:text-[19px] font-bold">Contact Information</h1>
-            <div class="w-[84px] flex items-center justify-center ">
-              <q-btn @click="editContactInfo = true" unelevated rounded outline size="sm" class="rounded-full w-full text-[#9e896a] text-[12px]">
-                <q-icon name="edit"/> Edit
-              </q-btn>
-            </div>
-          </div>
-          <div class="md:grid md:grid-cols-2">
-            <div>
-              <p>Email:</p> {{ email }}
-            </div>
-            <div>
-              <p>Mobile Number:</p> {{ mobilenumber }}
-            </div>
-          </div>
-        </div>
+
         <q-dialog v-model="editContactInfo" >
           <q-card class="w-[500px]">
             <q-card-section class="row items-center q-pb-none">

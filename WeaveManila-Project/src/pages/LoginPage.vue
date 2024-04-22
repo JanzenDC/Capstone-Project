@@ -9,9 +9,9 @@
       <q-img
         src="../assets/favicon-128x128.png"
         alt="Description of the image"
-        class="w-[46px] md:w-[42px] mt-8"
+        class="w-[46px] md:w-[86px] mt-8"
       />
-      <div class="flex justify-center items-center w-[550px]">
+      <div class=" w-[550px]">
         <div class="p-4 mt-8 w-[340px] min-[390px]:hidden sm:hidden md:block">
 
           <div>
@@ -20,7 +20,7 @@
             <br><span class="text-[#9e896a]">System!</span>
           </p>
           <p class="font-bold text-4xl mt-10">
-            Login In
+            Login
           </p>
           <p>Enter your credentials to access your account</p>
           <q-form
@@ -73,7 +73,7 @@
             <br><span class="text-[#9e896a]">System!</span>
           </p>
           <p class="font-bold text-[24px] mt-10">
-            Login In
+            Login
           </p>
           <p class="text-[12px]">Enter your credentials to access your account</p>
           <q-form

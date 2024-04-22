@@ -37,7 +37,6 @@
                     $selectedData = $this->db->where('baseID', $productData['sqlid'])->getOne('mpo_base');
                     if($selectedData){
                         $data = [
-                            'quantity_received' => $productData['sreceived'],
                             'quantity_balance' => $productData['sreceived'],
                             'status' => $productData['sstatus'],
                         ];
@@ -59,7 +58,7 @@
                                   'mpoID' => $selectedData['mpoID'],
                                   'date_received' => $date_received,
                                   'status' => $status,
-                                  'qty_received' => $productData['sreceived']
+                                //   'qty_received' => $productData['sreceived']
                               ];
 
                               // Insert new data

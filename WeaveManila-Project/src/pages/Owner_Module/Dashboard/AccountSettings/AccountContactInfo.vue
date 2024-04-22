@@ -127,25 +127,7 @@
           </q-card-actions>
         </q-card>
       </q-dialog>
-    <q-form @submit="onSubmit">
-      <p class="text-[#9e896a] font-bold">Phone</p>
-      <q-input
-        v-model="mobilenumber"
-        label="Phone Number"
-        type="tel"
-        outlined
-        dense
-        class="custom-border-color mt-3"
-        lazy-rules
-        :rules="[val => !!val || 'Phone Number is required', val => /^09\d{9}$/g.test(val) || 'Invalid Phone Number']"
-      />
-        <div class="flex justify-end w-full gap-2">
-        <div v-close-popup to="/dashboard/account-settings" class="bg-white rounded-full text-center p-2 text-[#9e896a] w-[74px] border-2 border-[#9e896a]">
-          Cancel
-        </div>
-        <q-btn label="Save" type="submit" class="bg-[#9e896a] rounded-full  text-white"/>
-      </div>
-    </q-form>
+
 </div>
 
 </template>
@@ -435,32 +417,6 @@ export default {
         });
       }
 
-    },
-    onSubmit() {
-      const formData = {
-        CPnumber: this.mobilenumber,
-      };
-      axios.put(`http://localhost/Capstone-Project/backend/api/Account_Settings/contactinfo.php/${this.uid}`, formData)
-      .then((response) =>{
-        this.responseStatus = response.data.status;
-        const responseInformation = response.data.information;
-        console.log(response.data)
-        if (this.responseStatus === "success") {
-            const existingInformation = JSON.parse(SessionStorage.getItem('information')) || {};
-            existingInformation.mobilenumber = responseInformation.mobilenumber;
-            this.$q.notify({
-                message: 'Contact Information Updated!',
-                caption: 'Your contact iformation has been changed successfully.',
-                color: 'green',
-            });
-
-            SessionStorage.set('information', JSON.stringify(existingInformation));
-            this.loadUserData();
-            window.location.reload();
-        }
-      }).catch(error => {
-        console.error('Error submitting form:', error);
-      });
     },
     closeModal() {
       this.showSuccessModal = false;

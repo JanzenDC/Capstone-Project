@@ -291,6 +291,7 @@
         $supplierID = $this->db->where('supplier_name', $_POST['supplierValue'])->getOne('w_supplierlist');
         $categoryID = $this->db->where('title', $_POST['categories'])->getOne('w_category');
         $personnel = $this->db->where('isAdmin', '1')->getOne('personel_tbl');
+        
         if ($supplierID) {
             $insertData = [
                 'mpoID' => $nextMPOID,

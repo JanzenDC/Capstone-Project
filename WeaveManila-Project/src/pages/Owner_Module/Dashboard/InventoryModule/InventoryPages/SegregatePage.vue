@@ -755,7 +755,7 @@ bordered
               // Populate items array from the 'information' array
               this.selectedBaseID = response.data.information[0].baseID;
               this.categories = response.data.information3;
-              this.qty_in = response.data.information[0].quantity;
+              this.qty_in = response.data.information[0].quantity_received;
               console.log(this.selectedBaseID)
               this.qty_bal = response.data.information[0].quantity_balance;
               this.items = response.data.information.map(category => ({
