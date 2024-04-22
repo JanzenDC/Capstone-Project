@@ -230,7 +230,7 @@ bordered
             <q-icon name="search" />
           </template>
         </q-input>
-        <q-btn @click="addUserModal = true">
+        <q-btn @click="AddUser">
           <i class="bi bi-plus-lg"></i>
           Add User
         </q-btn>
@@ -245,7 +245,7 @@ bordered
           <q-btn icon="close" flat round dense v-close-popup />
         </q-card-section>
         <q-form @submit="onSubmit">
-          <q-card-section class='overflow-x-hidden overflow-y-auto h-[500px]'>
+          <q-card-section class='overflow-x-hidden overflow-y-auto h-[450px]'>
             <div class="text-h6 font-bold text-[#667085]">Personal Information</div>
             <div class="grid grid-cols-2 gap-1">
               <!-- Firstname -->
@@ -368,9 +368,9 @@ bordered
                 ></q-input>
               </div>
             </div>
-            <div class="text-h6 font-bold text-[#667085]">Security</div>
+            <!-- <div class="text-h6 font-bold text-[#667085]">Security</div> -->
               <!-- Password -->
-              <div>
+              <!-- <div>
                 <p class="text-[15px]">Password</p>
                   <q-input
                     class="w-full"
@@ -378,7 +378,7 @@ bordered
                     label="Password"
                     outlined
                     dense
-                    :type="showPassword ? 'text' : 'password'"
+                    type='text'
                     :no-error-icon="true"
                     :rules="[val => !!val || 'Password is required',
                               val => val.length >= 8 || 'Password must be at least 8 characters']"
@@ -386,8 +386,8 @@ bordered
                   <template v-slot:after>
                     <q-btn class="h-[35px] text-white text-[13px] bg-[#967259] w-[180px]" label="Generate Password" @click="generatePassword"/>
                   </template>
-                  </q-input>
-            </div>
+                </q-input>
+              </div> -->
 
           </q-card-section>
           <q-card-actions align="right">
@@ -728,6 +728,10 @@ export default {
     clearInterval(this.statusCheckTimer);
   },
   methods: {
+    AddUser(){
+      this.addUserModal = true;
+      this.generatePassword();
+    },
     validateAge(birthdate) {
         // Calculate the user's age based on the provided birthdate
         const today = new Date();
