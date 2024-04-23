@@ -543,35 +543,7 @@
   </div>
 
 </q-page>
-<q-dialog v-model="OpenLogout">
-  <q-card class="w-[500px]">
-    <q-card-section class="gap-3 items-center q-pb-none flex">
-      <div class="py-1 px-2 border text-[24px]"><q-icon name="logout"/></div>
-      <div class="text-h6 font-bold">Logout</div>
-      <q-space />
-    </q-card-section>
 
-    <q-card-section>
-
-      <p>Are you sure you want to Logout?</p>
-    </q-card-section>
-
-    <q-card-actions class="flex justify-center items-center">
-      <div class="w-1/2 p-1">
-        <q-btn flat label="Cancel" outline v-close-popup class="w-full border"/>
-      </div>
-      <div class="w-1/2 p-1">
-        <q-btn
-          @click="logout"
-          flat
-          label="Logout"
-          size="md"
-          class="bg-red-600 text-white rounded w-full"
-        />
-      </div>
-    </q-card-actions>
-  </q-card>
-</q-dialog>
 
 </template>
 
