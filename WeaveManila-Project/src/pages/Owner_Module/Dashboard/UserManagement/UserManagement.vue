@@ -461,137 +461,140 @@ bordered
           <q-space />
           <q-btn icon="close" flat round dense v-close-popup @click="closeEditDialog"/>
         </q-card-section>
-
-        <q-card-section style="max-height: 150vh" class="scroll">
-          <q-form @submit="onSubmitEdit">
-          <div class="text-h6 font-bold text-[#667085]">Personal Information</div>
-          <div class="grid grid-cols-2 gap-1">
-            <!-- Firstname -->
-            <div>
-              <p class="text-[15px]">First Name</p>
-              <q-input
-                v-model="fname"
-                label="First Name"
-                type="text"
-                outlined
-                dense
-                :no-error-icon="true"
-                :rules="[val => !!val || 'First Name is required']"
-              ></q-input>
-            </div>
-            <!-- Lastname -->
-            <div>
-              <p class="text-[15px]">Last Name</p>
-              <q-input
-                v-model="lname"
-                label="Last Name"
-                type="text"
-                outlined
-                dense
-                :no-error-icon="true"
-                :rules="[val => !!val || 'Last Name is required']"
-              ></q-input>
-            </div>
-            <!-- Birthdate -->
-            <div>
-              <p class="text-[15px]">Birthday</p>
-              <q-input
-                v-model="bdate"
-                label="Birthday"
-                type="date"
-                outlined
-                dense
-                :no-error-icon="true"
-                :rules="[val => !!val || 'Birthday is required']"
-              ></q-input>
-            </div>
-            <!-- Gender -->
-            <div>
-              Gender
-              <q-select
-                outlined
-                dense
-                v-model="gInput"
-                :options="options"
-                label="Gender"
-                :rules="[val => !!val || 'Gender is required']"
-              />
-            </div>
-            <!-- Civil Status -->
-            <div>
-              Civil Status
-              <q-select
-                outlined
-                dense
-                v-model="cInput"
-                :options="civilOptions"
-                label="Select option for civil status"
-                :rules="[val => !!val || 'Civil Status is required']"
-              />
-            </div>
-            <!-- Address -->
-            <div>
-              <p class="text-[15px]">Address</p>
-              <q-input
-                v-model="avalue"
-                label="Address"
-                type="text"
-                outlined
-                dense
-                :no-error-icon="true"
-                :rules="[val => !!val || 'Address is required']"
-              ></q-input>
-            </div>
-              <!-- Position Status -->
+        <q-form @submit="onSubmitEdit">
+          <q-card-section class='overflow-x-hidden overflow-y-auto h-[450px]'>
+            <div class="text-h6 font-bold text-[#667085]">Personal Information</div>
+            <div class="grid grid-cols-2 gap-1">
+              <!-- Firstname -->
               <div>
-                Position
+                <p class="text-[15px]">First Name</p>
+                <q-input
+                  v-model="fname"
+                  label="First Name"
+                  type="text"
+                  outlined
+                  dense
+                  :no-error-icon="true"
+                  :rules="[val => !!val || 'First Name is required']"
+                ></q-input>
+              </div>
+              <!-- Lastname -->
+              <div>
+                <p class="text-[15px]">Last Name</p>
+                <q-input
+                  v-model="lname"
+                  label="Last Name"
+                  type="text"
+                  outlined
+                  dense
+                  :no-error-icon="true"
+                  :rules="[val => !!val || 'Last Name is required']"
+                ></q-input>
+              </div>
+              <!-- Birthdate -->
+              <div>
+                <p class="text-[15px]">Birthday</p>
+                <q-input
+                  v-model="bdate"
+                  label="Birthday"
+                  type="date"
+                  outlined
+                  dense
+                  :no-error-icon="true"
+                  :rules="[val => !!val || 'Birthday is required']"
+                ></q-input>
+              </div>
+              <!-- Gender -->
+              <div>
+                Gender
                 <q-select
                   outlined
                   dense
-                  v-model="posvalue"
-                  :options="posOptions"
-                  :rules="[val => !!val || 'Position value is empty']"
+                  v-model="gInput"
+                  :options="options"
+                  label="Gender"
+                  :rules="[val => !!val || 'Gender is required']"
                 />
               </div>
-          </div>
-          <div class="text-h6 font-bold text-[#667085]">Contact Information</div>
-          <div class="grid grid-cols-2 gap-5">
-            <!-- Email -->
-            <div>
-              <p class="text-[15px]">Email Address</p>
-              <q-input
-                v-model="evalue"
-                label="Email Address"
-                type="email"
-                outlined
-                dense
-                :no-error-icon="true"
-                :rules="[val => !!val || 'Email Address is required',
-                          val => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val) || 'Invalid Email Address']"
-              ></q-input>
+              <!-- Civil Status -->
+              <div>
+                Civil Status
+                <q-select
+                  outlined
+                  dense
+                  v-model="cInput"
+                  :options="civilOptions"
+                  label="Select option for civil status"
+                  :rules="[val => !!val || 'Civil Status is required']"
+                />
+              </div>
+              <!-- Address -->
+              <div>
+                <p class="text-[15px]">Address</p>
+                <q-input
+                  v-model="avalue"
+                  label="Address"
+                  type="text"
+                  outlined
+                  dense
+                  :no-error-icon="true"
+                  :rules="[val => !!val || 'Address is required']"
+                ></q-input>
+              </div>
+                <!-- Position Status -->
+                <div>
+                  Position
+                  <q-select
+                    outlined
+                    dense
+                    v-model="posvalue"
+                    :options="posOptions"
+                    :rules="[val => !!val || 'Position value is empty']"
+                  />
+                </div>
             </div>
-            <!-- Contact/Phone -->
-            <div>
-              <p class="text-[15px]">Contact Number</p>
-              <q-input
-                v-model="cvalue"
-                label="Contact Number"
-                type="tel"
-                outlined
-                dense
-                :no-error-icon="true"
-                :rules="[val => !!val || 'Contact Number is required',
-                        val => /^09\d{9}$/.test(val) || 'Invalid Philippine contact number']"
-                pattern="09[0-9]{9}"
-              ></q-input>
+            <div class="text-h6 font-bold text-[#667085]">Contact Information</div>
+            <div class="grid grid-cols-2 gap-5">
+              <!-- Email -->
+              <div>
+                <p class="text-[15px]">Email Address</p>
+                <q-input
+                  v-model="evalue"
+                  label="Email Address"
+                  type="email"
+                  outlined
+                  dense
+                  :no-error-icon="true"
+                  :rules="[val => !!val || 'Email Address is required',
+                            val => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val) || 'Invalid Email Address']"
+                ></q-input>
+              </div>
+              <!-- Contact/Phone -->
+              <div>
+                <p class="text-[15px]">Contact Number</p>
+                <q-input
+                  v-model="cvalue"
+                  label="Contact Number"
+                  type="tel"
+                  outlined
+                  dense
+                  :no-error-icon="true"
+                  :rules="[val => !!val || 'Contact Number is required',
+                          val => /^09\d{9}$/.test(val) || 'Invalid Philippine contact number']"
+                  pattern="09[0-9]{9}"
+                ></q-input>
+              </div>
             </div>
-          </div>
-          <div class="flex gap-2">
-            <q-btn label="Submit" type="submit" />
-            <q-btn flat color="primary" @click="closeEditDialog">Close</q-btn>
-          </div>
+            <div class="flex gap-2">
+              <q-btn label="Submit" type="submit" />
+              <q-btn flat color="primary" @click="closeEditDialog">Close</q-btn>
+            </div>
+          
+          </q-card-section>
+          <q-card-actions align="right">
+              <q-btn label="Submit" type="submit" class='text-white bg-[#967259]'/>
+          </q-card-actions>
         </q-form>
-        </q-card-section>
       </q-card>
     </q-dialog>
   </div>
