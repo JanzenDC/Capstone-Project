@@ -92,13 +92,6 @@ bordered
           </router-link>
         </div>
       </li>
-      <li class="py-[10px] px-[20px]">
-        <div class="flex items-center">
-          <router-link to="/dashboard/account-settings">
-            <q-icon name="manage_accounts" class="mr-2"/> <span >Account Settings</span>
-          </router-link>
-        </div>
-      </li>
       <li class="py-[10px] px-[20px]" v-if="isAdmin === 1">
         <div class="flex items-center">
           <router-link to="/dashboard/backup-section">
@@ -107,31 +100,6 @@ bordered
         </div>
       </li>
 
-      <li class="mt-auto py-[10px]">
-        <q-separator />
-        <div class="flex justify-between text-center" >
-          <div class="flex items-center" >
-            <q-img
-              :src="getUserProfileImagePath()"
-              alt="Description of the image"
-              class="w-12 md:w-12 rounded-full"
-            />
-            <div class="ml-2 overflow-hidden">
-              <div class="whitespace-nowrap overflow-hidden text-overflow-ellipsis font-bold">
-                {{ getLimitedFullname(fullname, 25) }}
-              </div>
-              <div class="text-center">
-                {{ position }}
-              </div>
-            </div>
-          </div>
-          <div class="flex items-center ">
-            <div @click="OpenLogout = true">
-              <q-icon name="logout" class="h-[18px] w-[20px] font-bold"/>
-            </div>
-          </div>
-        </div>
-      </li>
   </ul>
 
   <ul class="p-2 flex flex-col h-full static" v-if="drawerWidth <= 80">
@@ -200,23 +168,59 @@ bordered
 </q-drawer>
 <q-page class="bg-[#f5f5f5] ">
   <div class="text-[30px] bg-white p-4">
-    <div class="items-center flex">
-      <q-icon
-        name="menu"
-        v-if="showMenuIcon"
-        @click="toggleDrawer"
-        class="cursor-pointer"
-      />
-      <q-icon
-        name="menu"
-        v-if="!showMenuIcon"
-        @click="toggleDrawer"
-        class="cursor-pointer max-[1020px]:flex min-[1020px]:hidden"
-      />
-    <span class="font-bold">Main Dashboard</span>
+    <div class='justify-between flex'>
+      <div class="items-center flex">
+        <q-icon
+          name="menu"
+          v-if="showMenuIcon"
+          @click="toggleDrawer"
+          class="cursor-pointer"
+        />
+        <q-icon
+          name="menu"
+          v-if="!showMenuIcon"
+          @click="toggleDrawer"
+          class="cursor-pointer max-[1020px]:flex min-[1020px]:hidden"
+        />
+      <span class="font-bold">Dashboard</span>
+      </div>
+      <div class='flex items-center'>
+        <q-img
+          :src="getUserProfileImagePath()"
+          alt="Description of the image"
+          class="w-12 md:w-12 rounded-full"
+        />
+        <q-icon :name="modalVisible ? 'keyboard_arrow_up' : 'keyboard_arrow_down'" @click="toggleModal" />
+        <div v-show="modalVisible" class="fixed right-3 -top-[160px] overflow-y-auto z-50" @click="toggleModal">
+          <div class="flex items-center justify-center min-h-screen">
+            <div class="bg-white rounded-lg shadow-xl text-[16px]">
+              <div class='bg-[#291B0E] w-full h-[50px] rounded-lg'>
+              </div>
+              <div class='p-4 px-2 relative '>
+                <q-img
+                  :src="getUserProfileImagePath()"
+                  alt="Description of the image"
+                  class="w-12 md:w-14 rounded-full absolute -top-[30px] left-[64px] "
+                />
+                <div class='mt-4'>
+                  <div class='text-center mb-2'>
+                    {{ getLimitedFullname(fullname, 25) }}
+                  </div>
+                  <router-link to="/dashboard/account-settings" class='p-2'>
+                    <q-icon name="settings" class="mr-2"/> <span >Account Settings</span>
+                  </router-link>
+                  <div @click="OpenLogout = true" class='flex items-center p-2 hover:bg-red-200 hover:text-red-500'>
+                    <q-icon name="logout" class="h-[18px] w-[20px] font-bold"/>
+                    <p>Logout</p>
+                  </div>
+                </div>
+              </div>
+              
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-
-
   </div>
 
   <q-dialog v-model="OpenLogout">
@@ -282,6 +286,7 @@ export default {
       inventoryMenuVisible: false,
       productionVisible: false,
       OpenLogout: false,
+      modalVisible: false,
     };
   },
   mounted() {
@@ -294,6 +299,9 @@ export default {
     clearInterval(this.statusCheckTimer);
   },
   methods: {
+    toggleModal() {
+      this.modalVisible = !this.modalVisible;
+    },
     toggleProduction(){
       this.productionVisible = !this.productionVisible;
     },

@@ -584,12 +584,7 @@ bordered
                   pattern="09[0-9]{9}"
                 ></q-input>
               </div>
-            </div>
-            <div class="flex gap-2">
-              <q-btn label="Submit" type="submit" />
-              <q-btn flat color="primary" @click="closeEditDialog">Close</q-btn>
-            </div>
-          
+            </div>     
           </q-card-section>
           <q-card-actions align="right">
               <q-btn label="Submit" type="submit" class='text-white bg-[#967259]'/>
