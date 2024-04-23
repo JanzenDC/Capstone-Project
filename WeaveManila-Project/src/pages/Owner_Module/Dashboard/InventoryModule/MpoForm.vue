@@ -332,7 +332,7 @@ export default {
       other_cost: 0,
       discount: 0,
       discount_value: 0,
-      tax_vat: 0,
+      tax_vat: 12,
       tax_vat_value: 0,
       total: 0,
       otherCostOptions: [
