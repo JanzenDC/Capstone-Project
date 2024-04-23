@@ -1389,6 +1389,8 @@ export default {
             status: information.status,
             password: information.password,
             isAdmin: information.isAdmin,
+            suffix: information.suffix,
+            civil_status: information.civil_status
           };
           SessionStorage.set('information', JSON.stringify(this.information));
 

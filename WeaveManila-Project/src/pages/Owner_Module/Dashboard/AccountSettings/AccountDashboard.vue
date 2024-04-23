@@ -1,232 +1,212 @@
 <template>
 <SideBar/>
 <q-page class="bg-[#f5f5f5]">
-  <div class="bg-white p-2">
-    <div class='justify-between flex'>
-      <div class="text-[30px] flex items-center min-[360px]:gap-5">
-        <q-icon
-          name="menu"
-          v-if="showMenuIcon"
-          @click="toggleDrawer"
-          class="cursor-pointer"
-        />
-        <q-icon
-          name="menu"
-          v-if="!showMenuIcon"
-          @click="toggleDrawer"
-          class="cursor-pointer max-[1020px]:flex min-[1020px]:hidden"
-        />
-          <span class="font-bold">Account Settings</span>
-      </div>
-      <div class='flex items-center'>
-        <q-img
-          :src="getUserProfileImagePath()"
-          alt="Description of the image"
-          class="w-12 md:w-12 rounded-full"
-        />
-        <q-icon :name="modalVisible ? 'keyboard_arrow_up' : 'keyboard_arrow_down'" size='md' @click="toggleModals" />
-        <div v-show="modalVisible" class="fixed right-3 -top-[160px] overflow-y-auto z-50" @click="toggleModals">
-          <div class="flex items-center justify-center min-h-screen">
-            <div class="bg-white rounded-lg shadow-xl text-[16px]">
-              <div class='bg-[#291B0E] w-full h-[50px] rounded-lg'>
-              </div>
-              <div class='p-4 px-2 relative '>
-                <q-img
-                  :src="getUserProfileImagePath()"
-                  alt="Description of the image"
-                  class="w-12 md:w-14 rounded-full absolute -top-[30px] left-[64px] "
-                />
-                <div class='mt-4'>
-                  <div class='text-center mb-2'>
-                    {{ getLimitedFullname(fullname, 25) }}
-                  </div>
-                  <router-link to="/dashboard/account-settings" class='p-2'>
-                    <q-icon name="settings" class="mr-2"/> <span >Account Settings</span>
-                  </router-link>
-                  <div @click="OpenLogout = true" class='flex items-center p-2 hover:bg-red-200 hover:text-red-500'>
-                    <q-icon name="logout" class="text-[16px] font-bold mr-3"/>
-                    <p>Logout</p>
-                  </div>
-                </div>
-              </div>
-
-            </div>
-          </div>
+  <div class='flex justify-between items-center text-[30px] bg-white p-2'>
+    <div class="items-center flex">
+      <q-icon
+        name="menu"
+        v-if="showMenuIcon"
+        @click="toggleDrawer"
+        class="cursor-pointer"
+      />
+      <q-icon
+        name="menu"
+        v-if="!showMenuIcon"
+        @click="toggleDrawer"
+        class="cursor-pointer max-[1020px]:flex min-[1020px]:hidden"
+      />
+      <div>
+        <span class="font-bold">Account Settings</span>
+        <div class="text-[16px] text-[#999999]">
+          <p class="text-[16px] text-[#755e4a]">Setup your account, edit profile details</p>
         </div>
       </div>
     </div>
-    <div class="text-[16px]">Setup you account, edit profile details & change password</div>
+    <LogoutTop />
   </div>
-    <div class="w-full md:flex md:justify-center mt-3 overflow-y-auto overflow-x-hidden h-[480px]">
-    <div>
-        <!-- User Area -->
-        <div class="bg-white p-4 md:w-[600px] min-[390px]:h-[160px] border border-[#ddb7ab] rounded-[15px] drop-shadow-md flex md:justify-between
-        min-[390px]:justify-center">
-          <div class="md:flex items-center gap-2">
-            <div>
-              <div  class="relative flex justify-center items-center">
-                <q-img
-                  :src="getUserProfileImagePath()"
-                  alt="Description of the image"
-                  class="w-[100px] rounded-full min-[390px]:w-[80px] "
-                />
-                <div class="absolute right-12 bottom-0">
-                    <div class="rounded-full py-2 px-3 bg-[#ddb7ab] md:hidden" @click="editProfile = true">
-                      <q-icon name="photo_camera"/>
-                    </div>
-                </div>
-              </div>
 
-            </div>
-            <div class="text-center">
-              <p class="font-bold text-[16px]">{{ firstname }} {{ lastname }}</p>
-              {{ position }}
-            </div>
-          </div>
-            <div class="w-[84px] flex items-center justify-center min-[390px]:hidden md:flex ">
-              <q-btn @click="editProfile = true" unelevated rounded outline size="sm" class="rounded-full w-full text-[#9e896a] text-[12px]">
-                <q-icon name="edit"/> Edit
-              </q-btn>
-            </div>
+  <div class="p-4 ">
+    <div class="flex mt-8">
+      <router-link to="">
+        <div class="flex text-[#89909e] border-t-2 border-e-2 w-[128px] h-[44px] py-3 px-5 gap-[8px] rounded items-center text-[14px]">
+          <q-icon name="apartment"/>
+          <p>Company</p>
         </div>
-        <q-dialog v-model="editProfile">
-          <q-card>
-            <q-card-section class="row items-center q-pb-none">
-              <div class="text-h6">Change Avatar</div>
-              <q-space />
-              <q-btn icon="close" flat round dense v-close-popup />
-
-            </q-card-section>
-            <q-separator />
-            <q-card-section>
-              <UserProfile />
-            </q-card-section>
-          </q-card>
-        </q-dialog>
-
-        <!-- Personal Information -->
-        <div class="bg-white mt-3 md:w-[600px] p-5 border border-[#ddb7ab] rounded-[15px] drop-shadow-md">
-          <div class="flex justify-between -mt-8">
-            <h1 class="md:text-[19px] font-bold">Personal Information</h1>
-            <div class="w-[84px] flex items-center justify-center ">
-              <q-btn @click="editBasicInfo = true" unelevated rounded outline size="sm" class="rounded-full w-full text-[#9e896a] text-[12px]">
-                <q-icon name="edit"/> Edit
-              </q-btn>
-            </div>
-          </div>
-          <div class="grid grid-cols-2 gap-3 -mt-4">
-            <div>
-              <p>First Name:</p> {{ firstname }}
-            </div>
-            <div>
-              <p>Last Name:</p> {{ lastname }}
-            </div>
-            <div>
-              <p>Birthday:</p> {{ birthdate }}
-            </div>
-            <div>
-              <p>Gender:</p> {{ gender }}
-            </div>
-            <div>
-              <p>Address:</p> {{ address }}
-            </div>
-            <div>
-              <p>Position:</p> {{ position }}
-            </div>
-            <div>
-              <p>Email:</p> {{ email }}
-            </div>
-          </div>
-
+      </router-link>
+      <router-link to="">
+        <div class="flex bg-white border-e-2 w-[128px] h-[44px] py-3 px-5 gap-[8px] rounded items-center text-[14px] ">
+          <q-icon name="list"/>
+          <p>Profile</p>
         </div>
-        <q-dialog v-model="editBasicInfo">
-          <q-card style="width: 800px; max-width: 80vw;">
-            <q-card-section class="row items-center q-pb-none">
-              <div class="text-h6">Personal Information</div>
-              <q-space />
-              <q-btn icon="close" flat round dense v-close-popup />
-
-            </q-card-section>
-            <q-separator />
-            <q-card-section>
-              <BasicInfo />
-            </q-card-section>
-          </q-card>
-        </q-dialog>
-
-
-        <q-dialog v-model="editContactInfo" >
-          <q-card class="w-[500px]">
-            <q-card-section class="row items-center q-pb-none">
-              <div class="text-h6">Contact Information</div>
-              <q-space />
-              <q-btn icon="close" flat round dense v-close-popup />
-
-            </q-card-section>
-            <q-separator />
-            <q-card-section>
-              <ContactInfo />
-            </q-card-section>
-          </q-card>
-        </q-dialog>
-
-        <!-- Password Information -->
-        <div class="bg-white mt-3 md:w-[600px] p-5 border border-[#ddb7ab] rounded-[15px] drop-shadow-md">
-          <div class="-mt-8">
-            <h1 class="md:text-[19px] font-bold">Security</h1>
-          </div>
-          <div class='flex justify-between -mt-3 cursor-pointer' @click="editPasswordInfo = true">
-            <p>Change Password</p>
-            <q-icon name='arrow_forward_ios' class='text-[16px]'/>
-          </div>
+      </router-link>
+      <router-link to="">
+        <div class="flex text-[#89909e] border-t-2 border-e-2 w-[128px] h-[44px] py-3 px-5 gap-[8px] rounded items-center text-[14px]">
+          <q-icon name="password"/>
+          <p>Password</p>
         </div>
-        <q-dialog v-model="editPasswordInfo" >
-          <q-card class="w-[800px]">
-            <q-card-section class="row items-center q-pb-none">
-              <div class="text-h6">Security</div>
-              <q-space />
-              <q-btn icon="close" flat round dense v-close-popup />
-
-            </q-card-section>
-            <q-separator />
-            <q-card-section>
-              <PasswordInfo />
-            </q-card-section>
-          </q-card>
-        </q-dialog>
-
-      </div>
+      </router-link>
     </div>
-</q-page>
-<q-dialog v-model="OpenLogout">
-  <q-card class="w-[500px]">
-    <q-card-section class="gap-3 items-center q-pb-none flex">
-      <div class="py-1 px-2 border text-[24px]"><q-icon name="logout"/></div>
-      <div class="text-h6 font-bold">Logout</div>
-      <q-space />
-    </q-card-section>
 
-    <q-card-section>
-
-      <p>Are you sure you want to Logout?</p>
-    </q-card-section>
-
-    <q-card-actions class="flex justify-center items-center">
-      <div class="w-1/2 p-1">
-        <q-btn flat label="Cancel" outline v-close-popup class="w-full border"/>
-      </div>
-      <div class="w-1/2 p-1">
-        <q-btn
-          @click="logout"
-          flat
-          label="Logout"
-          size="md"
-          class="bg-red-600 text-white rounded w-full"
+    <div class="w-full bg-white p-4 overflow-x-hidden overflow-y-auto h-[430px]">
+      <div class='flex gap-2 items-center'>
+        <q-img
+        :src="getUserProfileImagePath()"
+        alt="Description of the image"
+        class="w-[80px] h-[80px] rounded-full"
         />
+        <div>
+          <p class='font-bold text-[24px]'>Profile Picture</p>
+          <q-btn dense icon='upload' label="Upload Photo" @click="uploadDialog = true" class="bg-[#634832] text-white mt-3"/>
+          <p class='mt-3'>We support PNGs</p>
+            <q-dialog v-model="uploadDialog" persistent transition-show="scale" transition-hide="scale">
+
+              <q-card class="text-Black" style="width: 350px">
+                <q-form @submit="onUpload">
+                  <q-card-section class="row items-center q-pb-none">
+                    <div class="text-h6">Update Profile</div>
+                    <q-space />
+                    <q-btn icon="close" flat round dense v-close-popup />
+                  </q-card-section>
+
+                  <q-separator />
+                  <q-card-section>
+                    <div class="flex justify-center">
+                      <q-img
+                        :src="previewImage || getUserImagePath()"
+                        alt="Description of the image"
+                        class="w-[200px] h-[200px] rounded-full mt-3"
+                      />
+                    </div>
+                    <div class='flex justify-center mt-3'>
+                      <q-input
+                        ref="fileInput"
+                        @update:model-value="handleFileChange"
+                        dense outlined
+                        type="file"
+                        accept="image/png"
+                        hint="Only PNG format picture allowed."
+                        v-model="selectedFile"
+                        class='w-[240px]'
+                      />
+                      <div v-if="previewImage">
+                        <q-btn flat label="Cancel Preview" @click="cancelPreview" class="q-mt-sm" />
+                      </div>
+                    </div>
+                  </q-card-section>
+
+
+                <q-separator />
+
+                <q-card-actions align="right" class="bg-white text-teal">
+                  <q-btn flat label="Close" @click="cancelUpload" class='text-black' v-close-popup />
+                  <q-btn label="Save" type="submit" class="bg-[#9e896a] rounded-md text-white"/>
+                </q-card-actions>
+                
+                </q-form>
+              </q-card>
+            </q-dialog>
+        </div>
       </div>
-    </q-card-actions>
-  </q-card>
-</q-dialog>
+      <q-form @submit="OnUpdateUser">
+        <!-- Basic Information -->
+        <div>
+        <div class='text-h5 font-bold'>Basic Information</div>
+        <div class='grid grid-cols-4 gap-3'>
+          <div>
+            <p>First Name</p>
+            <q-input v-model="fname"  outlined  dense class="custom-border-color" lazy-rules :rules="[ val => val && val.length > 0 || 'Please type something']"/>
+          </div>
+          <div>
+            <p>Middle Name</p>
+            <q-input v-model="mname"  outlined  dense class="custom-border-color" lazy-rules :rules="[ val => val && val.length > 0 || 'Please type something']"/>
+          </div>
+          <div>
+            <p>Last Name</p>
+            <q-input v-model="lname"  outlined  dense class="custom-border-color" lazy-rules :rules="[ val => val && val.length > 0 || 'Please type something']"/>
+          </div>
+          <div>
+            <p>Suffix Name</p>
+            <q-input v-model="sname"  outlined  dense class="custom-border-color"/>
+          </div>
+          <div>
+            <p>Birthday</p>
+            <q-input v-model="bdate" type='date' outlined  dense class="custom-border-color" lazy-rules :rules="[ val => val && val.length > 0 || 'Please type something']"/>
+          </div>
+          <div>
+            <p>Gender</p>
+            <q-select v-model="vgender" :options='genderOptions' outlined  dense class="custom-border-color" lazy-rules :rules="[ val => val && val.length > 0 || 'Please type something']"/>
+          </div>
+          <div>
+            <p>Status</p>
+            <q-select v-model="civStatus" :options='statusOptions' outlined  dense class="custom-border-color" lazy-rules :rules="[ val => val && val.length > 0 || 'Please type something']"/>
+          </div>
+          <div>
+            <p>Email</p>
+            <q-input v-model="vemail" outlined  dense class="custom-border-color" lazy-rules :rules="[ val => val && val.length > 0 || 'Please type something']"/>
+          </div>
+        </div>
+        </div>
+
+        <!-- Address -->
+        <div>
+          <div class='text-h5 font-bold'>Address</div>
+            <q-input v-model='addressValue' dense outlined disable>
+              <template v-slot:before>
+                <q-icon name="edit" class='cursor-pointer' @click='toggleEditAddress'/>
+              </template>
+            </q-input>
+            <div class="grid grid-cols-3 gap-2 mt-3" v-if='showAddressEdit'>
+              <div>
+                <p>Region<span class="text-red-600">*</span></p>
+                <q-select v-model="selectedRegion" :options="regionOptions" label="Region" @input="onRegionChange" dense outlined class='flex-wrap' />
+              </div>
+              <div>
+                <p>Province<span class="text-red-600">*</span></p>
+                <q-select
+                  v-model="selectedProvince"
+                  :options="provinceOptions"
+                  label="Province"
+                  dense outlined
+                  :disable="!selectedRegion"
+                >
+                </q-select>
+              </div>
+              <div>
+                <p>City<span class="text-red-600">*</span></p>
+                <q-select v-model="selectedCity" :options="cityOptions" label="City" dense outlined :disable="!selectedProvince" class='flex-wrap'/>
+              </div>
+              <div>
+                <p>Barangay<span class="text-red-600">*</span></p>
+                <q-select v-model="selectedBarangay" :options="barangayOptions" label="Barangay" dense outlined :disable="!selectedCity" />
+              </div>
+              <div>
+                <p>
+                  Unit no./House no. /Building Name
+                </p>
+                <q-input type="text" label="Unit no./House no. /Building Name" v-model="suppUnit" lazy-rules :no-error-icon="true" outlined dense />
+              </div>
+              <div>
+                <p>
+                  Street
+                </p>
+                <q-input type="text" label="Street" v-model="suppStreet"  lazy-rules :no-error-icon="true" outlined dense />
+              </div>
+              <div>
+                <p>
+                  Zip Code
+                </p>
+                <q-input type="text" label="Zip Code" v-model="suppZipcode"  lazy-rules :no-error-icon="true" outlined dense />
+              </div>
+            </div>
+        </div>
+
+        <div class='flex justify-end items-end mt-5'>
+          <q-btn label='Save Changes' type='submit' class='bg-[#634832] text-white' />
+        </div>
+      </q-form>
+    </div>
+  </div>
+</q-page>
 
 </template>
 
@@ -234,18 +214,13 @@
 // import { useQuasar } from 'quasar';
 import { SessionStorage } from 'quasar';
 import axios from 'axios';
-import UserProfile from './AccountUserprofile.vue';
-import BasicInfo from './AccountBasicinfo.vue';
-import ContactInfo from './AccountContactInfo.vue';
-import PasswordInfo from './AccountSecurity.vue';
 import SideBar from '../Essentials/SideBar.vue';
+import LogoutTop from '../Essentials/LogoutTop.vue';
+import philippineData from '../../../../javascript/philippine_provinces_cities_municipalities_and_barangays_2019v2.json';
 export default {
   components: {
-    UserProfile,
-    BasicInfo,
-    ContactInfo,
-    PasswordInfo,
     SideBar,
+    LogoutTop
   },
   data() {
     return {
@@ -274,26 +249,283 @@ export default {
       inventoryMenuVisible: false,
       productionVisible: false,
       statusCheckTimer: null,
-      editProfile: false,
-      editBasicInfo: false,
-      editContactInfo: false,
-      editPasswordInfo:false,
       showMenuIcon: false,
       OpenLogout: false,
       modalVisible: false,
+
+      fname: '',
+      mname: '',
+      lname: '',
+      sname: '',
+      bdate: '',
+      vgender: '',
+      civStatus: '',
+      vemail: '',
+      selectedAvatar: null,
+      uploadDialog: false,
+      file: null,
+      previewImage: null,
+      selectedFile: null,
+      genderOptions: ['Male', 'Female', 'Rather not to say'],
+      statusOptions: ['Single', 'Married'],
+      philippineData: philippineData,
+      selectedRegion: null,
+      selectedProvince: null,
+      selectedCity: null,
+      selectedBarangay: null,
+      regionOptions: [],
+      provinceOptions: [],
+      cityOptions: [],
+      barangayOptions: [],
+      addressValue: '',
+      showAddressEdit: false,
+      suppUnit: '',
+      suppStreet: '',
+      suppZipcode: '',
     };
   },
   mounted() {
+    this.regionOptions = Object.keys(this.philippineData)
+    .map(regionCode => ({
+      label: /^(0[1-9]|1[0-3]|[4][A-B]|[1-3]?[0-9])$/.test(regionCode) ? `Region ${regionCode}` : regionCode,
+      value: regionCode
+    }))
+    .sort((a, b) => a.label.localeCompare(b.label));
     this.loadUserData();
-    // this.statusCheckTimer = setInterval(() => {
-    // this.checkUserStatus();
-    // }, 1 * 1000); // 5 minutes (in milliseconds)
+    this.statusCheckTimer = setInterval(() => {
+    this.checkUserStatus();
+    }, 1 * 1000); // 5 minutes (in milliseconds)
   },
   beforeUnmount() {
     clearInterval(this.statusCheckTimer);
   },
-
+  watch: {
+    file: 'handleFileChange',
+    suppUnit: 'updateSuppAddress',
+    suppStreet: 'updateSuppAddress',
+    suppZipcode: 'updateSuppAddress',
+    selectedRegion: function(newValue, oldValue) {
+      if (newValue !== oldValue) {
+        this.onRegionChange();
+      }
+    },
+    selectedProvince: function(newValue, oldValue) {
+      if (newValue !== oldValue) {
+        this.onProvinceChange();
+      }
+    },
+    selectedCity: function(newValue, oldValue) {
+      if (newValue !== oldValue) {
+        this.onCityChange();
+      }
+    },
+    selectedBarangay: function(newValue, oldValue) {
+      if (newValue !== oldValue) {
+        this.onBaranggayChange();
+      }
+    }
+  },
   methods: {
+    OnUpdateUser() {
+      console.log('Clicked')
+      this.$q.loading.show({
+        message: 'Updating user profile  is in progress. Hang on...'
+      });
+      const formData = {
+        Firstname: this.fname,
+        Middlename: this.mname,
+        Lastname: this.lname,
+        Suffix: this.sname,
+        Birthdate: this.bdate,
+        Gender: this.vgender,
+        CivilStatus: this.civStatus,
+        Email: this.vemail,
+        Address: this.addressValue
+      };
+      console.log(formData)
+      axios.put(`http://localhost/Capstone-Project/backend/api/Account_Settings/basicinfo.php/${this.email}`, formData)
+      .then((response) =>{
+        console.log(response.data)
+        this.responseStatus = response.data.status;
+        this.responseInformation = response.data.information;
+        if (this.responseStatus === "success") {
+
+            setTimeout(() => {
+              this.$q.notify({
+                  message: 'Personal Information Updated!',
+                  caption: 'Your personal information has been changed successfully.',
+                  color: 'green',
+              });
+              this.loadUserData();
+              this.$q.loading.hide(); // Hide the loading spinner
+            }, 3000);
+            setTimeout(() => {
+              window.location.reload(); // Reload the window after 3 seconds
+            }, 3500);
+        }
+        if (this.responseStatus === "fail") {
+          this.$q.notify({
+                caption: 'Failed to update.',
+                color: 'negative',
+          });
+          this.loadUserData();
+          setTimeout(() => {
+            window.location.reload(); // Reload the window after 3 seconds
+            this.$q.loading.hide(); // Hide the loading spinner
+          }, 3000);
+        }
+      }).catch(error => {
+        console.error('Error submitting form:', error);
+      });
+    },
+    onRegionChange() {
+    //   console.log(this.selectedRegion.value);
+    //   console.log(philippineData[this.selectedRegion.value]);
+    //  // Access the province list for the selected region
+      this.selectedProvince = null;
+      this.selectedCity = null;
+      this.selectedBarangay = null;
+      const regionData = this.philippineData[this.selectedRegion.value].province_list;
+
+      // Map the province names to options format
+      this.provinceOptions = Object.keys(regionData).map(provinceName => ({
+        label: provinceName,
+        value: provinceName
+      }));
+      this.updateSuppAddress();
+    },
+    onProvinceChange() {
+      // Check if selectedProvince is not null before accessing its value
+      if (this.selectedProvince !== null) {
+        this.selectedCity = null;
+        this.selectedBarangay = null;
+        const selectedProvinceData = this.philippineData[this.selectedRegion.value].province_list[this.selectedProvince.value];
+        if (selectedProvinceData) {
+          const municipalityData = selectedProvinceData.municipality_list;
+          console.log(municipalityData);
+
+          this.cityOptions = Object.keys(municipalityData).map(municipalityName => ({
+            label: municipalityName,
+            value: municipalityName
+          }));
+          this.updateSuppAddress();
+        }
+      }
+    },
+    onCityChange() {
+      if (this.selectedCity !== null) {
+        this.selectedBarangay = null;
+        const selectedMunicipalityData = this.philippineData[this.selectedRegion.value].province_list[this.selectedProvince.value].municipality_list[this.selectedCity.value];
+        if (selectedMunicipalityData) {
+          const barangayList = selectedMunicipalityData.barangay_list;
+          console.log(barangayList);
+
+          this.barangayOptions = barangayList.map(barangayName => ({
+            label: barangayName,
+            value: barangayName
+          }));
+          this.updateSuppAddress();
+        }
+      }
+    },
+    onBaranggayChange() {
+      if (this.selectedBarangay !== null) {
+        this.updateSuppAddress();
+      }
+    },
+    updateSuppAddress() {
+      let address = '';
+      if (this.selectedRegion) address += `${this.selectedRegion.label}, `;
+      if (this.selectedProvince) address += `${this.selectedProvince.label}, `;
+      if (this.selectedCity) address += `${this.selectedCity.label}, `;
+      if (this.selectedBarangay) address += `${this.selectedBarangay.label},`;
+      if (this.suppUnit) address += `${this.suppUnit}, `;
+      if (this.suppStreet) address += `${this.suppStreet}, `;
+      if (this.suppZipcode) address += `${this.suppZipcode}, `;
+      // Trim trailing comma and space
+      this.addressValue = address.replace(/,\s*$/, '');
+    },
+    toggleEditAddress(){
+      this.showAddressEdit = !this.showAddressEdit;
+    },
+    onUpload() {
+      if (!this.file) {
+        this.$q.notify({
+          message: 'Image does not exist.',
+          color: 'red',
+        });
+        return;
+      }
+      const formData = new FormData();
+      const id = this.id;
+      formData.append("file", this.selectedFile);
+      formData.append("id", id);
+
+      axios.post(`http://localhost/Capstone-Project/backend/api/Account_Settings/uploadprofile.php`, formData)
+      .then((response) => {
+        console.log(response.data);
+        this.responseStatus = response.data.status;
+        this.responseInformation = response.data.information;
+        if (this.responseStatus === "success") {
+          const existingInformation = JSON.parse(SessionStorage.getItem('information')) || {};
+          existingInformation.pfp = this.responseInformation.pfp;
+          this.$q.notify({
+              message: 'Success',
+              caption: 'You have successfully change your profile picture.',
+              color: 'green',
+          });
+          this.uploadDialog = false;
+          SessionStorage.set('information', JSON.stringify(existingInformation));
+          this.loadUserData();
+          window.location.reload();
+        }
+        if (this.responseStatus === "fail") {
+
+          this.$q.notify({
+            color: 'negative',
+            message: `${response.data.message} Please try again.`,
+          });
+        }
+      })
+      .catch((error) => {
+        console.error('Error submitting form:', error);
+      });
+    },
+    handleFileChange(event) {
+      this.selectedFile = event[0];
+      if (event && event[0]) {
+        const file = event[0];
+        this.file = event;
+        this.previewImage = URL.createObjectURL(file); // Set previewImage for preview
+      }
+    },
+
+    cancelPreview() {
+      this.file = 0;
+      this.previewImage = 0;
+      this.userProfileImage = this.userProfileImage; // Set back to default value
+      this.$refs.fileInput.$el.querySelector('input[type=file]').value = null; // Clear file input
+    },
+    cancelUpload() {
+      this.file = 0;
+      this.previewImage = 0;
+      this.userProfileImage = this.userProfileImage; // Set back to default value
+      this.$refs.fileInput.$el.querySelector('input[type=file]').value = null; // Clear file input
+    },
+    getUserImagePath() {
+      if (this.userProfileImage) {
+        // Check if the file extension is present
+        const hasExtension = /\.\w+$/.test(this.userProfileImage);
+
+        if (hasExtension) {
+          return `/pfp/${this.userProfileImage}`;
+        } else {
+          return `/pfp/${this.userProfileImage}`;
+        }
+      } else {
+        return '/default_profile.png';
+      }
+    },
     toggleModals() {
       this.modalVisible = !this.modalVisible;
     },
@@ -334,6 +566,8 @@ export default {
             status: information.status,
             password: information.password,
             isAdmin: information.isAdmin,
+            suffix: information.suffix,
+            civil_status: information.civil_status
           };
           SessionStorage.set('information', JSON.stringify(this.information));
 
@@ -356,12 +590,27 @@ export default {
             console.error('Error fetching data:', error);
       });
     },
+
     loadUserData() {
       const userData = SessionStorage.getItem('information');
-
+      
       if (userData) {
         try {
           const userInformation = JSON.parse(userData);
+          console.log(userInformation)
+          // Form Data
+          this.addressValue = userInformation.address;
+          this.fname = userInformation.firstname;
+          this.mname = userInformation.middlename;
+          this.lname = userInformation.lastname;
+          this.sname = userInformation.suffix;
+          this.bdate = userInformation.birthdate;
+          this.vgender = userInformation.gender;
+          this.vemail = userInformation.email;
+          this.civStatus = userInformation.civil_status;
+          // 
+
+
           this.email = userInformation.email;
           this.username = userInformation.username;
           this.userProfileImage = userInformation.pfp;
@@ -372,6 +621,7 @@ export default {
           this.birthdate = userInformation.birthdate;
           this.position = userInformation.position;
           this.mobilenumber = userInformation.mobilenumber;
+          this.id = userInformation.id;
           this.password = userInformation.password ? '*'.repeat(Math.min(8, userInformation.password.length)) : '';
           this.address = userInformation.address;
           this.status = userInformation.status;

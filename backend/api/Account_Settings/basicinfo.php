@@ -32,7 +32,7 @@
     
     public function httpPut($ids, $payload)
     {     
-        $requiredFields = ['Firstname', 'Lastname','Day','Month','Year', 'Gender']; // Update field names here
+        $requiredFields = ['Firstname', 'Middlename','Lastname','Birthdate', 'Gender', 'CivilStatus', 'Email', 'Address']; // Update field names here
         foreach ($requiredFields as $field) {
             if (!isset($payload[$field])) {
                 $response = ['status' => 'fail', 'message' => 'Missing required field: ' . $field];
@@ -40,30 +40,6 @@
                 exit;
             }
         }
-
-        // Map gender strings to their respective codes
-        $genders = [
-            'Male' => 'Male',
-            'Female' => 'Female',
-            'Rather Not to Say' => 'Rather Not to Say',
-        ];
-        // Convert of Month names to desired values
-        $months = [
-            'January' => 1,
-            'February' => 2,
-            'March' => 3,
-            'April' => 4,
-            'May' => 5,
-            'June' => 6,
-            'July' => 7,
-            'August' => 8,
-            'September' => 9,
-            'October' => 10,
-            'November' => 11,
-            'December' => 12,
-        ];
-        $monthNumber = $months[$payload['Month']] ?? null;
-        $genderCode = $genders[$payload['Gender']] ?? null;
 
         $user = $this->db->where("email", $ids)->getOne('personel_tbl');
 
@@ -76,20 +52,18 @@
         $updateData = [
             'firstname' => $payload['Firstname'],
             'lastname' => $payload['Lastname'],
-            'birthdate' => sprintf('%04d-%02d-%02d', $payload['Year'], $monthNumber, $payload['Day']),
-            'gender' => $genderCode,
+            'birthdate' => $payload['Birthdate'],
+            'gender' => $payload['Gender'],
+            'civil_status' => $payload['CivilStatus'],
+            'email' => $payload['Email'],
+            'address' => $payload['Address'],
+            'suffix' => $payload['Suffix']
         ];
         $addData = $this->db->where('email', $ids)->update('personel_tbl', $updateData);
         if($addData){
             $response = [
                 'status' => 'success',
                 'message' => 'Update Successfully.',
-                'information' => [
-                    'firstname' => $payload['Firstname'],
-                    'lastname' => $payload['Lastname'],
-                    'birthdate' => sprintf('%04d-%02d-%02d', $payload['Year'], $monthNumber, $payload['Day']),
-                    'gender' => $genderCode,
-                ]
             ];
             echo json_encode($response);
         } else {

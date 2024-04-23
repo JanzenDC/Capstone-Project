@@ -61,6 +61,8 @@
                         'isOnline' => 1,
                         'status' => $existingRecord['status'],
                         'isAdmin' => $existingRecord['isAdmin'],
+                        'suffix' => $existingRecord['suffix'],
+                        'civil_status' => $existingRecord['civil_status'],
                     ]
                 ];
                 echo json_encode($response);

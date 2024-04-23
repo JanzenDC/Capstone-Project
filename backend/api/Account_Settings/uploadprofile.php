@@ -27,9 +27,12 @@
     public function httpPost($payload)
     {
         if (!isset($_FILES['file'])) {
-            http_response_code(400);
-            echo json_encode(array("message" => "No file uploaded."));
-            return;
+            $response = [
+                'status' => 'fail',
+                'message' => 'No File uploaded',
+            ];
+            echo json_encode($response);
+            exit;
         }
     
         $file = $_FILES['file'];
@@ -98,12 +101,14 @@
                 ]
             ];
             echo json_encode($response);
+            exit;
         } else {
             $response = [
                 'status' => 'fail',
                 'message' => 'Error uploading file.',
             ];
             echo json_encode($response);
+            exit;
         }
     }
     

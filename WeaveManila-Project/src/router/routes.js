@@ -24,10 +24,6 @@ const routes = [
     children: [
       { path: 'main-dashboard', component: () => import('pages/Owner_Module/Dashboard/MainDashboard.vue') },
       { path: 'account-settings', component: () => import('pages/Owner_Module/Dashboard/AccountSettings/AccountDashboard.vue') },
-      { path: 'account-basicinfo', component: () => import('pages/Owner_Module/Dashboard/AccountSettings/AccountBasicinfo.vue') },
-      { path: 'account-profilepic', component: () => import('pages/Owner_Module/Dashboard/AccountSettings/AccountUserprofile.vue') },
-      { path: 'account-contactinfo', component: () => import('pages/Owner_Module/Dashboard/AccountSettings/AccountContactInfo.vue') },
-      { path: 'account-changepass', component: () => import('pages/Owner_Module/Dashboard/AccountSettings/AccountSecurity.vue') },
       // Audit Logs
       { path: 'auditlogs-section', component: () => import('pages/Owner_Module/Dashboard/AuditLogs/AuditlogPage.vue') },
       // User Management
