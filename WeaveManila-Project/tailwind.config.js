@@ -6,9 +6,6 @@ export default {
   ],
   theme: {
     extend: {},
-    screen: {
-      'customphone': '540px',
-    }
   },
   plugins: [],
 }
