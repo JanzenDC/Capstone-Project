@@ -146,7 +146,7 @@
                 // Check if the insertion was successful
                 if ($id) {
                     // Send email using SendinBlue
-                    $credentials = SendinBlue\Client\Configuration::getDefaultConfiguration()->setApiKey('api-key', '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');
+                    $credentials = SendinBlue\Client\Configuration::getDefaultConfiguration()->setApiKey('api-key', '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');
                     $apiInstance = new SendinBlue\Client\Api\TransactionalEmailsApi(
                         new GuzzleHttp\Client(),
                         $credentials

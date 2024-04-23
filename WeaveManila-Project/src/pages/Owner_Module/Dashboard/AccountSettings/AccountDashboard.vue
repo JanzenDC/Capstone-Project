@@ -114,7 +114,7 @@
               </q-btn>
             </div>
           </div>
-          <div class="grid grid-cols-2 gap-10 -mt-4">
+          <div class="grid grid-cols-2 gap-3 -mt-4">
             <div>
               <p>First Name:</p> {{ firstname }}
             </div>
@@ -133,24 +133,14 @@
             <div>
               <p>Position:</p> {{ position }}
             </div>
-                    <!-- Contact Information -->
-
-          </div>
-            <div class="">
-              <div class="flex justify-between mt-3">
-                <div>
-                  <p>Email:</p> {{ email }}
-                </div>
-                <div>
-                  <q-btn @click="editContactInfo = true" unelevated rounded outline size="sm" class="rounded-full w-[80px] text-[#9e896a] text-[12px]">
-                    <q-icon name="edit"/> Edit
-                  </q-btn>
-                </div>
-              </div>
+            <div>
+              <p>Email:</p> {{ email }}
             </div>
+          </div>
+
         </div>
         <q-dialog v-model="editBasicInfo">
-          <q-card>
+          <q-card style="width: 800px; max-width: 80vw;">
             <q-card-section class="row items-center q-pb-none">
               <div class="text-h6">Personal Information</div>
               <q-space />
@@ -182,18 +172,12 @@
 
         <!-- Password Information -->
         <div class="bg-white mt-3 md:w-[600px] p-5 border border-[#ddb7ab] rounded-[15px] drop-shadow-md">
-          <div class="flex justify-between -mt-8">
+          <div class="-mt-8">
             <h1 class="md:text-[19px] font-bold">Security</h1>
-            <div class="w-[84px] flex items-center justify-center ">
-              <q-btn @click="editPasswordInfo = true" unelevated rounded outline size="sm" class="rounded-full w-full text-[#9e896a] text-[12px]">
-                <q-icon name="edit"/> Edit
-              </q-btn>
-            </div>
           </div>
-          <div class="grid grid-cols-2 gap-10 -mt-4">
-            <div>
-              <p>Current Password</p> {{ password }}
-            </div>
+          <div class='flex justify-between -mt-3 cursor-pointer' @click="editPasswordInfo = true">
+            <p>Change Password</p>
+            <q-icon name='arrow_forward_ios' class='text-[16px]'/>
           </div>
         </div>
         <q-dialog v-model="editPasswordInfo" >

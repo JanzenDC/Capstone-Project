@@ -1,5 +1,5 @@
 <template>
-<div class="h-[510px] mt-2 border border-[#dfc8c0] rounded p-5 text-[15px] md:w-full">
+<div class="h-[510px] rounded p-3 text-[15px] md:w-full">
   <q-form
     @submit="onSubmit"
   >
@@ -8,7 +8,7 @@
         <q-input v-model="fname" label="First name" outlined  dense class="custom-border-color" lazy-rules :rules="[ val => val && val.length > 0 || 'Please type something']"/>
         <q-input v-model="lname" label="Last name" outlined dense  class=" rounded" lazy-rules :rules="[ val => val && val.length > 0 || 'Please type something']"/>
     </div>
-    <div class="md:w-[370px]">
+    <div class="grid grid-cols-2 gap-3">
       <div class="">
         <p class="text-[#9e896a] font-bold">Birthday</p>
         <div class="grid grid-cols-3 gap-4 mt-3">
@@ -44,6 +44,176 @@
       <div class="">
         <p class="text-[#9e896a] font-bold">Position</p>
         <q-input v-model="position" dense label="Position" outlined  disable class=" rounded mt-3" lazy-rules :rules="[ val => val && val.length > 0 || 'Please type something']"/>
+      </div>
+    </div>
+    <div class="md:w-[370px]">
+      <div class="">
+        <p class="text-[#9e896a] font-bold">Email</p>
+        <q-input dense outlined bottom-slots v-model="email" disable>
+          <template v-slot:after>
+            <q-icon name="edit" @click="small = true"/>
+          </template>
+        </q-input>
+        <q-dialog
+          v-model="small"
+        >
+          <q-card style="width: 350px">
+            <q-card-section>
+              <div class="text-h6">Change Email</div>
+            </q-card-section>
+
+            <q-card-section class="q-pt-none p-4">
+              <div class="flex justify-between items-center mb-3">
+                <div class="flex items-center">
+                  <div class="w-8 h-8 flex items-center justify-center rounded-full border-2 border-gray-300 text-gray-500">
+                    1
+                  </div>
+                </div>
+                <div class="h-px bg-gray-300 flex-grow"></div>
+                <div class="flex items-center">
+                  <div class="w-8 h-8 flex items-center justify-center rounded-full border-2 border-gray-300 text-gray-500">
+                    2
+                  </div>
+                </div>
+                <div class="h-px bg-gray-300 flex-grow"></div>
+                <div class="flex items-center">
+                  <div class="w-8 h-8 flex items-center justify-center rounded-full border-2 border-gray-300 text-gray-500">
+                    3
+                  </div>
+                </div>
+              </div>
+              <q-form @submit="onChangeEmail">
+                Kindly provide your current email address.
+                <q-input
+                  v-model="currentEmail"
+                  label="Current Email Address"
+                  type="email"
+                  filled
+                  class="mt-3"
+                  :no-error-icon="true"
+                  :rules="[ruleEmail]"
+                ></q-input>
+                <q-btn label="Send Code" type="submit" class="bg-[#9e896a] rounded-md w-full text-white mt-4"/>
+              </q-form>
+            </q-card-section>
+
+            <q-card-actions align="right" class="bg-white text-teal">
+              <q-btn flat label="Cancel" @click="cancelButtonClick" v-close-popup />
+            </q-card-actions>
+          </q-card>
+        </q-dialog>
+
+        <!-- Validating -->
+        <q-dialog
+          v-model="otpDialog"
+        >
+          <q-card style="width: 450px">
+            <q-card-section>
+              <div class="text-h6">Otp Verification</div>
+            </q-card-section>
+
+            <q-card-section class="q-pt-none p-4">
+              <div class="flex justify-between items-center">
+                <div class="flex items-center">
+                  <div class="w-8 h-8 flex items-center justify-center rounded-full border-2 border-[#9e896a] text-white bg-[#9e896a]">
+                    1
+                  </div>
+                </div>
+                <div class="h-px bg-[#9e896a] flex-grow"></div>
+                <div class="flex items-center">
+                  <div class="w-8 h-8 flex items-center justify-center rounded-full border-2 border-gray-300 text-gray-500">
+                    2
+                  </div>
+                </div>
+                <div class="h-px bg-gray-300 flex-grow"></div>
+                <div class="flex items-center">
+                  <div class="w-8 h-8 flex items-center justify-center rounded-full border-2 border-gray-300 text-gray-500">
+                    3
+                  </div>
+                </div>
+              </div>
+
+              <q-form @submit="onValidating">
+                <p>Note: Please input the OTP code sent to your email to continue changing your email.</p>
+                <q-input
+                  v-model="otpVal"
+                  label="OTP Code"
+                  type="number"
+                  dense outlined
+                  class="mt-3"
+                  :no-error-icon="true"
+                  :rules="[validateOtp]"
+                ></q-input>
+                <q-btn label="Submit" type="submit" class="bg-[#9e896a] rounded-md w-full text-white mt-4"/>
+              </q-form>
+            </q-card-section>
+
+            <q-card-actions align="right" class="bg-white text-teal">
+              <q-btn flat label="Cancel" @click="cancelButtonClick" v-close-popup />
+            </q-card-actions>
+          </q-card>
+        </q-dialog>
+
+        <!-- Changing Email -->
+        <q-dialog
+          v-model="changeEmail"
+        >
+          <q-card style="width: 500px">
+            <q-card-section>
+              <div class="text-h6">Change Email</div>
+            </q-card-section>
+
+            <q-card-section class="q-pt-none p-4">
+              <div class="flex justify-between items-center mt-3 mb-3">
+                <div class="flex items-center">
+                  <div class="w-8 h-8 flex items-center justify-center rounded-full border-2 border-[#9e896a] text-white bg-[#9e896a]">
+                    1
+                  </div>
+                </div>
+                <div class="h-px bg-[#9e896a] flex-grow"></div>
+                <div class="flex items-center">
+                  <div class="w-8 h-8 flex items-center justify-center rounded-full border-2 border-[#9e896a] text-white bg-[#9e896a]">
+                    2
+                  </div>
+                </div>
+                <div class="h-px bg-[#9e896a] flex-grow"></div>
+                <div class="flex items-center">
+                  <div class="w-8 h-8 flex items-center justify-center rounded-full border-2 border-gray-300 text-gray-500">
+                    3
+                  </div>
+                </div>
+              </div>
+
+              <q-form @submit="onNewEmail">
+                Please enter your new email address.
+                <q-input
+                  v-model="newEmail"
+                  dense outlined
+                  label="New Email Address"
+                  type="email"
+                  :rules="[val => !!val || 'Email is required', val => /.+@.+\..+/.test(val) || 'Invalid email']"
+                  lazy-rules
+                />
+
+                <!-- Re-enter new email for confirmation -->
+                <q-input
+                  v-model="confirmNewEmail"
+                  dense outlined
+                  label="Confirm New Email Address"
+                  type="email"
+                  :rules="[val => !!val || 'Confirmation email is required', val => val === newEmail || 'Email addresses do not match']"
+                  lazy-rules
+                />
+                <q-btn label="Confirm" type="submit" class="bg-[#9e896a] rounded-md w-full text-white mt-4"/>
+
+              </q-form>
+            </q-card-section>
+
+            <q-card-actions align="right" class="bg-white text-teal">
+              <q-btn flat label="Cancel" @click="cancelButtonClick" v-close-popup />
+            </q-card-actions>
+          </q-card>
+        </q-dialog>
       </div>
     </div>
     <div class="w-40">
@@ -115,6 +285,17 @@ export default {
       'May', 'June', 'July', 'August',
       'September', 'October', 'November', 'December'
       ],
+
+      small: false,
+      otpDialog: false,
+      changeEmail: false,
+      code: '',
+      // Validating OTP
+      otpVal: null,
+      // ChangeEmail Properties
+      currentEmail: '',
+      newEmail: '',
+      confirmNewEmail: ''
     };
   },
 
@@ -131,7 +312,6 @@ export default {
     checkUserStatus() {
         axios.get(`http://localhost/Capstone-Project/backend/api/verification.php?email=${this.email}`)
         .then(response => {
-        console.log(response.data);
 
         const information = response.data.information;
           this.information = {
@@ -198,6 +378,7 @@ export default {
           this.lname = userInformation.lastname;
           this.fullnames = this.firstname + " " + this.lastname;
           this.status = userInformation.status;
+          this.currentEmail = userInformation.email;
           if(this.status == 0)
           {
             this.$q.notify({
@@ -281,6 +462,101 @@ export default {
         return 'Month is required!';
       }
       return true;
+    },
+    onValidating(){
+      const formData = {
+        otpVal: this.otpVal,
+        userEmail: this.currentEmail,
+        type: 2,
+      };
+      axios.post(`http://localhost/Capstone-Project/backend/api/Account_Settings/contactinfo.php`, formData)
+      .then((response) => {
+        this.responseStatus = response.data.status;
+        this.responseInformation = response.data.information;
+        if (this.responseStatus === "success") {
+          this.small = false;
+          this.otpDialog = false;
+          this.changeEmail = true;
+          this.loadUserData();
+        }
+        if (this.responseStatus === "fail") {
+          // Notify when the status is "fail" with the response message
+          this.$q.notify({
+            color: 'negative',
+            message: `${response.data.message} Please try again.`,
+          });
+        }
+      })
+      .catch((error) => {
+        console.error("Error submitting form:", error);
+      });
+
+    },
+    cancelButtonClick() {
+      // Reset the values when the Cancel button is clicked
+      this.otpVal = null;
+      this.currentEmail = '';
+      this.newEmail = '';
+      this.confirmNewEmail = '';
+    },
+    validateOtp(value) {
+      if (!value) {
+        return "OTP Code is required.";
+      }
+
+      if (!/^\d+$/.test(value)) {
+        return "OTP Code must contain only numerical digits.";
+      }
+
+      if (value.length !== 6) {
+        return "OTP Code must be exactly 6 digits.";
+      }
+      return true;
+    },
+    ruleEmail(value) {
+      // Basic email validation using a regular expression
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return emailRegex.test(value) || 'Please enter a valid email address';
+    },
+    onChangeEmail(){
+      console.log(this.currentEmail)
+      if(this.email === this.currentEmail){
+        const code = Math.floor(100000 + Math.random() * 900000);
+        const formsData = {
+          Email: this.currentEmail,
+          code: code,
+          type: 1,
+        };
+        axios.post(`http://localhost/Capstone-Project/backend/api/Account_Settings/contactinfo.php`, formsData)
+        .then((response) =>{
+          console.log(response.data)
+          this.responseStatus = response.data.status;
+          this.responseInformation = response.data.information;
+          if (this.responseStatus === "success") {
+
+              this.small = false;
+              this.otpDialog = true;
+              const existingInformation = JSON.parse(SessionStorage.getItem('information')) || {};
+              existingInformation.otp_code = this.responseInformation.otp_code;
+              this.$q.notify({
+                  message: 'OTP Code Send!',
+                  caption: 'An OTP (One-Time Password) code has been successfully sent for authentication.',
+                  color: 'green',
+              });
+              SessionStorage.set('information', JSON.stringify(existingInformation));
+              this.loadUserData();
+          }
+        }).catch(error => {
+          console.error('Error submitting form:', error);
+        });
+      }else{
+        this.$q.notify({
+            message: "Email Denied",
+            caption: 'The email you entered does not match the one previously provided.',
+            color: 'red',
+        });
+      }
+
     },
     onSubmit() {
       const formData = {

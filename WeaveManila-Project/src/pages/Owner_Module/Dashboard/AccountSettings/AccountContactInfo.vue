@@ -1,6 +1,5 @@
 <template>
 <div class="md:w-full md:h-[390px] mt-2 border border-[#dfc8c0] rounded p-5 text-[15px]">
-
       <p class="text-[#9e896a] font-bold">Email</p>
       <q-input outlined bottom-slots v-model="email" label="Email" disable>
         <template v-slot:after>
@@ -16,7 +15,7 @@
           </q-card-section>
 
           <q-card-section class="q-pt-none p-4">
-            <q-form @submit="onChangeEmail">
+            <!-- <q-form @submit="onChangeEmail"> -->
               Kindly provide your current email address.
               <q-input
                 v-model="currentEmail"
@@ -27,8 +26,8 @@
                 :no-error-icon="true"
                 :rules="[ruleEmail]"
               ></q-input>
-              <q-btn label="Send Code" type="submit" class="bg-[#9e896a] rounded-md w-full text-white mt-4"/>
-            </q-form>
+              <q-btn label="Send Code" @click="onChangeEmail" class="bg-[#9e896a] rounded-md w-full text-white mt-4"/>
+            <!-- </q-form> -->
           </q-card-section>
 
           <q-card-actions align="right" class="bg-white text-teal">
@@ -59,8 +58,8 @@
               <q-input
                 v-model="otpVal"
                 label="OTP Code"
+                dense outlined
                 type="number"
-                filled
                 class="mt-3"
                 :no-error-icon="true"
                 :rules="[validateOtp]"
@@ -180,7 +179,7 @@ export default {
     checkUserStatus() {
         axios.get(`http://localhost/Capstone-Project/backend/api/verification.php?email=${this.email}`)
         .then(response => {
-        console.log(response.data);
+        
 
         const information = response.data.information;
           this.information = {
@@ -381,6 +380,7 @@ export default {
 
     },
     onChangeEmail(){
+      console.log('Clicked', this.currentEmail)
       if(this.email === this.currentEmail){
         const code = Math.floor(100000 + Math.random() * 900000);
         const formsData = {
