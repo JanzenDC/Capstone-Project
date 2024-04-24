@@ -53,7 +53,13 @@ bordered
             <li class="py-[2px] px-[40px] mt-3">Materials</li>
           </router-link>
           <router-link to="/dashboard/mpoform-section">
-            <li class="px-[40px] mt-3"> Material Purchase Order</li>
+            <li class="px-[40px] mt-3">Purchase Order</li>
+          </router-link>
+          <router-link to="/dashboard/supplier-section">
+            <li class="px-[40px] mt-3">Supplier List</li>
+          </router-link>
+          <router-link to="/dashboard/segregator-section">
+            <li class="px-[40px] mt-3">Segregator List</li>
           </router-link>
         </ul>
       </li>
@@ -280,4 +286,4 @@ export default {
     },
   },
 };
-</script>    
+</script>

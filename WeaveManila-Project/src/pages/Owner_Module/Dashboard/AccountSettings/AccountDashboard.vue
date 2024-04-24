@@ -26,16 +26,15 @@
   </div>
 
   <div class="p-4 ">
-    <div class="flex mt-8">
+    <!-- <div class="flex mt-8">
       <router-link to="account-settings">
         <div class="flex bg-white border-e-2 w-[128px] h-[44px] py-3 px-5 gap-[8px] rounded items-center text-[14px] ">
           <q-icon name="list"/>
           <p>Profile</p>
         </div>
       </router-link>
-    </div>
-
-    <div class="w-full bg-white p-4 overflow-x-hidden overflow-y-auto h-[430px]">
+    </div> -->
+    <div class="w-full bg-white p-4 overflow-x-hidden overflow-y-auto h-[520px]">
       <div class='flex gap-3 items-center border-orange-100 border-2 rounded drop-shadow-md p-4'>
         <q-img
         :src="getUserProfileImagePath()"
@@ -474,11 +473,12 @@ export default {
                 caption: 'Your password has been changed successfully.',
                 color: 'green',
             });
+  
+            SessionStorage.set('information', JSON.stringify(existingInformation));
+            this.loadUserData();
             this.currentPW = '';
             this.changePW = null;
             this.confirmPW = null;
-            SessionStorage.set('information', JSON.stringify(existingInformation));
-            this.loadUserData();
         }
         if (this.responseStatus === "fail") {
           this.$q.notify({

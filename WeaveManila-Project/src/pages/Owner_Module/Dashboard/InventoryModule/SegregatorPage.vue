@@ -18,32 +18,15 @@
       />
       <div>
         <span class="font-bold">Segregators List</span>
-        <div class="text-[16px] text-[#999999]">Production Monitoring  / <span class='text-black'>Segregators List</span></div>
+        <div class="text-[16px] text-[#999999]">Inventory  / <span class='text-black'>Segregators List</span></div>
       </div>
     </div>
     </div>
     <LogoutTop />
   </div>
 
-
-
   <div class="p-4">
-    <div class="flex mt-3">
-      <router-link to="inventory-section">
-        <div class="flex w-[135px] text-[#89909e] border-t-2 border-l-2 h-[44px] py-3 px-5 gap-[8px] rounded items-center text-[12px]">
-          <q-icon name="library_books"/>
-          <p>Details</p>
-        </div>
-      </router-link>
-      <router-link to="segregator-section">
-        <div class="flex bg-white w-[145px] border-l-2 h-[44px] py-3 px-5 gap-[8px] rounded items-center text-[14px]">
-
-            <q-icon name="list"/>
-            <p>Segregator</p>
-          </div>
-      </router-link>
-    </div>
-    <div class="bg-white px-4 py-3 rounded h-[400px]">
+    <div class="bg-white px-4 py-3 rounded h-[500px]">
         <div class="md:flex md:items-center md:justify-between ">
           <div class="grid-cols-2 grid gap-2 md:flex items-center md:gap-5">
             <q-input v-model="search" outlined dense placeholder="Search" class="md:w-[400px] ">

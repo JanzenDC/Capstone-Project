@@ -24,22 +24,7 @@
   </div>
 
   <div class="p-4">
-
-      <div class="flex mt-3">
-        <router-link to="inventory-section">
-          <div class="flex bg-white w-[135px] border-l-2 h-[44px] py-3 px-5 gap-[8px] rounded items-center text-[14px]">
-            <q-icon name="library_books"/>
-            <p>Details</p>
-          </div>
-        </router-link>
-        <router-link to="segregator-section">
-          <div class="flex w-[135px] text-[#89909e] border-t-2 border-l-2 h-[44px] py-3 px-5 gap-[8px] rounded items-center text-[12px]">
-              <q-icon name="list"/>
-              <p>Segregator</p>
-            </div>
-        </router-link>
-      </div>
-    <div class="p-4 overflow-y-auto overflow-x-hidden h-[400px] bg-white">
+    <div class="p-4 overflow-y-auto overflow-x-hidden h-[500px] bg-white">
       <div class="flex md:items-end md:justify-end mt-6 ">
         <div class="flex items-center gap-5">
           <q-input v-model="search" outlined dense placeholder="Search" class="md:w-[400px]">
