@@ -24,35 +24,23 @@
   </div>
 
   <div class="p-4">
-    <div class="flex mt-3">
-      <router-link to="/dashboard/mpoform-section">
-        <div class="flex w-[155px] text-[#b8b8b8] border-t-2 border-l-2 border-e-2 h-[44px] py-3 px-5 gap-[8px] rounded items-center text-[14px]">
-          <q-icon name="note_add"/>
-          <p>MPO Form</p>
-        </div>
-      </router-link>
-      <router-link to="/dashboard/mpo-section">
-        <div class="flex bg-white w-[155px] border-r-2 h-[44px] py-3 px-5 gap-[8px] rounded items-center text-[14px]">
-          <q-icon name="list"/>
-          <p>Purchase list</p>
-        </div>
-      </router-link>
-      <router-link to="/dashboard/supplier-section">
-        <div class="flex w-[155px] text-[#b8b8b8] border-t-2 border-e-2 h-[44px] py-3 px-5 gap-[8px] rounded items-center text-[14px]">
-            <q-icon name="group"/>
-            <p>Supplier List</p>
-          </div>
-      </router-link>
-    </div>
-
-    <div class="w-full bg-white p-4 h-[470px]">
+    <div class="w-full bg-white p-4 h-[500px]">
       <div class="flex md:items-end md:justify-between">
           <div class="flex items-center gap-2">
-            <q-input outlined dense placeholder="Search" class="md:w-[400px]">
+            <q-input outlined dense placeholder="Search" class="md:w-[200px]">
               <template v-slot:prepend>
                 <q-icon name="search" />
               </template>
             </q-input>
+            <div class='flex items-center gap-2'>
+              Status
+              <div class='flex'>
+                <q-btn label='Pending' size='md' :style="{ backgroundColor: statuss === 'pending' ? '#967259' : '#ffffff', color: statuss === 'pending' ? 'white' : 'black' }" @click="setStatus('pending')"/>
+                <q-btn label='Partial Received' size='md' :style="{ backgroundColor: statuss === 'partialReceived' ? '#967259' : '#ffffff', color: statuss === 'partialReceived' ? 'white' : 'black' }" @click="setStatus('partialReceived')"/>
+                <q-btn label='Received' size='md' :style="{ backgroundColor: statuss === 'received' ? '#967259' : '#ffffff', color: statuss === 'received' ? 'white' : 'black' }" @click="setStatus('received')"/>
+
+              </div>
+            </div>
           </div>
           <div class="flex items-center gap-2">
             <q-btn-dropdown square icon="download">
@@ -173,22 +161,20 @@
                     Received
 
                   </div>
-                  <div class="bg-[#475467] rounded text-white cursor-pointer w-[32px] h-[32px] text-[20px]">
-                    <q-icon name="history" />
-                  </div>
+  
                   <div class="bg-[#26218e] rounded text-white cursor-pointer w-[32px] h-[32px] text-[20px]">
                     <q-icon name="assignment" @click="ViewForm(props.row.mpo_id)">
                       <q-tooltip :offset="[0, 8]">View Form</q-tooltip>
                     </q-icon>
                   </div>
-                  <div class="bg-[#b3261e] rounded text-white cursor-pointer text-[20px] w-[32px] h-[32px]">
-                    <q-icon name="delete">
-                      <q-tooltip :offset="[0, 8]">Delete</q-tooltip>
+                  <div class="bg-[#475467] rounded text-white cursor-pointer w-[32px] h-[32px] text-[20px]">
+                    <q-icon name="edit" >
+                      <q-tooltip :offset="[0, 8]">Edit</q-tooltip>
                     </q-icon>
                   </div>
-                  <div class="w-[32px] h-[32px] cursor-pointer text-[20px]">
+                  <!-- <div class="w-[32px] h-[32px] cursor-pointer text-[20px]">
                     <q-icon name="arrow_forward_ios" @click="toNextPage(props.row.mpo_id)"/>
-                  </div>
+                  </div> -->
                 </div>
               </q-td>
         </template>
@@ -619,10 +605,8 @@ export default {
         { name: 'mpo_number', align: 'left', label: 'MPO No.', field: 'mpo_number', sortable: true, headerStyle: 'width: 44px;' },
         { name: 'supplier', align: 'left', label: 'Supplier', field: 'supplier', sortable: true, headerStyle: 'width: 100px;' },
         { name: 'product', align: 'left', label: 'Product', field: 'product', sortable: true, headerStyle: 'width: 150px;' },
-        { name: 'date_purchase', align: 'left', label: 'Date Purchase', field: 'date_purchase', sortable: true, headerStyle: 'width: 120px;' },
         { name: 'qty', align: 'left', label: 'Qty Purchased', field: 'qty', sortable: true, headerStyle: 'width: 80px;' },
         { name: 'qty_received', align: 'left', label: 'Qty Received', field: 'qty_received', sortable: true, headerStyle: 'width: 120px;' },
-        { name: 'amount', align: 'left', label: 'Amount', field: 'amount', sortable: true, headerStyle: 'width: 100px;' },
         { name: 'date_received', align: 'left', label: 'Date Received', field: 'date_received', sortable: true, headerStyle: 'width: 100px;' },
         { name: 'status', align: 'left', label: 'Status', field: 'status', sortable: true, headerStyle: 'width: 80px;' },
         { name: 'actions', align: 'center', label: 'Actions', field: 'actions', sortable: true },
@@ -687,6 +671,7 @@ export default {
       selectedRows: [],
       date_received: '',
       categories: [],
+      statuss: 'pending',
     };
   },
   watch: {
@@ -744,6 +729,19 @@ export default {
     clearInterval(this.statusCheckTimer);
   },
   methods: {
+    setStatus(newStatus) {
+      this.statuss = newStatus;
+      
+      if (newStatus === 'received') {
+        console.log(2);
+      }
+      if (newStatus === 'partialReceived') {
+        console.log(1);
+      }
+      if (newStatus === 'pending') {
+        console.log(0);
+      }
+    },
     onItemClick(category) {
       if (!category) {
         this.fetchMPOData();
