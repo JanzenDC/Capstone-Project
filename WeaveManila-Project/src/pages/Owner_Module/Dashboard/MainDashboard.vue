@@ -49,7 +49,7 @@
                   </div>
                 </div>
               </div>
-              
+
             </div>
           </div>
         </div>
@@ -57,36 +57,49 @@
     </div>
   </div>
 
-  <q-dialog v-model="OpenLogout">
-      <q-card class="w-[500px]">
-        <q-card-section class="gap-3 items-center q-pb-none flex">
-          <div class="py-1 px-2 border text-[24px]"><q-icon name="logout"/></div>
-          <div class="text-h6 font-bold">Logout</div>
-          <q-space />
-        </q-card-section>
-
-        <q-card-section>
-
-          <p>Are you sure you want to Logout?</p>
-        </q-card-section>
-
-        <q-card-actions class="flex justify-center items-center">
-          <div class="w-1/2 p-1">
-            <q-btn flat label="Cancel" outline v-close-popup class="w-full border"/>
+  <div class='flex items-center p-4 gap-5'>
+    <q-img
+      :src="getUserProfileImagePath()"
+      alt="Description of the image"
+      class="w-12 md:w-[80px] rounded-full"
+    />
+    <div>
+      <p class='text-[16px] font-bold'>Hello, {{ firstname }}</p>
+      <p>Here is the quick overview of the system.</p>
+    </div>
+  </div>
+  <div class='flex p-4'>
+    <div class='w-2/3'>
+      <div class='grid grid-cols-3 gap-6'>
+        <div class='p-4 bg-[#109CF1] rounded flex items-center gap-3'>
+          <q-icon name='shopping_bag' class='text-white bg-[#967259] text-h3 p-2 rounded'/>
+          <div>
+            <p class='font-bold text-h5'>1250</p>  
+            <p>Purchase Order</p>  
           </div>
-          <div class="w-1/2 p-1">
-            <q-btn
-              @click="logout"
-              flat
-              label="Logout"
-              size="md"
-              class="bg-red-600 text-white rounded w-full"
-            />
-          </div>
-        </q-card-actions>
-      </q-card>
-  </q-dialog>
+        </div>
 
+        <div class='p-4 bg-[#D8FAE7] rounded flex items-center gap-3'>
+          <q-icon name='shopping_bag' class='text-white bg-[#967259] text-h3 p-2 rounded'/>
+          <div>
+            <p class='font-bold text-h5'>1359</p>  
+            <p>Total Stocks</p>  
+          </div>
+        </div>
+      
+        <div class='p-4 bg-[#FFEEF1] rounded flex items-center gap-3'>
+          <q-icon name='shopping_bag' class='text-white bg-[#967259] text-h3 p-2 rounded'/>
+          <div>
+            <p class='font-bold text-h5'>1259</p>  
+            <p>Total Projects</p>  
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <div class='w-1/3'>...</div>
+
+  </div>
 </q-page>
 </template>
 
