@@ -24,6 +24,7 @@ const routes = [
     children: [
       { path: 'main-dashboard', component: () => import('pages/Owner_Module/Dashboard/MainDashboard.vue') },
       { path: 'account-settings', component: () => import('pages/Owner_Module/Dashboard/AccountSettings/AccountDashboard.vue') },
+      { path: 'company-settings', component: () => import('pages/Owner_Module/Dashboard/AccountSettings/CompanySetting.vue') },
       // Audit Logs
       { path: 'auditlogs-section', component: () => import('pages/Owner_Module/Dashboard/AuditLogs/AuditlogPage.vue') },
       // User Management

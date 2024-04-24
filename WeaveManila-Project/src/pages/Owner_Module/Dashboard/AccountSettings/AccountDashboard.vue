@@ -27,13 +27,13 @@
 
   <div class="p-4 ">
     <div class="flex mt-8">
-      <router-link to="">
-        <div class="flex text-[#89909e] border-t-2 border-e-2 w-[128px] h-[44px] py-3 px-5 gap-[8px] rounded items-center text-[14px]">
+      <router-link to="/dashboard/company-settings">
+        <div v-if="isAdmin === 1" class="flex text-[#89909e] border-t-2 border-e-2 border-s-2 w-[140px] h-[44px] py-3 px-5 gap-[8px] rounded items-center text-[14px]">
           <q-icon name="apartment"/>
           <p>Company</p>
         </div>
       </router-link>
-      <router-link to="">
+      <router-link to="account-settings">
         <div class="flex bg-white border-e-2 w-[128px] h-[44px] py-3 px-5 gap-[8px] rounded items-center text-[14px] ">
           <q-icon name="list"/>
           <p>Profile</p>
@@ -48,7 +48,7 @@
     </div>
 
     <div class="w-full bg-white p-4 overflow-x-hidden overflow-y-auto h-[430px]">
-      <div class='flex gap-2 items-center'>
+      <div class='flex gap-3 items-center'>
         <q-img
         :src="getUserProfileImagePath()"
         alt="Description of the image"
@@ -101,7 +101,7 @@
                   <q-btn flat label="Close" @click="cancelUpload" class='text-black' v-close-popup />
                   <q-btn label="Save" type="submit" class="bg-[#9e896a] rounded-md text-white"/>
                 </q-card-actions>
-                
+
                 </q-form>
               </q-card>
             </q-dialog>
@@ -110,7 +110,7 @@
       <q-form @submit="OnUpdateUser">
         <!-- Basic Information -->
         <div>
-        <div class='text-h5 font-bold'>Basic Information</div>
+        <div class='text-[16px] font-bold mt-3'>Basic Information</div>
         <div class='grid grid-cols-4 gap-3'>
           <div>
             <p>First Name</p>
@@ -149,13 +149,13 @@
 
         <!-- Address -->
         <div>
-          <div class='text-h5 font-bold'>Address</div>
+          <div class='text-[16px] font-bold'>Address</div>
             <q-input v-model='addressValue' dense outlined disable>
               <template v-slot:before>
                 <q-icon name="edit" class='cursor-pointer' @click='toggleEditAddress'/>
               </template>
             </q-input>
-            <div class="grid grid-cols-3 gap-2 mt-3" v-if='showAddressEdit'>
+            <div class="grid grid-cols-3 gap-3 mt-3" v-if='showAddressEdit'>
               <div>
                 <p>Region<span class="text-red-600">*</span></p>
                 <q-select v-model="selectedRegion" :options="regionOptions" label="Region" @input="onRegionChange" dense outlined class='flex-wrap' />
@@ -593,7 +593,7 @@ export default {
 
     loadUserData() {
       const userData = SessionStorage.getItem('information');
-      
+
       if (userData) {
         try {
           const userInformation = JSON.parse(userData);
@@ -608,7 +608,7 @@ export default {
           this.vgender = userInformation.gender;
           this.vemail = userInformation.email;
           this.civStatus = userInformation.civil_status;
-          // 
+          //
 
 
           this.email = userInformation.email;
