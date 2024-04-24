@@ -58,7 +58,8 @@
               </q-list>
             </q-btn-dropdown>
             <q-btn square icon="print"/>
-            <q-btn-dropdown label="Category">
+            <q-btn label="Add MPO" icon='add' class='bg-[#281C0F] text-white'/>
+            <!-- <q-btn-dropdown label="Category">
               <q-list>
                 <q-item @click="onItemClick(null)">
                   <q-item-label class='cursor-pointer' >All Categories</q-item-label>
@@ -67,7 +68,7 @@
                   <q-item-label class='cursor-pointer' @click="onItemClick(category.categoryID)">{{ category.title }}</q-item-label>
                 </q-item>
               </q-list>
-            </q-btn-dropdown>
+            </q-btn-dropdown> -->
           </div>
         </div>
       <div class="q-pa-md">
@@ -78,20 +79,7 @@
             class="my-sticky-header-table"
             :dense="$q.screen.lt.md"
             flat bordered
-            selection="multiple"
-            v-model:selected="selected"
-            :selected-rows-label="getSelectedString"
           >
-          <template v-slot:body-cell-selection="props">
-            <q-td :props="props">
-              <q-checkbox
-                v-model="props.selected"
-                :val="props.row.mpo_id"
-                @input="handleCheckboxChange(props.row.mpo_id)"
-              />
-            </q-td>
-          </template>
-
           <template v-slot:body-cell-product="props">
             <q-td :props="props">
               <div v-if="props.row.product && props.row.product.length > 0">
