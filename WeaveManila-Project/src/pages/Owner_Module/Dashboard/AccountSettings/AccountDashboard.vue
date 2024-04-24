@@ -27,28 +27,16 @@
 
   <div class="p-4 ">
     <div class="flex mt-8">
-      <router-link to="/dashboard/company-settings">
-        <div v-if="isAdmin === 1" class="flex text-[#89909e] border-t-2 border-e-2 border-s-2 w-[140px] h-[44px] py-3 px-5 gap-[8px] rounded items-center text-[14px]">
-          <q-icon name="apartment"/>
-          <p>Company</p>
-        </div>
-      </router-link>
       <router-link to="account-settings">
         <div class="flex bg-white border-e-2 w-[128px] h-[44px] py-3 px-5 gap-[8px] rounded items-center text-[14px] ">
           <q-icon name="list"/>
           <p>Profile</p>
         </div>
       </router-link>
-      <router-link to="">
-        <div class="flex text-[#89909e] border-t-2 border-e-2 w-[128px] h-[44px] py-3 px-5 gap-[8px] rounded items-center text-[14px]">
-          <q-icon name="password"/>
-          <p>Password</p>
-        </div>
-      </router-link>
     </div>
 
     <div class="w-full bg-white p-4 overflow-x-hidden overflow-y-auto h-[430px]">
-      <div class='flex gap-3 items-center'>
+      <div class='flex gap-3 items-center border-orange-100 border-2 rounded drop-shadow-md p-4'>
         <q-img
         :src="getUserProfileImagePath()"
         alt="Description of the image"
@@ -107,103 +95,176 @@
             </q-dialog>
         </div>
       </div>
-      <q-form @submit="OnUpdateUser">
-        <!-- Basic Information -->
-        <div>
-        <div class='text-[16px] font-bold mt-3'>Basic Information</div>
-        <div class='grid grid-cols-4 gap-3'>
+      <div class='items-center border-orange-100 border-2 rounded drop-shadow-md p-4 mt-3'>
+        <q-form @submit="OnUpdateUser">
+          <!-- Basic Information -->
           <div>
-            <p>First Name</p>
-            <q-input v-model="fname"  outlined  dense class="custom-border-color" lazy-rules :rules="[ val => val && val.length > 0 || 'Please type something']"/>
-          </div>
-          <div>
-            <p>Middle Name</p>
-            <q-input v-model="mname"  outlined  dense class="custom-border-color" lazy-rules :rules="[ val => val && val.length > 0 || 'Please type something']"/>
-          </div>
-          <div>
-            <p>Last Name</p>
-            <q-input v-model="lname"  outlined  dense class="custom-border-color" lazy-rules :rules="[ val => val && val.length > 0 || 'Please type something']"/>
-          </div>
-          <div>
-            <p>Suffix Name</p>
-            <q-input v-model="sname"  outlined  dense class="custom-border-color"/>
-          </div>
-          <div>
-            <p>Birthday</p>
-            <q-input v-model="bdate" type='date' outlined  dense class="custom-border-color" lazy-rules :rules="[ val => val && val.length > 0 || 'Please type something']"/>
-          </div>
-          <div>
-            <p>Gender</p>
-            <q-select v-model="vgender" :options='genderOptions' outlined  dense class="custom-border-color" lazy-rules :rules="[ val => val && val.length > 0 || 'Please type something']"/>
-          </div>
-          <div>
-            <p>Status</p>
-            <q-select v-model="civStatus" :options='statusOptions' outlined  dense class="custom-border-color" lazy-rules :rules="[ val => val && val.length > 0 || 'Please type something']"/>
-          </div>
-          <div>
-            <p>Email</p>
-            <q-input v-model="vemail" outlined  dense class="custom-border-color" lazy-rules :rules="[ val => val && val.length > 0 || 'Please type something']"/>
-          </div>
-        </div>
-        </div>
-
-        <!-- Address -->
-        <div>
-          <div class='text-[16px] font-bold'>Address</div>
-            <q-input v-model='addressValue' dense outlined disable>
-              <template v-slot:before>
-                <q-icon name="edit" class='cursor-pointer' @click='toggleEditAddress'/>
-              </template>
-            </q-input>
-            <div class="grid grid-cols-3 gap-3 mt-3" v-if='showAddressEdit'>
-              <div>
-                <p>Region<span class="text-red-600">*</span></p>
-                <q-select v-model="selectedRegion" :options="regionOptions" label="Region" @input="onRegionChange" dense outlined class='flex-wrap' />
-              </div>
-              <div>
-                <p>Province<span class="text-red-600">*</span></p>
-                <q-select
-                  v-model="selectedProvince"
-                  :options="provinceOptions"
-                  label="Province"
-                  dense outlined
-                  :disable="!selectedRegion"
-                >
-                </q-select>
-              </div>
-              <div>
-                <p>City<span class="text-red-600">*</span></p>
-                <q-select v-model="selectedCity" :options="cityOptions" label="City" dense outlined :disable="!selectedProvince" class='flex-wrap'/>
-              </div>
-              <div>
-                <p>Barangay<span class="text-red-600">*</span></p>
-                <q-select v-model="selectedBarangay" :options="barangayOptions" label="Barangay" dense outlined :disable="!selectedCity" />
-              </div>
-              <div>
-                <p>
-                  Unit no./House no. /Building Name
-                </p>
-                <q-input type="text" label="Unit no./House no. /Building Name" v-model="suppUnit" lazy-rules :no-error-icon="true" outlined dense />
-              </div>
-              <div>
-                <p>
-                  Street
-                </p>
-                <q-input type="text" label="Street" v-model="suppStreet"  lazy-rules :no-error-icon="true" outlined dense />
-              </div>
-              <div>
-                <p>
-                  Zip Code
-                </p>
-                <q-input type="text" label="Zip Code" v-model="suppZipcode"  lazy-rules :no-error-icon="true" outlined dense />
-              </div>
+          <div class='text-[16px] font-bold'>Basic Information</div>
+          <div class='grid grid-cols-4 gap-3 mt-4'>
+            <div>
+              <p>First Name</p>
+              <q-input v-model="fname"  outlined  dense class="custom-border-color" lazy-rules :rules="[ val => val && val.length > 0 || 'Please type something']"/>
             </div>
-        </div>
+            <div>
+              <p>Middle Name</p>
+              <q-input v-model="mname"  outlined  dense class="custom-border-color" lazy-rules :rules="[ val => val && val.length > 0 || 'Please type something']"/>
+            </div>
+            <div>
+              <p>Last Name</p>
+              <q-input v-model="lname"  outlined  dense class="custom-border-color" lazy-rules :rules="[ val => val && val.length > 0 || 'Please type something']"/>
+            </div>
+            <div>
+              <p>Suffix Name</p>
+              <q-input v-model="sname"  outlined  dense class="custom-border-color"/>
+            </div>
+            <div>
+              <p>Birthday</p>
+              <q-input v-model="bdate" type='date' outlined  dense class="custom-border-color" lazy-rules :rules="[ val => val && val.length > 0 || 'Please type something']"/>
+            </div>
+            <div>
+              <p>Gender</p>
+              <q-select v-model="vgender" :options='genderOptions' outlined  dense class="custom-border-color" lazy-rules :rules="[ val => val && val.length > 0 || 'Please type something']"/>
+            </div>
+            <div>
+              <p>Status</p>
+              <q-select v-model="civStatus" :options='statusOptions' outlined  dense class="custom-border-color" lazy-rules :rules="[ val => val && val.length > 0 || 'Please type something']"/>
+            </div>
+            <div>
+              <p>Email</p>
+              <q-input v-model="vemail" outlined  dense class="custom-border-color" lazy-rules :rules="[ val => val && val.length > 0 || 'Please type something']"/>
+          </div>
+          </div>
+          </div>
 
-        <div class='flex justify-end items-end mt-5'>
-          <q-btn label='Save Changes' type='submit' class='bg-[#634832] text-white' />
+          <!-- Address -->
+          <div>
+            <div class='text-[16px] font-bold'>Address</div>
+              <q-input v-model='addressValue' dense outlined disable class='mt-4'>
+                <template v-slot:before>
+                  <q-icon name="edit" class='cursor-pointer' @click='toggleEditAddress'/>
+                </template>
+              </q-input>
+              <div class="grid grid-cols-3 gap-3 mt-3" v-if='showAddressEdit'>
+                <div>
+                  <p>Region<span class="text-red-600">*</span></p>
+                  <q-select v-model="selectedRegion" :options="regionOptions" label="Region" @input="onRegionChange" dense outlined class='flex-wrap' />
+                </div>
+                <div>
+                  <p>Province<span class="text-red-600">*</span></p>
+                  <q-select
+                    v-model="selectedProvince"
+                    :options="provinceOptions"
+                    label="Province"
+                    dense outlined
+                    :disable="!selectedRegion"
+                  >
+                  </q-select>
+                </div>
+                <div>
+                  <p>City<span class="text-red-600">*</span></p>
+                  <q-select v-model="selectedCity" :options="cityOptions" label="City" dense outlined :disable="!selectedProvince" class='flex-wrap'/>
+                </div>
+                <div>
+                  <p>Barangay<span class="text-red-600">*</span></p>
+                  <q-select v-model="selectedBarangay" :options="barangayOptions" label="Barangay" dense outlined :disable="!selectedCity" />
+                </div>
+                <div>
+                  <p>
+                    Unit no./House no. /Building Name
+                  </p>
+                  <q-input type="text" label="Unit no./House no. /Building Name" v-model="suppUnit" lazy-rules :no-error-icon="true" outlined dense />
+                </div>
+                <div>
+                  <p>
+                    Street
+                  </p>
+                  <q-input type="text" label="Street" v-model="suppStreet"  lazy-rules :no-error-icon="true" outlined dense />
+                </div>
+                <div>
+                  <p>
+                    Zip Code
+                  </p>
+                  <q-input type="text" label="Zip Code" v-model="suppZipcode"  lazy-rules :no-error-icon="true" outlined dense />
+                </div>
+              </div>
+          </div>
+
+          <div class='flex justify-end items-end mt-5'>
+            <q-btn label='Save Changes' type='submit' class='bg-[#634832] text-white' />
+          </div>
+        </q-form>
+      </div>
+      <div class='items-center border-orange-100 border-2 rounded drop-shadow-md p-4 mt-3'>
+        <div class='text-[16px] font-bold'>Change Password</div>
+        <q-form @submit='ChangePassword' class='mt-4'>
+          <div class='flex gap-5'>
+            <div>
+              <p>Current Password</p>
+              <q-input
+                :type="showPassword ? 'text' : 'password'"
+                label="Current Password"
+                outlined
+                dense
+                v-model="currentPW"
+                class="w-[205px]"
+                :no-error-icon="true"
+              >
+              </q-input>
+            </div>
+            <div>
+              <p>New Password</p>
+                <q-input
+                  :type="showChangePassword ? 'text' : 'password'"
+                  label="Change Password"
+                  outlined
+                  dense
+                  v-model="changePW"
+                  class="w-[205px]"
+                  :no-error-icon="true"
+                >
+                </q-input>
+            </div>
+            <div>
+              <p>Confirm Password</p>
+                <q-input
+                  :type="showChangePassword ? 'text' : 'password'"
+                  label="Confirm Password"
+                  outlined
+                  dense
+                  v-model="confirmPW"
+                  class="w-[250px]"
+                  :no-error-icon="true"
+                >
+                </q-input>
+            </div>
+          </div>
+
+          <div v-if="!allRulesMet" class='mt-3'>
+            <p class="font-bold text-[16px]">Password Rules:</p>
+            <p v-if="showLengthRule" class="mt-2">● Your password must be at least 10 characters long.</p>
+            <p v-if="showUpperLowerSpecialRule" class="mt-2">● Include upper and lowercase letters and special characters, such as !, @, #, $, etc.</p>
+            <p v-if="showNumberRule" class="mt-2">● Use at least one numerical digit.</p>
+            <p v-if="showPreviousPasswordRule" class="mt-2">● Cannot be the same as the previous password.</p>
+          </div>
+          <div class='flex justify-end items-end'>
+            <q-btn label='Save Changes' type='submit' class='bg-[#634832] text-white' />
+          </div>
+        </q-form>
+ 
+      </div>
+
+      <div v-if='isAdmin == 1' class='items-center border-orange-100 border-2 rounded drop-shadow-md p-4 mt-3'>
+        <div class='text-[16px] font-bold mb-4'>Company Logo</div>
+        <p>Upload Logo</p>
+        <div class="flex items-center gap-2 mt-3 ">
+          <q-input v-model="companyLogo" outlined dense disable />
+          <q-btn @click="triggerFileInput('prepared')" class="text-white bg-[#634832]">Change Photo</q-btn>
+          <input ref="preparedInput" type="file" style="display: none" @change="handleFileChanges('prepared', $event)">
         </div>
-      </q-form>
+        <div class='flex justify-end items-end'>
+          <q-btn label='Save Changes' @click="UploadCompanyLogo" class='bg-[#634832] text-white' />
+        </div>
+      </div>
     </div>
   </div>
 </q-page>
@@ -282,7 +343,24 @@ export default {
       suppUnit: '',
       suppStreet: '',
       suppZipcode: '',
+
+      currentPW: '',
+      changePW: '',
+      confirmPW: '',
+      showPassword: false,
+      showChangePassword: false,
+      showLengthRule: true,
+      showUpperLowerSpecialRule: true,
+      showNumberRule: true,
+      showPreviousPasswordRule: true,
+      companyLogo: '',
+      companyLogos: '',
     };
+  },
+  computed: {
+    allRulesMet() {
+      return !this.showLengthRule && !this.showUpperLowerSpecialRule && !this.showNumberRule && !this.showPreviousPasswordRule;
+    }
   },
   mounted() {
     this.regionOptions = Object.keys(this.philippineData)
@@ -300,6 +378,12 @@ export default {
     clearInterval(this.statusCheckTimer);
   },
   watch: {
+    changePW: function(newVal) {
+      this.showLengthRule = newVal.length < 10;
+      this.showUpperLowerSpecialRule = !(/[a-z]/.test(newVal) && /[A-Z]/.test(newVal) && /[!@#$%^&*(),.?":{}|<>]/.test(newVal));
+      this.showNumberRule = !/\d/.test(newVal);
+      this.showPreviousPasswordRule = this.currentPW === this.changePW;
+    },
     file: 'handleFileChange',
     suppUnit: 'updateSuppAddress',
     suppStreet: 'updateSuppAddress',
@@ -326,6 +410,86 @@ export default {
     }
   },
   methods: {
+    UploadCompanyLogo() {
+      console.log(this.companyLogo);
+      console.log(this.companyLogos);
+      const formData = new FormData();
+      formData.append('file', this.companyLogos);
+      formData.append('id', this.id);
+      axios.post(`http://localhost/Capstone-Project/backend/api/Account_Settings/changelogo.php/`, formData)
+      .then((response) =>{
+        this.responseStatus = response.data.status;
+        this.responseInformation = response.data.information;
+        if (this.responseStatus === "success") {
+            this.$q.notify({
+                message: 'Company Logo Updated!!',
+                color: 'green',
+            });
+            this.loadUserData();
+        }
+        if (this.responseStatus === "fail") {
+          this.$q.notify({
+            color: 'negative',
+            message: `${response.data.message} Please try again.`,
+          });
+        }
+      }).catch(error => {
+        console.error('Error submitting form:', error);
+      });
+
+    },
+    triggerFileInput(type) {
+      this.$refs[`${type}Input`].click();
+    },
+    handleFileChanges(type, event) {
+      const file = event.target.files[0];
+      if (file) {
+        // Save the uploaded file reference based on type
+        switch (type) {
+          case 'prepared':
+            this.companyLogos = file;
+            this.companyLogo = file.name;
+            break;
+            this.s_esignatureA = file;
+            this.s_uploadApproveName = file.name;
+            break;
+        }
+        console.log("Uploaded file:", file);
+      }
+    },
+    ChangePassword(){
+      const formData = {
+        currentPass: this.currentPW,
+        newpass: this.changePW,
+      }
+      axios.put(`http://localhost/Capstone-Project/backend/api/Account_Settings/changepassword.php/${this.id}`, formData)
+      .then((response) =>{
+        this.responseStatus = response.data.status;
+        this.responseInformation = response.data.information;
+        if (this.responseStatus === "success") {
+            const existingInformation = JSON.parse(SessionStorage.getItem('information')) || {};
+            existingInformation.password = this.responseInformation.password;
+            this.$q.notify({
+                message: 'Password Updated!!',
+                caption: 'Your password has been changed successfully.',
+                color: 'green',
+            });
+            this.currentPW = '';
+            this.changePW = null;
+            this.confirmPW = null;
+            SessionStorage.set('information', JSON.stringify(existingInformation));
+            this.loadUserData();
+        }
+        if (this.responseStatus === "fail") {
+          this.$q.notify({
+            color: 'negative',
+            message: `${response.data.message} Please try again.`,
+          });
+        }
+      }).catch(error => {
+        console.error('Error submitting form:', error);
+      });
+    },
     OnUpdateUser() {
       console.log('Clicked')
       this.$q.loading.show({
