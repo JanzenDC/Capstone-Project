@@ -731,16 +731,69 @@ export default {
   methods: {
     setStatus(newStatus) {
       this.statuss = newStatus;
-      
+      let select = 0;
       if (newStatus === 'received') {
-        console.log(2);
+        select = 2;
       }
       if (newStatus === 'partialReceived') {
-        console.log(1);
+        select = 1;
       }
       if (newStatus === 'pending') {
-        console.log(0);
+        select = 0;
       }
+      axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/MPO_Queries/mpo_data.php?get=alldata&id=${select}`)
+      .then(response => {
+        console.log(response.data)
+        const groupedData = response.data.categoryData.reduce((acc, row) => {
+            if (!acc[row.mpoID]) {
+                acc[row.mpoID] = {
+                    mpo_id: row.mpoID,
+                    mpo_number: row.mpoID,
+                    supplier: row.supplier_name,
+                    date_purchase: row.date_purchased,
+                    product: [],
+                    qty: [],
+                    total: [],
+                    amount: [],
+                    status: [],
+                    qty_received: [],
+                    date_received: [],
+                };
+            }
+            acc[row.mpoID].amount.push(row.subtotal);
+            acc[row.mpoID].product.push(row.item_name);
+            acc[row.mpoID].qty.push(row.quantity);
+            acc[row.mpoID].date_received.push(row.date_received);
+
+
+            acc[row.mpoID].qty_received.push(row.quantity_received);
+
+            // Calculate status based on received quantity
+            let status = '';
+            if (row.quantity_received === row.quantity) {
+                status = '● Received';
+            } else if (!row.quantity_received || row.quantity_received === '0') {
+              status = '● Pending';
+            } else if (row.quantity_received < row.quantity) {
+                status = '● Partial Received';
+            }
+            acc[row.mpoID].status.push(status);
+            return acc;
+        }, {});
+
+        const groupedArray = Object.values(groupedData);
+
+        // Filter out ungrouped data (where only one data point exists)
+        const ungroupedData = response.data.categoryData.filter(row => !groupedData[row.mpoID]);
+
+        // Combine grouped and ungrouped data
+        const combinedData = groupedArray.concat(ungroupedData);
+
+        this.rows = combinedData;
+      })
+      .catch(error => {
+        console.error('Error fetching data:', error);
+      });
     },
     onItemClick(category) {
       if (!category) {
@@ -1092,7 +1145,8 @@ export default {
       this.fetchMPOData();
     },
     fetchMPOData() {
-      axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/MPO_Queries/mpo_data.php?get=alldata`)
+      let select = 0;
+      axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/MPO_Queries/mpo_data.php?get=alldata&id=${select}`)
       .then(response => {
         console.log(response.data)
         const groupedData = response.data.categoryData.reduce((acc, row) => {

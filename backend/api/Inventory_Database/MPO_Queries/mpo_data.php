@@ -23,6 +23,7 @@
     public function httpGet($payload)
     {
         if($payload['get'] == 'alldata'){
+            $target = $payload['id'];
             $sqlQuery = 'SELECT 
                         mpo.mpoID,
                         mpo.personelID,
@@ -74,11 +75,13 @@
                             baseID
                     ) AS latest_dates ON base.baseID = latest_dates.baseID
                     LEFT JOIN 
-            mpo_datereceived_logs AS received_logs ON base.baseID = received_logs.baseID AND latest_dates.max_date_received = received_logs.timestamp;';
+            mpo_datereceived_logs AS received_logs ON base.baseID = received_logs.baseID AND latest_dates.max_date_received = received_logs.timestamp
+            WHERE
+            base.status = ?';
         
         
         
-            $queryResult = $this->db->rawQuery($sqlQuery);
+            $queryResult = $this->db->rawQuery($sqlQuery, Array($target));
             if($queryResult){
                 $response = [
                     'status' => 'success',
