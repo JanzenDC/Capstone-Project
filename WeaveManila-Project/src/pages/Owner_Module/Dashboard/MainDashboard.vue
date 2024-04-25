@@ -43,7 +43,7 @@
                   <router-link to="/dashboard/account-settings" class='p-2'>
                     <q-icon name="settings" class="mr-2"/> <span >Account Settings</span>
                   </router-link>
-                  <div @click="OpenLogout = true" class='flex items-center p-2 hover:bg-red-200 hover:text-red-500'>
+                  <div @click="OpenLogout = true" class='flex items-center p-2 cursor-pointer hover:bg-red-200 hover:text-red-500'>
                     <q-icon name="logout" class="h-[18px] w-[20px] font-bold"/>
                     <p>Logout</p>
                   </div>
@@ -74,24 +74,24 @@
         <div class='p-4 bg-[#109CF1] rounded flex items-center gap-3'>
           <q-icon name='shopping_bag' class='text-white bg-[#967259] text-h3 p-2 rounded'/>
           <div>
-            <p class='font-bold text-h5'>1250</p>  
-            <p>Purchase Order</p>  
+            <p class='font-bold text-h5'>1250</p>
+            <p>Purchase Order</p>
           </div>
         </div>
 
         <div class='p-4 bg-[#D8FAE7] rounded flex items-center gap-3'>
           <q-icon name='shopping_bag' class='text-white bg-[#967259] text-h3 p-2 rounded'/>
           <div>
-            <p class='font-bold text-h5'>1359</p>  
-            <p>Total Stocks</p>  
+            <p class='font-bold text-h5'>1359</p>
+            <p>Total Stocks</p>
           </div>
         </div>
-      
+
         <div class='p-4 bg-[#FFEEF1] rounded flex items-center gap-3'>
           <q-icon name='shopping_bag' class='text-white bg-[#967259] text-h3 p-2 rounded'/>
           <div>
-            <p class='font-bold text-h5'>1259</p>  
-            <p>Total Projects</p>  
+            <p class='font-bold text-h5'>1259</p>
+            <p>Total Projects</p>
           </div>
         </div>
 
@@ -101,6 +101,35 @@
 
   </div>
 </q-page>
+<q-dialog v-model="OpenLogout">
+  <q-card class="w-[500px]">
+    <q-card-section class="gap-3 items-center q-pb-none flex">
+      <div class="py-1 px-2 border text-[24px]"><q-icon name="logout"/></div>
+      <div class="text-h6 font-bold">Logout</div>
+      <q-space />
+    </q-card-section>
+
+    <q-card-section>
+
+      <p>Are you sure you want to Logout?</p>
+    </q-card-section>
+
+    <q-card-actions class="flex justify-center items-center">
+      <div class="w-1/2 p-1">
+        <q-btn flat label="Cancel" outline v-close-popup class="w-full border"/>
+      </div>
+      <div class="w-1/2 p-1">
+        <q-btn
+          @click="logout"
+          flat
+          label="Logout"
+          size="md"
+          class="bg-red-600 text-white rounded w-full"
+        />
+      </div>
+    </q-card-actions>
+  </q-card>
+  </q-dialog>
 </template>
 
 <script>
@@ -233,18 +262,15 @@ export default {
           this.status = userInformation.status;
           this.isAdmin = userInformation.isAdmin;
           this.fullname = this.firstname + " " + this.lastname;
+          console.log(this.position)
           if (this.position.toLowerCase() === 'owner') {
-
-            this.$router.push('/dashboard/main-dashboard');
-          } else {
-
-            this.$q.notify({
-              type: 'negative',
-              message: 'You do not have permission to access the system.',
-            });
-            this.$router.push('/');
-            sessionStorage.clear();
+              this.$router.push('/dashboard/main-dashboard');
+          } else if (this.position.toLowerCase() === 'production staff') {
+              this.$router.push('/dashboard/productionstaff-dashboard');
+          } else if (this.position.toLowerCase() === 'warehouseman') {
+              this.$router.push('/dashboard/warehouseman-dashboard');
           }
+
 
           if (this.status === 0 && !this.isAdmin) {
             this.$q.notify({

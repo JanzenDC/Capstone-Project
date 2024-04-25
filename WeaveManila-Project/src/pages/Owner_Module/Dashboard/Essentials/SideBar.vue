@@ -64,7 +64,7 @@ bordered
         </ul>
       </li>
 
-      <li class="py-[10px] px-[20px]" @click="toggleProduction">
+      <li class="py-[10px] px-[20px]" @click="toggleProduction" v-if="!(position.toLowerCase() === 'warehouseman')">
         <div class="flex items-center cursor-pointer gap-2 justify-between">
           <div>
             <i class="bi bi-box-seam"></i> <span >Product Monitoring</span>
@@ -77,13 +77,8 @@ bordered
           </router-link>
         </ul>
       </li>
-      <li class="py-[10px] px-[20px]">
-        <div class="flex items-center">
-          <q-icon name="assignment_add" class="mr-2"/><span>Report</span>
-        </div>
-      </li>
       <!-- Settings Section -->
-      <li class="font-bold" >Admin</li>
+      <li class="font-bold" v-if="!(position.toLowerCase() === 'warehouseman' || position.toLowerCase() === 'production staff')">Admin</li>
       <li class="py-[10px] px-[20px]">
         <div class="flex items-center">
           <router-link to="/dashboard/auditlogs-section">
@@ -91,7 +86,7 @@ bordered
           </router-link>
         </div>
       </li>
-      <li class="py-[10px] px-[20px]">
+      <li class="py-[10px] px-[20px]" v-if="isAdmin === 1">
         <div class="flex items-center">
           <router-link to="/dashboard/usermanagement-section">
             <q-icon name="group" class="mr-2"/> <span >User Management</span>
@@ -126,7 +121,7 @@ bordered
 
       <li class="py-[10px] px-[20px]" @click="toggleDrawer">
         <div class="flex items-center cursor-pointer gap-2 justify-between">
-          <div><q-icon name="inventory"/></div>
+          <div><q-icon name="inventory"/></div>   
         </div>
       </li>
 
@@ -224,28 +219,6 @@ export default {
           this.status = userInformation.status;
           this.isAdmin = userInformation.isAdmin;
           this.fullname = this.firstname + " " + this.lastname;
-          if (this.position.toLowerCase() === 'owner') {
-
-            this.$router.push('/dashboard/auditlogs-section');
-          } else {
-
-            this.$q.notify({
-              type: 'negative',
-              message: 'You do not have permission to access the system.',
-            });
-            this.$router.push('/');
-            sessionStorage.clear();
-          }
-
-          if (this.status === 0 && !this.isAdmin) {
-            this.$q.notify({
-              type: 'negative',
-              message: 'Your account is currently inactive. Please contact the administrator.',
-            });
-            this.$router.push('/');
-            sessionStorage.clear();
-          }
-
         } catch (error) {
           console.log('Error parsing user data:', error);
           // Provide user feedback or navigate to an error page

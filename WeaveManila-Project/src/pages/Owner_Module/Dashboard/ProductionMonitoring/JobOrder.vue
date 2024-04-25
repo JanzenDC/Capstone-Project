@@ -249,7 +249,7 @@
       </div>
     </q-card-actions>
   </q-card>
-</q-dialog>
+  </q-dialog>
 
 </template>
 

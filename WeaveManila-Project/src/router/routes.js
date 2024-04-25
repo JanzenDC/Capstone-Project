@@ -23,6 +23,9 @@ const routes = [
     component: () => import('layouts/DashboardLayout.vue'),
     children: [
       { path: 'main-dashboard', component: () => import('pages/Owner_Module/Dashboard/MainDashboard.vue') },
+      { path: 'productionstaff-dashboard', component: () => import('pages/Owner_Module/Dashboard/ProductionStaff.vue') },
+      { path: 'warehouseman-dashboard', component: () => import('pages/Owner_Module/Dashboard/WarehouseMan.vue') },
+
       { path: 'account-settings', component: () => import('pages/Owner_Module/Dashboard/AccountSettings/AccountDashboard.vue') },
       // Audit Logs
       { path: 'auditlogs-section', component: () => import('pages/Owner_Module/Dashboard/AuditLogs/AuditlogPage.vue') },

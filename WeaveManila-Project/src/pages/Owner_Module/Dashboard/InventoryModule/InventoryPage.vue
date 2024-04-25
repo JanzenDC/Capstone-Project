@@ -25,188 +25,116 @@
 
   <div class="p-4">
     <div class="p-4 overflow-y-auto overflow-x-hidden h-[500px] bg-white">
-      <div class="flex md:items-end md:justify-end mt-6 ">
-        <div class="flex items-center gap-5">
-          <q-input v-model="search" outlined dense placeholder="Search" class="md:w-[400px]">
+      <div class='justify-between flex'>
+        <div>
+          <q-input v-model='search' dense outlined label='Search...'>
             <template v-slot:prepend>
               <q-icon name="search" />
             </template>
           </q-input>
-          <q-btn @click="addCategory = true" class="bg-[#281c0f] text-white">
-            <i class="bi bi-plus-lg"></i>
-            Add Category
-          </q-btn>
+        </div>
+        <div class='flex gap-3'>
+          <q-btn icon="download"/>
+          <q-btn icon="print"/>
+          <q-btn-dropdown label="Category">
+            <q-list>
+              <q-item >
+                <q-item-label class='cursor-pointer' @click="onItemClick(null)" >All Categories</q-item-label>
+              </q-item>
+              <q-item v-for="(category, index) in categories" :key="index" >
+                <q-item-label class='cursor-pointer' @click="onItemClick(category.categoryID)">{{ category.title }}</q-item-label>
+              </q-item>
+            </q-list>
+          </q-btn-dropdown>
         </div>
       </div>
 
-    <q-dialog v-model="addCategory">
-        <q-card>
-          <q-form @submit="onSubmit">
-          <q-card-section class="row items-center q-pb-none">
-            <div class="text-h6 font-bold">Add Category</div>
-            <q-space />
-            <q-btn icon="close" flat round dense v-close-popup />
-          </q-card-section>
-
-          <q-card-section class="scroll">
-            <label>
-              Category Name<span class="text-red-600">*</span>
-            </label>
-            <q-input type="text" label="Category Name" v-model="title"  outlined dense :rules="[val => !!val || 'Field is required']"/>
-              <label>
-                Procedure<span class="text-red-600">*</span>
-              </label>
-              <q-select
-                outlined dense
-                v-model="selectedProcedure"
-                :options="procedureOptions"
-                label="Select Procedure"
-                :rules="[val => !!val || 'Field is required']"
-              />
-            <label class="">
-              Item Description<span class="text-red-600">*</span>
-            </label>
-            <q-input
-              type="textarea"
-              label="Item Description"
-              v-model="description"
-              outlined
-              dense
-              :rules="[val => !!val || 'Field is required']"
-              style="width: 300px; resize: none;"
-            />
-          </q-card-section>
-
-          <q-separator />
-
-          <q-card-actions align="right">
-            <q-btn flat label="Cancel" color="primary" v-close-popup />
-            <q-btn
-              flat
-              label="Save"
-              type="submit"
-              icon="save"
-              size="md"
-              class="bg-[#281c0f] text-white rounded"
-            />
-          </q-card-actions>
-        </q-form>
-        </q-card>
-    </q-dialog>
-
-    <q-dialog v-model="OpenDelete">
-        <q-card>
-          <q-card-section class="row items-center q-pb-none">
-            <div class="py-1 px-2 border text-[24px]"><q-icon name="delete"/></div>
-            <q-space />
-            <q-btn icon="close" flat round dense v-close-popup />
-          </q-card-section>
-
-          <q-card-section>
-            <div class="text-h6 font-bold">Delete Card</div>
-            <p>Are you sure you want to delete this card? This</p>
-            <p>action cannot be undone.</p>
-          </q-card-section>
-
-          <q-card-actions class="flex justify-center items-center">
-            <div class="w-1/2 p-1">
-              <q-btn flat label="Cancel" outline v-close-popup class="w-full border"/>
-            </div>
-            <div class="w-1/2 p-1">
-              <q-btn
-                @click="onDelete"
-                flat
-                label="Delete"
-                type="submit"
-                size="md"
-                class="bg-red-600 text-white rounded w-full"
-              />
-            </div>
-          </q-card-actions>
-        </q-card>
-    </q-dialog>
-
-      <div class="max-[390px]:mt-3 md:grid md:grid-cols-4 gap-4 md:p-4 h-[435px] overflow-y-auto overflow-x-hidden" >
-      <!-- Display fetched data in the grid with checkboxes -->
-      <div v-for="item in filteredItems" :key="item.id" style="border: #b09582 2px solid " class=" min-[390px]:mt-3 relative min-[390px]:w-full md:w-[231px] bg-white drop-shadow-lg border-[#b09582] rounded ">
-        <q-card flat>
-          <q-card-section>
-            <div class="row items-center no-wrap">
-              <div class="col">
-                <div class="text-h6">{{ item.title }}</div>
-              </div>
-              <div class="col-auto">
-                <q-btn color="grey-7" round flat icon="more_vert">
-                  <q-menu cover auto-close>
-                    <q-list>
-                      <q-item clickable @click="handleViewClick(item)">
-                        <q-item-section>View Details</q-item-section>
-                      </q-item>
-                      <q-item clickable @click="handleEditClick(item)">
-                        <q-item-section>Edit Card</q-item-section>
-                      </q-item>
-                      <q-item clickable @click="handleDeleteClick(item)">
-                        <q-item-section>Delete Card</q-item-section>
-                      </q-item>
-                    </q-list>
-                  </q-menu>
-                </q-btn>
+      <div class="q-pa-md">
+      <q-table
+          :rows="rows"
+          :columns="columns"
+          row-key="mpo_id"
+          class="my-sticky-header-table"
+          :dense="$q.screen.lt.md"
+          flat bordered
+        >
+        <template v-slot:body-cell-product="props">
+          <q-td :props="props">
+            <div v-if="props.row.product && props.row.product.length > 0">
+              <!-- Iterate over each product -->
+              <div v-for="(product, index) in props.row.product" :key="index">
+                <div v-if="product !== null">
+                  <!-- Expand icon -->
+                  <!-- <q-icon  name="expand_more" @click="toggleExpand(props.row.mpo_id, product)" /> -->
+                  {{ product }}
+                </div>
               </div>
             </div>
-          </q-card-section>
+          </q-td>
+        </template>
 
-          <q-card-section>
-            <div class="items-center flex gap-3">
-              <q-icon name="inventory_2" class="text-[#b09582]"/>
-              <div class="grid grid-cols-2 gap-4">
-                <p>Inventory</p>
-                {{ getItemCount(item.categoryID) }}
-              </div>
+        <template v-slot:body-cell-qty="props">
+          <q-td :props="props">
+            <div v-for="qty in props.row.qty" :key="qty">{{ qty }}</div>
+          </q-td>
+        </template>
+
+        <template v-slot:body-cell-qty_balance="props">
+          <q-td :props="props">
+            <div v-for="qty in props.row.qty_balance" :key="qty">{{ qty }}</div>
+          </q-td>
+        </template>
+
+        <template v-slot:body-cell-qty_received="props">
+          <q-td :props="props">
+            <div v-for="qty_received in props.row.qty_received" :key="qty_received">{{ qty_received }}</div>
+          </q-td>
+        </template>
+
+        <template v-slot:body-cell-status="props">
+          <q-td :props="props">
+            <div v-for="status in props.row.status" :key="status">
+              <q-badge :color="calculateStatus(status)">
+                {{ status }}
+              </q-badge>
             </div>
-            <div class="flex items-center gap-2">
-              <q-icon name="short_text" class="text-[#b09582]"/>
-              <p>Description:</p>
-              <p class="overflow-hidden whitespace-nowrap overflow-ellipsis w-[86px]">{{ item.description }}asd adasdas</p>
-            </div>
+          </q-td>
+        </template>
 
+        <template v-slot:body-cell-amount="props">
+          <q-td :props="props">
+            <div v-for="amount in props.row.amount" :key="amount">{{ amount }}</div>
+          </q-td>
+        </template>
 
+        <template v-slot:body-cell-actions="props">
+              <q-td :props="props">
+                <div class="flex items-center justify-center w-[221px] gap-1">
 
-          </q-card-section>
-        </q-card>
-      </div>
-      </div>
+                  <div class="bg-[#26218e] rounded text-white cursor-pointer w-[32px] h-[32px] text-[20px]">
+                    <q-icon name="assignment" @click="ViewForm(props.row.mpo_id)">
+                      <q-tooltip :offset="[0, 8]">View Form</q-tooltip>
+                    </q-icon>
+                  </div>
+                  <div class="bg-[#475467] rounded text-white cursor-pointer w-[32px] h-[32px] text-[20px]">
+                    <q-icon name="edit" >
+                      <q-tooltip :offset="[0, 8]">Edit</q-tooltip>
+                    </q-icon>
+                  </div>
+                  <!-- <div class="w-[32px] h-[32px] cursor-pointer text-[20px]">
+                    <q-icon name="arrow_forward_ios" @click="toNextPage(props.row.mpo_id)"/>
+                  </div> -->
+                </div>
+              </q-td>
+        </template>
+      </q-table>
     </div>
+    </div>
+
+
   </div>
 </q-page>
-<q-dialog v-model="OpenLogout">
-  <q-card class="w-[500px]">
-    <q-card-section class="gap-3 items-center q-pb-none flex">
-      <div class="py-1 px-2 border text-[24px]"><q-icon name="logout"/></div>
-      <div class="text-h6 font-bold">Logout</div>
-      <q-space />
-    </q-card-section>
 
-    <q-card-section>
-
-      <p>Are you sure you want to Logout?</p>
-    </q-card-section>
-
-    <q-card-actions class="flex justify-center items-center">
-      <div class="w-1/2 p-1">
-        <q-btn flat label="Cancel" outline v-close-popup class="w-full border"/>
-      </div>
-      <div class="w-1/2 p-1">
-        <q-btn
-          @click="logout"
-          flat
-          label="Logout"
-          size="md"
-          class="bg-red-600 text-white rounded w-full"
-        />
-      </div>
-    </q-card-actions>
-  </q-card>
-</q-dialog>
 
 </template>
 
@@ -245,41 +173,161 @@ export default {
       OpenLogout: false,
       // Add DATA
       search: '',
-      title: '',
-      description: '',
-      items: [],
-      countData: {},
-      selectedItems: [],
-      isOptionsOpen: {},
-      selectedProcedure: null,
-      procedureOptions: ["Segregate & issuance", "Issuance only"],
+      categories: [],
+      columns: [
+        { name: 'mpo_number', align: 'left', label: 'MPO No.', field: 'mpo_number', sortable: true, headerStyle: 'width: 44px;' },
+        { name: 'supplier', align: 'left', label: 'Supplier', field: 'supplier', sortable: true, headerStyle: 'width: 100px;' },
+        { name: 'product', align: 'left', label: 'Product', field: 'product', sortable: true, headerStyle: 'width: 150px;' },
+        { name: 'qty', align: 'left', label: 'Qty Purchased', field: 'qty', sortable: true, headerStyle: 'width: 80px;' },
+        { name: 'qty_balance', align: 'left', label: 'Qty Balance', field: 'qty_balance', sortable: true, headerStyle: 'width: 80px;' },
+        { name: 'status', align: 'left', label: 'Status', field: 'status', sortable: true, headerStyle: 'width: 80px;' },
+        { name: 'actions', align: 'center', label: 'Actions', field: 'actions', sortable: true },
+      ],
 
-      OpenDelete: false,
-      targetDelete: '',
-
+      rows: [],
     };
   },
-  computed: {
-    filteredItems() {
-      // Filter items based on the search input
-      return this.items.filter(item => {
-        const lowerSearch = this.search.toLowerCase();
-        return item.title.toLowerCase().includes(lowerSearch) || item.description.toLowerCase().includes(lowerSearch);
-      });
-    },
-  },
   mounted() {
+    this.fetchMPOData();
+    this.fetchCategory();
     this.loadUserData();
     this.statusCheckTimer = setInterval(() => {
       this.checkUserStatus();
     }, 20 * 1000); // 1 second (in milliseconds)
-    this.fetchData();
     this.clearInventoryData();
   },
   beforeUnmount() {
     clearInterval(this.statusCheckTimer);
   },
   methods: {
+    onItemClick(category) {
+      if (category == null) {
+        this.fetchMPOData();
+      } else {
+        axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/inventory.php?type=4&id=${category}`)
+        .then(response => {
+          try {
+            const groupedData = response.data.categoryData.reduce((acc, row) => {
+                if (!acc[row.mpoID]) {
+                    acc[row.mpoID] = {
+                        mpo_id: row.mpoID,
+                        mpo_number: row.mpoID,
+                        supplier: row.supplier_name,
+                        date_purchase: row.date_purchased,
+                        product: [],
+                        qty: [],
+                        total: [],
+                        amount: [],
+                        status: [],
+                        qty_balance: [],
+                    };
+                }
+                acc[row.mpoID].amount.push(row.subtotal);
+                acc[row.mpoID].product.push(row.item_name);
+                acc[row.mpoID].qty.push(row.quantity);
+
+
+                acc[row.mpoID].qty_balance.push(row.quantity_received);
+
+                // Calculate status based on received quantity
+                let status = '';
+                if (row.quantity_received === 0) {
+                    status = 'Out of Stock';
+                } else if (row.quantity_received  <= 300) {
+                  status = 'Low Stock';
+                } else  {
+                    status = 'In Stock';
+                }
+                acc[row.mpoID].status.push(status);
+                return acc;
+            }, {});
+
+            const groupedArray = Object.values(groupedData);
+
+            // Filter out ungrouped data (where only one data point exists)
+            const ungroupedData = response.data.categoryData.filter(row => !groupedData[row.mpoID]);
+
+            // Combine grouped and ungrouped data
+            const combinedData = groupedArray.concat(ungroupedData);
+
+            this.rows = combinedData;
+          } catch (error) {
+            console.error('Error processing data:', error);
+            this.$q.notify({
+              color: 'negative',
+              position: 'bottom',
+              message: 'There is no data in this category.',
+            });
+          }
+        })
+        .catch(error => {
+          console.error('Error fetching data:', error);
+        });
+      }
+    },
+    fetchMPOData() {
+      axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/inventory.php?type=3`)
+      .then(response => {
+        console.log(response.data)
+        const groupedData = response.data.categoryData.reduce((acc, row) => {
+            if (!acc[row.mpoID]) {
+                acc[row.mpoID] = {
+                    mpo_id: row.mpoID,
+                    mpo_number: row.mpoID,
+                    supplier: row.supplier_name,
+                    date_purchase: row.date_purchased,
+                    product: [],
+                    qty: [],
+                    total: [],
+                    amount: [],
+                    status: [],
+                    qty_balance: [],
+                };
+            }
+            acc[row.mpoID].amount.push(row.subtotal);
+            acc[row.mpoID].product.push(row.item_name);
+            acc[row.mpoID].qty.push(row.quantity);
+
+
+            acc[row.mpoID].qty_balance.push(row.quantity_received);
+
+            // Calculate status based on received quantity
+            let status = '';
+            if (row.quantity_received === 0) {
+                status = 'Out of Stock';
+            } else if (row.quantity_received  <= 300) {
+              status = 'Low Stock';
+            } else  {
+                status = 'In Stock';
+            }
+            acc[row.mpoID].status.push(status);
+            return acc;
+        }, {});
+
+        const groupedArray = Object.values(groupedData);
+
+        // Filter out ungrouped data (where only one data point exists)
+        const ungroupedData = response.data.categoryData.filter(row => !groupedData[row.mpoID]);
+
+        // Combine grouped and ungrouped data
+        const combinedData = groupedArray.concat(ungroupedData);
+
+        this.rows = combinedData;
+      })
+      .catch(error => {
+        console.error('Error fetching data:', error);
+      });
+    },
+    fetchCategory() {
+      axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/MPO_Queries/mpo_data.php?get=category`)
+        .then(response => {
+          // Assuming response.data is an array of categories
+          this.categories = response.data.categoryData;
+        })
+        .catch(error => {
+          console.error('Error fetching categories:', error);
+        });
+    },
     clearInventoryData() {
       sessionStorage.removeItem('inventoryData');
     },
@@ -318,102 +366,25 @@ export default {
             console.error('Error fetching data:', error);
       });
     },
-    fetchData() {
 
-      axios.get('http://localhost/Capstone-Project/backend/api/Inventory_Database/inventory.php?type=1')
-        .then(response => {
-          if (response.data && response.data.status === 'success' && response.data.information) {
-            const fetchedData = response.data.information.rows;
-            const countData = response.data.information.itemCountData;
-            this.countData = countData;
-            this.items = fetchedData;
-          } else {
-            console.error('Failed to fetch data:', response.data.message);
-          }
-        })
-        .catch(error => {
-          // Handle any errors that occur during the HTTP request
-          console.error('Error fetching data:', error.message);
-        });
+    calculateStatus(status) {
+      switch (status) {
+        case 'Out of Stock':
+          return 'red';
+        case 'Low Stock':
+          return 'yellow';
+        case 'On Stock':
+          return 'green';
+        default:
+          return 'gray'
+      }
     },
-    toggleOptions(itemId) {
-      // Close dropdown for other items
-      Object.keys(this.isOptionsOpen).forEach(id => {
-        if (id !== itemId) {
-          this.isOptionsOpen[id] = false;
-        }
-      });
-
-      // Toggle the dropdown options for the clicked item
-      this.isOptionsOpen[itemId] = !this.isOptionsOpen[itemId];
-    },
-    getItemCount(categoryID) {
-      return this.countData[categoryID] || 0;
-    },
-    handleViewClick(itemId) {
-      axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/inventory.php?type&id=${itemId.categoryID}`)
-      .then(response => {
-
-        const Status = response.data.status;
-        const Message = response.data.message;
-        if (Status === "success") {
-          const inventoryData = {
-            InventoryId: itemId.categoryID,
-            InventoryName: itemId.title,
-          }
-          SessionStorage.set('inventoryData', JSON.stringify(inventoryData));
-          this.$router.push('/dashboard/inventory-viewpage');
-        }
-        if (Status === "fail") {
-          this.$q.notify({
-            color: 'negative',
-            message: `${Message} Please try again.`,
-          });
-        }
-      }).catch(error => {
-            console.error('Error fetching data:', error);
-      });
-    },
-    handleEditClick(itemId) {
-      console.log('Edit button clicked for item ID:', itemId.categoryID);
-    },
-    handleDeleteClick(itemId) {
-      this.targetDelete = itemId.categoryID;
-      this.OpenDelete = true;
-    },
-
-// Execution
-    onDelete(){
-      axios.delete(`http://localhost/Capstone-Project/backend/api/Inventory_Database/inventory.php/${this.targetDelete}`)
-      .then(response => {
-        const Status = response.data.status;
-        const Message = response.data.message;
-        if (Status === "success") {
-          this.$q.notify({
-              message: 'Category deleted successfully!!',
-              color: 'green',
-          });
-        }
-        if (Status === "fail") {
-          this.$q.notify({
-            color: 'negative',
-            message: `${Message} Please try again.`,
-          });
-        }
-        this.OpenDelete = false;
-        this.fetchData();
-      }).catch(error => {
-            console.error('Error fetching data:', error);
-      });
-    },
-
-
-
-    toggleProduction(){
-      this.productionVisible = !this.productionVisible;
-    },
-    toggleInventoryMenu() {
-      this.inventoryMenuVisible = !this.inventoryMenuVisible;
+    isValidDate(dateString) {
+      // Attempt to create a Date object from the dateString
+      const date = new Date(dateString);
+      // Check if the date object is valid
+      // If it's an invalid date or "No Data", return false
+      return !isNaN(date.getTime()) && dateString !== 'No Data';
     },
     toggleDrawer() {
       if (!this.toggleDrawers) {
@@ -543,10 +514,6 @@ export default {
         // Return a default path or handle it as per your requirement
         return '/default_profile.png';
       }
-    },
-    logout() {
-      sessionStorage.clear();
-      this.$router.push('/');
     },
   },
 };
