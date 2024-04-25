@@ -407,7 +407,7 @@ export default {
                 qtypurchased: row.quantity,
                 product_cost: row.subtotal,
                 qtyreceived: row.quantity_received,
-                // qtybalance: row.quantity,
+                qtybalance: row.quantity_balance,
                 // received_date:
                 status: row.status
               };

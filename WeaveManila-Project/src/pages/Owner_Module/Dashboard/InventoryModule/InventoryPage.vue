@@ -109,21 +109,17 @@
 
         <template v-slot:body-cell-actions="props">
               <q-td :props="props">
-                <div class="flex items-center justify-center w-[221px] gap-1">
-
+                <div class="flex items-center justify-center w-[100px] gap-1">
                   <div class="bg-[#26218e] rounded text-white cursor-pointer w-[32px] h-[32px] text-[20px]">
                     <q-icon name="assignment" @click="ViewForm(props.row.mpo_id)">
                       <q-tooltip :offset="[0, 8]">View Form</q-tooltip>
                     </q-icon>
                   </div>
                   <div class="bg-[#475467] rounded text-white cursor-pointer w-[32px] h-[32px] text-[20px]">
-                    <q-icon name="edit" >
+                    <q-icon name="edit" @click="toNextPage(props.row.mpo_id)">
                       <q-tooltip :offset="[0, 8]">Edit</q-tooltip>
                     </q-icon>
                   </div>
-                  <!-- <div class="w-[32px] h-[32px] cursor-pointer text-[20px]">
-                    <q-icon name="arrow_forward_ios" @click="toNextPage(props.row.mpo_id)"/>
-                  </div> -->
                 </div>
               </q-td>
         </template>
@@ -181,7 +177,7 @@ export default {
         { name: 'qty', align: 'left', label: 'Qty Purchased', field: 'qty', sortable: true, headerStyle: 'width: 80px;' },
         { name: 'qty_balance', align: 'left', label: 'Qty Balance', field: 'qty_balance', sortable: true, headerStyle: 'width: 80px;' },
         { name: 'status', align: 'left', label: 'Status', field: 'status', sortable: true, headerStyle: 'width: 80px;' },
-        { name: 'actions', align: 'center', label: 'Actions', field: 'actions', sortable: true },
+        { name: 'actions', align: 'center', label: 'Actions', field: 'actions',headerStyle: 'width: 50px', },
       ],
 
       rows: [],
@@ -378,6 +374,62 @@ export default {
         default:
           return 'gray'
       }
+    },
+    toNextPage(targetID) {
+      axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/MPO_Queries/mpopage_segregation.php?select=${targetID}`)
+          .then(response => {
+              const Status = response.data.status;
+              const Message = response.data.message;
+              const itemId = response.data.mpoBaseFetch;
+              const mpoData = response.data.queryResult;
+
+              if (Status === "success") {
+                  this.$q.notify({
+                      message: `${Message}`,
+                      color: 'green',
+                  });
+                  if (Array.isArray(itemId)) {
+                    mpoData.map(mpoInfo => {
+                      const mpoDataRestrieve = {
+                          mpoID: mpoInfo.mpoID,
+                          personelID: mpoInfo.personelID,
+                          supplierID: mpoInfo.supplierID,
+                          categoryID: mpoInfo.categoryID,
+                          mpo_ref_no: mpoInfo.mpo_ref_no,
+                          date_purchased: mpoInfo.date_purchased,
+                          client_ref_no: mpoInfo.client_ref_no,
+                          w_o_ref_no: mpoInfo.w_o_ref_no,
+                          delivery_date: mpoInfo.delivery_date,
+                          delivery_address: mpoInfo.delivery_address,
+                          supplier_address: mpoInfo.supplier_address,
+                          total: mpoInfo.total,
+                          delivery_charge: mpoInfo.delivery_charge,
+                          discount: mpoInfo.discount,
+                          other_costs: mpoInfo.other_costs,
+                          total_amount: mpoInfo.total_amount,
+                          notes_instructions: mpoInfo.notes_instructions,
+                          prepared_by: mpoInfo.prepared_by,
+                          approved_by: mpoInfo.approved_by,
+                          supplier_name: mpoInfo.supplier_name,
+                      };
+                      SessionStorage.set('MPOData', JSON.stringify(mpoDataRestrieve));
+                    });
+
+
+                    this.$router.push('/dashboard/rawmaterials-section');
+                } else {
+                    console.error('itemId is not an array.');
+                }
+              }
+              if (Status === "fail") {
+                  this.$q.notify({
+                      color: 'negative',
+                      message: `${Message} Please try again.`,
+                  });
+              }
+          }).catch(error => {
+              console.error('Error fetching data:', error);
+          });
     },
     isValidDate(dateString) {
       // Attempt to create a Date object from the dateString

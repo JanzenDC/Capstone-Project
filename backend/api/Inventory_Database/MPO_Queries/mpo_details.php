@@ -73,11 +73,17 @@
         }
         else if($payload['targetdata'] ==='rawmats'){
               $getData = $this->db->where('mpoID', $payload['targetdatas'])->get('mpo_base');
+            
+              $targetID = $payload['targetdata'];
+              // Create a query selecting mpoBase data where target id use left join in mpo_datereceived_logs select the max(timestamp) and displaying here the date_received
+              $sqlQuery = '';
+
+              $query = $this->db->rawQuery($sqlQuery, Array($targetID));
               if($getData){
                 $response = [
                     'status' => 'success',
                     'message' => 'Success getting Data',
-                    'information' => $getData,
+                    'information' => $query,
                 ];
                 echo json_encode($response);
                 exit;
