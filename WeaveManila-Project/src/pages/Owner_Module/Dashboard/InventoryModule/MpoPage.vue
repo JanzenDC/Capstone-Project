@@ -367,7 +367,6 @@
                       <th class="px-4 py-2">Quantity</th>
                       <th class="px-4 py-2">Unit</th>
                       <th class="px-4 py-2">Unit Price</th>
-                      <th class="px-4 py-2">Discount</th>
                       <th class="px-4 py-2">Sub Total</th>
                     </tr>
                   </thead>
@@ -379,7 +378,6 @@
                       <td class="px-4 py-2">{{ row.squantity }}</td>
                       <td class="px-4 py-2">{{ row.sunit }}</td>
                       <td class="px-4 py-2">₱{{ row.sunitprice }}</td>
-                      <td class="px-4 py-2">10</td>
                       <td class="px-4 py-2">₱{{ row.stotal }}</td>
                     </tr>
                   </tbody>
@@ -409,27 +407,6 @@
                     <div class="font-bold">Total Amount</div>
                     <div>₱ {{ total_amount }}</div>
                   </div>
-                </div>
-              </div>
-              <div class="w-full p-14 flex text-center justify-center items-center">
-                <div class="w-1/2 text-center">
-                  <p class="font-bold">Approved by</p>
-                  <q-img
-                    :src="getDefaultImage('approved')"
-                    alt="Description of the image"
-                    class="w-[50px] h-[50px]"
-                  />
-                  <p class="font-bold">{{ approvedby_name }}</p>
-                </div>
-                <div class="w-1/2 text-center">
-                  <p class="font-bold">Prepared by</p>
-                  <q-img
-                    :src="getDefaultImage('prepared')"
-                    alt="Description of the image"
-                    class="w-[50px] h-[50px]"
-                  />
-                  <p class="font-bold">{{ prepared_name }}</p>
-
                 </div>
               </div>
             </div>
@@ -626,18 +603,6 @@ export default {
       previewForm: false,
       product_dialog: false,
       // Second Process Data
-      datacolumns: [
-        { name: 'id', align: 'left', label: '#', field: 'id', sortable: true },
-        { name: 'sproduct', align: 'left', label: 'Product', field: 'sproduct', sortable: true },
-        { name: 'sdescription', align: 'left', label: 'Description', field: 'sdescription', sortable: true },
-        { name: 'squantity', align: 'left', label: 'Quantity', field: 'squantity', sortable: true },
-        { name: 'sunit', align: 'left', label: 'Unit', field: 'sunit', sortable: true },
-        { name: 'sunitprice', align: 'left', label: 'Unit Price', field: 'sunitprice', sortable: true },
-        { name: 'sdiscount', align: 'left', label: 'Discount', field: 'sdiscount', sortable: true },
-        { name: 'stotal', align: 'left', label: 'Sub Total', field: 'stotal', sortable: true },
-        { name: 'sactions', align: 'left', label: 'Actions', field: 'sactions', sortable: true },
-      ],
-      datarows: [],
       expandedProducts: [],
       company_address: '',
       uploadPhoto: '',
@@ -1490,7 +1455,7 @@ export default {
           this.status = userInformation.status;
           this.isAdmin = userInformation.isAdmin;
           this.fullname = this.firstname + " " + this.lastname;
-          if (this.position.toLowerCase() === 'owner') {
+          if (this.position.toLowerCase() === 'owner'  || this.position.toLowerCase() === 'production staff' || this.position.toLowerCase() === 'warehouseman') {
 
             this.$router.push('/dashboard/mpo-section');
           } else {
@@ -1528,21 +1493,8 @@ export default {
         sessionStorage.clear();
       }
     },
-    getLimitedFullname(fullname, maxLength) {
-      if (fullname.length > maxLength) {
-        return fullname.substring(0, maxLength) + '...';
-      }
-      return fullname;
-    },
-    getUserProfileImagePath() {
-      // Ensure userProfileImage is not null before creating the path
-      if (this.userProfileImage) {
-        return `/pfp/${this.userProfileImage}`;
-      } else {
-        // Return a default path or handle it as per your requirement
-        return '/default_profile.png';
-      }
-    },
+
+
     logout() {
       sessionStorage.clear();
       this.$router.push('/');

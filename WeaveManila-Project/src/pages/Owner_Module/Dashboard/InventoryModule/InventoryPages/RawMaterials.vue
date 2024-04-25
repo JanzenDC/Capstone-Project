@@ -329,8 +329,7 @@ import SideBar from '../../Essentials/SideBar.vue';
           this.status = userInformation.status;
           this.isAdmin = userInformation.isAdmin;
           this.fullname = this.firstname + " " + this.lastname;
-          if (this.position.toLowerCase() === 'owner') {
-
+          if (this.position.toLowerCase() === 'owner'  || this.position.toLowerCase() === 'production staff' || this.position.toLowerCase() === 'warehouseman') {
             this.$router.push('/dashboard/rawmaterials-section');
           } else {
 

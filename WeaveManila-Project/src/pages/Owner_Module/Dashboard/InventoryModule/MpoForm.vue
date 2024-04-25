@@ -214,7 +214,7 @@ export default {
   data() {
     return {
       optionsss: [
-        'Drying', 'Segregation', 'Cleaning','Weaving'
+        'Drying', 'Segregation', 'Cleaning','Weighting'
       ],
       modelMultiple: [],
       isAdmin: 0,
