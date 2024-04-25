@@ -418,7 +418,7 @@ export default {
           this.status = userInformation.status;
           this.isAdmin = userInformation.isAdmin;
           this.fullname = this.firstname + " " + this.lastname;
-          if (this.position.toLowerCase() === 'owner') {
+          if (this.isAdmin === 1 || this.isAdmin === '1') {
 
             this.$router.push('/dashboard/backup-section');
           } else {
