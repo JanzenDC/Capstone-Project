@@ -1,62 +1,30 @@
 <template>
-<SideBar />
-<q-page class="bg-[#f5f5f5] ">
-  <div class='flex justify-between items-center text-[30px] bg-white p-2'>
-    <div>
-      <div class="items-center flex">
-        <q-icon
-          name="menu"
-          v-if="showMenuIcon"
-          @click="toggleDrawer"
-          class="cursor-pointer"
-        />
-        <q-icon
-          name="menu"
-          v-if="!showMenuIcon"
-          @click="toggleDrawer"
-          class="cursor-pointer max-[1020px]:flex min-[1020px]:hidden"
-        />
-      <span class="font-bold">Material Purchase Order</span>
-      </div>
-      <div class="text-[16px]"><span class="text-[#b8b8b8]">Inventory / </span>Material Purchase Order</div>
-    </div>
-    <LogoutTop />
-  </div>
-
-
   <div class="p-4">
     <!-- Header -->
-    <div class="flex mt-3">
-      <router-link to="/dashboard/mpo-section">
-        <div class="flex bg-white w-[155px] border-r-2 h-[44px] py-3 px-5 gap-[8px] rounded items-center text-[14px]">
-        <q-icon name="note_add"/>
-        <p>MPO Form</p>
-      </div>
-    </router-link>
-    <router-link to="/dashboard/mpo-section">
-      <div class="flex w-[155px] text-[#b8b8b8] border-t-2 border-e-2 h-[44px] py-3 px-5 gap-[8px] rounded items-center text-[14px]">
-        <q-icon name="list"/>
-        <p>Purchase list</p>
-      </div>
-    </router-link>
-    <router-link to="/dashboard/supplier-section">
-      <div class="flex w-[155px] text-[#b8b8b8] border-t-2 border-e-2 h-[44px] py-3 px-5 gap-[8px] rounded items-center text-[14px]">
-          <q-icon name="group"/>
-          <p>Supplier List</p>
-        </div>
-    </router-link>
-    </div>
-
     <div class="w-full bg-white p-4 h-[470px] overflow-x-hidden overflow-y-auto">
       <div class=''>
           <div>
             <div>Material Purchase Order</div>
-            <div class='p-2'>Category
-              <div class='w-[200px]'>
-                <q-select dense outlined v-model="categories" :options="options"></q-select>
+            <div class='flex gap-2'>
+              <div class='p-2'>Category
+                <div class='w-[282px]'>
+                  <q-select dense outlined v-model="categories" :options="options"></q-select>
+                </div>
+              </div>
+              <div class='p-2'>Services
+                <q-select
+                  dense outlined
+                  v-model="modelMultiple"
+                  multiple
+                  :options="optionsss"
+                  use-chips
+                  stack-label
+                  class='w-[550px]'
+                />
               </div>
             </div>
-            <div class='grid grid-cols-4 gap-1 p-2'>
+
+            <div class='grid grid-cols-4 gap-4 p-2'>
               <div>
                 <p>Mpo Ref. No.</p>
                 <q-input disable dense outlined v-model='mpo_ref'/>
@@ -152,7 +120,7 @@
                     Sub Total
                   </div>
                   <div>
-                    ₱ {{ subtotal }}
+                    ₱ {{ subtotal.toFixed(2) }}
                   </div>
 
                   <div>
@@ -190,7 +158,7 @@
                     Total
                   </div>
                   <div>
-                    ₱ {{ total }}
+                    ₱ {{ total.toFixed(2) }}
                   </div>
                 </div>
               </div>
@@ -234,52 +202,21 @@
     </div>
   </div>
 
-<q-dialog v-model="OpenLogout">
-  <q-card class="w-[500px]">
-    <q-card-section class="gap-3 items-center q-pb-none flex">
-      <div class="py-1 px-2 border text-[24px]"><q-icon name="logout"/></div>
-      <div class="text-h6 font-bold">Logout</div>
-      <q-space />
-    </q-card-section>
 
-    <q-card-section>
 
-      <p>Are you sure you want to Logout?</p>
-    </q-card-section>
-
-    <q-card-actions class="flex justify-center items-center">
-      <div class="w-1/2 p-1">
-        <q-btn flat label="Cancel" outline v-close-popup class="w-full border"/>
-      </div>
-      <div class="w-1/2 p-1">
-        <q-btn
-          @click="logout"
-          flat
-          label="Logout"
-          size="md"
-          class="bg-red-600 text-white rounded w-full"
-        />
-      </div>
-    </q-card-actions>
-  </q-card>
-</q-dialog>
-
-</q-page>
 </template>
 
 <script>
 import { SessionStorage } from 'quasar';
 import axios from 'axios';
-import SideBar from '../Essentials/SideBar.vue';
-import LogoutTop from '../Essentials/LogoutTop.vue';
 
 export default {
-  components: {
-    SideBar,
-    LogoutTop
-  },
   data() {
     return {
+      optionsss: [
+        'Drying', 'Segregation', 'Cleaning','Weaving'
+      ],
+      modelMultiple: [],
       isAdmin: 0,
       email: '',
       fullname: '',
@@ -301,7 +238,7 @@ export default {
       OpenLogout: false,
       // Additional Data
 
-           columns: [
+      columns: [
         { name: 'actions', label: '', field: 'actions'},
         { name: 'id', label: 'ID', field: 'id', sortable: true },
         { name: 'product', label: 'Product', field: 'product', sortable: true },
@@ -330,7 +267,7 @@ export default {
       },
       delivery_charge: 0,
       other_cost: 0,
-      discount: 0,
+      discount: 10,
       discount_value: 0,
       tax_vat: 12,
       tax_vat_value: 0,
@@ -345,11 +282,7 @@ export default {
     };
   },
   mounted() {
-    this.loadUserData();
     this.fetchMPOdata();
-    this.statusCheckTimer = setInterval(() => {
-      this.checkUserStatus();
-    }, 20 * 1000); // 1 second (in milliseconds)
     this.fetchCategoryData();
   },
   watch: {
@@ -365,6 +298,15 @@ export default {
     },
     categories(newVal) {
       // Check if a category is selected
+      console.log(newVal)
+      if(newVal.label === 'Packing Materials'){
+        this.modelMultiple = ['Drying'];
+      }
+      else if(newVal.label === 'Dyeing Materials' || newVal.label === 'Backing Materials'){
+        this.modelMultiple = ['Drying', 'Segregation', 'Cleaning'];
+      } else {
+        this.modelMultiple = [];
+      }
       this.isInputDisabled = newVal ? false : true;
       this.rows = [];
       axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/Supplier_Database/supplier.php?get=supplierGet&supplierGet=${this.categories.label}`)
@@ -445,6 +387,7 @@ export default {
       this.medium = true;
     },
     ResetData(){
+      this.modelMultiple = [];
       this.categories = '';
       this.supplierValue = '';
       this.mpo_ref = '';
@@ -494,6 +437,7 @@ export default {
       formData.append('discount_value', this.discount);
       formData.append('tax_vat', this.tax_vat);
       formData.append('tax_vat_value', this.tax_vat_value);
+      formData.append('services', this.modelMultiple);
 
       this.rows.forEach(row => {
         const total = row.quantity * row.unit_price;
@@ -571,7 +515,7 @@ export default {
       this.discount_value = this.subtotal * discountDecimal;
       const tax_vat = parseFloat(this.tax_vat) / 100;
       const vatAmount = total * tax_vat;
-      this.tax_vat_value = this.subtotal * tax_vat;
+      this.tax_vat_value = vatAmount;
 
       this.total = total + vatAmount;
     },
@@ -627,107 +571,6 @@ export default {
         this.drawerWidth = 80;
         this.toggleDrawers = false;
         this.drawerIcon = 'arrow_back_ios_new';
-      }
-    },
-    checkUserStatus() {
-      axios.get(`http://localhost/Capstone-Project/backend/api/verification.php?email=${this.email}`)
-      .then(response => {
-        const information = response.data.information;
-          this.information = {
-            id: information.id,
-            email: information.email,
-            username: information.username,
-            pfp: information.pfp,
-            firstname: information.firstname,
-            middlename: information.middlename,
-            lastname: information.lastname,
-            gender: information.gender,
-            position: information.position,
-            mobilenumber: information.mobilenumber,
-            birthdate: information.birthdate,
-            age: information.age,
-            address: information.address,
-            otp_code: information.otp_code,
-            isOnline: information.isOnline,
-            status: information.status,
-            password: information.password,
-            isAdmin: information.isAdmin,
-            suffix: information.suffix,
-            civil_status: information.civil_status
-          };
-          SessionStorage.set('information', JSON.stringify(this.information));
-
-          const latestAdmin = response.data.information.isAdmin;
-          const latestStatus = response.data.information.status;
-
-          if (this.status !== latestStatus || (latestAdmin && latestStatus === 0)) {
-            this.status = latestStatus;
-
-            if (this.status === 0 && !latestAdmin) {
-              this.$q.notify({
-                type: 'negative',
-                message: 'Your account is currently inactive. Please contact the administrator.',
-              });
-              this.$router.push('/');
-              sessionStorage.clear();
-            }
-          }
-      }).catch(error => {
-            console.error('Error fetching data:', error);
-      });
-    },
-    loadUserData() {
-      const userData = SessionStorage.getItem('information');
-
-      if (userData) {
-        try {
-          const userInformation = JSON.parse(userData);
-          this.email = userInformation.email;
-          this.username = userInformation.username;
-          this.userProfileImage = userInformation.pfp;
-          this.firstname = userInformation.firstname;
-          this.middlename = userInformation.middlename;
-          this.lastname = userInformation.lastname;
-          this.position = userInformation.position;
-          this.status = userInformation.status;
-          this.isAdmin = userInformation.isAdmin;
-          this.fullname = this.firstname + " " + this.lastname;
-          if (this.position.toLowerCase() === 'owner') {
-
-            this.$router.push('/dashboard/mpoform-section');
-          } else {
-
-            this.$q.notify({
-              type: 'negative',
-              message: 'You do not have permission to access the system.',
-            });
-            this.$router.push('/');
-            sessionStorage.clear();
-          }
-
-          if (this.status === 0 && !this.isAdmin) {
-            this.$q.notify({
-              type: 'negative',
-              message: 'Your account is currently inactive. Please contact the administrator.',
-            });
-            this.$router.push('/');
-            sessionStorage.clear();
-          }
-
-        } catch (error) {
-          console.log('Error parsing user data:', error);
-          // Provide user feedback or navigate to an error page
-          this.$q.notify({
-            type: 'negative',
-            message: 'Error loading user data. Please try again.',
-          });
-          this.$router.push('/');
-          sessionStorage.clear();
-        }
-      } else {
-        // Handle the case when user data is not available
-        this.$router.push('/');
-        sessionStorage.clear();
       }
     },
     getLimitedFullname(fullname, maxLength) {

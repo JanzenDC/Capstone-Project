@@ -58,7 +58,26 @@
               </q-list>
             </q-btn-dropdown>
             <q-btn square icon="print"/>
-            <q-btn label="Add MPO" icon='add' class='bg-[#281C0F] text-white'/>
+            <q-btn label="Add MPO" icon='add' class='bg-[#281C0F] text-white'  @click="fullHeight = true"/>
+
+
+            <q-dialog
+              v-model="fullHeight"
+              full-height
+              full-width
+            >
+              <q-card class="column full-height" style="width: 300px">
+                <q-card-section class="row items-center q-pb-none">
+                  <div class="text-h6">MPO Form</div>
+                  <q-space />
+                  <q-btn icon="close" flat round dense v-close-popup />
+                </q-card-section>
+
+                <q-card-section class="col q-pt-none">
+                  <MPOForm />
+                </q-card-section>
+              </q-card>
+            </q-dialog>
             <!-- <q-btn-dropdown label="Category">
               <q-list>
                 <q-item @click="onItemClick(null)">
@@ -149,7 +168,7 @@
                     Received
 
                   </div>
-  
+
                   <div class="bg-[#26218e] rounded text-white cursor-pointer w-[32px] h-[32px] text-[20px]">
                     <q-icon name="assignment" @click="ViewForm(props.row.mpo_id)">
                       <q-tooltip :offset="[0, 8]">View Form</q-tooltip>
@@ -546,14 +565,16 @@ import { SessionStorage } from 'quasar';
 import axios from 'axios';
 import SideBar from '../Essentials/SideBar.vue';
 import LogoutTop from '../Essentials/LogoutTop.vue';
-
+import MPOForm from './MpoForm.vue';
 export default {
   components: {
     SideBar,
-    LogoutTop
+    LogoutTop,
+    MPOForm,
   },
   data() {
     return {
+      fullHeight: false,
       searchQuery: '',
       pagination: {
         page: 1,
