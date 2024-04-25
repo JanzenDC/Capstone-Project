@@ -438,7 +438,7 @@ export default {
       formData.append('tax_vat', this.tax_vat);
       formData.append('tax_vat_value', this.tax_vat_value);
       formData.append('services', this.modelMultiple);
-
+      console.log(this.modelMultiple)
       this.rows.forEach(row => {
         const total = row.quantity * row.unit_price;
         const productData = {

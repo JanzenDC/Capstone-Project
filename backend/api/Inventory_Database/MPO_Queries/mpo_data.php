@@ -192,7 +192,7 @@
                 exit;
             }
         }
-        if($payload['get'] == 'targetCategory'){
+        else if($payload['get'] == 'targetCategory'){
             $targetCategory = $payload['id'];
             $sqlQuery = 'SELECT 
                 mpo.mpoID,
@@ -315,6 +315,7 @@
                 'vat' => $_POST['tax_vat'],
                 'total_amount' => $_POST['total'],
                 'notes_instructions' => $_POST['notes_instructions'],
+                'services' => $_POST['services'],
             ];
             $test = $this->db->insert('mpo_tbl', $insertData);
             if($test){
