@@ -619,7 +619,7 @@ export default {
           this.status = userInformation.status;
           this.isAdmin = userInformation.isAdmin;
           this.fullname = this.firstname + " " + this.lastname;
-          if (this.position.toLowerCase() === 'owner') {
+          if (this.position.toLowerCase() === 'owner'  || this.position.toLowerCase() === 'production staff') {
 
             this.$router.push('/dashboard/productionplan-section');
           } else {
