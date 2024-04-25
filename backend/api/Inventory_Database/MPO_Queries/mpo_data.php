@@ -99,6 +99,26 @@
                 exit;
             }
         }
+        else if($payload['get'] == 'companylogo'){
+            $getData = $this->db->where('isAdmin', 1)->getOne('personel_tbl');
+
+            if($getData){
+                $response = [
+                    'status' => 'success',
+                    'message' => 'Data has been fetch succesfully',
+                    'isAdmin' => $getData,
+                ];
+                echo json_encode($response);
+                exit;
+            }else{
+                $response = [
+                    'status' => 'fail',
+                    'message' => 'There is no data in here.',
+                ];
+                echo json_encode($response);
+                exit;
+            }
+        }
         else if($payload['get'] == 'category'){
             $categoryData = $this->db->get('w_category');
             if($categoryData){

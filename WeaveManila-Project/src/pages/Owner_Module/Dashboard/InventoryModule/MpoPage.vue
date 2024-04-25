@@ -269,9 +269,9 @@
                 <div class="w-1/2">
                     <div class="p-10 text-center">
                         <q-img
-                          :src="getDefaultImage('logo')"
+                          :src="getCompanyImagePath()"
                           alt="Description of the image"
-                          class="w-[250px] h-[50px]"
+                          class="w-[250px] h-[250px]"
                         />
                         <p class="text-[14px] mt-8">{{ company_address }}</p>
                     </div>
@@ -308,54 +308,18 @@
                     </div>
                 </div>
               </div>
-              <div class="w-full p-2 flex justify-center items-center">
-                  <table class="w-full">
-                      <thead class="bg-[#f6f8fa] text-left border">
-                          <tr>
-                              <th class="px-4 py-2 w-[500px]">To</th>
-                              <th class="px-4 py-2">Process</th>
-
-                          </tr>
-                      </thead>
-                      <tbody>
-                          <tr class="border-b border">
-                              <td class="px-4 py-2 border-l border">{{ selectedSupplier }}</td>
-                              <td class="px-4 py-2 border-l border-r border grid grid-cols-2">
-                                <p>
-                                  Segregation
-                                </p>
-                                <label>{{ segregation }}</label>
-                              </td>
-                          </tr>
-                          <tr class="">
-                              <td class="border-l "></td>
-                              <td class="px-4 py-2 border-l border-r border grid grid-cols-2">
-                                <p>
-                                  Cleaning
-                                </p>
-                                <label>{{ cleaning }}</label>
-                              </td>
-                          </tr>
-                          <tr>
-                              <td class="px-4 py-2 border-l ">{{ supplier_address }}</td>
-                              <td class="px-4 py-2 border-l border-r border-t border grid grid-cols-2">
-                                <p>
-                                  Drying
-                                </p>
-                                <label>{{ drying }}</label>
-                              </td>
-                          </tr>
-                          <tr>
-                              <td class="px-4 py-2 border-b border-l"></td>
-                              <td class="px-4 py-2 border grid grid-cols-2">
-                                <p>
-                                  Weighting
-                                </p>
-                                <label>{{ weighting }}</label>
-                              </td>
-                          </tr>
-                      </tbody>
-                  </table>
+              <div class='flex'>
+                <div class='w-1/2 p-4'>
+                  <p class='font-bold text-[16px]'>TO</p>
+                  <p>{{ selectedSupplier }}</p>
+                  <p class='font-italic'>{{ supplier_address }}</p>
+                </div>
+                <div class='w-1/2 p-4'>
+                  <p class='font-bold text-[16px]'>Services</p>
+                  <p>
+                    {{ listService }}
+                  </p>
+                </div>
               </div>
               <div class="w-full p-2 flex justify-center items-center mt-6">
                 <table class="w-full">
@@ -605,6 +569,7 @@ export default {
       // Second Process Data
       expandedProducts: [],
       company_address: '',
+      listService: '',
       uploadPhoto: '',
       mpo_ref: '',
       date_purchased: '',
@@ -692,6 +657,7 @@ export default {
     }
   },
   mounted() {
+    this.fetchImageLogo();
     this.fetchCategory();
     this.loadUserData();
     this.fetchMPOData();
@@ -839,6 +805,29 @@ export default {
           console.error('Error fetching data:', error);
         });
       }
+    },
+    getCompanyImagePath() {
+      // Ensure userProfileImage is not null before creating the path
+      if (this.companyimage) {
+        return `/Logo/${this.companyimage}`;
+      }else if (this.companyimage == '') {
+        // Return a default path or handle it as per your requirement
+        return '/Logo/default_logo.png';
+      } 
+      else {
+        // Return a default path or handle it as per your requirement
+        return '/Logo/default_logo.png';
+      }
+    },
+    fetchImageLogo(){
+      axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/MPO_Queries/mpo_data.php?get=companylogo`)
+      .then(response => {
+          console.log('selectAdmin', response.data.isAdmin);
+          this.companyimage = response.data.isAdmin.company_logo;
+        })
+        .catch(error => {
+          console.error('Error fetching categories:', error);
+        });
     },
     fetchCategory() {
       axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/MPO_Queries/mpo_data.php?get=category`)
@@ -1091,30 +1080,7 @@ export default {
       window.removeEventListener('afterprint', this.reloadPage);
       location.reload();
     },
-    getDefaultImage(type) {
-      switch (type) {
-        case 'prepared':
-          return this.e_signatureP ? `/Important_Images/${this.e_signatureP}` : this.getDefaultImageUrl('prepared');
-        case 'approved':
-          return this.e_signatureA ? `/Important_Images/${this.e_signatureA}` : this.getDefaultImageUrl('approved');
-        case 'logo':
-          return this.uploadPhoto ? `/Important_Images/${this.uploadPhoto}` : this.getDefaultImageUrl('logo');
-        default:
-          return null; // or any default image source you want to set
-      }
-    },
-    getDefaultImageUrl(type) {
-      switch (type) {
-        case 'prepared':
-          return '/default.png';
-        case 'approved':
-          return '/default.png';
-        case 'logo':
-          return '/default_logo.png';
-        default:
-          return null; // or any default image URL you want to set
-      }
-    },
+
     refreshData(){
       this.fetchMPOData();
     },
@@ -1218,7 +1184,7 @@ export default {
             id: index + 1,
             sproduct: row.item_name,
             sdescription: row.description,
-            squantity: row.quantity_received,
+            squantity: row.quantity,
             sunit: row.unit,
             sunitprice: row.unit_price,
             sdiscount: row.subtotal,
@@ -1229,6 +1195,7 @@ export default {
           this.MpoIDValue = mpoData.mpoID;
           this.company_address = mpoData.company_address;
           this.uploadPhoto = mpoData.file_logo;
+          this.listService = mpoData.service;
           this.mpo_ref = mpoData.mpo_ref_no;
           this.date_purchased = mpoData.date_purchased;
           this.selectedCategory = mpoData.categoryID;

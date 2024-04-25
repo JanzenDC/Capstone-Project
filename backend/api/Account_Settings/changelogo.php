@@ -42,7 +42,7 @@
         $id = $_POST['id'];
     
         // Example: Move the uploaded file to a specific directory
-        $uploadDir = 'C:/xampp/htdocs/Capstone-Project/WeaveManila-Project/public/pfp/';
+        $uploadDir = 'C:/xampp/htdocs/Capstone-Project/WeaveManila-Project/public/Logo/';
         $uploadPath = $uploadDir . $uniqueFilename;
         if (move_uploaded_file($file['tmp_name'], $uploadPath)) {
             $existingRecord = $this->db->where("personelID", $id)->getOne('personel_tbl');
