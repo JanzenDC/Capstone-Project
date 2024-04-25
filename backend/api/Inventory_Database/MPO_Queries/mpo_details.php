@@ -72,14 +72,49 @@
           }
         }
         else if($payload['targetdata'] ==='rawmats'){
-              $getData = $this->db->where('mpoID', $payload['targetdatas'])->get('mpo_base');
-            
-              $targetID = $payload['targetdata'];
-              // Create a query selecting mpoBase data where target id use left join in mpo_datereceived_logs select the max(timestamp) and displaying here the date_received
-              $sqlQuery = '';
+           
+              $targetID = $payload['targetdatas'];
+              $sqlQuery = '
+              SELECT 
+                  mpo_base.baseID, 
+                  mpo_base.mpoID, 
+                  mpo_base.item_name, 
+                  mpo_base.description, 
+                  mpo_base.quantity, 
+                  mpo_base.unit, 
+                  mpo_base.quantity_received, 
+                  mpo_base.unit_price, 
+                  mpo_base.status, 
+                  mpo_base.discounts, 
+                  mpo_base.subtotal, 
+                  mpo_base.quantity_balance, 
+                  COALESCE(mpo_datereceived_logs.date_received, "No data.") AS date_received
+              FROM 
+                  mpo_base 
+              LEFT JOIN 
+                  (
+                      SELECT 
+                          baseID, 
+                          MAX(timestamp) AS max_timestamp 
+                      FROM 
+                          mpo_datereceived_logs 
+                      GROUP BY 
+                          baseID
+                  ) AS latest_timestamps 
+              ON 
+                  mpo_base.baseID = latest_timestamps.baseID 
+              LEFT JOIN 
+                  mpo_datereceived_logs 
+              ON 
+                  mpo_base.baseID = mpo_datereceived_logs.baseID 
+                  AND latest_timestamps.max_timestamp = mpo_datereceived_logs.timestamp
+              WHERE 
+                  mpo_base.mpoID = ?;
+              ';
+              
 
               $query = $this->db->rawQuery($sqlQuery, Array($targetID));
-              if($getData){
+              if($query){
                 $response = [
                     'status' => 'success',
                     'message' => 'Success getting Data',
