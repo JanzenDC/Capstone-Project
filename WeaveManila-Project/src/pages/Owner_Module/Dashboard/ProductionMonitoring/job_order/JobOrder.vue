@@ -23,12 +23,12 @@
           </div>
         </div>
         <div class='flex'>
-          <div class='w-1/2'>
+          <div >
             <div class='w-[346px]'>
               <p>Endorsed<span class="text-red-600">*</span></p>
               <q-select outlined v-model="v_Endorsed" dense outline :options="optionsweaver" />
             </div>
-            <div class='grid grid-cols-4 gap-2 mt-3'>
+            <div class='grid grid-cols-5 gap-2 mt-3'>
               <div>
                 <p>J.O Ref. No.</p>
                 <q-input v-model="v_JOrefNo" dense outlined disable class="mt-2 bg-grey-300"/>
@@ -48,96 +48,24 @@
                 lazy-rules
                 :rules="[ val => val && val.length > 0 || 'Please input valid date']"/>
               </div>
+              <div class="">
+                SERVICES
+                <q-select
+                  dense outlined
+                  v-model="modelMultiple"
+                  multiple
+                  :options="optionsss"
+                  use-chips
+                  stack-label
+                  class='mt-2'
+                />
+              </div>
+
+
+            </div>
             </div>
           </div>
-          <div class='w-1/2 p-4'>
-            <div class="mt-3">
-              SERVICES
-            </div>
-            <div class='grid grid-cols-4 gap-2 mt-3 text-center'>
-              <div class='w-[70px]'>
-                <p>Weaving</p>
-                <q-checkbox
-                    v-model="services"
-                    val="weaving"
-                    color="orange"
-                    size="xl"
-                  />
-              </div>
 
-              <div class='w-[70px]'>
-                <p>Tassle</p>
-                <q-checkbox
-                    v-model="services"
-                    val="tassle"
-                    color="orange"
-                    size="xl"
-                  />
-              </div>
-
-              <div class='w-[70px]'>
-                <p>Trimming</p>
-                <q-checkbox
-                    v-model="services"
-                    val="trimming"
-                    color="orange"
-                    size="xl"
-                  />
-              </div>
-
-              <div class='w-[70px]'>
-                <p>Cleaning</p>
-                <q-checkbox
-                    v-model="services"
-                    val="cleaning"
-                    color="orange"
-                    size="xl"
-                  />
-              </div>
-
-              <div class='w-[70px]'>
-                <p>Latexing</p>
-                <q-checkbox
-                    v-model="services"
-                    val="latexing"
-                    color="orange"
-                    size="xl"
-                  />
-              </div>
-
-              <div class='w-[90px]'>
-                <p>Re-latexing</p>
-                <q-checkbox
-                    v-model="services"
-                    val="relatexing"
-                    color="orange"
-                    size="xl"
-                  />
-              </div>
-
-              <div class='w-[70px]'>
-                <p>Piping</p>
-                <q-checkbox
-                    v-model="services"
-                    val="piping"
-                    color="orange"
-                    size="xl"
-                  />
-              </div>
-
-              <div class='w-[70px]'>
-                <p>Cutting</p>
-                <q-checkbox
-                    v-model="services"
-                    val="cutting"
-                    color="orange"
-                    size="xl"
-                  />
-              </div>
-            </div>
-
-          </div>
-        </div>
 
 
 
@@ -805,6 +733,9 @@ import axios from 'axios';
 export default {
   data() {
     return {
+      optionsss: [
+        'Weaving', 'Tassle', 'Trimming', 'Cleaning', 'Latexing', 'Re-Latexing', 'Piping'],
+      modelMultiple: ['Weaving', 'Cleaning'],
       pagination: [
         {
           rowsPerPage: 1000
@@ -815,7 +746,6 @@ export default {
       v_date: '',
       v_Reference: '',
       v_deliverydate: '',
-      services: [],
       v_desc: '',
       v_descpattern: '',
       v_cons: '',
@@ -1260,10 +1190,6 @@ export default {
       formData.append('s_approvedby_name', this.s_approvedby_name);
       formData.append('s_prepared_name', this.s_prepared_name);
       formData.append('v_checkedby', this.v_checkedby);
-
-      this.services.forEach(service => {
-        formData.append('services[]', service);
-      });
 
       this.mats_rows.forEach(row => {
         const matsData = {
