@@ -224,7 +224,7 @@
             if (this.status !== latestStatus || (latestAdmin && latestStatus === 0)) {
               this.status = latestStatus;
 
-              if (this.status === 0 && !latestAdmin) {
+              if (!latestAdmin  && this.status === 0 ) {
                 this.$q.notify({
                   type: 'negative',
                   message: 'Your account is currently inactive. Please contact the administrator.',
