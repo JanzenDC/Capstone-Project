@@ -525,7 +525,7 @@ export default {
           this.MpoIDValue = mpoData.mpoID;
           this.company_address = mpoData.company_address;
           this.uploadPhoto = mpoData.file_logo;
-          this.listService = mpoData.service;
+          this.listService = mpoData.services;
           this.mpo_ref = mpoData.mpo_ref_no;
           this.date_purchased = mpoData.date_purchased;
           this.selectedCategory = mpoData.categoryID;

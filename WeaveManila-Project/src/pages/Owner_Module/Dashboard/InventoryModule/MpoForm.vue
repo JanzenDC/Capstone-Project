@@ -394,7 +394,9 @@ export default {
       this.date_purchased = '';
       this.client_ref = '';
       this.wo_ref = '';
-      // this.delivery_date = '';
+      this.delivery_charge = '';
+      this.other_cost = '';
+      this.delivery_charge = '';
       this.notes_instructions = '';
       this.rows = [];
     },
@@ -417,7 +419,9 @@ export default {
         });
         return; // Stop further execution
       }
-
+      this.$q.loading.show({
+        message: `Uploading MPO ${this.MpoIDValue}`
+      });
       const formData = new FormData();
       // Append form data to the FormData object
       formData.append('categories', this.categories.label);
@@ -459,13 +463,20 @@ export default {
         const Status = response.data.status;
         const Message = response.data.message;
         if (Status === "success") {
-          this.$q.notify({
-            message: `MPO ${this.MpoIDValue} save successfully!`,
-            color: 'green',
-            type: 'positive',
-          });
-          this.ResetData();
+          setTimeout(() => {
+            this.$q.notify({
+              message: `MPO ${this.MpoIDValue} save successfully!`,
+              color: 'green',
+              type: 'positive',
+            });
+            this.ResetData();
+            this.$q.loading.hide(); // Hide the loading spinner
+          }, 3000);
+          setTimeout(() => {
+            window.location.reload(); // Reload the window after 3 seconds
+          }, 3500);
         }
+
         if (Status === "fail") {
           this.$q.notify({
             color: 'negative',
@@ -483,8 +494,9 @@ export default {
     fetchMPOdata(){
       axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/MPO_Queries/mpo_data.php?get=mpo`)
       .then(response => {
+        console.log(response.data);
         let nextMPOID = response.data.nextMPOID;
-        if (nextMPOID === undefined) {
+        if (nextMPOID == undefined || nextMPOID == '' || nextMPOID == null) {
             nextMPOID = 1;
         }
         console.log(response.data);

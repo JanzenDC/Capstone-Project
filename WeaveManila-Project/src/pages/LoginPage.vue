@@ -171,7 +171,7 @@ export default {
           this.$router.push('/dashboard/main-dashboard');
         })
         .catch(error => {
-          // Handle login failure
+          console.log(error.message)
           console.error('Login failed:', error.message);
           // Optionally, display an error message
           this.$q.notify({

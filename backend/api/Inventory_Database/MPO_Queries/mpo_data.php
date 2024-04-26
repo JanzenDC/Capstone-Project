@@ -140,33 +140,24 @@
         }
         else if ($payload['get'] == 'mpo') {
             $mpodata = $this->db->get('mpo_tbl');
-            if ($mpodata) {
-                $maxMPOID = 0;
-                foreach ($mpodata as $row) {
-                    $mpoID = $row['mpoID'];
-                    if ($mpoID > $maxMPOID) {
-                        $maxMPOID = $mpoID;
-                    }
+            $maxMPOID = 0;
+            foreach ($mpodata as $row) {
+                $mpoID = $row['mpoID'];
+                if ($mpoID > $maxMPOID) {
+                    $maxMPOID = $mpoID;
                 }
-
-                $nextMPOID = $maxMPOID + 1;
-                $maxStartingNo = $this->db->rawQuery("SELECT MAX(startingNo) AS maxStartingNo FROM mpo_starting_date");
-                $response = [
-                    'status' => 'success',
-                    'message' => 'Data has been fetched successfully',
-                    'nextMPOID' => $nextMPOID,
-                    'nextMPOStartingNo' => $maxStartingNo,
-                ];
-                echo json_encode($response);
-                exit;
-            } else {
-                $response = [
-                    'status' => 'fail',
-                    'message' => 'There is no data here.',
-                ];
-                echo json_encode($response);
-                exit;
             }
+
+            $nextMPOID = $maxMPOID + 1;
+            $maxStartingNo = $this->db->rawQuery("SELECT MAX(startingNo) AS maxStartingNo FROM mpo_starting_date");
+            $response = [
+                'status' => 'success',
+                'message' => 'Data has been fetched successfully',
+                'nextMPOID' => $nextMPOID,
+                'nextMPOStartingNo' => $maxStartingNo,
+            ];
+            echo json_encode($response);
+            exit;
         }
         else if($payload['get'] == 'supplier'){
             $categoryData = $this->db->get('w_supplierlist');

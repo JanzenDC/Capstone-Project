@@ -52,9 +52,6 @@ const routes = [
       { path: 'joborder-section', component: () => import('pages/Owner_Module/Dashboard/ProductionMonitoring/JobOrder.vue') },
       { path: 'weaver-section', component: () => import('pages/Owner_Module/Dashboard/ProductionMonitoring/WeaverPage.vue') },
 
-      // Supplier Pages
-      { path: 'supplier-restorepoint', component: () => import('pages/Owner_Module/Dashboard/InventoryModule/SupplierPages/SupplierRestore.vue') },
-
       // Backup And Restore Module
       { path: 'backup-section', component: () => import('pages/Owner_Module/Dashboard/BackupAndRestore/BackupPage.vue') },
       { path: 'restore-section', component: () => import('pages/Owner_Module/Dashboard/BackupAndRestore/RestorePage.vue') },

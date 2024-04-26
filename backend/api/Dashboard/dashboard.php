@@ -24,7 +24,7 @@
     {
         if($payload['get'] === 'activities')
         {
-            $query = 'SELECT * FROM audit_logs ORDER BY id  DESC LIMIT 10';
+            $query = 'SELECT * FROM audit_logs ORDER BY id  DESC LIMIT 7';
             $getdata = $this->db->rawQuery($query);
             $response = [
                 'status' => 'success',
