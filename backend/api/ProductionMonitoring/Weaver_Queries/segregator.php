@@ -164,6 +164,7 @@
                 'qty_issued' => $payload['qty_raw_issuance'],
                 'qty_received' => $payload['qty_received'],
                 'waste_gumon' => $payload['vWaste'],
+                'process' => $payload['selectProcess'],
             ];
             $insertQuery = $this->db->insert('mpo_segregator_projects', $insertData);
             if($insertQuery){

@@ -86,7 +86,13 @@
             flat bordered
             :rows="rows_third"
             :columns="columns_third"
-          />
+          >
+          <template v-slot:body-cell-qty_bal_received="props">
+              <q-td :props="props">
+                
+              </q-td>
+            </template>
+        </q-table>
         </div>
         <!-- <div v-for="item in items" :key="item.id" class="gap-2 mt-3">
           <div class='flex items-center gap-2 mt-2'>
@@ -279,6 +285,7 @@
         ],
         rows_third: [],
         columns: [
+        { name: 'process', align: 'left', label: 'Process', field: 'process', sortable: true,},
         { name: 'segregator', align: 'left', label: 'Segregator', field: 'segregator', sortable: true,},
           { name: 'date', align: 'left', label: 'Latest date of issuance', field: 'date', sortable: true, },
           { name: 'qty_raw', align: 'left', label: 'Qty Raw Issued', field: 'qty_raw', sortable: true,},
@@ -404,6 +411,7 @@
       },
     },
     methods: {
+
       calculateBalance(row) {
         const total = parseFloat(row.qty_received) + parseFloat(row.waste_gumon);
         const balance = parseFloat(row.qty_raw) - total
@@ -545,6 +553,8 @@
                   return {
                     segregateID: row.segID,
                     base: row.baseID,
+                    
+                    process: row.process,
                     segregator: row.segregatorName,
                     date: row.date_issuance,
                     qty_raw: row.total_qty_issued,
@@ -554,13 +564,13 @@
               });
               this.rows_third = response.data.information5.map(row => {
                   return {
-                    process: row.segregateID,
+                    segreID: row.segreID,
                     base: row.baseID,
                     process: row.	process,
-                    qty_raw_bal: row.qty_raw_bal,
-                    qty_received: row.qty_received,
-                    waste_gumon: row.waste_bal,
-                    qty_bal_received: row.qty_bal_received,
+                    qty_raw_bal: row.total_qty_issued,
+                    qty_received: row.total_qty_received,
+                    waste_gumon: row.total_waste_gumon,
+                    // qty_bal_received: row.qty_received,
                   }
               });
             }).catch(error => {
@@ -608,6 +618,7 @@
                   return {
                     segregateID: row.segID,
                     base: row.baseID,
+                    process: row.process,
                     segregator: row.segregatorName,
                     date: row.date_issuance,
                     qty_raw: row.total_qty_issued,
@@ -617,14 +628,14 @@
                   }
               });
               this.rows_third = response.data.information5.map(row => {
-                  return {
-                    process: row.segregateID,
+                return {
+                    segreID: row.segreID,
                     base: row.baseID,
                     process: row.	process,
-                    qty_raw_bal: row.qty_raw_bal,
-                    qty_received: row.qty_received,
-                    waste_gumon: row.waste_bal,
-                    qty_bal_received: row.qty_bal_received,
+                    qty_raw_bal: row.total_qty_issued,
+                    qty_received: row.total_qty_received,
+                    waste_gumon: row.total_waste_gumon,
+                    // qty_bal_received: row.qty_received,
                   }
               });
             }).catch(error => {

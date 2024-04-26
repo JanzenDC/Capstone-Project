@@ -27,9 +27,20 @@
             $getData4 = $this->db->where('mpoID', $payload['targetdatas'])->get('mpo_base');
 
             $getData3 = $this->db->where('mpoID', $payload['targetdatas'])->get('mpo_base');
-            // $getData2 = $this->db->where('baseID', $getData['baseID'])->get('mpo_segregate_tbl');
-            $getData5 = $this->db->where('baseID', $getData['baseID'])->get('mpo_segregate_balance');
-            $target = $payload['targetdata'];
+            $query = 'SELECT 
+                          process,
+                          SUM(qty_issued) AS total_qty_issued,
+                          SUM(qty_received) AS total_qty_received,
+                          SUM(waste_gumon) AS total_waste_gumon
+                      FROM 
+                          mpo_segregator_projects
+                      WHERE 
+                          baseID = ?
+                      GROUP BY 
+                          process;
+                      ';
+            $getData5 = $this->db->rawQuery($query, Array($getData['baseID']));
+
             $sqlQuery = 'SELECT 
                     b.baseID, 
                     b.item_name,
@@ -37,6 +48,7 @@
                     s.date_issuance,
                     s.segregatorName,
                     s.date_issuance,
+                    s.process,
                     SUM(s.qty_issued) AS total_qty_issued,
                     SUM(s.qty_received) AS total_qty_received,
                     SUM(s.waste_gumon) AS total_waste_gumon
@@ -76,13 +88,26 @@
 
           $getData3 = $this->db->where('mpoID', $payload['targetdatas'])->get('mpo_base');
           $getData4 = $this->db->where('mpoID', $payload['targetdatas'])->get('mpo_base');
-          $getData5 = $this->db->where('baseID', $getData['baseID'])->get('mpo_segregate_balance');
+          $query = 'SELECT 
+                        process,
+                        SUM(qty_issued) AS total_qty_issued,
+                        SUM(qty_received) AS total_qty_received,
+                        SUM(waste_gumon) AS total_waste_gumon
+                    FROM 
+                        mpo_segregator_projects
+                    WHERE 
+                        baseID = ?
+                    GROUP BY 
+                        process;
+                    ';
+              $getData5 = $this->db->rawQuery($query, Array($getData['baseID']));
           $sqlQuery = 'SELECT 
                     b.baseID, 
                     b.item_name,
                     s.segreID,
                     s.date_issuance,
                     s.segregatorName,
+                    s.process,
                     s.date_issuance,
                     SUM(s.qty_issued) AS total_qty_issued,
                     SUM(s.qty_received) AS total_qty_received,
