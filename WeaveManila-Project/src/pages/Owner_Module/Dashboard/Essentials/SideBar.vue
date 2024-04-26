@@ -75,6 +75,13 @@ bordered
           <router-link to="/dashboard/productionplan-section">
             <li class="py-[2px] px-[40px] mt-3">Production Plan</li>
           </router-link>
+          <router-link to="/dashboard/joborderlist-section">
+            <li class="py-[2px] px-[40px] mt-3">Job Order List</li>
+          </router-link>
+          <router-link to="/dashboard/weaver-section">
+            <li class="py-[2px] px-[40px] mt-3">Weavers List</li>
+          </router-link>
+          
         </ul>
       </li>
       <!-- Settings Section -->
