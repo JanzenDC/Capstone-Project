@@ -481,7 +481,7 @@ export default {
       }else if (this.companyimage == '') {
         // Return a default path or handle it as per your requirement
         return '/Logo/default_logo.png';
-      } 
+      }
       else {
         // Return a default path or handle it as per your requirement
         return '/Logo/default_logo.png';
@@ -527,7 +527,9 @@ export default {
           this.uploadPhoto = mpoData.file_logo;
           this.listService = mpoData.services;
           this.mpo_ref = mpoData.mpo_ref_no;
-          this.date_purchased = mpoData.date_purchased;
+          const time = new Date(mpoData.date_purchased).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+
+          this.date_purchased = time;
           this.selectedCategory = mpoData.categoryID;
           this.client_ref = mpoData.client_ref_no;
           this.wo_purchased = mpoData.w_o_ref_no;
@@ -596,7 +598,7 @@ export default {
                     status = 'Out of Stock';
                 } if (row.quantity_received  <= 300) {
                   status = 'Low Stock';
-                } 
+                }
                 acc[row.mpoID].status.push(status);
                 return acc;
             }, {});
@@ -752,13 +754,15 @@ export default {
                   });
                   if (Array.isArray(itemId)) {
                     mpoData.map(mpoInfo => {
+                      const time = new Date(mpoInfo.date_purchased).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+
                       const mpoDataRestrieve = {
                           mpoID: mpoInfo.mpoID,
                           personelID: mpoInfo.personelID,
                           supplierID: mpoInfo.supplierID,
                           categoryID: mpoInfo.categoryID,
                           mpo_ref_no: mpoInfo.mpo_ref_no,
-                          date_purchased: mpoInfo.date_purchased,
+                          date_purchased: time,
                           client_ref_no: mpoInfo.client_ref_no,
                           w_o_ref_no: mpoInfo.w_o_ref_no,
                           delivery_date: mpoInfo.delivery_date,

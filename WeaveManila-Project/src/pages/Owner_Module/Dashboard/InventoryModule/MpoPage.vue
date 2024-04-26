@@ -705,7 +705,9 @@ export default {
               acc[row.mpoID].amount.push(row.subtotal);
               acc[row.mpoID].product.push(row.item_name);
               acc[row.mpoID].qty.push(row.quantity);
-              acc[row.mpoID].date_received.push(row.date_received);
+              const time = new Date(row.date_received).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+
+              acc[row.mpoID].date_received.push(time);
 
 
               acc[row.mpoID].qty_received.push(row.quantity_received);
@@ -768,8 +770,10 @@ export default {
                 acc[row.mpoID].product.push(row.item_name);
                 acc[row.mpoID].qty.push(row.quantity);
                 // Check if date_received is null
+                const time = new Date(row.date_received).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+
                 if (row.date_received !== null) {
-                  acc[row.mpoID].date_received.push(row.date_received);
+                  acc[row.mpoID].date_received.push(time);
                 } else {
                   acc[row.mpoID].date_received.push(''); // Pushing an empty string for null values
                 }
@@ -819,7 +823,7 @@ export default {
       }else if (this.companyimage == '') {
         // Return a default path or handle it as per your requirement
         return '/Logo/default_logo.png';
-      } 
+      }
       else {
         // Return a default path or handle it as per your requirement
         return '/Logo/default_logo.png';
@@ -868,10 +872,12 @@ export default {
               default:
                 statusLabel = '';
             }
+            const time = new Date(row.date_received).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+
             return {
               // index: index + 1,
               product: row.item_name,
-              date: row.date_received,
+              date: time,
               qty_received: row.received,
               // status: statusLabel // in status 2 = Recieved 1 = Partial Received and 0 for Pending
             };
@@ -1096,12 +1102,13 @@ export default {
       .then(response => {
         console.log(response.data)
         const groupedData = response.data.categoryData.reduce((acc, row) => {
+          const times = new Date(row.date_purchased).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
             if (!acc[row.mpoID]) {
                 acc[row.mpoID] = {
                     mpo_id: row.mpoID,
                     mpo_number: row.mpoID,
                     supplier: row.supplier_name,
-                    date_purchase: row.date_purchased,
+                    date_purchase: times,
                     product: [],
                     qty: [],
                     total: [],
@@ -1114,7 +1121,9 @@ export default {
             acc[row.mpoID].amount.push(row.subtotal);
             acc[row.mpoID].product.push(row.item_name);
             acc[row.mpoID].qty.push(row.quantity);
-            acc[row.mpoID].date_received.push(row.date_received);
+            const time = new Date(row.date_received).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+
+            acc[row.mpoID].date_received.push(time);
 
 
             acc[row.mpoID].qty_received.push(row.quantity_received);
@@ -1198,12 +1207,14 @@ export default {
           }));
 
           // Assign MpoData fields to respective variables
+          const time = new Date(mpoData.date_purchased).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+
           this.MpoIDValue = mpoData.mpoID;
           this.company_address = mpoData.company_address;
           this.uploadPhoto = mpoData.file_logo;
           this.listService = mpoData.services;
           this.mpo_ref = mpoData.mpo_ref_no;
-          this.date_purchased = mpoData.date_purchased;
+          this.date_purchased = time;
           this.selectedCategory = mpoData.categoryID;
           this.client_ref = mpoData.client_ref_no;
           this.wo_purchased = mpoData.w_o_ref_no;

@@ -421,7 +421,7 @@
                   pattern="09[0-9]{9}"
                 ></q-input>
               </div>
-            </div>     
+            </div>
           </q-card-section>
           <q-card-actions align="right">
               <q-btn label="Submit" type="submit" class='text-white bg-[#967259]'/>
@@ -623,7 +623,8 @@ export default {
       .then(response => {
         console.log(response.data);
         this.tableData = response.data.informations.rows.map(row => {
-          const time = new Date(row.account_created).toLocaleDateString('en-US', { year: 'numeric', month: 'numeric', day: 'numeric' });
+          const time = new Date(row.account_created).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+
           const fullname = row.firstname + " " + row.lastname;
           return {
             id: row.personelID,
@@ -917,7 +918,7 @@ export default {
           this.status = userInformation.status;
           this.isAdmin = userInformation.isAdmin;
           this.fullname = this.firstname + " " + this.lastname;
-          if (!this.isAdmin) {
+          if (this.isAdmin === 1 || this.isAdmin === '1') {
 
             this.$router.push('/dashboard/usermanagement-section');
           } else {
