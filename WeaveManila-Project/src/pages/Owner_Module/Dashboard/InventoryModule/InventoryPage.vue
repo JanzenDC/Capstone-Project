@@ -126,16 +126,155 @@
       </q-table>
     </div>
     </div>
-
-
   </div>
+
+<!-- MODAL FORM -->
+<q-dialog
+    v-model="previewForm"
+    full-width
+    full-height
+    >
+      <q-card>
+        <q-card-section class="row items-center q-pb-none">
+          <div class="text-h6 flex items-center">
+            <q-icon name="assignment_add" class="w-[48px] h-[48px]"/>
+            MPO {{ MpoIDValue }}
+          </div>
+          <q-space />
+          <q-btn icon="close" flat round dense v-close-popup />
+        </q-card-section>
+        <q-card-section>
+          <div class="flex items-end justify-end gap-2">
+            <q-btn icon="download" @click="generatePDF"/>
+            <q-btn icon="print" @click="printContent"/>
+            <q-btn label="Send to email" icon="send" class="bg-[#634842] text-white" @click="generatePDFAndSendEmail"/>
+          </div>
+        </q-card-section>
+        <q-card-section class="overflow-y-auto overflow-x-hidden h-[460px] flex justify-center items-center">
+          <div class="border-[#634832] border">
+            <div id="content" class="p-5 w-[936px] ">
+              <div class="flex">
+                <div class="w-1/2">
+                    <div class="p-10 text-center">
+                        <q-img
+                          :src="getCompanyImagePath()"
+                          alt="Description of the image"
+                          class="w-[250px] h-[250px]"
+                        />
+                        <p class="text-[14px] mt-8">{{ company_address }}</p>
+                    </div>
+                </div>
+                <div class="w-1/2  p-10 flex justify-center items-center">
+                    <div class="w-[410px] ">
+                        <div class="text-h5 font-bold text-center text-[#634832]">MATERIAL PURCHASE ORDER</div>
+                        <div class="mt-4">
+                            <div class="grid grid-cols-2 ">
+                                <div class="p-2">Date Purchase</div>
+                                <div class="border-[#634832] border p-2 text-center font-bold">{{ date_purchased }}</div>
+                            </div>
+                            <div class="grid grid-cols-2 ">
+                                <div class="p-2">MPO NO.</div>
+                                <div class="border-[#634832] border p-2 text-center font-bold">{{ mpo_ref }}</div>
+                            </div>
+                            <div class="grid grid-cols-2 ">
+                                <div class="p-2">CLIENT REFERENCE NO.</div>
+                                <div class="border-[#634832] border p-2 text-center font-bold">{{ client_ref }}</div>
+                            </div>
+                            <div class="grid grid-cols-2 ">
+                                <div class="p-2">W.O REFERENCE NO.</div>
+                                <div class="border-[#634832] border p-2 text-center font-bold">{{ wo_purchased }}</div>
+                            </div>
+                            <div class="grid grid-cols-2 ">
+                                <div class="p-2">DELIVERY DATE</div>
+                                <div class="border-[#634832] border p-2 text-center font-bold">{{ delivery_date_val }}</div>
+                            </div>
+                            <div class="grid grid-cols-2 ">
+                                <div class="p-2">DELIVERY ADDRESS</div>
+                                <div class="border-[#634832] border p-2 text-center font-bold">{{ delivery_add_val }}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+              </div>
+              <div class='flex'>
+                <div class='w-1/2 p-4'>
+                  <p class='font-bold text-[16px]'>TO</p>
+                  <p>{{ selectedSupplier }}</p>
+                  <p class='font-italic'>{{ supplier_address }}</p>
+                </div>
+                <div class='w-1/2 p-4'>
+                  <p class='font-bold text-[16px]'>Services</p>
+                  <p>
+                    {{ listService }}
+                  </p>
+                </div>
+              </div>
+              <div class="w-full p-2 flex justify-center items-center mt-6">
+                <table class="w-full">
+                  <thead class="bg-[#f6f8fa] text-left">
+                    <tr>
+                      <th class="px-4 py-2 ">ID</th>
+                      <th class="px-4 py-2">Product</th>
+                      <th class="px-4 py-2">Description</th>
+                      <th class="px-4 py-2">Quantity</th>
+                      <th class="px-4 py-2">Unit</th>
+                      <th class="px-4 py-2">Unit Price</th>
+                      <th class="px-4 py-2">Sub Total</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr v-for="(row, index) in datarows" :key="index">
+                      <td class="px-4 py-2">{{ index + 1 }}</td>
+                      <td class="px-4 py-2">{{ row.sproduct }}</td>
+                      <td class="px-4 py-2">{{ row.sdescription }}</td>
+                      <td class="px-4 py-2">{{ row.squantity }}</td>
+                      <td class="px-4 py-2">{{ row.sunit }}</td>
+                      <td class="px-4 py-2">₱{{ row.sunitprice }}</td>
+                      <td class="px-4 py-2">₱{{ row.stotal }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="w-full p-2 flex items-center">
+                <div class="w-1/2">
+                  <div class="border bg-[#f6f8fa] p-2 w-[500px]">
+                    Notes & Instructions
+                  </div>
+                  <div class="w-[500px] whitespace-pre-line h-[200px] border p-2">
+                    {{ notes_instructions }}
+                  </div>
+                </div>
+                <div class="w-1/2 flex justify-end">
+                  <div class='grid grid-cols-2 w-[253px] text-[16px] gap-2'>
+                    <div class="font-bold">Delivery Charge</div>
+                    <div>₱ {{ deliver_charge }}</div>
+                    <div class="font-bold">Other Costs</div>
+                    <div>₱ {{ other_cost }}</div>
+                    <div class="font-bold">Sub Total</div>
+                    <div>₱ {{ total_in_table }}</div>
+                    <div class="font-bold">Discount</div>
+                    <div>% {{ discount }}</div>
+                    <div class="font-bold">TAX/VAT</div>
+                    <div>% {{ vat }}</div>
+                    <div class="font-bold">Total Amount</div>
+                    <div>₱ {{ total_amount }}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </q-card-section>
+      </q-card>
+</q-dialog>
 </q-page>
 
 
 </template>
 
 <script>
-import { useQuasar } from 'quasar';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 import { SessionStorage } from 'quasar';
 import axios from 'axios';
 import SideBar from '../Essentials/SideBar.vue';
@@ -147,6 +286,7 @@ export default {
   },
   data() {
     return {
+      previewForm: false,
       isAdmin: 0,
       email: '',
       fullname: '',
@@ -181,6 +321,28 @@ export default {
       ],
 
       rows: [],
+      MpoIDValue: '',
+      company_address: '',
+      uploadPhoto: '',
+      listService: '',
+      mpo_ref: '',
+      date_purchased: '',
+      selectedCategory: '',
+      client_ref: '',
+      wo_purchased: '',
+      delivery_date_val: '',
+      delivery_add_val: '',
+      selectedSupplier: '',
+      supplier_address: '',
+      segregation: '',
+      cleaning: '',
+      drying: '',
+      weighting: '',
+      deliver_charge: '',
+      discount: '',
+      vat: '',
+      other_cost: '',
+      total_amount: '',
     };
   },
   mounted() {
@@ -191,11 +353,211 @@ export default {
       this.checkUserStatus();
     }, 20 * 1000); // 1 second (in milliseconds)
     this.clearInventoryData();
+    this.fetchImageLogo();
   },
   beforeUnmount() {
     clearInterval(this.statusCheckTimer);
   },
   methods: {
+        generatePDFAndSendEmail() {
+      const pdf = new jsPDF();
+      const content = document.getElementById('content');
+
+      // Use html2canvas to render HTML to canvas
+      html2canvas(content).then(canvas => {
+        // Convert canvas to base64 image data
+        const imgData = canvas.toDataURL('image/jpeg');
+
+        const pageWidth = 210; // A4 width in mm
+        const pageHeight = 297; // A4 height in mm
+
+        const imgWidth = pageWidth;
+        const imgHeight = (canvas.height * pageWidth) / canvas.width;
+
+        let position = 0;
+        if (imgHeight > pageHeight) {
+          pdf.addPage();
+          position = -pageHeight;
+          pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
+        } else {
+          pdf.addImage(imgData, 'JPEG', 0, 0, imgWidth, imgHeight);
+        }
+
+        while (position + pageHeight < imgHeight) {
+          position += pageHeight;
+          pdf.addPage();
+          pdf.addImage(imgData, 'JPEG', 0, -position, imgWidth, imgHeight);
+        }
+
+        // Convert the PDF to Blob
+        const pdfBlob = pdf.output('blob');
+
+        const pdfformat = `MPO${this.MpoIDValue}-form.pdf`;
+        const formData = new FormData();
+        formData.append('pdfFile', pdfBlob, pdfformat);
+        formData.append('pdfFileName', pdfBlob, pdfformat);
+        formData.append('selectedSupplier', this.selectedSupplier);
+        // Send the FormData via email using Axios
+        axios.post('http://localhost/Capstone-Project/backend/api/Inventory_Database/MPO_Queries/viewform.php/', formData)
+          .then(response => {
+            const Status = response.data.status;
+            const Message = response.data.message;
+            if (Status === "fail") {
+              this.$q.notify({
+                color: 'negative',
+                message: `${Message} Please try again.`,
+              });
+              this.previewForm = false;
+            }
+            if (Status === "success") {
+              this.$q.notify({
+                color: 'green',
+                message: `The MPO ${this.MpoIDValue} form has been successfully sent to the supplier's email..`,
+              });
+              this.previewForm = false;
+            }
+          })
+          .catch(error => {
+            console.error('Error sending PDF:', error);
+            // Handle error, show error message, etc.
+          });
+      });
+    },
+    generatePDF() {
+      const pdf = new jsPDF();
+      const content = document.getElementById('content');
+
+      // Use html2canvas to render HTML to canvas
+      html2canvas(content).then(canvas => {
+        // Convert canvas to base64 image data
+        const imgData = canvas.toDataURL('image/jpeg');
+
+        const pageWidth = 210; // A4 width in mm
+        const pageHeight = 297; // A4 height in mm
+
+        const imgWidth = pageWidth;
+        const imgHeight = (canvas.height * pageWidth) / canvas.width;
+
+
+        let position = 0;
+        if (imgHeight > pageHeight) {
+
+          pdf.addPage();
+          position = -pageHeight;
+
+          pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight);
+        } else {
+          pdf.addImage(imgData, 'JPEG', 0, 0, imgWidth, imgHeight);
+        }
+
+        while (position + pageHeight < imgHeight) {
+          position += pageHeight;
+          pdf.addPage();
+          pdf.addImage(imgData, 'JPEG', 0, -position, imgWidth, imgHeight);
+        }
+
+        // Save PDF
+        const pdfformat = `MPO${this.MpoIDValue}-form.pdf`;
+        pdf.save(pdfformat);
+
+        // this.pdfData = pdf.output('blob');
+        // console.log("PDF Data",this.pdfData);
+      });
+    },
+    printContent() {
+      this.previewForm = false;
+      const printableContent = document.getElementById('content');
+      const originalContents = document.body.innerHTML;
+      document.body.innerHTML = printableContent.innerHTML;
+      window.print();
+      document.body.innerHTML = originalContents;
+      window.addEventListener('afterprint', this.reloadPage);
+      this.reloadPage();
+    },
+    getCompanyImagePath() {
+      // Ensure userProfileImage is not null before creating the path
+      if (this.companyimage) {
+        return `/Logo/${this.companyimage}`;
+      }else if (this.companyimage == '') {
+        // Return a default path or handle it as per your requirement
+        return '/Logo/default_logo.png';
+      } 
+      else {
+        // Return a default path or handle it as per your requirement
+        return '/Logo/default_logo.png';
+      }
+    },
+    fetchImageLogo(){
+      axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/MPO_Queries/mpo_data.php?get=companylogo`)
+      .then(response => {
+          console.log('selectAdmin', response.data.isAdmin);
+          this.companyimage = response.data.isAdmin.company_logo;
+        })
+        .catch(error => {
+          console.error('Error fetching categories:', error);
+        });
+    },
+    ViewForm(targetID) {
+      // Fetch data from the server
+      axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/MPO_Queries/viewform.php?mpoform=${targetID}`)
+        .then(response => {
+          // Process response data
+          const responseData = response.data;
+          const mpoBaseData = responseData.MpoBase;
+          const mpoData = responseData.MpoData;
+          const suppData = responseData.SupplierData;
+
+
+          this.previewForm = true;
+          // Map MpoBase data to datarows
+          this.datarows = mpoBaseData.map((row, index) => ({
+            id: index + 1,
+            sproduct: row.item_name,
+            sdescription: row.description,
+            squantity: row.quantity,
+            sunit: row.unit,
+            sunitprice: row.unit_price,
+            sdiscount: row.subtotal,
+            stotal: row.subtotal,
+          }));
+
+          // Assign MpoData fields to respective variables
+          this.MpoIDValue = mpoData.mpoID;
+          this.company_address = mpoData.company_address;
+          this.uploadPhoto = mpoData.file_logo;
+          this.listService = mpoData.service;
+          this.mpo_ref = mpoData.mpo_ref_no;
+          this.date_purchased = mpoData.date_purchased;
+          this.selectedCategory = mpoData.categoryID;
+          this.client_ref = mpoData.client_ref_no;
+          this.wo_purchased = mpoData.w_o_ref_no;
+          this.delivery_date_val = mpoData.delivery_date;
+          this.delivery_add_val = mpoData.delivery_address;
+          this.selectedSupplier = suppData.supplier_name;
+          this.supplier_address = mpoData.supplier_address;
+          this.segregation = '';
+          this.cleaning = '';
+          this.drying = '';
+          this.weighting = '';
+          this.deliver_charge = mpoData.delivery_charge ?? 0;
+          this.discount = mpoData.discount ?? 0;
+          this.vat = mpoData.vat ?? 0;
+          this.other_cost = mpoData.other_costs ?? 0;
+          this.total_amount = mpoData.total_amount ?? 0;
+
+          // Calculate total in table
+          this.total_in_table = this.datarows.reduce((total, row) => total + row.stotal, 0);
+
+          this.notes_instructions = mpoData.notes_instructions;
+          this.prepared_name = mpoData.prepared_by;
+          this.approvedby_name = mpoData.approved_by;
+          this.e_signatureP = mpoData.file_esignaturep;
+          this.e_signatureA = mpoData.file_esignaturea;
+        })
+        .catch(error => {
+          console.error('Error fetching data:', error);
+        });
+    },
     onItemClick(category) {
       if (category == null) {
         this.fetchMPOData();
