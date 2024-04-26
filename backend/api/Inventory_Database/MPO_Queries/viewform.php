@@ -84,7 +84,9 @@
                     'sender' => ['name' => 'WeaveManila Company', 'email' => 'janzendelacruz28@gmail.com'],
                     'replyTo' => ['name' => 'Sendinblue', 'email' => 'no-reply@gmail.com'],
                     'to' => [['name' => $supplierEmail, 'email' => $supplierEmail]],
-                    'htmlContent' => 'Please find the PDF attached.',
+                    'htmlContent' => 'WeaveManila is reaching out to express our interest in buying  some list of items as specified in the attached purchase order request. Please find the detailed request in the PDF document attached.
+                    
+                     If there are any questions or if further clarification is needed regarding the listed items, please feel free to reach out to us at your earliest convenience.',
                     'params' => ['bodyMessage' => 'test'],
                     'attachment' => [['content' => base64_encode($pdfContent), 'name' => 'Purchase Order Request.pdf']]
                 ]);
