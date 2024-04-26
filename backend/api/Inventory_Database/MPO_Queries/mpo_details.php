@@ -24,8 +24,11 @@
     {
         if($payload['targetdata'] ==='moredata'){
             $getData = $this->db->where('mpoID', $payload['targetdatas'])->getOne('mpo_base');
+            $getData4 = $this->db->where('mpoID', $payload['targetdatas'])->get('mpo_base');
+
             $getData3 = $this->db->where('mpoID', $payload['targetdatas'])->get('mpo_base');
             $getData2 = $this->db->where('mpoID', $getData['mpoID'])->get('mpo_segregate_tbl');
+            $getData5 = $this->db->where('baseID', $getData['baseID'])->get('mpo_segregate_balance');
             // $target = $payload['targetdata'];
             // $sqlQuery = 'SELECT * FROM mpo_base AS b JOIN mpo_segregate_tbl AS s ON b.baseID = s.baseID WHERE b.baseID = ?';
             // $query = $this->db->rawQuery($sqlQuery, Array($target));
@@ -36,6 +39,8 @@
                     'information' => Array($getData),
                     'information2' => $getData2,
                     'information3' => $getData3,
+                    'information4' => $getData4,
+                    'information5' => $getData5
                 ];
                 echo json_encode($response);
                 exit;
@@ -50,7 +55,7 @@
         }
         else if($payload['targetdata'] ==='onedata'){
           $getData = $this->db->where('baseID', $payload['targetdatas'])->getOne('mpo_base');
-          $getData2 = $this->db->where('baseID', $getData['baseID'])->get('mpo_segregate_tbl');
+          $getData2 = $this->db->where('baseID', $getData['mpoID'])->get('mpo_segregate_tbl');
           $getData3 = $this->db->where('mpoID', $payload['targetdatas'])->get('mpo_base');
           if($getData){
               $response = [

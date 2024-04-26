@@ -650,7 +650,7 @@ export default {
 
             acc[row.mpoID].qty_balance.push(row.quantity_received);
 
-            // Calculate status based on received quantity
+            let status = 0;
             if (row.quantity_received === row.quantity || row.quantity_received > 300) {
                 status = 'In Stock';
             } else if (row.quantity_received === 0) {

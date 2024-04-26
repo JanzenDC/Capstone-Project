@@ -21,7 +21,7 @@
           </div>
         </div>
       <LogoutTop />
-    </div>
+  </div>
   <div class="p-4">
     <div class="flex mt-3">
       <router-link to="rawmaterials-section">
@@ -43,37 +43,52 @@
           </div>
       </router-link>
     </div>
-    <div class="w-full bg-white p-4  h-[390px]">
+    <div class="w-full bg-white p-4  h-[450px]">
       <div class="flex justify-between">
         <div class='flex gap-4'>
-          <p>Quantity In: {{ qty_in }}</p>
-          <p>Quantity Balance: {{ qty_bal }}</p>
+          <!-- <p>Quantity In: {{ qty_in }}</p>
+          <p>Quantity Balance: {{ qty_bal }}</p> -->
         </div>
         <div class='flex gap-4'>
           <q-btn icon="download" />
           <q-btn icon="print" />
-          <q-btn-dropdown label="Items">
-            <q-list>
-              <q-item v-for="(category, index) in categories" :key="index" >
-                <q-item-label class='cursor-pointer' @click="onItemClick(category.baseID)">{{ category.item_name }}</q-item-label>
-              </q-item>
-            </q-list>
-          </q-btn-dropdown>
           <q-btn icon="add" label='Issue' class='bg-[#634832] text-white' @click='OpenIssue'/>
         </div>
 
 
       </div>
-      <q-separator class="mt-9 "/>
-      <div class="overflow-y-auto overflow-x-hidden h-[300px] mt-3">
+      <q-separator class="mt-5"/>
+      <div class="overflow-y-auto overflow-x-hidden h-[390px] mt-3">
+        <div>
+          <q-select dense outlined v-model="selectProduct" :options="optionssss" class='w-[180px] mb-3'/>
+          <p>Quantity In: {{ qty_in }}</p>
+          <p>Quantity Balance: {{ qty_bal }}</p>
+        </div>
+        <div>
+          <q-table :rows="rows" :columns="columns" class='mt-2'>
+            <template v-slot:body-cell-action="props">
+              <q-td :props="props">
+                <q-icon name='visibility' class='text-h6 text-black' @click="handleVisibilityClick(props.row)">
+                  <q-tooltip :offset="[0, 8]">View</q-tooltip>
+                </q-icon>
+              </q-td>
+            </template>
+          </q-table>
 
-        <div v-for="item in items" :key="item.id" class="gap-2 mt-3">
+          <q-table
+            class="mt-8"
+            flat bordered
+            :rows="rows_third"
+            :columns="columns_third"
+          />
+        </div>
+        <!-- <div v-for="item in items" :key="item.id" class="gap-2 mt-3">
           <div class='flex items-center gap-2 mt-2'>
             <p>Product
               <span class='text-red-600'>*</span>
             </p>
-            <q-input dense outlined v-model="item.value"/>
-            
+            <q-select dense outlined v-model="item.value" :options="optionssss"/>
+
           </div>
           <q-table :rows="item.rows" :columns="columns" class='mt-2'>
             <template v-slot:body-cell-action="props">
@@ -81,19 +96,18 @@
                 <q-icon name='visibility' class='text-h6 text-black' @click="handleVisibilityClick(item, props.row)">
                   <q-tooltip :offset="[0, 8]">View</q-tooltip>
                 </q-icon>
-                
+
               </q-td>
             </template>
           </q-table>
-        </div>
-        <q-btn label='Add Product' class='bg-[#634832] text-white mt-4'/>
+        </div> -->
       </div>
 
 
     </div>
   </div>
 
- 
+
 </q-page>
 
 <q-dialog
@@ -107,8 +121,18 @@
         </q-card-section>
 
     <q-card-section class="q-pt-none">
-      <p>Issuance</p>
+      <p class='font-bold'>Issuance</p>
       <div class='grid grid-cols-2 gap-2'>
+        <div>Item
+          <q-input dense outlined v-model='selectItem' disabled/>
+        </div>
+        <div>Process
+          <q-select dense outlined v-model='selectProcess' :options='segProcess'/>
+        </div>
+        <div v-if="selectProcess === 'Twine'">
+          Twine
+          <q-select dense outlined v-model='selectTwine' :options='segTwine'/>
+        </div>
         <div>Segregator
           <q-select dense outlined v-model='selectSegregator' :options='segOptions'/>
         </div>
@@ -119,7 +143,7 @@
           <q-input type='number' dense outlined v-model='qty_raw_issuance'/>
         </div>
       </div>
-      <p>Received</p>
+      <p class='font-bold mt-3'>Received</p>
       <div class='grid grid-cols-2 gap-2'>
         <div>Qty Received
           <q-input type='number' dense outlined v-model='qty_received'/>
@@ -150,7 +174,7 @@
         :rows="rows_second"
         :columns="columns_second"
       >
-      
+
         <template v-slot:header-cell-action="props">
           <q-th :props="props">
             <q-icon name="add" size="1.5em" class='bg-yellow-600 text-white' @click="addData"/>
@@ -206,36 +230,6 @@
 </q-dialog>
 
 
-<q-dialog v-model="OpenLogout">
-  <q-card class="w-[500px]">
-    <q-card-section class="gap-3 items-center q-pb-none flex">
-      <div class="py-1 px-2 border text-[24px]"><q-icon name="logout"/></div>
-      <div class="text-h6 font-bold">Logout</div>
-      <q-space />
-    </q-card-section>
-
-    <q-card-section>
-      
-      <p>Are you sure you want to Logout?</p>
-    </q-card-section>
-
-    <q-card-actions class="flex justify-center items-center">
-      <div class="w-1/2 p-1">
-        <q-btn flat label="Cancel" outline v-close-popup class="w-full border"/>
-      </div>
-      <div class="w-1/2 p-1">
-        <q-btn
-          @click="logout"
-          flat
-          label="Logout"
-          size="md"
-          class="bg-red-600 text-white rounded w-full"
-        />
-      </div>
-    </q-card-actions>
-  </q-card>
-</q-dialog>
-
 </template>
 
   <script>
@@ -275,6 +269,14 @@
         qty_in: '',
         qty_bal: '',
         mpoSelect: '',
+        columns_third: [
+        { name: 'process', align: 'left', label: 'Process', field: 'process', sortable: true,},
+          { name: 'qty_raw_bal', align: 'left', label: 'Qty Raw Issued', field: 'qty_raw_bal', sortable: true,},
+          { name: 'qty_received', align: 'left', label: 'Qty Received', field: 'qty_received', sortable: true,},
+          { name: 'waste_gumon', align: 'left', label: 'Waste / Gumon', field: 'waste_gumon', sortable: true,},
+          { name: 'qty_bal_received', align: 'left', label: 'Qty Bal Received', field: 'qty_bal_received', sortable: true,},
+        ],
+        rows_third: [],
         columns: [
         { name: 'segregator', align: 'left', label: 'Segregator', field: 'segregator', sortable: true,},
           { name: 'date', align: 'left', label: 'Latest date of issuance', field: 'date', sortable: true, },
@@ -315,17 +317,27 @@
         categories: [],
         qty_raw_issuance: '',
         segOptions: [],
+
+
         vWaste: '',
         qty_received: '',
         vData: '',
         selectSegregator: '',
-        selectedBaseID: '',
+        selectedBaseID: 0,
 
         openModal2: false,
         segregatorName: '',
         qqty_raw: '',
         qqty_recieved: '',
         wwaste_gumon: '',
+
+
+        selectProduct: '',
+        optionssss: [],
+        selectItem: '',
+        selectProcess: '',
+        segTwine: '',
+        segProcess: ['Taknis', 'Braided', 'Twine']
       };
     },
     mounted() {
@@ -380,7 +392,15 @@
         } else {
             this.vWaste = newValue;
         }
-      }
+      },
+      selectProduct(newValue, oldValue) {
+        
+        this.onItemClick(newValue.value)
+      },
+      selectProcess(newValue, oldValue) {
+
+        console.log(newValue)
+      },
     },
     methods: {
       submitData() {
@@ -412,7 +432,7 @@
       addData() {
 
         this.rows_second.push({
-          date_issuance: '', 
+          date_issuance: '',
           qty_raw: '',
           qty_received: '',
           waste_gumon: '',
@@ -420,14 +440,10 @@
         });
       },
       handleVisibilityClick(item, rowData) {
-        // Log the clicked item and row data
-        console.log(rowData);
         this.segregatorName = rowData.segregator;
         this.openModal2 = true;
         axios.get(`http://localhost/Capstone-Project/backend/api/ProductionMonitoring/Weaver_Queries/segregator.php?get=onesegregator&id=${rowData.segregateID}`)
         .then(response => {
-          console.log(response.data.mpoSeg)
-
           this.qqty_raw = response.data.mpoSeg.qty_raw_for_issuance;
            this.qqty_recieved = response.data.mpoSeg.qty_for_received_taknis;
            this.wwaste_gumon = response.data.mpoSeg.waste_gumon_for_received_taknis;
@@ -464,8 +480,11 @@
           vWaste: this.vWaste,
           mpobalance: calc2,
           quantitybal: calc3,
+          selectProcess: this.selectProcess,
+          selectTwine: this.selectTwine,
           type: 3,
         }
+        console.log(formData)
         axios.post('http://localhost/Capstone-Project/backend/api/ProductionMonitoring/Weaver_Queries/segregator.php/', formData)
         .then(response => {
           console.log(response.data)
@@ -506,37 +525,36 @@
         });
       },
       onItemClick(event){
-        console.log(event);
+        
         axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/MPO_Queries/mpo_details.php?targetdata=onedata&targetdatas=${event}`)
             .then(response => {
-              console.log(response.data);
               this.selectedBaseID = event;
+              this.selectItem = response.data.information[0].item_name;
               this.qty_in = response.data.information[0].quantity;
-              console.log(response.data.information)
               this.qty_bal = response.data.information[0].quantity_balance;
-              this.items = response.data.information.map(category => ({
-                  value: category.item_name,
-                  base: category.baseID,
-                  rows: response.data.information2
-                      .filter(category2 => category2.baseID === category.baseID) // Filter by matching baseID
-                      .map(category2 => ({
-                          segregateID: category2.segregateID,
-                          base: category2.baseID,
-                          segregator: category2.segregator,
-                          date: category2.date,
-                          qty_raw: category2.qty_raw_for_issuance,
-                          qty_received: category2.qty_for_received_taknis,
-                          waste_gumon: category2.waste_gumon_for_received_taknis,
-                          balance: category2.balance_for_received_taknis,
-                          // action: category2.action,
-                      }))
-              }));
+              // this.items = response.data.information.map(category => ({
+              //     value: category.item_name,
+              //     base: category.baseID,
+              //     rows: response.data.information2
+              //         .filter(category2 => category2.baseID === category.baseID) // Filter by matching baseID
+              //         .map(category2 => ({
+              //             segregateID: category2.segregateID,
+              //             base: category2.baseID,
+              //             segregator: category2.segregator,
+              //             date: category2.date,
+              //             qty_raw: category2.qty_raw_for_issuance,
+              //             qty_received: category2.qty_for_received_taknis,
+              //             waste_gumon: category2.waste_gumon_for_received_taknis,
+              //             balance: category2.balance_for_received_taknis,
+              //             // action: category2.action,
+              //         }))
+              // }));
             }).catch(error => {
                 console.error('Error fetching data:', error);
             });
       },
 
-      
+
       loadFetchData() {
         const MPOData = SessionStorage.getItem('MPOData');
         if (MPOData) {
@@ -558,30 +576,58 @@
 
             axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/MPO_Queries/mpo_details.php?targetdata=moredata&targetdatas=${this.mpoIDnumber}`)
             .then(response => {
-              console.log(response.data);
-              // Populate items array from the 'information' array
               this.selectedBaseID = response.data.information[0].baseID;
+              this.selectItem = response.data.information[0].item_name;
+
               this.categories = response.data.information3;
-              this.qty_in = response.data.information[0].quantity_received;
-              console.log(this.selectedBaseID)
-              this.qty_bal = response.data.information[0].quantity_balance;
-              this.items = response.data.information.map(category => ({
-                  value: category.item_name,
-                  base: category.baseID,
-                  rows: response.data.information2
-                      .filter(category2 => category2.baseID === category.baseID) // Filter by matching baseID
-                      .map(category2 => ({
-                          segregateID: category2.segregateID,
-                          base: category2.baseID,
-                          segregator: category2.segregator,
-                          date: category2.date,
-                          qty_raw: category2.qty_raw_for_issuance,
-                          qty_received: category2.qty_for_received_taknis,
-                          waste_gumon: category2.waste_gumon_for_received_taknis,
-                          balance: category2.balance_for_received_taknis,
-                          // action: category2.action,
-                      }))
+              this.selectProduct = response.data.information[0].item_name;
+              this.optionssss = response.data.information4.map(category => ({
+                  label: category.item_name,
+                  value: category.baseID
               }));
+
+              this.qty_in = response.data.information[0].quantity;
+              this.qty_bal = response.data.information[0].quantity_balance;
+              // this.items = response.data.information.map(category => ({
+              //     value: category.item_name,
+              //     base: category.baseID,
+              //     rows: response.data.information2
+              //         .filter(category2 => category2.baseID === category.baseID) // Filter by matching baseID
+              //         .map(category2 => ({
+              //             segregateID: category2.segregateID,
+              //             base: category2.baseID,
+              //             segregator: category2.segregator,
+              //             date: category2.date,
+              //             qty_raw: category2.qty_raw_for_issuance,
+              //             qty_received: category2.qty_for_received_taknis,
+              //             waste_gumon: category2.waste_gumon_for_received_taknis,
+              //             balance: category2.balance_for_received_taknis,
+              //             // action: category2.action,
+              //         }))
+              // }));
+              this.rows = response.data.information2.map(row => {
+                  return {
+                    segregateID: row.segregateID,
+                    base: row.baseID,
+                    segregator: row.segregator,
+                    date: row.date,
+                    qty_raw: row.qty_raw_for_issuance,
+                    qty_received: row.qty_for_received_taknis,
+                    waste_gumon: row.waste_gumon_for_received_taknis,
+                    balance: row.balance_for_received_taknis,
+                  }
+              });
+              this.columns_third = response.data.information5.map(row => {
+                  return {
+                    process: row.segregateID,
+                    base: row.baseID,
+                    process: row.	process,
+                    qty_raw_bal: row.qty_raw_bal,
+                    qty_received: row.qty_received,
+                    waste_gumon: row.waste_bal,
+                    qty_bal_received: row.qty_bal_received,
+                  }
+              });
             }).catch(error => {
                 console.error('Error fetching data:', error);
             });
