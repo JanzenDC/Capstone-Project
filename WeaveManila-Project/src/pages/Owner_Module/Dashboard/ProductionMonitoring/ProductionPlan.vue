@@ -24,26 +24,6 @@
     <LogoutTop />
   </div>
   <div class="p-4">
-    <div class="flex mt-3">
-        <router-link to="/dashboard/productionplan-section">
-          <div class="flex w-[180px] bg-white h-[44px] py-3 px-5 gap-[8px] rounded items-center text-[14px]">
-            <q-icon name="event"/>
-            <p>Production Plan</p>
-          </div>
-        </router-link>
-        <router-link to="/dashboard/joborderlist-section">
-          <div class="flex  w-[180px] text-[#b8b8b8] border-l-2 border-t-2 border-e-2 h-[44px] py-3 px-5 gap-[8px] rounded items-center text-[14px]">
-            <q-icon name="list"/>
-            <p>Job Order List</p>
-          </div>
-        </router-link>
-        <router-link to="/dashboard/weaver-section">
-          <div class="flex w-[180px] text-[#b8b8b8] border-t-2 border-l-2 border-e-2 h-[44px] py-3 px-5 gap-[8px] rounded items-center text-[14px]">
-              <q-icon name="group"/>
-              <p>Weaver List</p>
-            </div>
-        </router-link>
-    </div>
     <div class="bg-white px-4 py-3 rounded h-[460px]">
       <div class='justify-end items-end flex mb-3'>
         <q-btn label='Add Plan' icon='add' @click="addPJO"/>
