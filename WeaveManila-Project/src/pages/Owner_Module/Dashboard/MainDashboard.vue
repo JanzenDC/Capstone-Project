@@ -68,27 +68,27 @@
       <p>Here is the quick overview of the system.</p>
     </div>
   </div>
-  <div class='flex p-4'>
-    <div class='w-2/3'>
+  <div class='flex h-[440px]'>
+    <div class='w-3/5 p-2'>
       <div class='grid grid-cols-3 gap-6'>
-        <div class='p-4 bg-[#109CF1] rounded flex items-center gap-3'>
-          <q-icon name='shopping_bag' class='text-white bg-[#967259] text-h3 p-2 rounded'/>
+        <div class='p-2 bg-[#109CF1] rounded flex items-center gap-2'>
+          <q-icon name='shopping_bag' class='text-white bg-[#967259] text-h5 p-2 rounded'/>
           <div>
             <p class='font-bold text-h5'>1250</p>
             <p>Purchase Order</p>
           </div>
         </div>
 
-        <div class='p-4 bg-[#D8FAE7] rounded flex items-center gap-3'>
-          <q-icon name='shopping_bag' class='text-white bg-[#967259] text-h3 p-2 rounded'/>
+        <div class='p-2 bg-[#D8FAE7] rounded flex items-center gap-2'>
+          <q-icon name='shopping_bag' class='text-white bg-[#967259] text-h5 p-2 rounded'/>
           <div>
             <p class='font-bold text-h5'>1359</p>
             <p>Total Stocks</p>
           </div>
         </div>
 
-        <div class='p-4 bg-[#FFEEF1] rounded flex items-center gap-3'>
-          <q-icon name='shopping_bag' class='text-white bg-[#967259] text-h3 p-2 rounded'/>
+        <div class='p-2 bg-[#FFEEF1] rounded flex items-center gap-2'>
+          <q-icon name='shopping_bag' class='text-white bg-[#967259] text-h5 p-2 rounded'/>
           <div>
             <p class='font-bold text-h5'>1259</p>
             <p>Total Projects</p>
@@ -97,7 +97,37 @@
 
       </div>
     </div>
-    <div class='w-1/3'>...</div>
+    <div class='w-2/5 static'>
+      <div>
+        <div class="w-full bg-white h-[50px] flex justify-between p-2 border drop-shadow-md cursor-pointer">
+          <p>Recent Activities</p>
+          <!-- <q-icon name='arrow_drop_down' class='text-[30px]'/> -->
+        </div>
+        <div class='w-full h-[385px] bg-white border-s border-e p-2 overflow-x-hidden overflow-y-auto'>
+          <div v-for="(activity, index) in activities" :key="index">
+            <div class=' grid grid-cols-4 gap-2 mt-2'>
+              <div class='flex justify-center'>
+                <q-img :src="getUserImagePublicPath(activity.image)" :alt='activity.image' class='w-[40px] h-[40px]'/>
+              </div>
+              <div class='font-bold'>
+                <p>{{ truncateFullname(activity.fullname) }}</p>
+                <span class='text-[#03ba00]'>{{ activity.position }}</span>
+              </div>
+              <div class='text-[12px]'>
+                <p>{{ activity.action }}</p>
+              </div>
+              <div class='text-[12px]'>
+                <p>{{ formatTimestamp(activity.timestamp) }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- <div class='absolute bottom-0 w-[354px] flex justify-between h-[50px] p-2 border drop-shadow-md cursor-pointer'>
+        <p>Recent Activities</p>
+        <q-icon name='arrow_drop_up' class='text-[30px]'/>
+      </div> -->
+    </div>
 
   </div>
 </q-page>
@@ -129,7 +159,7 @@
       </div>
     </q-card-actions>
   </q-card>
-  </q-dialog>
+</q-dialog>
 </template>
 
 <script>
@@ -143,6 +173,7 @@ export default {
   },
   data() {
     return {
+      activities: [],
       isAdmin: 0,
       email: '',
       fullname: '',
@@ -166,6 +197,7 @@ export default {
     };
   },
   mounted() {
+    this.fetchActivities();
     this.loadUserData();
     this.statusCheckTimer = setInterval(() => {
       this.checkUserStatus();
@@ -175,6 +207,34 @@ export default {
     clearInterval(this.statusCheckTimer);
   },
   methods: {
+    formatTimestamp(timestamp) {
+      const date = new Date(timestamp);
+      const hours = date.getHours();
+      const minutes = date.getMinutes();
+      const ampm = hours >= 12 ? 'PM' : 'AM';
+      const shortMonth = date.toLocaleString('en-US', { month: 'short' });
+      const day = date.getDate();
+      const year = date.getFullYear();
+      const shortHours = hours % 12 || 12; // Convert to 12-hour format
+      return `${shortMonth}, ${day} ${year} ${shortHours}:${minutes < 10 ? '0' : ''}${minutes} ${ampm}`;
+    },
+    truncateFullname(fullname) {
+      if (fullname.length > 10) {
+        return fullname.slice(0, 10) + '...';
+      } else {
+        return fullname;
+      }
+    },
+    fetchActivities(){
+      axios.get(`http://localhost/Capstone-Project/backend/api/Dashboard/dashboard.php?get=activities`)
+      .then(response => {
+        
+        this.activities = response.data.auditLogs;
+        console.log(this.activities)
+      }).catch(error => {
+            console.error('Error fetching data:', error);
+      });
+    },
     toggleModal() {
       this.modalVisible = !this.modalVisible;
     },
@@ -200,8 +260,6 @@ export default {
     checkUserStatus() {
         axios.get(`http://localhost/Capstone-Project/backend/api/verification.php?email=${this.email}`)
         .then(response => {
-        console.log(response.data);
-
         const information = response.data.information;
           this.information = {
             id: information.id,
@@ -302,6 +360,15 @@ export default {
         return fullname.substring(0, maxLength) + '...';
       }
       return fullname;
+    },
+    getUserImagePublicPath(image) {
+      if (image) {
+        // Use the correct path relative to the 'public' directory
+        return `/pfp/${image}`;
+      } else {
+        // Return a default path or handle it as per your requirement
+        return '/default_profile.png';
+      }
     },
     getUserProfileImagePath() {
       // Ensure userProfileImage is not null before creating the path
