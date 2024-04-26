@@ -41,15 +41,15 @@
                 exit;
             }
 
-        }if($payload['get'] === 'onesegregator'){
-          $getData = $this->db->where('segregateID', $payload['id'])->getOne('mpo_segregate_tbl');
-          $getData2 = $this->db->where('segregatorName', $getData['segregator'])->get('mpo_segregator_projects');
-          if($getData){
+        }else if($payload['get'] === 'onesegregator'){
+          // $getData = $this->db->where('segregateID', $payload['id'])->getOne('mpo_segregate_tbl');
+          $getData2 = $this->db->where('segregatorName', $payload['id'])->get('mpo_segregator_projects');
+          if($getData2){
               $response = [
                   'status' => 'success',
                   'message' => 'Successfully fetch data.',
-                  'segregatorData' => $getData2,
-                  'mpoSeg' => $getData
+                  // 'segregatorData' => $getData2,
+                  'mpoSeg' => $getData2
               ];
               echo json_encode($response);
               exit;
@@ -158,17 +158,14 @@
             $getMpoID = $this->db->where('baseID', $payload['selectedBaseID'])->getOne('mpo_base');
 
             $insertData = [
-                'mpoID' => $getMpoID['mpoID'],
                 'baseID' => $payload['selectedBaseID'],
-                'date' => $payload['vData'],
-                'segregator' => $payload['selectSegregator'],
-                'qty_raw_for_issuance' => $payload['qty_raw_issuance'],
-                'qty_for_received_taknis' => $payload['qty_received'],
-                'waste_gumon_for_received_taknis' => $payload['vWaste'],
-                'balance_for_received_taknis' => $payload['mpobalance'],
-                'process' => $payload['selectProcess']
+                'segregatorName' => $payload['selectSegregator'],
+                'date_issuance' => $payload['vData'],
+                'qty_issued' => $payload['qty_raw_issuance'],
+                'qty_received' => $payload['qty_received'],
+                'waste_gumon' => $payload['vWaste'],
             ];
-            $insertQuery = $this->db->insert('mpo_segregate_tbl', $insertData);
+            $insertQuery = $this->db->insert('mpo_segregator_projects', $insertData);
             if($insertQuery){
               $updateData = ['quantity_balance' => $payload['quantitybal'], 'quantity_received' => $payload['quantitybal']];
               $updateMPO = $this->db->where('baseID', $payload['selectedBaseID'])->update('mpo_base', $updateData);

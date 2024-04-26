@@ -27,11 +27,29 @@
             $getData4 = $this->db->where('mpoID', $payload['targetdatas'])->get('mpo_base');
 
             $getData3 = $this->db->where('mpoID', $payload['targetdatas'])->get('mpo_base');
-            $getData2 = $this->db->where('mpoID', $getData['mpoID'])->get('mpo_segregate_tbl');
+            // $getData2 = $this->db->where('baseID', $getData['baseID'])->get('mpo_segregate_tbl');
             $getData5 = $this->db->where('baseID', $getData['baseID'])->get('mpo_segregate_balance');
-            // $target = $payload['targetdata'];
-            // $sqlQuery = 'SELECT * FROM mpo_base AS b JOIN mpo_segregate_tbl AS s ON b.baseID = s.baseID WHERE b.baseID = ?';
-            // $query = $this->db->rawQuery($sqlQuery, Array($target));
+            $target = $payload['targetdata'];
+            $sqlQuery = 'SELECT 
+                    b.baseID, 
+                    b.item_name,
+                    s.segreID,
+                    s.date_issuance,
+                    s.segregatorName,
+                    s.date_issuance,
+                    SUM(s.qty_issued) AS total_qty_issued,
+                    SUM(s.qty_received) AS total_qty_received,
+                    SUM(s.waste_gumon) AS total_waste_gumon
+                FROM 
+                    mpo_segregator_projects AS s
+                JOIN
+                    mpo_base AS b ON s.baseID = b.baseID
+                WHERE 
+                    b.baseID = ?
+                GROUP BY 
+                    b.baseID, b.item_name;
+                ';
+            $getData2 = $this->db->rawQuery($sqlQuery, Array($getData['baseID']));
             if($getData){
                 $response = [
                     'status' => 'success',
@@ -55,8 +73,30 @@
         }
         else if($payload['targetdata'] ==='onedata'){
           $getData = $this->db->where('baseID', $payload['targetdatas'])->getOne('mpo_base');
-          $getData2 = $this->db->where('baseID', $getData['mpoID'])->get('mpo_segregate_tbl');
+
           $getData3 = $this->db->where('mpoID', $payload['targetdatas'])->get('mpo_base');
+          $getData4 = $this->db->where('mpoID', $payload['targetdatas'])->get('mpo_base');
+          $getData5 = $this->db->where('baseID', $getData['baseID'])->get('mpo_segregate_balance');
+          $sqlQuery = 'SELECT 
+                    b.baseID, 
+                    b.item_name,
+                    s.segreID,
+                    s.date_issuance,
+                    s.segregatorName,
+                    s.date_issuance,
+                    SUM(s.qty_issued) AS total_qty_issued,
+                    SUM(s.qty_received) AS total_qty_received,
+                    SUM(s.waste_gumon) AS total_waste_gumon
+                FROM 
+                    mpo_segregator_projects AS s
+                JOIN
+                    mpo_base AS b ON s.baseID = b.baseID
+                WHERE 
+                    b.baseID = ?
+                GROUP BY 
+                    b.baseID, b.item_name;
+                ';
+            $getData2 = $this->db->rawQuery($sqlQuery, Array($payload['targetdatas']));
           if($getData){
               $response = [
                   'status' => 'success',
@@ -64,6 +104,8 @@
                   'information' => Array($getData),
                   'information2' => $getData2,
                   'information3' => $getData3,
+                  'information4' => $getData4,
+                  'information5' => $getData5
               ];
               echo json_encode($response);
               exit;

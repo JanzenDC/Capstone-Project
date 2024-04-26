@@ -73,6 +73,12 @@
                 </q-icon>
               </q-td>
             </template>
+
+            <template v-slot:body-cell-balance="props">
+              <q-td :props="props">
+                {{ calculateBalance(props.row) }}
+              </q-td>
+            </template>
           </q-table>
 
           <q-table
@@ -175,11 +181,6 @@
         :columns="columns_second"
       >
 
-        <template v-slot:header-cell-action="props">
-          <q-th :props="props">
-            <q-icon name="add" size="1.5em" class='bg-yellow-600 text-white' @click="addData"/>
-          </q-th>
-        </template>
 
         <template v-slot:body="props">
           <q-tr :props="props">
@@ -224,7 +225,7 @@
     </q-card-section>
 
     <q-card-actions align="right" class="bg-white text-teal">
-      <q-btn flat label="Submit" class='bg-[#634832] text-white' @click="submitData"/>
+      <q-btn flat label="Close" class='bg-[#634832] text-white' v-close-popup/>
     </q-card-actions>
   </q-card>
 </q-dialog>
@@ -383,13 +384,13 @@
 
       },
       vWaste(newValue) {
-        if (newValue > this.qty_received) {
-          this.vWaste = this.qty_received;
+        if (newValue > this.qty_received || newValue == this.qty_received) {
+          this.vWaste = 0;
           this.$q.notify({
             type: 'negative',
-            message: `Waste cannot exceed ${this.qty_received}`
+            message: `Waste cannot exceed or equal to ${this.qty_received}`
           });
-        } else {
+        }  else {
             this.vWaste = newValue;
         }
       },
@@ -403,6 +404,11 @@
       },
     },
     methods: {
+      calculateBalance(row) {
+        const total = parseFloat(row.qty_received) + parseFloat(row.waste_gumon);
+        const balance = parseFloat(row.qty_raw) - total
+        return balance;
+      },
       submitData() {
         const formData = new FormData();
         const target = 4;
@@ -429,25 +435,17 @@
         this.qqty_received = this.rows_second.reduce((total, row) => parseFloat(row.qty_received)  - total, 0);
         this.wwaste_gumon = this.rows_second.reduce((total, row) => parseFloat(row.waste_gumon)  - total, 0);
       },
-      addData() {
-
-        this.rows_second.push({
-          date_issuance: '',
-          qty_raw: '',
-          qty_received: '',
-          waste_gumon: '',
-          action: ''
-        });
-      },
-      handleVisibilityClick(item, rowData) {
+      handleVisibilityClick(rowData) {
         this.segregatorName = rowData.segregator;
+        console.log(this.segregatorName);
         this.openModal2 = true;
-        axios.get(`http://localhost/Capstone-Project/backend/api/ProductionMonitoring/Weaver_Queries/segregator.php?get=onesegregator&id=${rowData.segregateID}`)
+        axios.get(`http://localhost/Capstone-Project/backend/api/ProductionMonitoring/Weaver_Queries/segregator.php?get=onesegregator&id=${this.segregatorName}`)
         .then(response => {
-          this.qqty_raw = response.data.mpoSeg.qty_raw_for_issuance;
-           this.qqty_recieved = response.data.mpoSeg.qty_for_received_taknis;
-           this.wwaste_gumon = response.data.mpoSeg.waste_gumon_for_received_taknis;
-          this.rows_second = response.data.segregatorData.map(row => {
+          console.log(response.data)
+          // this.qqty_raw = response.data.mpoSeg.qty_raw_for_issuance;
+          // this.qqty_recieved = response.data.mpoSeg.qty_for_received_taknis;
+          // this.wwaste_gumon = response.data.mpoSeg.waste_gumon_for_received_taknis;
+          this.rows_second = response.data.mpoSeg.map(row => {
             return {
               date_issuance: row.date_issuance,
               qty_raw: row.qty_issued,
@@ -497,6 +495,9 @@
             });
             this.loadFetchData();
             this.IssueDialog = false;
+            setTimeout(() => {
+              window.location.reload(); // Reload the window after 3 seconds
+            }, 1500);
           }
           if (Status === "fail") {
               this.$q.notify({
@@ -504,6 +505,9 @@
                   message: `${Message} Please try again.`,
               });
               this.IssueDialog = false;
+              setTimeout(() => {
+                window.location.reload(); // Reload the window after 3 seconds
+              }, 1500);
           }
         }).catch(error => {
               console.error('Error fetching data:', error);
@@ -528,27 +532,37 @@
         
         axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/MPO_Queries/mpo_details.php?targetdata=onedata&targetdatas=${event}`)
             .then(response => {
-              this.selectedBaseID = event;
+              this.selectedBaseID = response.data.information[0].baseID;
               this.selectItem = response.data.information[0].item_name;
+
+              this.categories = response.data.information3;
+              this.selectProduct = response.data.information[0].item_name;
+
               this.qty_in = response.data.information[0].quantity;
               this.qty_bal = response.data.information[0].quantity_balance;
-              // this.items = response.data.information.map(category => ({
-              //     value: category.item_name,
-              //     base: category.baseID,
-              //     rows: response.data.information2
-              //         .filter(category2 => category2.baseID === category.baseID) // Filter by matching baseID
-              //         .map(category2 => ({
-              //             segregateID: category2.segregateID,
-              //             base: category2.baseID,
-              //             segregator: category2.segregator,
-              //             date: category2.date,
-              //             qty_raw: category2.qty_raw_for_issuance,
-              //             qty_received: category2.qty_for_received_taknis,
-              //             waste_gumon: category2.waste_gumon_for_received_taknis,
-              //             balance: category2.balance_for_received_taknis,
-              //             // action: category2.action,
-              //         }))
-              // }));
+
+              this.rows = response.data.information2.map(row => {
+                  return {
+                    segregateID: row.segID,
+                    base: row.baseID,
+                    segregator: row.segregatorName,
+                    date: row.date_issuance,
+                    qty_raw: row.total_qty_issued,
+                    qty_received: row.total_qty_received,
+                    waste_gumon: row.total_waste_gumon,
+                  }
+              });
+              this.rows_third = response.data.information5.map(row => {
+                  return {
+                    process: row.segregateID,
+                    base: row.baseID,
+                    process: row.	process,
+                    qty_raw_bal: row.qty_raw_bal,
+                    qty_received: row.qty_received,
+                    waste_gumon: row.waste_bal,
+                    qty_bal_received: row.qty_bal_received,
+                  }
+              });
             }).catch(error => {
                 console.error('Error fetching data:', error);
             });
@@ -576,6 +590,7 @@
 
             axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/MPO_Queries/mpo_details.php?targetdata=moredata&targetdatas=${this.mpoIDnumber}`)
             .then(response => {
+              console.log(response.data)
               this.selectedBaseID = response.data.information[0].baseID;
               this.selectItem = response.data.information[0].item_name;
 
@@ -588,36 +603,20 @@
 
               this.qty_in = response.data.information[0].quantity;
               this.qty_bal = response.data.information[0].quantity_balance;
-              // this.items = response.data.information.map(category => ({
-              //     value: category.item_name,
-              //     base: category.baseID,
-              //     rows: response.data.information2
-              //         .filter(category2 => category2.baseID === category.baseID) // Filter by matching baseID
-              //         .map(category2 => ({
-              //             segregateID: category2.segregateID,
-              //             base: category2.baseID,
-              //             segregator: category2.segregator,
-              //             date: category2.date,
-              //             qty_raw: category2.qty_raw_for_issuance,
-              //             qty_received: category2.qty_for_received_taknis,
-              //             waste_gumon: category2.waste_gumon_for_received_taknis,
-              //             balance: category2.balance_for_received_taknis,
-              //             // action: category2.action,
-              //         }))
-              // }));
+
               this.rows = response.data.information2.map(row => {
                   return {
-                    segregateID: row.segregateID,
+                    segregateID: row.segID,
                     base: row.baseID,
-                    segregator: row.segregator,
-                    date: row.date,
-                    qty_raw: row.qty_raw_for_issuance,
-                    qty_received: row.qty_for_received_taknis,
-                    waste_gumon: row.waste_gumon_for_received_taknis,
-                    balance: row.balance_for_received_taknis,
+                    segregator: row.segregatorName,
+                    date: row.date_issuance,
+                    qty_raw: row.total_qty_issued,
+                    qty_received: row.total_qty_received,
+                    waste_gumon: row.total_waste_gumon,
+                    // balance: row.balance_for_received_taknis,
                   }
               });
-              this.columns_third = response.data.information5.map(row => {
+              this.rows_third = response.data.information5.map(row => {
                   return {
                     process: row.segregateID,
                     base: row.baseID,
