@@ -589,13 +589,14 @@ export default {
 
                 // Calculate status based on received quantity
                 let status = '';
-                if (row.quantity_received === 0) {
-                    status = 'Out of Stock';
-                } else if (row.quantity_received  <= 300) {
-                  status = 'Low Stock';
-                } else  {
+                if (row.quantity_received === row.quantity || row.quantity_received >= 300)  {
                     status = 'In Stock';
                 }
+                if (row.quantity_received === 0) {
+                    status = 'Out of Stock';
+                } if (row.quantity_received  <= 300) {
+                  status = 'Low Stock';
+                } 
                 acc[row.mpoID].status.push(status);
                 return acc;
             }, {});
@@ -650,13 +651,12 @@ export default {
             acc[row.mpoID].qty_balance.push(row.quantity_received);
 
             // Calculate status based on received quantity
-            let status = '';
-            if (row.quantity_received === 0) {
-                status = 'Out of Stock';
-            } else if (row.quantity_received  <= 300) {
-              status = 'Low Stock';
-            } else  {
+            if (row.quantity_received === row.quantity || row.quantity_received > 300) {
                 status = 'In Stock';
+            } else if (row.quantity_received === 0) {
+                status = 'Out of Stock';
+            } else if (row.quantity_received < 300 && row.quantity_received > row.quantity / 2) {
+                status = 'Low Stock';
             }
             acc[row.mpoID].status.push(status);
             return acc;

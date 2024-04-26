@@ -1337,6 +1337,9 @@ export default {
             });
             this.fetchMPOData();
             this.product_dialog = false;
+            setTimeout(() => {
+              window.location.reload(); // Reload the window after 3 seconds
+            }, 1500);
           }
         })
         .catch(error => {
