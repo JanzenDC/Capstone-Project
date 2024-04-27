@@ -499,13 +499,13 @@
               hide-bottom
               separator="cell"
             >
-            <template v-slot:header-cell-action="props">
+            <!-- <template v-slot:header-cell-action="props">
               <q-th :props="props">
                 <q-btn class='w-[32px] h-[32px] bg-[#F37E33] text-white' icon='add_box' @click="handleAddRowMaterial">
                   <q-tooltip :offset="[0, 8]">Add Row</q-tooltip>
                 </q-btn>
               </q-th>
-            </template>
+            </template> -->
 
             <template v-slot:body="props">
               <q-tr :props="props">
@@ -569,7 +569,7 @@
           <div class="flex gap-2 mt-3">
               <div>
                 <p class="mt-3">Prepared By:</p>
-                <q-input v-model="prepared_name" dense outlined lazy-rules :rules="[ val => val && val.length > 0 || 'Please input something']"/>
+                <q-input v-model="prepared_name" dense outlined lazy-rules :rules="[ val => val && val.length > 0 || 'Please input something'] " readonly disabled/>
               </div>
               <div>
                 <p class="mt-3">Approved By:</p>
@@ -745,7 +745,7 @@ export default {
 
       optionsss: [
         'Weaving', 'Tassle', 'Trimming', 'Cleaning', 'Latexing', 'Re-Latexing', 'Piping'],
-      modelMultiple: ['Weaving', 'Cleaning'],
+      modelMultiple: ['Weaving', 'Cleaning', 'Trimming'],
       pagination: [
         {
           rowsPerPage: 1000
@@ -983,10 +983,6 @@ export default {
 
     }
     this.loadUserData();
-    this.handleAddRowPostData();
-    this.handleAddRow();
-    this.handleAddRowMaterial();
-    this.handleAddRowProductionMonitoring();
     this.fetchWarehouseMan();
     this.fetchJOref();
     this.fetchWeaver();
@@ -1158,71 +1154,9 @@ export default {
       // Remove the row from the array
       this.material_rows.splice(index, 1);
     },
-    handleAddRowMaterial() {
-      const defaultRow = {
-        date: '',
-        material_desc: '',
-        quantity: 0,
-        unit: 'kilogram',
-        returned: 0,
-        balance: '',
-        issued_by: '',
-        action: ''
-      };
-      this.material_rows.push(defaultRow);
-    },
-    triggerFileInputs(type) {
-      this.$refs[`${type}Input`].click();
-    },
-    handleFileChanges(type, event) {
-      const file = event.target.files[0];
-      if (file) {
+ 
 
-        // Save the uploaded file reference based on type
-        switch (type) {
-          case 'bprepared':
-            this.s_esignatureP = file;
-            this.s_s_uploadPreparedName = file.name;
-            break;
-          case 'bapprove':
-            this.s_esignatureA = file;
-            this.s_s_uploadApproveName = file.name;
-            break;
-        }
-
-        console.log("Uploaded file:", file);
-      }
-    },
-    triggerFileInput(type) {
-      this.$refs[`${type}Input`].click();
-    },
-    handleFileChange(type, event) {
-      const file = event.target.files[0];
-      if (file) {
-        // Save the uploaded file reference based on type
-        switch (type) {
-          case 'prepared':
-            this.e_signatureP = file;
-            this.uploadPreparedName = file.name;
-            break;
-          case 'approve':
-            this.e_signatureA = file;
-            this.uploadApproveName = file.name;
-            break;
-          case 'bprepared':
-            this.s_esignatureP = file;
-            this.s_uploadPreparedName = file.name;
-            break;
-          case 'bapprove':
-            this.s_esignatureA = file;
-            this.s_uploadApproveName = file.name;
-            break;
-        }
-        console.log("Uploaded file:", file);
-      }
-    },
-
-    sendingForm() {
+    submitForm() {
       console.log('clicked');
       const formData = new FormData();
 
@@ -1247,8 +1181,6 @@ export default {
       formData.append('v_quantity', this.v_quantity);
       formData.append('v_looms', this.v_looms);
       formData.append('v_color', this.v_color);
-      formData.append('e_signatureP', this.e_signatureP);
-      formData.append('e_signatureA', this.e_signatureA);
       formData.append('approvedby_name', this.approvedby_name);
       formData.append('prepared_name', this.prepared_name);
 
@@ -1341,15 +1273,17 @@ export default {
         };
         formData.append('production_monitoring[]', JSON.stringify(productionData));
       });
-
-      // query using axios post
-      axios.post(`http://localhost/Capstone-Project/backend/api/ProductionMonitoring/job_order/job_order.php/`, formData)
-      .then((response) => {
-          console.log('Your Data:', response.data);
-      }).catch(error => {
-        // Handle error if request fails
-        console.error("Error sending file:", error);
-      });
+      for (let pair of formData.entries()) {
+        console.log(pair[0] + ': ' + pair[1]);
+      }
+      // // query using axios post
+      // axios.post(`http://localhost/Capstone-Project/backend/api/ProductionMonitoring/job_order/job_order.php/`, formData)
+      // .then((response) => {
+      //     console.log('Your Data:', response.data);
+      // }).catch(error => {
+      //   // Handle error if request fails
+      //   console.error("Error sending file:", error);
+      // });
     },
 
     handleDeleteProductionMonitoring(row){
