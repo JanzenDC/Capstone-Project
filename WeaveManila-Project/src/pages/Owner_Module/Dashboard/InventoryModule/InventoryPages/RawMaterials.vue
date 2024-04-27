@@ -210,11 +210,11 @@ import SideBar from '../../Essentials/SideBar.vue';
             console.log(response.data.information);
             this.rows = response.data.information.map(row => {
               let status = '';
-              if (row.quantity_received === row.quantity || row.quantity_received > 300) {
+              if (row.quantity_received === row.quantity_balance || row.quantity_received > 300) {
                   status = 2;
-              } else if (row.quantity_received === 0) {
+              } else if (row.quantity_balance === 0) {
                   status = 0;
-              } else if (row.quantity_received < 300 || row.quantity_received > row.quantity / 2) {
+              } else if (row.quantity_received < 300 || row.quantity_received > row.quantity_balance / 2) {
                   status = 1;
               }
               return {
