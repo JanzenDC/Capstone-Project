@@ -52,7 +52,9 @@
         <div class='flex gap-4'>
           <q-btn icon="download" />
           <q-btn icon="print" />
-          <q-btn icon="add" label='Issue' class='bg-[#634832] text-white' @click='OpenIssue'/>
+          <q-btn label='Issue' class='bg-[#634832] text-white' @click='OpenIssue'/>
+          <q-btn label='Receive' class='bg-[#634832] text-white' @click='ReceiveModal'/>
+
         </div>
 
 
@@ -87,9 +89,9 @@
             :rows="rows_third"
             :columns="columns_third"
           >
-          <template v-slot:body-cell-qty_bal_received="props">
+            <template v-slot:body-cell-qty_bal_received="props">
               <q-td :props="props">
-                
+                {{ calculateBalances(props.row) }}
               </q-td>
             </template>
         </q-table>
@@ -348,6 +350,7 @@
         segProcess: ['Taknis', 'Braided', 'Twine']
       };
     },
+    
     mounted() {
       this.loadUserData();
       this.statusCheckTimer = setInterval(() => {
@@ -411,7 +414,11 @@
       },
     },
     methods: {
-
+      calculateBalances(row) {
+        const total = parseFloat(row.qty_received) + parseFloat(row.waste_gumon);
+        const balance = parseFloat(row.qty_raw_bal) - total
+        return balance;
+      },
       calculateBalance(row) {
         const total = parseFloat(row.qty_received) + parseFloat(row.waste_gumon);
         const balance = parseFloat(row.qty_raw) - total

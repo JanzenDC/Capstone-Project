@@ -59,7 +59,7 @@
                 WHERE 
                     b.baseID = ?
                 GROUP BY 
-                    b.baseID, b.item_name;
+                s.process, s.segregatorName;
                 ';
             $getData2 = $this->db->rawQuery($sqlQuery, Array($getData['baseID']));
             if($getData){
@@ -119,7 +119,7 @@
                 WHERE 
                     b.baseID = ?
                 GROUP BY 
-                    b.baseID, b.item_name;
+                    s.process, s.segregatorName;
                 ';
             $getData2 = $this->db->rawQuery($sqlQuery, Array($payload['targetdatas']));
           if($getData){
