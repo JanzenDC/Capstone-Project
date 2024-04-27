@@ -209,6 +209,14 @@ import SideBar from '../../Essentials/SideBar.vue';
           .then(response => {
             console.log(response.data.information);
             this.rows = response.data.information.map(row => {
+              let status = '';
+              if (row.quantity_received === row.quantity || row.quantity_received > 300) {
+                  status = 2;
+              } else if (row.quantity_received === 0) {
+                  status = 0;
+              } else if (row.quantity_received < 300 || row.quantity_received > row.quantity / 2) {
+                  status = 1;
+              }
               return {
                 product: row.item_name,
                 qtypurchased: row.quantity,
@@ -216,7 +224,7 @@ import SideBar from '../../Essentials/SideBar.vue';
                 qtyreceived: row.quantity_received,
                 qtybalance: row.quantity_balance,
                 received_date: row.date_received,
-                status: row.status
+                status: status
               };
             })
           }).catch(error => {
