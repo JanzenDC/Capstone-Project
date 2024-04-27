@@ -115,14 +115,11 @@ import SideBar from '../../Essentials/SideBar.vue';
 
       columns: [
         {name: 'jobOrderNo', label: 'Job Order No.', field: 'jobOrderNo', sortable: true},
-        {name: 'clientName', label: 'Client Name', field: 'clientName', sortable: true},
-        {name: 'pattern', label: 'Pattern', field: 'pattern', sortable: true},
-        {name: 'Quantity', label: 'Quantity', field: 'Quantity', sortable: true},
-        {name: 'size', label: 'Size', field: 'size', sortable: true},
-        {name: 'order_date', label: 'Order Date', field: 'order_date', sortable: true},
-        {name: 'commitment_date', label: 'Commitment Date', field: 'commitment_date', sortable: true},
-        {name: 'shipment_date', label: 'Shipped Date', field: 'shipment_date', sortable: true},
-        {name: 'edited', label: 'Edited', field: 'edited', },
+        {name: 'weaver', label: 'Weaver', field: 'weaver', sortable: true},
+        {name: 'data', label: 'Latest date of issuance', field: 'date', sortable: true},
+        {name: 'Qty_out', label: 'Quantity', field: 'Qty_out', sortable: true},
+        {name: 'returned', label: 'Returned', field: 'returned', sortable: true},
+        {name: 'Qty_balance', label: 'Qty Balance', field: 'Qty_balance', sortable: true},
         {name: 'action', label: 'Action', field: 'action', },
       ],
       rows: [],
@@ -146,93 +143,20 @@ import SideBar from '../../Essentials/SideBar.vue';
 
     };
   },
-  
+
   mounted() {
     this.loadUserData();
     this.statusCheckTimer = setInterval(() => {
       this.checkUserStatus();
     }, 50 * 1000);
     this.loadFetchData(); //uncomment this
-    this.fetchallPJO();
+    //this.fetchallPJO();
   },
   beforeUnmount() {
     clearInterval(this.statusCheckTimer);
   },
 
   methods: {
-    fetchallPJO(){
-      // Define unit abbreviation mapping
-      const unitAbbreviations = {
-        'Feet': 'ft',
-        'Meters': 'm',
-        'Centimeters': 'cm',
-        'Millimeters': 'mm',
-        'Inches': 'in'
-      };
-
-      axios.get('http://localhost/Capstone-Project/backend/api/ProductionMonitoring/job_order/job_order.php?type=getPJOall')
-      .then((response) => {
-          console.log(response.data);
-          this.rows = response.data.PJOdata.map(row => {
-            const sizeSelectedAbbreviated = unitAbbreviations[row.size_selected] || row.size_selected;
-            const latestData = response.data.mpo;
-            const latestPJO = response.data.pjoID;
-            const lastTwoDigits = latestData.companyDate.slice(2, 4);
-            const PjoFormat = `PJO${lastTwoDigits}-${row.pjoID}`;
-            let lengthInInches;
-            switch (sizeSelectedAbbreviated) {
-                case 'ft':
-                    lengthInInches = row.length * 12; // 1 foot = 12 inches
-                    break;
-                case 'm':
-                    lengthInInches = row.length * 39.3701; // 1 meter = 39.3701 inches
-                    break;
-                case 'cm':
-                    lengthInInches = row.length * 0.393701; // 1 centimeter = 0.393701 inches
-                    break;
-                case 'mm':
-                    lengthInInches = row.length * 0.0393701; // 1 millimeter = 0.0393701 inches
-                    break;
-                case 'in':
-                    lengthInInches = row.length; // Already in inches
-                    break;
-                default:
-                    lengthInInches = row.length; // If size_selected is not recognized, keep as it is
-            }
-
-            const value = lengthInInches / row.qouta;
-            let value2 = value - row.total_output_sum;
-            if (isNaN(value2)) {
-                value2 = '0'; // If value2 is NaN, make it 0
-            }
-
-            let status;
-            if (2 === row.status) {
-                status = 'Done';
-            } else if (1 === row.status) {
-                status = 'Ongoing';
-            } else if (0 === row.status){
-                status = 'Pending';
-            }
-              return {
-                id: row.pjoID,
-                // jobOrder: PjoFormat,
-                commitmentDate: row.commitment_date,
-                jobOrderNo: PjoFormat,
-                weaver: row.endorse,
-                size: row.width + 'x' + row.length + ' ' + sizeSelectedAbbreviated,
-                total_output: row.total_output_sum,
-                balance: value2,
-                checked_by: row.checked_by,
-                status: status
-              };
-          });
-      }).catch(error => {
-          console.error("Error fetching PJO data:", error);
-      });
-
-    },
-
 
     loadFetchData() {
       const MPOData = SessionStorage.getItem('MPOData');

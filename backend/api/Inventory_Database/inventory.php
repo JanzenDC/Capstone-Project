@@ -149,6 +149,7 @@
                             base.status,
                             base.discounts,
                             base.subtotal,
+                            base.quantity_balance,
                             COALESCE(received_logs.datareceivedID, "") AS datareceivedID,
                             received_logs.baseID,
                             COALESCE(received_logs.date_received, "No data.") AS date_received

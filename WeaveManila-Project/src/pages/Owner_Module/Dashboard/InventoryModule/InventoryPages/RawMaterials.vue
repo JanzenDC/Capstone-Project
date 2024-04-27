@@ -37,7 +37,7 @@
             <p>Segregate</p>
           </div>
       </router-link>
-      <router-link to="">
+      <router-link to="issuance-section">
           <div class="flex w-[128px] text-[#89909e] border-t-2 border-l-2 h-[44px] py-3 px-5 gap-[8px] rounded items-center text-[14px]">
             <q-icon name="group"/>
             <p>Issuance</p>

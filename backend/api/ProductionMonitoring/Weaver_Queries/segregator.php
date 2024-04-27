@@ -168,7 +168,7 @@
             ];
             $insertQuery = $this->db->insert('mpo_segregator_projects', $insertData);
             if($insertQuery){
-              $updateData = ['quantity_balance' => $payload['quantitybal'], 'quantity_received' => $payload['quantitybal']];
+              $updateData = ['quantity_balance' => $payload['quantitybal']];
               $updateMPO = $this->db->where('baseID', $payload['selectedBaseID'])->update('mpo_base', $updateData);
               $response = ['status' => 'success', 'message' => 'Data inserted successfully'];
               echo json_encode($response);
