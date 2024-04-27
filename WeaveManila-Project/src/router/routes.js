@@ -45,6 +45,7 @@ const routes = [
 
       { path: 'rawmaterials-section', component: () => import('pages/Owner_Module/Dashboard/InventoryModule/InventoryPages/RawMaterials.vue') },
       { path: 'segregate-section', component: () => import('pages/Owner_Module/Dashboard/InventoryModule/InventoryPages/SegregatePage.vue') },
+      { path: 'issuance-section', component: () => import('pages/Owner_Module/Dashboard/InventoryModule/InventoryPages/IssuancePage.vue') },
 
        // Production Monitoring Module
       { path: 'productionplan-section', component: () => import('pages/Owner_Module/Dashboard/ProductionMonitoring/ProductionPlan.vue') },

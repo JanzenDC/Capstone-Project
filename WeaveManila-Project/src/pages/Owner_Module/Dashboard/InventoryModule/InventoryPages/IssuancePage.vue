@@ -31,212 +31,42 @@
       </div>
     </router-link>
     <router-link to="segregate-section">
-      <div class="flex bg-white w-[135px] border-l-2 h-[44px] py-3 px-5 gap-[8px] rounded items-center text-[14px]">
+      <div class="flex w-[135px] text-[#89909e] border-t-2 border-l-2 h-[44px] py-3 px-5 gap-[8px] rounded items-center text-[14px]">
           <q-icon name="list"/>
           <p>Segregate</p>
         </div>
     </router-link>
-    <router-link to="">
-        <div class="flex w-[128px] text-[#89909e] border-t-2 border-l-2 h-[44px] py-3 px-5 gap-[8px] rounded items-center text-[14px]">
+    <router-link to="issuance-section">
+        <div class="flex bg-white w-[135px] border-l-2 h-[44px] py-3 px-5 gap-[8px] rounded items-center text-[14px]">
           <q-icon name="group"/>
           <p>Issuance</p>
         </div>
     </router-link>
   </div>
   <div class="w-full bg-white p-4  h-[450px]">
-    <div class="flex justify-between">
-      <div class='flex gap-4'>
-        <!-- <p>Quantity In: {{ qty_in }}</p>
-        <p>Quantity Balance: {{ qty_bal }}</p> -->
-      </div>
-      <div class='flex gap-4'>
-        <q-btn icon="download" />
-        <q-btn icon="print" />
-        <q-btn label='Issue' class='bg-[#634832] text-white' @click='OpenIssue'/>
-        <q-btn label='Receive' class='bg-[#634832] text-white' @click='ReceiveModal'/>
-
-      </div>
-
-
-    </div>
-    <q-separator class="mt-5"/>
-    <div class="overflow-y-auto overflow-x-hidden h-[390px] mt-3">
-      <div>
-        <q-select dense outlined v-model="selectProduct" :options="optionssss" class='w-[180px] mb-3'/>
-        <p>Quantity In: {{ qty_in }}</p>
-        <p>Quantity Balance: {{ qty_bal }}</p>
-      </div>
-      <div>
-        <q-table :rows="rows" :columns="columns" class='mt-2'>
-          <template v-slot:body-cell-action="props">
-            <q-td :props="props">
-              <q-icon name='visibility' class='text-h6 text-black' @click="handleVisibilityClick(props.row)">
-                <q-tooltip :offset="[0, 8]">View</q-tooltip>
-              </q-icon>
-            </q-td>
-          </template>
-
-          <template v-slot:body-cell-balance="props">
-            <q-td :props="props">
-              {{ calculateBalance(props.row) }}
-            </q-td>
-          </template>
-        </q-table>
-
-        <q-table
-          class="mt-8"
-          flat bordered
-          :rows="rows_third"
-          :columns="columns_third"
-        >
-          <template v-slot:body-cell-qty_bal_received="props">
-            <q-td :props="props">
-              {{ calculateBalances(props.row) }}
-            </q-td>
-          </template>
-      </q-table>
-      </div>
-      <!-- <div v-for="item in items" :key="item.id" class="gap-2 mt-3">
-        <div class='flex items-center gap-2 mt-2'>
-          <p>Product
-            <span class='text-red-600'>*</span>
-          </p>
-          <q-select dense outlined v-model="item.value" :options="optionssss"/>
-
-        </div>
-        <q-table :rows="item.rows" :columns="columns" class='mt-2'>
-          <template v-slot:body-cell-action="props">
-            <q-td :props="props">
-              <q-icon name='visibility' class='text-h6 text-black' @click="handleVisibilityClick(item, props.row)">
-                <q-tooltip :offset="[0, 8]">View</q-tooltip>
-              </q-icon>
-
-            </q-td>
-          </template>
-        </q-table>
-      </div> -->
-    </div>
-
-
+      <q-table
+        class="my-sticky-header-table"
+        dense bordered
+        :rows="rows"
+        :columns="columns"
+        row-key="pjoID"
+        :pagination="initialPagination"
+      >
+      <template v-slot:body-cell-action="props">
+        <q-td :props="props">
+          <q-icon name='visibility' class='text-h6 text-black'>
+            <q-tooltip :offset="[0, 8]">View</q-tooltip>
+          </q-icon>
+        </q-td>
+      </template>
+    </q-table>
   </div>
 </div>
 
 
 </q-page>
 
-<q-dialog
-v-model="IssueDialog"
->
-<q-card style="width: 500px; max-width: 80vw;">
-  <q-card-section class="row items-center q-pb-none">
-        <div class="text-h6">Issuance</div>
-        <q-space />
-        <q-btn icon="close" flat round dense v-close-popup />
-      </q-card-section>
 
-  <q-card-section class="q-pt-none">
-    <p class='font-bold'>Issuance</p>
-    <div class='grid grid-cols-2 gap-2'>
-      <div>Item
-        <q-input dense outlined v-model='selectItem' disabled/>
-      </div>
-      <div>Process
-        <q-select dense outlined v-model='selectProcess' :options='segProcess'/>
-      </div>
-      <div v-if="selectProcess === 'Twine'">
-        Twine
-        <q-select dense outlined v-model='selectTwine' :options='segTwine'/>
-      </div>
-      <div>Segregator
-        <q-select dense outlined v-model='selectSegregator' :options='segOptions'/>
-      </div>
-      <div>Date
-        <q-input type='date' dense outlined v-model='vData'/>
-      </div>
-      <div>Quantity Raw Issuance
-        <q-input type='number' dense outlined v-model='qty_raw_issuance'/>
-      </div>
-    </div>
-    <p class='font-bold mt-3'>Received</p>
-    <div class='grid grid-cols-2 gap-2'>
-      <div>Qty Received
-        <q-input type='number' dense outlined v-model='qty_received'/>
-      </div>
-      <div>Waste/Gumon
-        <q-input type='number' dense outlined v-model='vWaste'/>
-      </div>
-    </div>
-  </q-card-section>
-
-  <q-card-actions align="right" class="bg-white text-teal">
-    <q-btn flat label="Submit" class='bg-[#634832] text-white' @click="submitForm"/>
-  </q-card-actions>
-</q-card>
-</q-dialog>
-
-<q-dialog
-v-model="openModal2"
->
-<q-card style="width: 700px; max-width: 80vw;">
-  <q-card-section>
-    <div class="text-h6">{{ segregatorName }}</div>
-  </q-card-section>
-  <q-card-section class="q-pt-none">
-    <q-table
-      class="my-sticky-header-table"
-      flat bordered
-      :rows="rows_second"
-      :columns="columns_second"
-    >
-
-
-      <template v-slot:body="props">
-        <q-tr :props="props">
-          <q-td key="date_issuance" :props="props">
-            {{ props.row.date_issuance }}
-            <q-popup-edit v-model="props.row.date_issuance" v-slot="scope">
-              <q-input v-model="scope.value" dense autofocus @keyup.enter="scope.set" type='date' />
-            </q-popup-edit>
-          </q-td>
-          <q-td key="qty_raw" :props="props">
-            <q-input
-              v-model.number="props.row.qty_raw"
-              input-class="text-center"
-              type="number"
-              dense
-              borderless
-            />
-          </q-td>
-          <q-td key="qty_received" :props="props">
-            <q-input
-              v-model.number="props.row.qty_received"
-              input-class="text-center"
-              type="number"
-              dense
-              borderless
-            />
-          </q-td>
-          <q-td key="waste_gumon" :props="props">
-            <q-input
-              v-model.number="props.row.waste_gumon"
-              input-class="text-center"
-              type="number"
-              dense
-              borderless
-            />
-          </q-td>
-          <q-td key="action" :props="props">
-          </q-td>
-        </q-tr>
-      </template>
-    </q-table>
-  </q-card-section>
-
-  <q-card-actions align="right" class="bg-white text-teal">
-    <q-btn flat label="Close" class='bg-[#634832] text-white' v-close-popup/>
-  </q-card-actions>
-</q-card>
-</q-dialog>
 
 
 </template>
@@ -254,6 +84,10 @@ import SideBar from '../../Essentials/SideBar.vue';
   },
   data() {
     return {
+      initialPagination: {
+        page: 1,
+        rowsPerPage: 10
+      },
       isAdmin: 0,
       email: '',
       fullname: '',
@@ -278,44 +112,25 @@ import SideBar from '../../Essentials/SideBar.vue';
       qty_in: '',
       qty_bal: '',
       mpoSelect: '',
-      columns_third: [
-      { name: 'process', align: 'left', label: 'Process', field: 'process', sortable: true,},
-        { name: 'qty_raw_bal', align: 'left', label: 'Qty Raw Issued', field: 'qty_raw_bal', sortable: true,},
-        { name: 'qty_received', align: 'left', label: 'Qty Received', field: 'qty_received', sortable: true,},
-        { name: 'waste_gumon', align: 'left', label: 'Waste / Gumon', field: 'waste_gumon', sortable: true,},
-        { name: 'qty_bal_received', align: 'left', label: 'Qty Bal Received', field: 'qty_bal_received', sortable: true,},
-      ],
-      rows_third: [],
+
       columns: [
-      { name: 'process', align: 'left', label: 'Process', field: 'process', sortable: true,},
-      { name: 'segregator', align: 'left', label: 'Segregator', field: 'segregator', sortable: true,},
-        { name: 'date', align: 'left', label: 'Latest date of issuance', field: 'date', sortable: true, },
-        { name: 'qty_raw', align: 'left', label: 'Qty Raw Issued', field: 'qty_raw', sortable: true,},
-        { name: 'qty_received', align: 'left', label: 'Qty Received', field: 'qty_received', sortable: true,},
-        { name: 'waste_gumon', align: 'left', label: 'Waste / Gumon', field: 'waste_gumon', sortable: true,},
-        { name: 'balance', align: 'left', label: 'Qty Balance', field: 'balance', sortable: true,},
-        { name: 'action', align: 'center', label: 'Actions', field: 'action'},
+        {name: 'jobOrderNo', label: 'Job Order No.', field: 'jobOrderNo', sortable: true},
+        {name: 'clientName', label: 'Client Name', field: 'clientName', sortable: true},
+        {name: 'pattern', label: 'Pattern', field: 'pattern', sortable: true},
+        {name: 'Quantity', label: 'Quantity', field: 'Quantity', sortable: true},
+        {name: 'size', label: 'Size', field: 'size', sortable: true},
+        {name: 'order_date', label: 'Order Date', field: 'order_date', sortable: true},
+        {name: 'commitment_date', label: 'Commitment Date', field: 'commitment_date', sortable: true},
+        {name: 'shipment_date', label: 'Shipped Date', field: 'shipment_date', sortable: true},
+        {name: 'edited', label: 'Edited', field: 'edited', },
+        {name: 'action', label: 'Action', field: 'action', },
       ],
       rows: [],
-      columns_second: [
-      { name: 'date_issuance', align: 'left', label: 'Date Issuance', field: 'date_issuance', sortable: true,},
-        { name: 'qty_raw', align: 'left', label: 'Qty Raw Issued', field: 'qty_raw', sortable: true,},
-        { name: 'qty_received', align: 'left', label: 'Qty Received', field: 'qty_received', sortable: true,},
-        { name: 'waste_gumon', align: 'left', label: 'Waste / Gumon', field: 'waste_gumon', sortable: true,},
-        { name: 'action', align: 'center', label: '', field: 'action'},
-      ],
-      rows_second: [],
+
       mpoIDnumber: '',
       items: [],
       ShowFolder: false,
-      // HOLDING THE DATA WHEN CLICKING THE FOLDER
-      selectedID: '',
-      selectedIDName: '',
-      selected_Quantity: '',
-      totalBalance: 0,
-      totalBalanceRaw: 0,
-      updatedBalance: 0,
-      stored_Variable: 0,
+
 
       newRow: {
         date: '',
@@ -329,25 +144,6 @@ import SideBar from '../../Essentials/SideBar.vue';
       segOptions: [],
 
 
-      vWaste: '',
-      qty_received: '',
-      vData: '',
-      selectSegregator: '',
-      selectedBaseID: 0,
-
-      openModal2: false,
-      segregatorName: '',
-      qqty_raw: '',
-      qqty_recieved: '',
-      wwaste_gumon: '',
-
-
-      selectProduct: '',
-      optionssss: [],
-      selectItem: '',
-      selectProcess: '',
-      segTwine: '',
-      segProcess: ['Taknis', 'Braided', 'Twine']
     };
   },
   
@@ -357,13 +153,87 @@ import SideBar from '../../Essentials/SideBar.vue';
       this.checkUserStatus();
     }, 50 * 1000);
     this.loadFetchData(); //uncomment this
-    this.loadWeaverData();
+    this.fetchallPJO();
   },
   beforeUnmount() {
     clearInterval(this.statusCheckTimer);
   },
 
   methods: {
+    fetchallPJO(){
+      // Define unit abbreviation mapping
+      const unitAbbreviations = {
+        'Feet': 'ft',
+        'Meters': 'm',
+        'Centimeters': 'cm',
+        'Millimeters': 'mm',
+        'Inches': 'in'
+      };
+
+      axios.get('http://localhost/Capstone-Project/backend/api/ProductionMonitoring/job_order/job_order.php?type=getPJOall')
+      .then((response) => {
+          console.log(response.data);
+          this.rows = response.data.PJOdata.map(row => {
+            const sizeSelectedAbbreviated = unitAbbreviations[row.size_selected] || row.size_selected;
+            const latestData = response.data.mpo;
+            const latestPJO = response.data.pjoID;
+            const lastTwoDigits = latestData.companyDate.slice(2, 4);
+            const PjoFormat = `PJO${lastTwoDigits}-${row.pjoID}`;
+            let lengthInInches;
+            switch (sizeSelectedAbbreviated) {
+                case 'ft':
+                    lengthInInches = row.length * 12; // 1 foot = 12 inches
+                    break;
+                case 'm':
+                    lengthInInches = row.length * 39.3701; // 1 meter = 39.3701 inches
+                    break;
+                case 'cm':
+                    lengthInInches = row.length * 0.393701; // 1 centimeter = 0.393701 inches
+                    break;
+                case 'mm':
+                    lengthInInches = row.length * 0.0393701; // 1 millimeter = 0.0393701 inches
+                    break;
+                case 'in':
+                    lengthInInches = row.length; // Already in inches
+                    break;
+                default:
+                    lengthInInches = row.length; // If size_selected is not recognized, keep as it is
+            }
+
+            const value = lengthInInches / row.qouta;
+            let value2 = value - row.total_output_sum;
+            if (isNaN(value2)) {
+                value2 = '0'; // If value2 is NaN, make it 0
+            }
+
+            let status;
+            if (2 === row.status) {
+                status = 'Done';
+            } else if (1 === row.status) {
+                status = 'Ongoing';
+            } else if (0 === row.status){
+                status = 'Pending';
+            }
+              return {
+                id: row.pjoID,
+                // jobOrder: PjoFormat,
+                commitmentDate: row.commitment_date,
+                jobOrderNo: PjoFormat,
+                weaver: row.endorse,
+                size: row.width + 'x' + row.length + ' ' + sizeSelectedAbbreviated,
+                total_output: row.total_output_sum,
+                balance: value2,
+                checked_by: row.checked_by,
+                status: status
+              };
+          });
+      }).catch(error => {
+          console.error("Error fetching PJO data:", error);
+      });
+
+    },
+
+
     loadFetchData() {
       const MPOData = SessionStorage.getItem('MPOData');
       if (MPOData) {
@@ -383,49 +253,49 @@ import SideBar from '../../Essentials/SideBar.vue';
           this.discount = mpoInfo.discount;
           this.other_costs = mpoInfo.other_costs;
 
-          axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/MPO_Queries/mpo_details.php?targetdata=moredata&targetdatas=${this.mpoIDnumber}`)
-          .then(response => {
-            console.log(response.data)
-            this.selectedBaseID = response.data.information[0].baseID;
-            this.selectItem = response.data.information[0].item_name;
+          // axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/MPO_Queries/mpo_details.php?targetdata=moredata&targetdatas=${this.mpoIDnumber}`)
+          // .then(response => {
+          //   console.log(response.data)
+          //   this.selectedBaseID = response.data.information[0].baseID;
+          //   this.selectItem = response.data.information[0].item_name;
 
-            this.categories = response.data.information3;
-            this.selectProduct = response.data.information[0].item_name;
-            this.optionssss = response.data.information4.map(category => ({
-                label: category.item_name,
-                value: category.baseID
-            }));
+          //   this.categories = response.data.information3;
+          //   this.selectProduct = response.data.information[0].item_name;
+          //   this.optionssss = response.data.information4.map(category => ({
+          //       label: category.item_name,
+          //       value: category.baseID
+          //   }));
 
-            this.qty_in = response.data.information[0].quantity;
-            this.qty_bal = response.data.information[0].quantity_balance;
+          //   this.qty_in = response.data.information[0].quantity;
+          //   this.qty_bal = response.data.information[0].quantity_balance;
 
-            this.rows = response.data.information2.map(row => {
-                return {
-                  segregateID: row.segID,
-                  base: row.baseID,
-                  process: row.process,
-                  segregator: row.segregatorName,
-                  date: row.date_issuance,
-                  qty_raw: row.total_qty_issued,
-                  qty_received: row.total_qty_received,
-                  waste_gumon: row.total_waste_gumon,
-                  // balance: row.balance_for_received_taknis,
-                }
-            });
-            this.rows_third = response.data.information5.map(row => {
-              return {
-                  segreID: row.segreID,
-                  base: row.baseID,
-                  process: row.	process,
-                  qty_raw_bal: row.total_qty_issued,
-                  qty_received: row.total_qty_received,
-                  waste_gumon: row.total_waste_gumon,
-                  // qty_bal_received: row.qty_received,
-                }
-            });
-          }).catch(error => {
-              console.error('Error fetching data:', error);
-          });
+          //   // this.rows = response.data.information2.map(row => {
+          //   //     return {
+          //   //       segregateID: row.segID,
+          //   //       base: row.baseID,
+          //   //       process: row.process,
+          //   //       segregator: row.segregatorName,
+          //   //       date: row.date_issuance,
+          //   //       qty_raw: row.total_qty_issued,
+          //   //       qty_received: row.total_qty_received,
+          //   //       waste_gumon: row.total_waste_gumon,
+          //   //       // balance: row.balance_for_received_taknis,
+          //   //     }
+          //   // });
+          //   // this.rows_third = response.data.information5.map(row => {
+          //   //   return {
+          //   //       segreID: row.segreID,
+          //   //       base: row.baseID,
+          //   //       process: row.	process,
+          //   //       qty_raw_bal: row.total_qty_issued,
+          //   //       qty_received: row.total_qty_received,
+          //   //       waste_gumon: row.total_waste_gumon,
+          //   //       // qty_bal_received: row.qty_received,
+          //   //     }
+          //   // });
+          // }).catch(error => {
+          //     console.error('Error fetching data:', error);
+          // });
 
 
         } catch (error) {
@@ -534,7 +404,7 @@ import SideBar from '../../Essentials/SideBar.vue';
           this.isAdmin = userInformation.isAdmin;
           this.fullname = this.firstname + " " + this.lastname;
           if (this.position.toLowerCase() === 'owner'  || this.position.toLowerCase() === 'production staff' || this.position.toLowerCase() === 'warehouseman') {
-            this.$router.push('/dashboard/segregate-section');
+            this.$router.push('/dashboard/issuance-section');
           } else {
 
             this.$q.notify({
