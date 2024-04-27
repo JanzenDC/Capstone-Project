@@ -379,7 +379,7 @@
       </div>
     </q-card-section>
     <q-card-section class="overflow-y-auto overflow-x-hidden h-[460px]">
-      
+      <JobOrderPage />
     </q-card-section>
 </q-card>
 </q-dialog>
@@ -391,12 +391,13 @@ import { SessionStorage } from 'quasar';
 import axios from 'axios';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
+import JobOrderPage from './job_order/JobOrder.vue';
 import SideBar from '../Essentials/SideBar.vue';
 import LogoutTop from '../Essentials/LogoutTop.vue';
 
 export default {
   components: {
-    
+    JobOrderPage,
     SideBar,
     LogoutTop
   },
@@ -532,7 +533,9 @@ export default {
   methods: {
     EditForm(event){
       console.log(event)
-
+      this.joNumber = event;
+      this.editForm = true;
+      SessionStorage.set('joNumber', JSON.stringify(this.joNumber));
     },
     ViewForm(event){
       const unitAbbreviations = {

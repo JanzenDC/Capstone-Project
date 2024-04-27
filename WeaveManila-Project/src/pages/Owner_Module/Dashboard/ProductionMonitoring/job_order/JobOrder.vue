@@ -982,67 +982,12 @@ export default {
       this.mats_rows.push(newRow);
 
     }
-    this.loadUserData();
     this.fetchWarehouseMan();
     this.fetchJOref();
     this.fetchWeaver();
     this.fetchProductionStaff();
   },
   methods: {
-    loadUserData() {
-      const userData = SessionStorage.getItem('information');
-
-      if (userData) {
-        try {
-          const userInformation = JSON.parse(userData);
-          this.email = userInformation.email;
-          this.username = userInformation.username;
-          this.userProfileImage = userInformation.pfp;
-          this.firstname = userInformation.firstname;
-          this.middlename = userInformation.middlename;
-          this.lastname = userInformation.lastname;
-          this.position = userInformation.position;
-          this.status = userInformation.status;
-          this.isAdmin = userInformation.isAdmin;
-          this.fullname = this.firstname + " " + this.lastname;
-          if (this.position.toLowerCase() === 'owner'  || this.position.toLowerCase() === 'production staff') {
-
-            this.$router.push('/dashboard/joborder-section');
-          } else {
-
-            this.$q.notify({
-              type: 'negative',
-              message: 'You do not have permission to access the system.',
-            });
-            this.$router.push('/');
-            sessionStorage.clear();
-          }
-
-          if (this.status === 0 && !this.isAdmin) {
-            this.$q.notify({
-              type: 'negative',
-              message: 'Your account is currently inactive. Please contact the administrator.',
-            });
-            this.$router.push('/');
-            sessionStorage.clear();
-          }
-
-        } catch (error) {
-          console.log('Error parsing user data:', error);
-          // Provide user feedback or navigate to an error page
-          this.$q.notify({
-            type: 'negative',
-            message: 'Error loading user data. Please try again.',
-          });
-          this.$router.push('/');
-          sessionStorage.clear();
-        }
-      } else {
-        // Handle the case when user data is not available
-        this.$router.push('/');
-        sessionStorage.clear();
-      }
-    },
     calculateTotalOutput(row) {
       // Calculate total output
       if (!isNaN(row.output_am) && !isNaN(row.ot_output)) {
@@ -1360,25 +1305,67 @@ export default {
         });
     },
     fetchJOref() {
-      axios.get('http://localhost/Capstone-Project/backend/api/ProductionMonitoring/job_order/job_order.php?type=pjo')
-        .then((response) => {
-          if (response.data.status === 'success') {
-            // Extract the next job order number from the response
-            const nextJobOrderNo = response.data.nextJobOrderNo;
-            // Format the job order number as "000" using string manipulation
-            const formattedJobOrderNo = String(nextJobOrderNo).padStart(3, '0');
-            this.prepared_name = this.fullname;
-            // Assign the formatted job order number to v_JOrefNo
-            this.v_JOrefNo = formattedJobOrderNo;
+      const joNumber = SessionStorage.getItem('joNumber');
 
-          } else {
-            // Handle the case where fetching data fails
-            console.error("Failed to fetch next job order number:", response.data.message);
-          }
-        }).catch(error => {
-          // Handle error if request fails
-          console.error("Error fetching next job order number:", error);
-        });
+      
+        const joInfo = JSON.parse(joNumber); // Parse MPOData
+        console.log('target:',joInfo)
+        const selectedID = joInfo;
+      if(joNumber)
+      {
+        try {
+          axios.get(`http://localhost/Capstone-Project/backend/api/ProductionMonitoring/job_order/job_order.php?type=pjo&id=${selectedID}`)
+          .then((response) => {
+            console.log(response.data)
+            const JOdata = response.data.jobOrder[0];
+            const starting = response.data.startingNumber[0];
+            let covert = starting.startingNo;
+            const sizeVal = JOdata.length + 'x' + JOdata.width + ' ' + JOdata.size_selected
+            this.sizeValue = sizeVal;
+            this.v_width = JOdata.width;
+            this.v_length = JOdata.length;
+            this.v_optionselected = JOdata.size_selected;
+            const formattedPjoID = String(JOdata.pjoID).padStart(3, '0');
+            this.v_Endorsed = JOdata.endorse;
+            this.v_JOrefNo = 'PJO' + covert + '-' + formattedPjoID;
+            this.v_date = JOdata.date;
+            this.v_Reference = JOdata.reference;
+            this.v_deliverydate = JOdata.delivery_date;
+
+            this.v_desc = JOdata.description;
+            this.v_descpattern = JOdata.design_pattern;
+            this.v_cons = JOdata.construction;
+
+            this.v_datestarted = JOdata.date_started;
+            this.v_datefinished = JOdata.date_finished;
+            this.v_leadtime = JOdata.lead_time;
+            this.v_qouta = JOdata.qouta;
+            this.v_quantity = JOdata.quantity;
+            this.v_looms = JOdata.loom;
+            this.v_color = JOdata.color;
+            this.approvedby_name = JOdata.b_approvedby;
+            this.prepared_name = JOdata.b_preparedby;
+
+
+            this.v_checkedby = JOdata.checked_by;
+
+
+          }).catch(error => {
+            // Handle error if request fails
+            console.error("Error fetching next job order number:", error);
+          });
+        }
+        catch (error) {
+          console.log('Error parsing user data:', error);
+          this.$q.notify({
+            type: 'negative',
+            message: 'Error loading JO data. Please try again.',
+          });
+          this.$router.push('/dashboard/joborderlist-section');
+          SessionStorage.removeItem('joNumber');
+        }
+      }
+
     },
     fetchWeaver(){
       axios.get('http://localhost/Capstone-Project/backend/api/ProductionMonitoring/job_order/job_order.php?type=weaver')

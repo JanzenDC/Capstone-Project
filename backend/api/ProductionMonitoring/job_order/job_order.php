@@ -40,30 +40,26 @@
                     exit;
                 }
             }else if ($payload['type'] === 'pjo') {
-
-                $mpodata = $this->db->get('pjo_tbl');
-                if ($mpodata) {
-                    $jobOrderNo = 0;
-                    foreach ($mpodata as $row) {
-                        $mpoID = $row['job_order_no'];
-                        if ($mpoID > $jobOrderNo) {
-                            $jobOrderNo = $mpoID;
-                        }
-                    }
-                    $nextJobOrderNo = $jobOrderNo + 1;
-                } else {
-                    // If no data exists, set the next job order number to 1
-                    $nextJobOrderNo = 1;
+                $pjoData = $this->db->where('pjoID', $payload['id'])->getOne('pjo_tbl');
+                if($pjoData){
+                    $startingNumber ='SELECT * FROM mpo_starting_date  ORDER BY startingNo DESC LIMIT 1';
+                    $query = $this->db->rawQuery($startingNumber);
+                    $response = [
+                        'status' => 'success',
+                        'message' => 'Successfully fetched data',
+                        'jobOrder' => Array($pjoData),
+                        'startingNumber' => $query,
+                    ];
+                    echo json_encode($response);
+                    exit;
+                }else{
+                    $response = [
+                        'status' => 'fail',
+                        'message' => 'Failed to load weaver.',
+                    ];
+                    echo json_encode($response);
+                    exit; 
                 }
-                
-                $response = [
-                    'status' => 'success',
-                    'message' => 'Successfully fetched next job order number',
-                    'nextJobOrderNo' => $nextJobOrderNo
-                ];
-                
-                echo json_encode($response);
-                exit;                
 
             }else if ($payload['type'] === 'weaver') {
                 $weaverData = $this->db->get('weaverlist_tbl');
