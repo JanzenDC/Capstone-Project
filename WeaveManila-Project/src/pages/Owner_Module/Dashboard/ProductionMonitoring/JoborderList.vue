@@ -76,7 +76,7 @@
               <q-btn icon='assignment' class='bg-[#101828] text-white ms-1 me-1' @click='ViewForm(props.row.jobOrder)'>
                 <q-tooltip :offset="[0, 8]">View</q-tooltip>
               </q-btn>
-              <q-btn icon='edit' class='bg-blue-600 text-white ms-1 me-1' @click='EditForm(props.row.jobOrder)'>
+              <q-btn icon='edit' class='bg-blue-600 text-white ms-1 me-1' @click='EditForm(props.row.id)'>
                 <q-tooltip :offset="[0, 8]">Edit</q-tooltip>
               </q-btn>
             </q-td>
@@ -379,7 +379,7 @@
       </div>
     </q-card-section>
     <q-card-section class="overflow-y-auto overflow-x-hidden h-[460px]">
-      <JobOrderPage />
+      
     </q-card-section>
 </q-card>
 </q-dialog>
@@ -391,13 +391,12 @@ import { SessionStorage } from 'quasar';
 import axios from 'axios';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
-import JobOrderPage from './job_order/JobOrder.vue';
 import SideBar from '../Essentials/SideBar.vue';
 import LogoutTop from '../Essentials/LogoutTop.vue';
 
 export default {
   components: {
-    JobOrderPage,
+    
     SideBar,
     LogoutTop
   },
@@ -532,7 +531,8 @@ export default {
   },
   methods: {
     EditForm(event){
-      this.editForm = true;
+      console.log(event)
+
     },
     ViewForm(event){
       const unitAbbreviations = {

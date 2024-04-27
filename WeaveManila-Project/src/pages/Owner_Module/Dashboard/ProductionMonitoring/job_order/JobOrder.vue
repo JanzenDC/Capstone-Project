@@ -1,13 +1,13 @@
 <template>
   <div class=' px-4 py-3 rounded h-[500px] bg-white overflow-y-auto overflow-x-hidden'>
-    <q-form @submit='sendingForm'>
+    
       <div :class="{ 'hidden': !clickPage }">
         <div class='mt-10 flex justify-between'>
           <div>
             Page 1
           </div>
           <div>
-            <q-btn label="next" icon-right="arrow_forward_ios" class="text-white bg-[#634832]" @click="clickPage = !clickPage"/>
+            <q-btn label="next" icon-right="keyboard_arrow_right" class="text-white bg-[#634832]" @click="clickPage = !clickPage"/>
           </div>
         </div>
         <q-separator class="mt-3"/>
@@ -24,29 +24,18 @@
         </div>
         <div class='flex'>
           <div >
-            <div class='w-[346px]'>
-              <p>Endorsed<span class="text-red-600">*</span></p>
-              <q-select outlined v-model="v_Endorsed" dense outline :options="optionsweaver" />
-            </div>
-            <div class='grid grid-cols-5 gap-2 mt-3'>
+            <div class='grid grid-cols-4 gap-2 mt-3'>
+              <div>
+                <p>Endorsed<span class="text-red-600">*</span></p>
+                <q-select outlined v-model="v_Endorsed" dense outline :options="optionsweaver" class='mt-2'/>
+              </div>
               <div>
                 <p>J.O Ref. No.</p>
                 <q-input v-model="v_JOrefNo" dense outlined disable class="mt-2 bg-grey-300"/>
               </div>
               <div>
-                <p>Date</p>
-                <q-input v-model="v_date" dense outlined class="mt-2" type="date"/>
-              </div>
-              <div>
                 <p>Reference</p>
                 <q-input v-model="v_Reference" dense outlined class="mt-2"/>
-              </div>
-              <div>
-                <p>Delivery Date</p>
-                <q-input v-model="v_deliverydate" dense outlined class="mt-2" type="date"
-
-                lazy-rules
-                :rules="[ val => val && val.length > 0 || 'Please input valid date']"/>
               </div>
               <div class="">
                 SERVICES
@@ -60,6 +49,18 @@
                   class='mt-2'
                 />
               </div>
+              <div>
+                <p>Date</p>
+                <q-input v-model="v_date" dense outlined class="mt-2" type="date"/>
+              </div>
+              <div>
+                <p>Delivery Date</p>
+                <q-input v-model="v_deliverydate" dense outlined class="mt-2" type="date"
+
+                lazy-rules
+                :rules="[ val => val && val.length > 0 || 'Please input valid date']"/>
+              </div>
+   
 
 
             </div>
@@ -94,9 +95,16 @@
               lazy-rules
               :rules="[ val => val && val.length > 0 || 'Please input a value for construction']"/>
             </div>
-            <div>
+
+
+            <div >
               <p>Size*</p>
-              <div class='flex gap-2 mt-3'>
+              <q-input dense outlined v-model='sizeValue' class="mt-2" disable/>
+            </div>
+
+            <div class='hidden'>
+              <p>Size*</p>
+              <div class='flex gap-2 mt-2'>
                 <q-input v-model='v_width' type='number' dense outlined class='w-[80px]'
                     lazy-rules
                     :rules="[ val => val && val.length > 0 || '']"
@@ -560,23 +568,11 @@
 
           <div class="flex gap-2 mt-3">
               <div>
-                <p>Upload E-signature</p>
-                <div class="flex items-center gap-2 mt-3 ">
-                  <q-input v-model="uploadPreparedName" outlined dense label="Prepared By" disable />
-                  <q-btn @click="triggerFileInput('prepared')" class="text-white bg-[#634832]">Change Photo</q-btn>
-                  <input ref="preparedInput" type="file" style="display: none" @change="handleFileChange('prepared', $event)">
-                </div>
-                <label class="mt-3">Prepared By:</label>
+                <p class="mt-3">Prepared By:</p>
                 <q-input v-model="prepared_name" dense outlined lazy-rules :rules="[ val => val && val.length > 0 || 'Please input something']"/>
               </div>
               <div>
-                <p>Upload E-signature</p>
-                <div class="flex items-center gap-2 mt-3">
-                  <q-input v-model="uploadApproveName" outlined dense label="Approved By" disable />
-                  <q-btn @click="triggerFileInput('approve')" class="text-white bg-[#634832]">Change Photo</q-btn>
-                  <input ref="approveInput" type="file" style="display: none" @change="handleFileChange('approve', $event)">
-                </div>
-                <label class="mt-3">Approved By:</label>
+                <p class="mt-3">Approved By:</p>
                 <q-input v-model="approvedby_name" dense outlined lazy-rules :rules="[ val => val && val.length > 0 || 'Please input something']"/>
               </div>
           </div>
@@ -588,7 +584,7 @@
             Page 2
           </div>
           <div>
-            <q-btn label="Previous" icon-right="arrow_forward_ios" class="text-white bg-[#634832]" @click="clickPage = !clickPage"/>
+            <q-btn label="Previous" icon-right="keyboard_arrow_left" class="text-white bg-[#634832]" @click="clickPage = !clickPage"/>
           </div>
         </div>
         <q-separator class="mt-3"/>
@@ -688,18 +684,12 @@
 
             <div class='mt-8 text-justify'>
               IMPORTANT:<br>
-              ANG HOB ORDER NA ITO AY NAGSISILBING KONTRATA SA PAGITAN NG WEAVER AT KUMPANYA SA PROYEKTO O ORDER NA ANG BAWAT IMPORMASYON O DETALYE NG HOB ORDER AY PAG-AARI NG KUMPANIYA AT HINDI MAAARING ILABAS O IPAKITA KANINO MAN MALIBAN SA MGA NAMAMAHALA PRODUCTION. MAHALAGA NA ANG BAWAT DETALYE NG JOB ORDER AY MASUNOD SIMULA SA ALLOWABLE MATERIALS O MATERYALES NA DAPAT LAMANG MAGAMIT, QUALITY SPECIFICATION O KAILANGAN KALIDAD NG GAWA AT DESIGN DATA NA HINDI TUTUGMA SA ITINAKDANG SPECIFICATION SA J.O NA ITO AY MAY MATERYALES NA PWEDENG ITAPON O WASTE AT SA QUALITY NG GAWA
+              ANG JOB ORDER NA ITO AY NAGSISILBING KONTRATA SA PAGITAN NG WEAVER AT KUMPANYA SA PROYEKTO O ORDER NA ANG BAWAT IMPORMASYON O DETALYE NG HOB ORDER AY PAG-AARI NG KUMPANIYA AT HINDI MAAARING ILABAS O IPAKITA KANINO MAN MALIBAN SA MGA NAMAMAHALA PRODUCTION. MAHALAGA NA ANG BAWAT DETALYE NG JOB ORDER AY MASUNOD SIMULA SA ALLOWABLE MATERIALS O MATERYALES NA DAPAT LAMANG MAGAMIT, QUALITY SPECIFICATION O KAILANGAN KALIDAD NG GAWA AT DESIGN DATA NA HINDI TUTUGMA SA ITINAKDANG SPECIFICATION SA J.O NA ITO AY MAY MATERYALES NA PWEDENG ITAPON O WASTE AT SA QUALITY NG GAWA
             </div>
 
             <div class='flex justify-end w-full items-end'>
               <div class="flex gap-2 mt-[100px]">
                 <div>
-                  <p>Upload E-signature</p>
-                  <div class="flex items-center gap-2 mt-3 ">
-                    <q-input v-model="s_uploadPreparedName" outlined dense label="BPrepared By" disable />
-                    <q-btn @click="triggerFileInput('bprepared')" class="text-white bg-[#634832]">Change Photo</q-btn>
-                    <input ref="bpreparedInput" type="file" style="display: none" @change="handleFileChange('bprepared', $event)">
-                  </div>
                   <span>Weaver:</span>
                   <q-input v-model="s_prepared_name" dense outlined lazy-rules :rules="[ val => val && val.length > 0 || 'Please input something']"/>
                 </div>
@@ -718,21 +708,41 @@
         </div>
 
         <div>
-          <q-btn label="Submit" type="submit" color="primary"/>
+          <q-btn label="Submit" type="submit" color="primary" @click='submitForm'/>
         </div>
       </div>
 
-    </q-form>
   </div>
 </template>
 
 
 <script>
+import { SessionStorage } from 'quasar';
 import axios from 'axios';
 
 export default {
   data() {
     return {
+      isAdmin: 0,
+      email: '',
+      fullname: '',
+      firstname: '',
+      middlename: '',
+      lastname: '',
+      userProfileImage: null,
+      username: '',
+      position: '',
+      status: '',
+      drawer: false,
+      showMenuIcon: false,
+      statusCheckTimer: null,
+      toggleDrawers: true,
+      drawerWidth: 300,
+      drawerIcon: 'arrow_back_ios',
+      inventoryMenuVisible: false,
+      productionVisible: false,
+      OpenLogout: false,
+
       optionsss: [
         'Weaving', 'Tassle', 'Trimming', 'Cleaning', 'Latexing', 'Re-Latexing', 'Piping'],
       modelMultiple: ['Weaving', 'Cleaning'],
@@ -853,6 +863,7 @@ export default {
 
       v_globalstore: 0,
       storedata: 0,
+      sizeValue: '',
     };
   },
   watch: {
@@ -971,6 +982,7 @@ export default {
       this.mats_rows.push(newRow);
 
     }
+    this.loadUserData();
     this.handleAddRowPostData();
     this.handleAddRow();
     this.handleAddRowMaterial();
@@ -981,6 +993,60 @@ export default {
     this.fetchProductionStaff();
   },
   methods: {
+    loadUserData() {
+      const userData = SessionStorage.getItem('information');
+
+      if (userData) {
+        try {
+          const userInformation = JSON.parse(userData);
+          this.email = userInformation.email;
+          this.username = userInformation.username;
+          this.userProfileImage = userInformation.pfp;
+          this.firstname = userInformation.firstname;
+          this.middlename = userInformation.middlename;
+          this.lastname = userInformation.lastname;
+          this.position = userInformation.position;
+          this.status = userInformation.status;
+          this.isAdmin = userInformation.isAdmin;
+          this.fullname = this.firstname + " " + this.lastname;
+          if (this.position.toLowerCase() === 'owner'  || this.position.toLowerCase() === 'production staff') {
+
+            this.$router.push('/dashboard/joborder-section');
+          } else {
+
+            this.$q.notify({
+              type: 'negative',
+              message: 'You do not have permission to access the system.',
+            });
+            this.$router.push('/');
+            sessionStorage.clear();
+          }
+
+          if (this.status === 0 && !this.isAdmin) {
+            this.$q.notify({
+              type: 'negative',
+              message: 'Your account is currently inactive. Please contact the administrator.',
+            });
+            this.$router.push('/');
+            sessionStorage.clear();
+          }
+
+        } catch (error) {
+          console.log('Error parsing user data:', error);
+          // Provide user feedback or navigate to an error page
+          this.$q.notify({
+            type: 'negative',
+            message: 'Error loading user data. Please try again.',
+          });
+          this.$router.push('/');
+          sessionStorage.clear();
+        }
+      } else {
+        // Handle the case when user data is not available
+        this.$router.push('/');
+        sessionStorage.clear();
+      }
+    },
     calculateTotalOutput(row) {
       // Calculate total output
       if (!isNaN(row.output_am) && !isNaN(row.ot_output)) {
@@ -1185,8 +1251,7 @@ export default {
       formData.append('e_signatureA', this.e_signatureA);
       formData.append('approvedby_name', this.approvedby_name);
       formData.append('prepared_name', this.prepared_name);
-      formData.append('s_esignatureP', this.s_esignatureP);
-      formData.append('s_esignatureA', this.s_esignatureA);
+
       formData.append('s_approvedby_name', this.s_approvedby_name);
       formData.append('s_prepared_name', this.s_prepared_name);
       formData.append('v_checkedby', this.v_checkedby);
@@ -1368,7 +1433,7 @@ export default {
             const nextJobOrderNo = response.data.nextJobOrderNo;
             // Format the job order number as "000" using string manipulation
             const formattedJobOrderNo = String(nextJobOrderNo).padStart(3, '0');
-
+            this.prepared_name = this.fullname;
             // Assign the formatted job order number to v_JOrefNo
             this.v_JOrefNo = formattedJobOrderNo;
 

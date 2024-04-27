@@ -247,14 +247,17 @@
       >
       <!-- User Components -->
       <template v-slot:body-cell-user="props">
-        <q-td :props="props" class="flex items-center gap-4" >
-          <q-img :src="getUserImagePublicPath(props.row.user.image)" :alt="props.row.user.name" class="w-[34px] rounded-full min-[390px]:hidden md:flex"/>
-          <div class="min-[390px]:flex md:block min-[390px]:gap-2">
-            <p class="font-bold">
-            {{ props.row.user.name }}
-            </p>
-            {{ props.row.user.email }}
+        <q-td :props="props"  >
+          <div class="flex items-center gap-4">
+            <q-img :src="getUserImagePublicPath(props.row.user.image)" :alt="props.row.user.name" class="w-[34px] rounded-full min-[390px]:hidden md:flex"/>
+            <div class="min-[390px]:flex md:block min-[390px]:gap-2">
+              <p class="font-bold">
+              {{ props.row.user.name }}
+              </p>
+              {{ props.row.user.email }}
+            </div>
           </div>
+
         </q-td>
       </template>
       <!-- Status Components -->
