@@ -179,7 +179,27 @@
               exit;
             }
         }else if($payload['type'] == '4'){
+            $getMpoID = $this->db->where('baseID', $payload['selectedBaseID'])->getOne('mpo_base');
 
+            $insertData = [
+                'baseID' => $payload['selectedBaseID'],
+                'segregatorName' => $payload['selectSegregator'],
+                'date_issuance' => $payload['vData'],
+                'qty_received' => $payload['qty_receiveds'],
+                'waste_gumon' => $payload['vWastes'],
+                'process' => $payload['selectProcess'],
+            ];
+            $insertQuery = $this->db->insert('mpo_segregator_projects', $insertData);
+            if($insertQuery){
+ 
+              $response = ['status' => 'success', 'message' => 'Data inserted successfully'];
+              echo json_encode($response);
+              exit;
+            }else{
+              $response = ['status' => 'fail', 'message' => 'There is a problem to insert data'];
+              echo json_encode($response);
+              exit;
+            }
         }
         else{
             $response = ['status' => 'fail', 'message' => 'Invalid Type for payload'];

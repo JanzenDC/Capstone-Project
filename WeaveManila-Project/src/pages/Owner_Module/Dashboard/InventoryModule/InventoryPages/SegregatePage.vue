@@ -175,6 +175,52 @@
 </q-dialog>
 
 <q-dialog
+  v-model="ReceivedDialog"
+>
+  <q-card style="width: 500px; max-width: 80vw;">
+    <q-card-section class="row items-center q-pb-none">
+          <div class="text-h6">Received</div>
+          <q-space />
+          <q-btn icon="close" flat round dense v-close-popup />
+        </q-card-section>
+
+    <q-card-section class="q-pt-none">
+      <div class='grid grid-cols-2 gap-2'>
+        <div>Item
+          <q-input dense outlined v-model='selectItem' disabled/>
+        </div>
+        <div>Process
+          <q-select dense outlined v-model='selectProcess' :options='segProcess'/>
+        </div>
+        <div v-if="selectProcess === 'Twine'">
+          Twine
+          <q-select dense outlined v-model='selectTwine' :options='segTwine'/>
+        </div>
+        <div>Segregator
+          <q-select dense outlined v-model='selectSegregator' :options='segOptions'/>
+        </div>
+        <div>Date
+          <q-input type='date' dense outlined v-model='vData'/>
+        </div>
+      </div>
+      <p class='font-bold mt-3'>Received</p>
+      <div class='grid grid-cols-2 gap-2'>
+        <div>Qty Received
+          <q-input type='number' dense outlined v-model='qty_receiveds'/>
+        </div>
+        <div>Waste/Gumon
+          <q-input type='number' dense outlined v-model='vWastes'/>
+        </div>
+      </div>
+    </q-card-section>
+
+    <q-card-actions align="right" class="bg-white text-teal">
+      <q-btn flat label="Submit" class='bg-[#634832] text-white' @click="submitReceived"/>
+    </q-card-actions>
+  </q-card>
+</q-dialog>
+
+<q-dialog
   v-model="openModal2"
 >
   <q-card style="width: 700px; max-width: 80vw;">
@@ -275,6 +321,7 @@
         OpenLogout: false,
         // Another Data
         IssueDialog: false,
+        ReceivedDialog: false,
         qty_in: '',
         qty_bal: '',
         mpoSelect: '',
@@ -335,6 +382,8 @@
         selectSegregator: '',
         selectedBaseID: 0,
 
+        qty_receiveds: '',
+        vWastes: '',
         openModal2: false,
         segregatorName: '',
         qqty_raw: '',
@@ -350,7 +399,7 @@
         segProcess: ['Taknis', 'Braided', 'Twine']
       };
     },
-    
+
     mounted() {
       this.loadUserData();
       this.statusCheckTimer = setInterval(() => {
@@ -405,7 +454,7 @@
         }
       },
       selectProduct(newValue, oldValue) {
-        
+
         this.onItemClick(newValue.value)
       },
       selectProcess(newValue, oldValue) {
@@ -423,6 +472,56 @@
         const total = parseFloat(row.qty_received) + parseFloat(row.waste_gumon);
         const balance = parseFloat(row.qty_raw) - total
         return balance;
+      },
+      submitReceived() {
+        if (!this.selectSegregator || !this.vData || !this.qty_receiveds || !this.vWastess) {
+          this.$q.notify({
+            type: 'negative',
+            message: 'All fields are required'
+          });
+          return;
+        }
+
+        const formData = {
+          selectedBaseID: this.selectedBaseID,
+          selectSegregator: this.selectSegregator.label,
+          vData: this.vData,
+          qty_receiveds: this.qty_receiveds,
+          vWastes: this.vWastes,
+          selectProcess: this.selectProcess,
+          selectTwine: this.selectTwine,
+          type: 4,
+        }
+        console.log(formData)
+        axios.post('http://localhost/Capstone-Project/backend/api/ProductionMonitoring/Weaver_Queries/segregator.php/', formData)
+        .then(response => {
+          console.log(response.data)
+          const Status = response.data.status;
+          const Message = response.data.message;
+          if (Status === "success") {
+            this.$q.notify({
+                message: `${Message}`,
+                color: 'green',
+            });
+            this.loadFetchData();
+            this.IssueDialog = false;
+            setTimeout(() => {
+              window.location.reload(); // Reload the window after 3 seconds
+            }, 1500);
+          }
+          if (Status === "fail") {
+              this.$q.notify({
+                  color: 'negative',
+                  message: `${Message} Please try again.`,
+              });
+              this.IssueDialog = false;
+              setTimeout(() => {
+                window.location.reload(); // Reload the window after 3 seconds
+              }, 1500);
+          }
+        }).catch(error => {
+              console.error('Error fetching data:', error);
+        });
       },
       submitData() {
         const formData = new FormData();
@@ -528,6 +627,9 @@
               console.error('Error fetching data:', error);
         });
       },
+      ReceiveModal(){
+        this.ReceivedDialog = true;
+      },
       OpenIssue(){
         this.IssueDialog = true;
       },
@@ -544,7 +646,7 @@
         });
       },
       onItemClick(event){
-        
+
         axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/MPO_Queries/mpo_details.php?targetdata=onedata&targetdatas=${event}`)
             .then(response => {
               this.selectedBaseID = response.data.information[0].baseID;
@@ -560,7 +662,7 @@
                   return {
                     segregateID: row.segID,
                     base: row.baseID,
-                    
+
                     process: row.process,
                     segregator: row.segregatorName,
                     date: row.date_issuance,
