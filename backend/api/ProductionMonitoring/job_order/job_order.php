@@ -57,9 +57,9 @@
                            
                         $response = [
                             'status' => 'success',
-                            
-                            'jobOrder' => Array($pjoData),
                             'material_specs' => $material_specs,
+                            'jobOrder' => Array($pjoData),
+                            'startingNumber' => $query,
                             'item_actual_weight' => $item_actual_weight,
                             'total_material_used' => $total_material_used,
                             'design_specs_tbl' => $design_specs_tbl,
@@ -178,14 +178,6 @@
 
 
         $selectedServices = $_POST['services'];
-        $weaving = in_array('weaving', $selectedServices) ? 1 : 0;
-        $tassle = in_array('tassle', $selectedServices) ? 1 : 0;
-        $trimming = in_array('trimming', $selectedServices) ? 1 : 0;
-        $cleaning = in_array('cleaning', $selectedServices) ? 1 : 0;
-        $latexing = in_array('latexing', $selectedServices) ? 1 : 0;
-        $relatexing = in_array('re_latexing', $selectedServices) ? 1 : 0;
-        $piping = in_array('piping', $selectedServices) ? 1 : 0;
-        $cutting = in_array('cutting', $selectedServices) ? 1 : 0;
 
         $desc =             $_POST['v_desc'];
         $descPattern =      $_POST['v_descpattern'];
@@ -208,43 +200,6 @@
         $b_preparedby =        $_POST['s_prepared_name'];
         $checked_by = $_POST['v_checkedby'];              
         
-
-        $uploadDir = 'C:/xampp/htdocs/Capstone-Project/WeaveManila-Project/public/signature/';
-
-        $files = ['e_signatureP', 'e_signatureA', 's_esignatureP'];
-        foreach ($files as $key => $file) {
-            // Check if the file is uploaded
-            if (isset($_FILES[$file]) && $_FILES[$file]['error'] !== UPLOAD_ERR_NO_FILE) {
-                $file_data = $_FILES[$file];
-                $uploadPath = $uploadDir . basename($file_data['name']);
-            } else {
-                // Set default upload path to 'default.png'
-                $uploadPath = $uploadDir . 'default.png';
-            }
-        
-            if (isset($file_data) && move_uploaded_file($file_data['tmp_name'], $uploadPath)) {
-                $response = [
-                    'status' => 'success',
-                    'message' => 'Success moving the image to designated path.',
-                ];
-            } else {
-                $response = [
-                    'status' => 'fail',
-                    'message' => "Error uploading file $file.",
-                ];
-                echo json_encode($response);
-            }
-        }
-        
-        
-        $file_one = $_FILES['e_signatureP'] ?? null;
-        $uploadPath_one = isset($file_one) ? basename($file_one['name']) : 'default.png';
-        
-        $file_two = $_FILES['e_signatureA'] ?? null;
-        $uploadPath_two = isset($file_two) ? basename($file_two['name']) : 'default.png';
-        
-        $file_three = $_FILES['s_esignatureP'] ?? null;
-        $uploadPath_three = isset($file_three) ? basename($file_three['name']) : 'default.png';
         
         $dataPJO = [
             'personelID' => 1,
@@ -253,15 +208,7 @@
             'date' => $date,
             'reference' => $reference,
             'delivery_date' => $deliveryDate,
-            'weaving' => $weaving,
-            'tassle' => $tassle,
-            'trimming' => $trimming,
-            'cleaning' => $cleaning,
-            'latexing' => $latexing,
-            're_latexing' => $relatexing,
-            'lead_time' => $_POST['v_leadtime'],
-            'pipping' => $piping,
-            'cutting' => $cutting,
+
             'f_esignature_preparedby' => $uploadPath_one,
             'f_preparedby' => $f_preparedby,
             'f_esignature_approvedby' => $uploadPath_two,
@@ -279,7 +226,7 @@
             'width' => $sizewidth,
             'length' => $sizelength,
             'size_selected' => $sizeselection,
-
+            'services' => $selectedServices,
             'date_started' => $dateStarted,
             'date_finished' => $dateFinished,
             'lead_time' => $leadTime,
@@ -300,7 +247,7 @@
                         $requiredFields = ['quantity', 'weight', 'unit'];
                         $missingFields = array_diff($requiredFields, array_keys($materialData));
                 
-                
+                        
                         $designs_insert = [
                             'pjoID' => $getPJOid['pjoID'],
                             'quantity' => $materialData['quantity'],

@@ -1135,6 +1135,7 @@ export default {
 
       this.mats_rows.forEach(row => {
         const matsData = {
+          id: row.id,
           type: row.type,
           consumption: row.consumption,
           material_used: row.material_used,
@@ -1147,6 +1148,7 @@ export default {
       // Append design data
       this.design_rows.forEach(row => {
         const designData = {
+          id: row.id,
           pattern_name: row.pattern_name,
           DPI: row.DPI,
           EPI: row.EPI,
@@ -1159,6 +1161,7 @@ export default {
 
       this.item_actual_rows.forEach(row => {
         const itemActualData = {
+          id: row.id,
           quantity: row.quantity,
           weight: row.weight,
           unit: row.unit,
@@ -1169,6 +1172,7 @@ export default {
 
       this.total_material_used_rows.forEach(row => {
         const materialUsedData = {
+          id: row.id,
           material_used: row.material_used,
           quantity: row.quantity,
           unit: row.unit,
@@ -1180,6 +1184,7 @@ export default {
       // Append postdata data
       this.postdata_rows.forEach(row => {
         const postData = {
+          id: row.id,
           setting: row.setting,
           weaving: row.weaving,
           output: row.output,
@@ -1193,6 +1198,7 @@ export default {
       // Append material data
       this.material_rows.forEach(row => {
         const materialData = {
+          id: row.id,
           date: row.date,
           material_desc: row.material_desc,
           quantity: row.quantity,
@@ -1207,6 +1213,7 @@ export default {
       // Append production monitoring
       this.production_monitoring_rows.forEach(row => {
         const productionData = {
+          id: row.id,
           date:  row.date,
           time_in: row.time_in,
           time_out: row.time_out,
@@ -1218,9 +1225,10 @@ export default {
         };
         formData.append('production_monitoring[]', JSON.stringify(productionData));
       });
-      for (let pair of formData.entries()) {
-        console.log(pair[0] + ': ' + pair[1]);
-      }
+
+      // for (let pair of formData.entries()) {
+      //   console.log(pair[0] + ': ' + pair[1]);
+      // }
       // // query using axios post
       // axios.post(`http://localhost/Capstone-Project/backend/api/ProductionMonitoring/job_order/job_order.php/`, formData)
       // .then((response) => {
@@ -1346,24 +1354,27 @@ export default {
             this.prepared_name = JOdata.b_preparedby;
             if(this.modelMultiple === null || this.modelMultiple === undefined || this.modelMultiple === '')
             {
-              this.modelMultiple = ['Weaving', 'Cleaning', 'Trimming']; 
+              this.modelMultiple = JOdata.services;
+
             }else{
-              this.modelMultiple = JOdata.services; 
+              this.modelMultiple = ['Weaving', 'Cleaning', 'Trimming'];
             }
             this.v_checkedby = JOdata.checked_by;
 
             this.mats_rows = response.data.material_specs.map(row => {
               return {
+                id: row.material_specsID,
                 type: row.type,
-                consumption: row.consumption,
+                consumption: row.consumption_in_wt_kg,
                 material_used: row.material_used,
                 waste_allow: row.waste_allow,
-                total: row.total,
+                total: row.total_allow_issuance,
               };
             });
 
             this.design_rows = response.data.design_specs_tbl.map(row => {
               return {
+                id: row.design_specsID,
                 pattern_name: row.pattern_name,
                 DPI: row.DPI,
                 EPI: row.EPI,
@@ -1375,6 +1386,7 @@ export default {
 
             this.total_material_used_rows = response.data.total_material_used.map(row => {
               return {
+                id: row.materialusedID,
                 material_used: row.material_used,
                 quantity: row.quantity,
                 unit: row.unit,
@@ -1383,17 +1395,19 @@ export default {
 
             this.postdata_rows = response.data.post_data_specs_tbl.map(row => {
               return {
-                setting: row.setting,
-                weaving: row.weaving,
-                output: row.output,
-                warp: row.warp,
-                weft: row.weft,
-                insert: row.insert,
+                id: row.post_data_specsID,
+                setting: row.setting_w,
+                weaving: row.weaving_w,
+                output: row.output_width,
+                warp: row.warp_waste,
+                weft: row.weft_waste,
+                insert: row.insert_waste,
               };
             });
 
             this.material_rows = response.data.material_issuance_tbl.map(row => {
               return {
+                id: row.material_issuanceID,
                 date: row.date,
                 material_desc: row.material_desc,
                 quantity: row.quantity,
@@ -1406,10 +1420,11 @@ export default {
 
             this.production_monitoring_rows = response.data.production_monitoring_tbl.map(row => {
               return {
+                id: row.outputID,
                 date:  row.date,
-                time_in: row.time_in,
-                time_out: row.time_out,
-                output_am: row.output_am,
+                time_in: row.time_in_am,
+                time_out: row.time_out_pm,
+                output_am: row.output_am_pm,
                 ot_time_in: row.ot_time_in,
                 ot_time_out: row.ot_time_out,
                 ot_output: row.ot_output,
