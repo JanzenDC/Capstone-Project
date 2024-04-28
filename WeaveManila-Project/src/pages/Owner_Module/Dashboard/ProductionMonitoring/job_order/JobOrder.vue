@@ -1,5 +1,5 @@
 <template>
-  <div class=' px-4 py-3 rounded h-[500px] bg-white overflow-y-auto overflow-x-hidden'>
+  <div class=' px-4 py-3 rounded  bg-white'>
 
       <div :class="{ 'hidden': !clickPage }">
         <div class='mt-10 flex justify-between'>
@@ -170,6 +170,17 @@
             MATERIAL SPECIFICATION
           </div>
           <div class="mt-3">
+            <div class='flex gap-5 mb-3'>
+              <q-btn label='Warp' size='sm' class='bg-[#E1C16E] text-white' @click='AddMatsRow("Warp")'>
+                <q-tooltip :offset="[0, 8]">Add Warp Row</q-tooltip>
+              </q-btn>
+              <q-btn label='Weft' size='sm' @click='AddMatsRow("Weft")' class='bg-[#CD7F32] text-white'>
+                <q-tooltip :offset="[0, 8]">Add Weft Row</q-tooltip>
+              </q-btn>
+              <q-btn label='Insert' size='sm' @click='AddMatsRow("Insert")' class='bg-[#A52A2A] text-white'>
+                <q-tooltip :offset="[0, 8]">Add Insert Row</q-tooltip>
+              </q-btn>
+            </div>
             <q-table
               dense bordered
               :rows="mats_rows"
@@ -224,9 +235,7 @@
                       <q-btn v-if="props.row.action.delete" @click="handleDelete(props.row)" class='w-[32px] h-[32px] bg-[#B3261E] text-white' icon='delete'>
                         <q-tooltip :offset="[0, 8]">Remove</q-tooltip>
                       </q-btn>
-                      <q-btn v-if="props.row.action.reset" @click="handleReset(props.row)" class='w-[32px] h-[32px] bg-[#916CCF] text-white' icon='restart_alt'>
-                        <q-tooltip :offset="[0, 8]">Reset Value</q-tooltip>
-                      </q-btn>
+
 
                     </div>
                   </q-td>
@@ -569,7 +578,7 @@
           <div class="flex gap-2 mt-3">
               <div>
                 <p class="mt-3">Prepared By:</p>
-                <q-input v-model="prepared_name" dense outlined lazy-rules :rules="[ val => val && val.length > 0 || 'Please input something'] " readonly disabled/>
+                <q-input v-model="prepared_name" dense outlined lazy-rules :rules="[ val => val && val.length > 0 || 'Please input something'] "/>
               </div>
               <div>
                 <p class="mt-3">Approved By:</p>
@@ -774,7 +783,7 @@ export default {
       v_color: '',
       v_checkedby: '',
       mats_columns: [
-        { name: 'type', align: 'left', label: '', field: 'type', sortable: true },
+        { name: 'type', align: 'left', label: '', field: 'type' },
         { name: 'material_used', align: 'left', label: 'Material Used', field: 'material_used', sortable: true },
         { name: 'consumption', align: 'left', label: 'Consumption in WT. (KG)', field: 'consumption', sortable: true },
         { name: 'waste_allow', align: 'right', label: 'Waste Allow', field: 'waste_allow', sortable: true },
@@ -962,26 +971,6 @@ export default {
     },
   },
   mounted() {
-    const types = ['Warp', 'Weft', 'Insert'];
-
-    // Add at least three rows to mats_rows array
-    for (let i = 0; i < 3; i++) {
-      let newRow = {
-        type: types[i],
-        consumption: 0,
-        material_used: 'New Material ' + (i + 1),
-        waste_allow: 0,
-        total: 0,
-        action: {
-          plus: true,
-          delete: false,
-          reset: true,
-        }
-      };
-
-      this.mats_rows.push(newRow);
-
-    }
     this.fetchWarehouseMan();
     this.fetchJOref();
     this.fetchWeaver();
@@ -1022,7 +1011,7 @@ export default {
       this.v_datefinished = formattedDate; // Update v_datefinished
     },
 
-    handlePlus(typeName) {
+    AddMatsRow(typeName) {
       // Find the index of the last occurrence of the same type
       let lastIndex = this.mats_rows.map(row => row.type).lastIndexOf(typeName);
 
@@ -1135,6 +1124,7 @@ export default {
 
       this.mats_rows.forEach(row => {
         const matsData = {
+          
           id: row.id,
           type: row.type,
           consumption: row.consumption,
@@ -1225,10 +1215,9 @@ export default {
         };
         formData.append('production_monitoring[]', JSON.stringify(productionData));
       });
-
-      // for (let pair of formData.entries()) {
-      //   console.log(pair[0] + ': ' + pair[1]);
-      // }
+      for (let pair of formData.entries()) {
+        console.log(pair[0] + ': ' + pair[1]);
+      }
       // // query using axios post
       // axios.post(`http://localhost/Capstone-Project/backend/api/ProductionMonitoring/job_order/job_order.php/`, formData)
       // .then((response) => {
@@ -1315,7 +1304,6 @@ export default {
     fetchJOref() {
       const joNumber = SessionStorage.getItem('joNumber');
 
-
         const joInfo = JSON.parse(joNumber); // Parse MPOData
         const selectedID = joInfo;
       if(joNumber)
@@ -1350,8 +1338,17 @@ export default {
             this.v_quantity = JOdata.quantity;
             this.v_looms = JOdata.loom;
             this.v_color = JOdata.color;
+
+            const userData = SessionStorage.getItem('information');
+            const userInformation = JSON.parse(userData);
+            if(this.prepared_name == ''){
+              this.prepared_name = userInformation.firstname + " " + userInformation.lastname;
+
+            }else{
+              this.prepared_name = JOdata.b_preparedby;
+
+            }
             this.approvedby_name = JOdata.b_approvedby;
-            this.prepared_name = JOdata.b_preparedby;
             if(this.modelMultiple === null || this.modelMultiple === undefined || this.modelMultiple === '')
             {
               this.modelMultiple = JOdata.services;

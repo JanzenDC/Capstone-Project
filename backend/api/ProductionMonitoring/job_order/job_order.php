@@ -247,14 +247,25 @@
                         $requiredFields = ['quantity', 'weight', 'unit'];
                         $missingFields = array_diff($requiredFields, array_keys($materialData));
                 
+                        if (!isset($materialData['id']) || is_null($materialData['id']) || $materialData['id'] === '' || empty($materialData['id'])) {
+                            $designs_insert = [
+                                'pjoID' => $getPJOid['pjoID'],
+                                'quantity' => $materialData['quantity'],
+                                'weight'  => $materialData['weight'],
+                                'unit'  => $materialData['unit'],
+                            ];
+                            $test = $this->db->insert('item_actual_weight', $designs_insert);
+                        } else {
+                            $designs_insert = [
+                                
+                                'quantity' => $materialData['quantity'],
+                                'weight'  => $materialData['weight'],
+                                'unit'  => $materialData['unit'],
+                            ];
+                            $test = $this->db->where('actualweightID', $materialData['id'])->update('item_actual_weight', $designs_insert);
+                        }
                         
-                        $designs_insert = [
-                            'pjoID' => $getPJOid['pjoID'],
-                            'quantity' => $materialData['quantity'],
-                            'weight'  => $materialData['weight'],
-                            'unit'  => $materialData['unit'],
-                        ];
-                        $test = $this->db->insert('item_actual_weight', $designs_insert);
+
                         if($test){
                             $response = [
                                 'status' => 'success',
@@ -291,14 +302,24 @@
             
                         // Set default value for 'unit' if not set or blank
                         $unit = !empty($materialData['unit']) ? $materialData['unit'] : 'kilogram';
-            
-                        $designs_insert = [
-                            'pjoID' => $getPJOid['pjoID'],
-                            'material_used' => $materialData['material_used'],
-                            'quantity'  => $quantity,
-                            'unit'  => $unit,
-                        ];
-                        $test = $this->db->insert('total_material_used', $designs_insert);
+                        if (!isset($materialData['id']) || is_null($materialData['id']) || $materialData['id'] === '' || empty($materialData['id'])) {
+                            $designs_insert = [
+                                'pjoID' => $getPJOid['pjoID'],
+                                'material_used' => $materialData['material_used'],
+                                'quantity'  => $quantity,
+                                'unit'  => $unit,
+                            ];
+                            $test = $this->db->insert('total_material_used', $designs_insert);
+                        }else{
+                            $designs_insert = [
+                                
+                                'material_used' => $materialData['material_used'],
+                                'quantity'  => $quantity,
+                                'unit'  => $unit,
+                            ];
+                            $test = $this->db->where('materialusedID', $materialData['id'])->update('total_material_used', $designs_insert);
+                        }
+
                         if ($test) {
                             $response = [
                                 'status' => 'success',
@@ -329,18 +350,29 @@
                         $requiredFields = ['setting', 'weaving', 'output', 'warp', 'weft', 'insert'];
                         $missingFields = array_diff($requiredFields, array_keys($materialData));
                 
-                
-                        $designs_insert = [
-                            'pjoID' => $getPJOid['pjoID'],
-                            'setting_w' => $materialData['setting'],
-                            'weaving_w'  => $materialData['weaving'],
-                            'output_width'  => $materialData['output'],
-                            'warp_waste'  => $materialData['warp'],
-                            'weft_waste'  => $materialData['weft'],
-                            'insert_waste'  => $materialData['insert'],
+                        if (!isset($materialData['id']) || is_null($materialData['id']) || $materialData['id'] === '' || empty($materialData['id'])) {
+                            $designs_insert = [
+                                'pjoID' => $getPJOid['pjoID'],
+                                'setting_w' => $materialData['setting'],
+                                'weaving_w'  => $materialData['weaving'],
+                                'output_width'  => $materialData['output'],
+                                'warp_waste'  => $materialData['warp'],
+                                'weft_waste'  => $materialData['weft'],
+                                'insert_waste'  => $materialData['insert'],
+                            ];
+                            $test = $this->db->insert('post_data_specs_tbl', $designs_insert);
+                        }else{
+                            $designs_insert = [
+                                'setting_w' => $materialData['setting'],
+                                'weaving_w'  => $materialData['weaving'],
+                                'output_width'  => $materialData['output'],
+                                'warp_waste'  => $materialData['warp'],
+                                'weft_waste'  => $materialData['weft'],
+                                'insert_waste'  => $materialData['insert'],
+                            ];
+                            $test = $this->db->where('post_data_specsID', $materialData['id'])->update('post_data_specs_tbl', $designs_insert);
+                        }
 
-                        ];
-                        $test = $this->db->insert('post_data_specs_tbl', $designs_insert);
                         if($test){
                             $response = [
                                 'status' => 'success',
@@ -372,18 +404,30 @@
                         $requiredFields = ['date', 'material_desc', 'quantity', 'returned', 'balance', 'issued_by'];
                         $missingFields = array_diff($requiredFields, array_keys($materialData));
                 
-                
-                        $designs_insert = [
-                            'pjoID' => $getPJOid['pjoID'],
-                            'date' => $materialData['date'],
-                            'material_desc'  => $materialData['material_desc'],
-                            'quantity'  => $materialData['quantity'],
-                            'returned'  => $materialData['returned'],
-                            'balance'  => $materialData['balance'],
-                            'issued_by'  => $materialData['issued_by'],
+                        if (!isset($materialData['id']) || is_null($materialData['id']) || $materialData['id'] === '' || empty($materialData['id'])) {
+                            $designs_insert = [
+                                'pjoID' => $getPJOid['pjoID'],
+                                'date' => $materialData['date'],
+                                'material_desc'  => $materialData['material_desc'],
+                                'quantity'  => $materialData['quantity'],
+                                'returned'  => $materialData['returned'],
+                                'balance'  => $materialData['balance'],
+                                'issued_by'  => $materialData['issued_by'],
 
-                        ];
-                        $test = $this->db->insert('material_issuance_tbl', $designs_insert);
+                            ];
+                            $test = $this->db->insert('material_issuance_tbl', $designs_insert);
+                        }else{
+                            $designs_insert = [
+                                'date' => $materialData['date'],
+                                'material_desc'  => $materialData['material_desc'],
+                                'quantity'  => $materialData['quantity'],
+                                'returned'  => $materialData['returned'],
+                                'balance'  => $materialData['balance'],
+                                'issued_by'  => $materialData['issued_by'],
+
+                            ];
+                            $test = $this->db->where('post_data_specsID', $materialData['id'])->update('material_issuance_tbl', $designs_insert);
+                        }
                         if($test){
                             $response = [
                                 'status' => 'success',
@@ -416,19 +460,36 @@
                         $missingFields = array_diff($requiredFields, array_keys($materialData));
                 
                         $total = $materialData['output_am'] + $materialData['ot_output'];
-                        $designs_insert = [
-                            'pjoID' => $getPJOid['pjoID'],
-                            'date' => $materialData['date'],
-                            'time_in_am'  => $materialData['time_in'],
-                            'time_out_pm'  => $materialData['time_out'],
-                            'output_am_pm'  => $materialData['output_am'],
-                            'ot_time_in'  => $materialData['ot_time_in'],
-                            'ot_time_out'  => $materialData['ot_time_out'],
-                            'ot_output'  => $materialData['ot_output'],
-                            'total_output'  => $total,
-                        ];
-                        
-                        $test = $this->db->insert('production_monitoring_tbl', $designs_insert);
+
+                        if (!isset($materialData['id']) || is_null($materialData['id']) || $materialData['id'] === '' || empty($materialData['id'])) {
+                            $designs_insert = [
+                                'pjoID' => $getPJOid['pjoID'],
+                                'date' => $materialData['date'],
+                                'time_in_am'  => $materialData['time_in'],
+                                'time_out_pm'  => $materialData['time_out'],
+                                'output_am_pm'  => $materialData['output_am'],
+                                'ot_time_in'  => $materialData['ot_time_in'],
+                                'ot_time_out'  => $materialData['ot_time_out'],
+                                'ot_output'  => $materialData['ot_output'],
+                                'total_output'  => $total,
+                            ];
+                            
+                            $test = $this->db->insert('production_monitoring_tbl', $designs_insert);
+                        }else{
+                            $designs_insert = [
+                                'date' => $materialData['date'],
+                                'time_in_am'  => $materialData['time_in'],
+                                'time_out_pm'  => $materialData['time_out'],
+                                'output_am_pm'  => $materialData['output_am'],
+                                'ot_time_in'  => $materialData['ot_time_in'],
+                                'ot_time_out'  => $materialData['ot_time_out'],
+                                'ot_output'  => $materialData['ot_output'],
+                                'total_output'  => $total,
+                            ];
+                            
+                            $test = $this->db->where('post_data_specsID', $materialData['id'])->update('production_monitoring_tbl', $designs_insert);
+                        }
+
                         if($test){
                             $response = [
                                 'status' => 'success',
@@ -460,16 +521,27 @@
                         $requiredFields = ['type', 'consumption', 'material_used', 'waste_allow', 'total'];
                         $missingFields = array_diff($requiredFields, array_keys($materialData));
                 
-                
-                        $material_specs_insert = [
-                            'pjoID' => $getPJOid['pjoID'],
-                            'consumption_in_wt_kg' => $materialData['consumption'],
-                            'type' => $materialData['type'],
-                            'material_used'  => $materialData['material_used'],
-                            'waste_allow'  => $materialData['waste_allow'],
-                            'total_allow_issuance' => $materialData['total'],
-                        ];
-                        $test = $this->db->insert('material_specs_tbl', $material_specs_insert);
+                        if (!isset($materialData['id']) || is_null($materialData['id']) || $materialData['id'] === '' || empty($materialData['id'])) {
+                            $material_specs_insert = [
+                                'pjoID' => $getPJOid['pjoID'],
+                                'consumption_in_wt_kg' => $materialData['consumption'],
+                                'type' => $materialData['type'],
+                                'material_used'  => $materialData['material_used'],
+                                'waste_allow'  => $materialData['waste_allow'],
+                                'total_allow_issuance' => $materialData['total'],
+                            ];
+                            $test = $this->db->insert('material_specs_tbl', $material_specs_insert);
+                        }else{
+                            $material_specs_insert = [
+                                'consumption_in_wt_kg' => $materialData['consumption'],
+                                'type' => $materialData['type'],
+                                'material_used'  => $materialData['material_used'],
+                                'waste_allow'  => $materialData['waste_allow'],
+                                'total_allow_issuance' => $materialData['total'],
+                            ];
+                            $test = $this->db->where('material_specsID', $materialData['id'])->update('material_specs_tbl', $designs_insert);
+                        }
+
                         if($test){
                             $response = [
                                 'status' => 'fail',
@@ -502,17 +574,30 @@
                         $requiredFields =['pattern_name', 'DPI', 'EPI', 'threading', 'harness_lift', 'Pedal'];
                         $missingFields = array_diff($requiredFields, array_keys($materialData));
                 
-                
-                        $designs_insert = [
-                            'pjoID' => $getPJOid['pjoID'],
-                            'pattern_name' => $materialData['pattern_name'],
-                            'dpi'  => $materialData['DPI'],
-                            'epi'  => $materialData['EPI'],
-                            'threading' => $materialData['threading'],
-                            'harness_lift' => $materialData['harness_lift'],
-                            'pedal' => $materialData['Pedal'],
-                        ];
-                        $test = $this->db->insert('design_specs_tbl', $designs_insert);
+                        if (!isset($materialData['id']) || is_null($materialData['id']) || $materialData['id'] === '' || empty($materialData['id'])) {
+                            $designs_insert = [
+                                'pjoID' => $getPJOid['pjoID'],
+                                'pattern_name' => $materialData['pattern_name'],
+                                'dpi'  => $materialData['DPI'],
+                                'epi'  => $materialData['EPI'],
+                                'threading' => $materialData['threading'],
+                                'harness_lift' => $materialData['harness_lift'],
+                                'pedal' => $materialData['Pedal'],
+                            ];
+                            $test = $this->db->insert('design_specs_tbl', $designs_insert);
+                        }else{
+                            $designs_insert = [
+                                'pjoID' => $getPJOid['pjoID'],
+                                'pattern_name' => $materialData['pattern_name'],
+                                'dpi'  => $materialData['DPI'],
+                                'epi'  => $materialData['EPI'],
+                                'threading' => $materialData['threading'],
+                                'harness_lift' => $materialData['harness_lift'],
+                                'pedal' => $materialData['Pedal'],
+                            ];
+                            $test = $this->db->where('design_specsID', $materialData['id'])->update('design_specs_tbl', $designs_insert);
+                        }
+
                         if($test){
                             $response = [
                                 'status' => 'success',
