@@ -175,7 +175,7 @@
                     </q-icon>
                   </div>
                   <div class="bg-[#475467] rounded text-white cursor-pointer w-[32px] h-[32px] text-[20px]">
-                    <q-icon name="edit" >
+                    <q-icon name="edit" @click="toNextPage(props.row.mpo_id)">
                       <q-tooltip :offset="[0, 8]">Edit</q-tooltip>
                     </q-icon>
                   </div>
