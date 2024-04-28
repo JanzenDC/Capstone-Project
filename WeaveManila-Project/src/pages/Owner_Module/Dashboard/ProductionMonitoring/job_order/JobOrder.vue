@@ -1102,7 +1102,6 @@ export default {
 
 
     submitForm() {
-      console.log('clicked');
       const formData = new FormData();
 
       formData.append('v_Endorsed', this.v_Endorsed);
@@ -1310,7 +1309,6 @@ export default {
 
 
         const joInfo = JSON.parse(joNumber); // Parse MPOData
-        console.log('target:',joInfo)
         const selectedID = joInfo;
       if(joNumber)
       {
@@ -1346,8 +1344,12 @@ export default {
             this.v_color = JOdata.color;
             this.approvedby_name = JOdata.b_approvedby;
             this.prepared_name = JOdata.b_preparedby;
-
-
+            if(this.modelMultiple === null || this.modelMultiple === undefined || this.modelMultiple === '')
+            {
+              this.modelMultiple = ['Weaving', 'Cleaning', 'Trimming']; 
+            }else{
+              this.modelMultiple = JOdata.services; 
+            }
             this.v_checkedby = JOdata.checked_by;
 
             this.mats_rows = response.data.material_specs.map(row => {
@@ -1451,7 +1453,6 @@ export default {
       .then((response) => {
         if (response.data.status === 'success') {
           const productionData = response.data.production_staff;
-          console.log(productionData)
           const options = productionData.map(item => (item.firstname + ' ' + item.lastname).trim());
           this.optionsProductionStaff = options.filter(label => label !== ''); // Filter out empty labels
         } else {

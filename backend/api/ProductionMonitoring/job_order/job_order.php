@@ -57,7 +57,7 @@
                            
                         $response = [
                             'status' => 'success',
-                            'message' => 'Successfully fetched data',
+                            
                             'jobOrder' => Array($pjoData),
                             'material_specs' => $material_specs,
                             'item_actual_weight' => $item_actual_weight,
@@ -66,6 +66,7 @@
                             'post_data_specs_tbl' => $post_data_specs_tbl,
                             'material_issuance_tbl' => $material_issuance_tbl,
                             'production_monitoring_tbl' => $production_monitoring_tbl,
+                            'message' => 'Successfully fetched data',
                         ];
                         echo json_encode($response);
                         exit;
