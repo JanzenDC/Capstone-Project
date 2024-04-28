@@ -1,6 +1,6 @@
 <template>
   <div class=' px-4 py-3 rounded h-[500px] bg-white overflow-y-auto overflow-x-hidden'>
-    
+
       <div :class="{ 'hidden': !clickPage }">
         <div class='mt-10 flex justify-between'>
           <div>
@@ -60,7 +60,7 @@
                 lazy-rules
                 :rules="[ val => val && val.length > 0 || 'Please input valid date']"/>
               </div>
-   
+
 
 
             </div>
@@ -1099,7 +1099,7 @@ export default {
       // Remove the row from the array
       this.material_rows.splice(index, 1);
     },
- 
+
 
     submitForm() {
       console.log('clicked');
@@ -1132,6 +1132,7 @@ export default {
       formData.append('s_approvedby_name', this.s_approvedby_name);
       formData.append('s_prepared_name', this.s_prepared_name);
       formData.append('v_checkedby', this.v_checkedby);
+      formData.append('services', this.modelMultiple);
 
       this.mats_rows.forEach(row => {
         const matsData = {
@@ -1307,7 +1308,7 @@ export default {
     fetchJOref() {
       const joNumber = SessionStorage.getItem('joNumber');
 
-      
+
         const joInfo = JSON.parse(joNumber); // Parse MPOData
         console.log('target:',joInfo)
         const selectedID = joInfo;
@@ -1349,7 +1350,70 @@ export default {
 
             this.v_checkedby = JOdata.checked_by;
 
+            this.mats_rows = response.data.material_specs.map(row => {
+              return {
+                type: row.type,
+                consumption: row.consumption,
+                material_used: row.material_used,
+                waste_allow: row.waste_allow,
+                total: row.total,
+              };
+            });
 
+            this.design_rows = response.data.design_specs_tbl.map(row => {
+              return {
+                pattern_name: row.pattern_name,
+                DPI: row.DPI,
+                EPI: row.EPI,
+                threading: row.threading,
+                harness_lift: row.harness_lift,
+                Pedal: row.Pedal,
+              };
+            });
+
+            this.total_material_used_rows = response.data.total_material_used.map(row => {
+              return {
+                material_used: row.material_used,
+                quantity: row.quantity,
+                unit: row.unit,
+              };
+            });
+
+            this.postdata_rows = response.data.post_data_specs_tbl.map(row => {
+              return {
+                setting: row.setting,
+                weaving: row.weaving,
+                output: row.output,
+                warp: row.warp,
+                weft: row.weft,
+                insert: row.insert,
+              };
+            });
+
+            this.material_rows = response.data.material_issuance_tbl.map(row => {
+              return {
+                date: row.date,
+                material_desc: row.material_desc,
+                quantity: row.quantity,
+                unit: row.unit,
+                returned: row.returned,
+                balance: row.balance,
+                issued_by: row.issued_by,
+              };
+            });
+
+            this.production_monitoring_rows = response.data.production_monitoring_tbl.map(row => {
+              return {
+                date:  row.date,
+                time_in: row.time_in,
+                time_out: row.time_out,
+                output_am: row.output_am,
+                ot_time_in: row.ot_time_in,
+                ot_time_out: row.ot_time_out,
+                ot_output: row.ot_output,
+                total_output: row.total_output,
+              };
+            });
           }).catch(error => {
             // Handle error if request fails
             console.error("Error fetching next job order number:", error);

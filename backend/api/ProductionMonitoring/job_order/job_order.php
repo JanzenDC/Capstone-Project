@@ -42,20 +42,47 @@
             }else if ($payload['type'] === 'pjo') {
                 $pjoData = $this->db->where('pjoID', $payload['id'])->getOne('pjo_tbl');
                 if($pjoData){
+                  
                     $startingNumber ='SELECT * FROM mpo_starting_date  ORDER BY startingNo DESC LIMIT 1';
                     $query = $this->db->rawQuery($startingNumber);
-                    $response = [
-                        'status' => 'success',
-                        'message' => 'Successfully fetched data',
-                        'jobOrder' => Array($pjoData),
-                        'startingNumber' => $query,
-                    ];
-                    echo json_encode($response);
-                    exit;
+                    if($query){
+
+                        $material_specs = $this->db->where('pjoID', $payload['id'])->get('material_specs_tbl');
+                        $item_actual_weight = $this->db->where('pjoID', $payload['id'])->get('item_actual_weight');
+                        $total_material_used = $this->db->where('pjoID', $payload['id'])->get('total_material_used');
+                        $design_specs_tbl = $this->db->where('pjoID', $payload['id'])->get('design_specs_tbl');
+                        $post_data_specs_tbl = $this->db->where('pjoID', $payload['id'])->get('post_data_specs_tbl');
+                        $material_issuance_tbl = $this->db->where('pjoID', $payload['id'])->get('material_issuance_tbl');
+                        $production_monitoring_tbl = $this->db->where('pjoID', $payload['id'])->get('production_monitoring_tbl');
+                           
+                        $response = [
+                            'status' => 'success',
+                            'message' => 'Successfully fetched data',
+                            'jobOrder' => Array($pjoData),
+                            'material_specs' => $material_specs,
+                            'item_actual_weight' => $item_actual_weight,
+                            'total_material_used' => $total_material_used,
+                            'design_specs_tbl' => $design_specs_tbl,
+                            'post_data_specs_tbl' => $post_data_specs_tbl,
+                            'material_issuance_tbl' => $material_issuance_tbl,
+                            'production_monitoring_tbl' => $production_monitoring_tbl,
+                        ];
+                        echo json_encode($response);
+                        exit;
+    
+                    }else{
+                      $response = [
+                          'status' => 'fail',
+                          'message' => 'Failed to load weaver.',
+                      ];
+                      echo json_encode($response);
+                      exit; 
+                    }
+
                 }else{
                     $response = [
                         'status' => 'fail',
-                        'message' => 'Failed to load weaver.',
+                        'message' => 'Failed to load PJO.',
                     ];
                     echo json_encode($response);
                     exit; 

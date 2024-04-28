@@ -26,7 +26,7 @@
     <div class="bg-white px-4 py-3 rounded h-[400px]">
       <div class='flex justify-between'>
         <div>
-          <q-input v-model="filtersearch" label="Search..." dense outlined>
+          <q-input label="Search..." dense outlined>
             <template v-slot:prepend>
               <q-icon name="search" />
             </template>
