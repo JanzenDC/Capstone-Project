@@ -199,22 +199,20 @@
         $b_approvedby =      $_POST['s_approvedby_name'];
         $b_preparedby =        $_POST['s_prepared_name'];
         $checked_by = $_POST['v_checkedby'];              
-        
-        
+        $targetID = $_POST['targetID'];
+
         $dataPJO = [
-            'personelID' => 1,
             'endorse' => $endorsed,
             'job_order_no' => $joRefNo,
             'date' => $date,
             'reference' => $reference,
             'delivery_date' => $deliveryDate,
 
-            'f_esignature_preparedby' => $uploadPath_one,
+
             'f_preparedby' => $f_preparedby,
-            'f_esignature_approvedby' => $uploadPath_two,
+
             'f_approvedby' => $f_approvedby,
 
-            'b_esignature_preparedby' => $uploadPath_three,
             'b_preparedby' => $b_preparedby,
             'b_approvedby' => $b_approvedby,
             
@@ -235,7 +233,7 @@
             'color' => $color,
             'checked_by' => $checked_by,
         ];
-        $insertData = $this->db->insert('pjo_tbl', $dataPJO);
+        $insertData = $this->db->where('pjoID', $targetID)->update('pjo_tbl', $dataPJO);
         if($insertData){
             $getPJOid = $this->db->where('job_order_no', $joRefNo)->getOne('pjo_tbl');
 
@@ -544,7 +542,7 @@
 
                         if($test){
                             $response = [
-                                'status' => 'fail',
+                                'status' => 'success',
                                 'message' => 'Successfully added.',
                             ];
                             echo json_encode($response);
@@ -587,7 +585,6 @@
                             $test = $this->db->insert('design_specs_tbl', $designs_insert);
                         }else{
                             $designs_insert = [
-                                'pjoID' => $getPJOid['pjoID'],
                                 'pattern_name' => $materialData['pattern_name'],
                                 'dpi'  => $materialData['DPI'],
                                 'epi'  => $materialData['EPI'],

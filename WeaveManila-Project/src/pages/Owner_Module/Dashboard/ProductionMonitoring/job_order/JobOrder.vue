@@ -200,39 +200,39 @@
 
                   <q-td key="material_used" :props="props">
                     {{ props.row.material_used }}
-                    <q-popup-edit v-model="props.row.material_used" title="Update Description" buttons v-slot="scope">
+                    <q-popup-edit v-model="props.row.material_used"  buttons v-slot="scope">
                       <q-input type="text" v-model="scope.value" dense autofocus />
                     </q-popup-edit>
                   </q-td>
 
                   <q-td key="consumption" :props="props">
                     {{ props.row.consumption }}
-                    <q-popup-edit v-model="props.row.consumption" title="Update Description" buttons v-slot="scope">
+                    <q-popup-edit v-model="props.row.consumption"  buttons v-slot="scope">
                       <q-input type="number" v-model="scope.value" dense autofocus />
                     </q-popup-edit>
                   </q-td>
                   <q-td key="waste_allow" :props="props">
                     {{ props.row.waste_allow }}
-                    <q-popup-edit v-model="props.row.waste_allow" title="Update Description" buttons v-slot="scope">
+                    <q-popup-edit v-model="props.row.waste_allow"  buttons v-slot="scope">
                       <q-input type="number" v-model="scope.value" dense autofocus />
                     </q-popup-edit>
                   </q-td>
 
                   <q-td key="total" :props="props">
                     {{ props.row.total }}
-                    <q-popup-edit v-model="props.row.total" title="Update Description" buttons v-slot="scope">
+                    <q-popup-edit v-model="props.row.total"  buttons v-slot="scope">
                       <q-input type="number" v-model="scope.value" dense autofocus />
                     </q-popup-edit>
                   </q-td>
 
                   <q-td key="action" :props="props">
                     <div class="flex gap-2">
-                      <q-btn v-if="props.row.action.plus" @click="handlePlus(props.row.type)" class='w-[32px] h-[32px] bg-[#F37E33] text-white' icon='add_box'>
+                      <q-btn @click="handlePlus(props.row.type)" class='w-[32px] h-[32px] bg-[#F37E33] text-white' icon='add_box'>
                         <q-tooltip :offset="[0, 8]">Add row</q-tooltip>
                       </q-btn>
 
 
-                      <q-btn v-if="props.row.action.delete" @click="handleDelete(props.row)" class='w-[32px] h-[32px] bg-[#B3261E] text-white' icon='delete'>
+                      <q-btn @click="handleDelete(props.row)" class='w-[32px] h-[32px] bg-[#B3261E] text-white' icon='delete'>
                         <q-tooltip :offset="[0, 8]">Remove</q-tooltip>
                       </q-btn>
 
@@ -290,7 +290,7 @@
                     </q-td>
                     <q-td key="weight" :props="props">
                       {{ props.row.weight }}
-                      <q-popup-edit v-model="props.row.weight" title="Update Description" buttons v-slot="scope">
+                      <q-popup-edit v-model="props.row.weight"  buttons v-slot="scope">
                         <q-input type="number" v-model="scope.value" dense autofocus />
                       </q-popup-edit>
                     </q-td>
@@ -345,43 +345,43 @@
 
                 <q-td key="pattern_name" :props="props">
                   {{ props.row.pattern_name }}
-                  <q-popup-edit v-model="props.row.pattern_name" title="Update Description" buttons v-slot="scope">
+                  <q-popup-edit v-model="props.row.pattern_name"  buttons v-slot="scope">
                     <q-input type="text" v-model="scope.value" dense autofocus />
                   </q-popup-edit>
                 </q-td>
 
                 <q-td key="DPI" :props="props">
                   {{ props.row.DPI }}
-                  <q-popup-edit v-model="props.row.DPI" title="Update Description" buttons v-slot="scope">
-                    <q-input type="text" v-model="scope.value" dense autofocus />
+                  <q-popup-edit v-model="props.row.DPI"  buttons v-slot="scope">
+                    <q-input type="number" v-model="scope.value" dense autofocus />
                   </q-popup-edit>
                 </q-td>
 
                 <q-td key="EPI" :props="props">
                   {{ props.row.EPI }}
-                  <q-popup-edit v-model="props.row.EPI" title="Update Description" buttons v-slot="scope">
-                    <q-input type="text" v-model="scope.value" dense autofocus />
+                  <q-popup-edit v-model="props.row.EPI"  buttons v-slot="scope">
+                    <q-input type="number" v-model="scope.value" dense autofocus />
                   </q-popup-edit>
                 </q-td>
 
                 <q-td key="threading" :props="props">
                   {{ props.row.threading }}
-                  <q-popup-edit v-model="props.row.threading" title="Update Description" buttons v-slot="scope">
-                    <q-input type="text" v-model="scope.value" dense autofocus />
+                  <q-popup-edit v-model="props.row.threading"  buttons v-slot="scope">
+                    <q-input type="number" v-model="scope.value" dense autofocus />
                   </q-popup-edit>
                 </q-td>
 
                 <q-td key="harness_lift" :props="props">
                   {{ props.row.harness_lift }}
-                  <q-popup-edit v-model="props.row.harness_lift" title="Update Description" buttons v-slot="scope">
-                    <q-input type="text" v-model="scope.value" dense autofocus />
+                  <q-popup-edit v-model="props.row.harness_lift"  buttons v-slot="scope">
+                    <q-input type="number" v-model="scope.value" dense autofocus />
                   </q-popup-edit>
                 </q-td>
 
                 <q-td key="Pedal" :props="props">
                   {{ props.row.Pedal }}
-                  <q-popup-edit v-model="props.row.Pedal" title="Update Description" buttons v-slot="scope">
-                    <q-input type="text" v-model="scope.value" dense autofocus />
+                  <q-popup-edit v-model="props.row.Pedal"  buttons v-slot="scope">
+                    <q-input type="number" v-model="scope.value" dense autofocus />
                   </q-popup-edit>
                 </q-td>
                 <q-td key="action" :props="props">
@@ -443,42 +443,42 @@
 
                 <q-td key="setting" :props="props">
                   {{ props.row.setting }}
-                  <q-popup-edit v-model="props.row.setting" title="Update Description" buttons v-slot="scope">
+                  <q-popup-edit v-model="props.row.setting"  buttons v-slot="scope">
                     <q-input type="number" v-model="scope.value" dense autofocus />
                   </q-popup-edit>
                 </q-td>
 
                 <q-td key="weaving" :props="props">
                   {{ props.row.weaving }}
-                  <q-popup-edit v-model="props.row.weaving" title="Update Description" buttons v-slot="scope">
+                  <q-popup-edit v-model="props.row.weaving"  buttons v-slot="scope">
                     <q-input type="number" v-model="scope.value" dense autofocus />
                   </q-popup-edit>
                 </q-td>
 
                 <q-td key="output" :props="props">
                   {{ props.row.output }}
-                  <q-popup-edit v-model="props.row.output" title="Update Description" buttons v-slot="scope">
+                  <q-popup-edit v-model="props.row.output"  buttons v-slot="scope">
                     <q-input type="number" v-model="scope.value" dense autofocus />
                   </q-popup-edit>
                 </q-td>
 
                 <q-td key="warp" :props="props">
                   {{ props.row.warp }}
-                  <q-popup-edit v-model="props.row.warp" title="Update Description" buttons v-slot="scope">
+                  <q-popup-edit v-model="props.row.warp"  buttons v-slot="scope">
                     <q-input type="number" v-model="scope.value" dense autofocus />
                   </q-popup-edit>
                 </q-td>
 
                 <q-td key="weft" :props="props">
                   {{ props.row.weft }}
-                  <q-popup-edit v-model="props.row.weft" title="Update Description" buttons v-slot="scope">
+                  <q-popup-edit v-model="props.row.weft"  buttons v-slot="scope">
                     <q-input type="number" v-model="scope.value" dense autofocus />
                   </q-popup-edit>
                 </q-td>
 
                 <q-td key="insert" :props="props">
                   {{ props.row.insert }}
-                  <q-popup-edit v-model="props.row.insert" title="Update Description" buttons v-slot="scope">
+                  <q-popup-edit v-model="props.row.insert"  buttons v-slot="scope">
                     <q-input type="number" v-model="scope.value" dense autofocus />
                   </q-popup-edit>
                 </q-td>
@@ -520,35 +520,35 @@
               <q-tr :props="props">
                 <q-td key="date" :props="props">
                   {{ props.row.date }}
-                  <q-popup-edit v-model="props.row.date" title="Update Description" buttons v-slot="scope">
+                  <q-popup-edit v-model="props.row.date"  buttons v-slot="scope">
                     <q-input type="date" v-model="scope.value" dense autofocus />
                   </q-popup-edit>
                 </q-td>
 
                 <q-td key="material_desc" :props="props">
                   {{ props.row.material_desc }}
-                  <q-popup-edit v-model="props.row.material_desc" title="Update Description" buttons v-slot="scope">
+                  <q-popup-edit v-model="props.row.material_desc"  buttons v-slot="scope">
                     <q-select outlined v-model="scope.value" :options="options" label="Outlined" />
                   </q-popup-edit>
                 </q-td>
 
                 <q-td key="quantity" :props="props">
                   {{ props.row.quantity }}
-                  <q-popup-edit v-model="props.row.quantity" title="Update Description" buttons v-slot="scope">
+                  <q-popup-edit v-model="props.row.quantity"  buttons v-slot="scope">
                     <q-input type="number" v-model="scope.value" dense autofocus />
                   </q-popup-edit>
                 </q-td>
 
                 <q-td key="unit" :props="props">
                   kilogram
-                  <q-popup-edit v-model="props.row.unit" title="Update Description" buttons v-slot="scope">
+                  <q-popup-edit v-model="props.row.unit"  buttons v-slot="scope">
                     <q-input type="text" v-model="scope.value" dense autofocus />
                   </q-popup-edit>
                 </q-td>
 
                 <q-td key="returned" :props="props">
                   {{ props.row.returned }}
-                  <q-popup-edit v-model="props.row.returned" title="Update Description" buttons v-slot="scope">
+                  <q-popup-edit v-model="props.row.returned"  buttons v-slot="scope">
                     <q-input type="text" v-model="scope.value" dense autofocus />
                   </q-popup-edit>
                 </q-td>
@@ -559,7 +559,7 @@
 
                 <q-td key="issued_by" :props="props">
                   {{ props.row.issued_by }}
-                  <q-popup-edit v-model="props.row.issued_by" title="Update Description" buttons v-slot="scope">
+                  <q-popup-edit v-model="props.row.issued_by"  buttons v-slot="scope">
                     <q-select outlined v-model="scope.value" :options="optionswarehouse" />
                   </q-popup-edit>
                 </q-td>
@@ -626,49 +626,49 @@
 
                 <q-td key="date" :props="props">
                   {{ props.row.date }}
-                  <q-popup-edit v-model="props.row.date" title="Update Description" buttons v-slot="scope">
+                  <q-popup-edit v-model="props.row.date"  buttons v-slot="scope">
                     <q-input type="date" v-model="scope.value" dense autofocus />
                   </q-popup-edit>
                 </q-td>
 
                 <q-td key="time_in" :props="props">
                   {{ formatTime(props.row.time_in) }}
-                  <q-popup-edit v-model="props.row.time_in" title="Update Description" buttons v-slot="scope">
+                  <q-popup-edit v-model="props.row.time_in"  buttons v-slot="scope">
                     <q-input type="time" v-model="scope.value" dense autofocus />
                   </q-popup-edit>
                 </q-td>
 
                 <q-td key="time_out" :props="props">
                   {{ formatTime(props.row.time_out) }}
-                  <q-popup-edit v-model="props.row.time_out" title="Update Description" buttons v-slot="scope">
+                  <q-popup-edit v-model="props.row.time_out"  buttons v-slot="scope">
                     <q-input type="time" v-model="scope.value" dense autofocus />
                   </q-popup-edit>
                 </q-td>
 
                 <q-td key="output_am" :props="props">
                   {{ props.row.output_am }}
-                  <q-popup-edit v-model="props.row.output_am" title="Update Description" buttons v-slot="scope">
+                  <q-popup-edit v-model="props.row.output_am"  buttons v-slot="scope">
                     <q-input type="number" v-model="scope.value" dense autofocus />
                   </q-popup-edit>
                 </q-td>
 
                 <q-td key="ot_time_in" :props="props">
                   {{ formatTime(props.row.ot_time_in) }}
-                  <q-popup-edit v-model="props.row.ot_time_in" title="Update Description" buttons v-slot="scope">
+                  <q-popup-edit v-model="props.row.ot_time_in"  buttons v-slot="scope">
                     <q-input type="time" v-model="scope.value" dense autofocus />
                   </q-popup-edit>
                 </q-td>
 
                 <q-td key="ot_time_out" :props="props">
                   {{ formatTime(props.row.ot_time_out) }}
-                  <q-popup-edit v-model="props.row.ot_time_out" title="Update Description" buttons v-slot="scope">
+                  <q-popup-edit v-model="props.row.ot_time_out"  buttons v-slot="scope">
                     <q-input type="time" v-model="scope.value" dense autofocus />
                   </q-popup-edit>
                 </q-td>
 
                 <q-td key="ot_output" :props="props">
                   {{ props.row.ot_output }}
-                  <q-popup-edit v-model="props.row.ot_output" title="Update Description" buttons v-slot="scope">
+                  <q-popup-edit v-model="props.row.ot_output"  buttons v-slot="scope">
                     <q-input type="number" v-model="scope.value" dense autofocus />
                   </q-popup-edit>
                 </q-td>
@@ -873,64 +873,69 @@ export default {
       v_globalstore: 0,
       storedata: 0,
       sizeValue: '',
+      selectedID: '',
     };
   },
   watch: {
-    mats_rows: {
-      handler(newRows) {
-        const materialDescQuantityMap = {};
-
-        // Calculate the total quantity for each material_desc
-        newRows.forEach(row => {
-          const { material_used, quantity } = row;
-          if (materialDescQuantityMap[material_used]) {
-            materialDescQuantityMap[material_used] += quantity;
-          } else {
-            materialDescQuantityMap[material_used] = quantity;
-          }
-        });
-
-        // Construct total_material_used_rows based on the calculated quantities
-        const totalMaterialUsedRows = Object.entries(materialDescQuantityMap).map(([material_used, quantity]) => ({
-          material_used,
-          quantity,
-          unit: '', // Add any default unit value here if necessary
-        }));
-
-        // Assign the calculated rows to total_material_used_rows
-        this.total_material_used_rows = totalMaterialUsedRows;
-
-        // Update options for q-select
-        this.options = Object.keys(materialDescQuantityMap);
-      },
-      deep: true,
+    v_Endorsed(newValue) {
+      // Update v_checkedby when v_Endorsed changes
+      this.s_prepared_name = newValue;
     },
-    'material_rows': {
-      handler(newRows) {
-        const materialDescQuantityMap = {};
+    // mats_rows: {
+    //   handler(newRows) {
+    //     const materialDescQuantityMap = {};
 
-        // Calculate the total quantity for each material_desc
-        newRows.forEach(row => {
-          const { material_desc, quantity, returned } = row;
-          if (materialDescQuantityMap[material_desc]) {
-            materialDescQuantityMap[material_desc] += parseInt(quantity) - parseInt(returned); // Subtract returned quantity
-          } else {
-            materialDescQuantityMap[material_desc] = parseInt(quantity) - parseInt(returned); // Subtract returned quantity
-          }
-        });
+    //     // Calculate the total quantity for each material_desc
+    //     newRows.forEach(row => {
+    //       const { material_used, quantity } = row;
+    //       if (materialDescQuantityMap[material_used]) {
+    //         materialDescQuantityMap[material_used] += quantity;
+    //       } else {
+    //         materialDescQuantityMap[material_used] = quantity;
+    //       }
+    //     });
 
-        // Update the corresponding rows in total_material_used_rows
-        this.total_material_used_rows.forEach(row => {
-          const quantity = materialDescQuantityMap[row.material_used];
-          if (quantity !== undefined) {
-            row.quantity = quantity;
-          } else {
-            row.quantity = 0; // Reset quantity if not found in material_rows
-          }
-        });
-      },
-      deep: true,
-    },
+    //     // Construct total_material_used_rows based on the calculated quantities
+    //     const totalMaterialUsedRows = Object.entries(materialDescQuantityMap).map(([material_used, quantity]) => ({
+    //       material_used,
+    //       quantity,
+    //       unit: '', // Add any default unit value here if necessary
+    //     }));
+
+    //     // Assign the calculated rows to total_material_used_rows
+    //     this.total_material_used_rows = totalMaterialUsedRows;
+
+    //     // Update options for q-select
+    //     this.options = Object.keys(materialDescQuantityMap);
+    //   },
+    //   deep: true,
+    // },
+    // 'material_rows': {
+    //   handler(newRows) {
+    //     const materialDescQuantityMap = {};
+
+    //     // Calculate the total quantity for each material_desc
+    //     newRows.forEach(row => {
+    //       const { material_desc, quantity, returned } = row;
+    //       if (materialDescQuantityMap[material_desc]) {
+    //         materialDescQuantityMap[material_desc] += parseInt(quantity) - parseInt(returned); // Subtract returned quantity
+    //       } else {
+    //         materialDescQuantityMap[material_desc] = parseInt(quantity) - parseInt(returned); // Subtract returned quantity
+    //       }
+    //     });
+
+    //     // Update the corresponding rows in total_material_used_rows
+    //     this.total_material_used_rows.forEach(row => {
+    //       const quantity = materialDescQuantityMap[row.material_used];
+    //       if (quantity !== undefined) {
+    //         row.quantity = quantity;
+    //       } else {
+    //         row.quantity = 0; // Reset quantity if not found in material_rows
+    //       }
+    //     });
+    //   },
+    //   deep: true,
+    // },
     convertedLengthInInches() {
       this.calculateLeadTime();
     },
@@ -942,12 +947,6 @@ export default {
     },
     v_leadtime() {
       this.calculateDateFinished();
-    },
-    v_quantity(newValue) {
-      const quantity = parseInt(newValue);
-      if (!isNaN(quantity) && quantity > 0) {
-        this.addRows(quantity);
-      }
     },
   },
   computed: {
@@ -977,6 +976,14 @@ export default {
     this.fetchProductionStaff();
   },
   methods: {
+    formatTime(time) {
+      if (!time || time === '00:00:00') return ''; // Handle empty time or "00:00:00"
+      const [hours, minutes] = time.split(':');
+      const hour = parseInt(hours, 10);
+      const isPM = hour >= 12; // Check if it's PM
+      const formattedHour = hour % 12 || 12; // Convert hour to 12-hour format
+      return `${formattedHour}:${minutes.padStart(2, '0')} ${isPM ? 'PM' : 'AM'}`;
+    },
     calculateTotalOutput(row) {
       // Calculate total output
       if (!isNaN(row.output_am) && !isNaN(row.ot_output)) {
@@ -1121,10 +1128,10 @@ export default {
       formData.append('s_prepared_name', this.s_prepared_name);
       formData.append('v_checkedby', this.v_checkedby);
       formData.append('services', this.modelMultiple);
-
+      formData.append('targetID', this.selectedID)
       this.mats_rows.forEach(row => {
         const matsData = {
-          
+
           id: row.id,
           type: row.type,
           consumption: row.consumption,
@@ -1218,14 +1225,14 @@ export default {
       for (let pair of formData.entries()) {
         console.log(pair[0] + ': ' + pair[1]);
       }
-      // // query using axios post
-      // axios.post(`http://localhost/Capstone-Project/backend/api/ProductionMonitoring/job_order/job_order.php/`, formData)
-      // .then((response) => {
-      //     console.log('Your Data:', response.data);
-      // }).catch(error => {
-      //   // Handle error if request fails
-      //   console.error("Error sending file:", error);
-      // });
+      // query using axios post
+      axios.post(`http://localhost/Capstone-Project/backend/api/ProductionMonitoring/job_order/job_order.php/`, formData)
+      .then((response) => {
+          console.log('Your Data:', response.data);
+      }).catch(error => {
+        // Handle error if request fails
+        console.error("Error sending file:", error);
+      });
     },
 
     handleDeleteProductionMonitoring(row){
@@ -1247,23 +1254,6 @@ export default {
       };
 
       this.production_monitoring_rows.push(newRow);
-    },
-    formatTime(time) {
-      // Check if the time is provided and is a valid format
-      if (!time || !/^\d{2}:\d{2}$/.test(time)) {
-        return ''; // return empty string or any default value if time is invalid
-      }
-
-      // Parse the time string to a Date object
-      const [hours, minutes] = time.split(':');
-      const parsedTime = new Date();
-      parsedTime.setHours(parseInt(hours, 10));
-      parsedTime.setMinutes(parseInt(minutes, 10));
-
-      // Format the time as HH:MM AM/PM
-      const formattedTime = parsedTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
-      return formattedTime;
     },
     calculateTotal(outputAm, otOutput) {
       // Parse values as numbers (assuming they are string representations of numbers)
@@ -1305,11 +1295,12 @@ export default {
       const joNumber = SessionStorage.getItem('joNumber');
 
         const joInfo = JSON.parse(joNumber); // Parse MPOData
-        const selectedID = joInfo;
+        const success = joInfo;
+        this.selectedID = success;
       if(joNumber)
       {
         try {
-          axios.get(`http://localhost/Capstone-Project/backend/api/ProductionMonitoring/job_order/job_order.php?type=pjo&id=${selectedID}`)
+          axios.get(`http://localhost/Capstone-Project/backend/api/ProductionMonitoring/job_order/job_order.php?type=pjo&id=${success}`)
           .then((response) => {
             console.log(response.data)
             const JOdata = response.data.jobOrder[0];
@@ -1321,6 +1312,7 @@ export default {
             this.v_length = JOdata.length;
             this.v_optionselected = JOdata.size_selected;
             const formattedPjoID = String(JOdata.pjoID).padStart(3, '0');
+            this.s_prepared_name = JOdata.endorse;
             this.v_Endorsed = JOdata.endorse;
             this.v_JOrefNo = 'PJO' + covert + '-' + formattedPjoID;
             this.v_date = JOdata.date;
@@ -1373,11 +1365,11 @@ export default {
               return {
                 id: row.design_specsID,
                 pattern_name: row.pattern_name,
-                DPI: row.DPI,
-                EPI: row.EPI,
+                DPI: row.dpi,
+                EPI: row.epi,
                 threading: row.threading,
                 harness_lift: row.harness_lift,
-                Pedal: row.Pedal,
+                Pedal: row.pedal,
               };
             });
 
@@ -1389,6 +1381,30 @@ export default {
                 unit: row.unit,
               };
             });
+
+
+            try {
+              this.item_actual_rows = response.data.item_actual_weight.map(row => {
+                return {
+                  id: row.actualweightID,
+                  quantity: row.quantity,
+                  weight: row.weight,
+                  unit: row.unit,
+                };
+              });
+              console.log('Test', this.item_actual_rows)
+            } catch (error) {
+              for (let i = 0; i < this.v_quantity; i++) {
+                this.item_actual_rows.push({
+                  quantity: null,
+                  weight: null,
+                  unit: null,
+                });
+              }
+            }
+
+
+
 
             this.postdata_rows = response.data.post_data_specs_tbl.map(row => {
               return {
