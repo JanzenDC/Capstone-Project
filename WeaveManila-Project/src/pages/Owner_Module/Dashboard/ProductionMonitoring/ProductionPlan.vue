@@ -52,7 +52,7 @@
   v-model="addPlan"
   persistent transition-show="scale" transition-hide="scale"
 >
-  <q-card style="width: 650px; max-width: 80vw;">
+  <q-card style="width: 950px; max-width: 80vw;">
     <q-card-section class="row items-center q-pb-none">
           <div class="flex gap-2">
             <div class='p-2 border '>
@@ -83,10 +83,10 @@
           <label>Size</label>
           <!-- <q-input v-model='v_size'  dense outlined/> -->
           <div class='flex gap-2 items-center'>
-            <q-input v-model='v_length' dense outlined type='number' class='w-[60px]'/>
+            <q-input v-model='v_length' dense outlined label='Length' type='number' class='w-[80px]'/>
             <p class='text-h6'>:</p>
-            <q-input v-model='v_width' dense outlined type='number' class='w-[60px]'/>
-            <q-select v-model="v_size" :options="v_optionssize" dense outlined class='w-[155px]'/>
+            <q-input v-model='v_width' dense outlined type='number' label='Width' class='w-[80px]'/>
+            <q-select v-model="v_size" :options="v_optionssize" dense outlined class='w-[264px]' label='Measurements'/>
           </div>
         </div>
       </div>

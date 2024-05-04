@@ -1,4 +1,4 @@
-<template>
+=<template>
 <SideBar/>
 <q-page class="bg-[#f5f5f5] ">
   <div class="flex justify-between items-center p-2 bg-white">

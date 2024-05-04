@@ -1,14 +1,9 @@
 {
-    "_readme": [
-        "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
-        "This file is @generated automatically"
-    ],
-    "content-hash": "c6a0d0b81837865b8eb1821a7cc2f2eb",
     "packages": [
         {
             "name": "ifsnop/mysqldump-php",
             "version": "v2.12",
+            "version_normalized": "2.12.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ifsnop/mysqldump-php.git",
@@ -27,7 +22,9 @@
                 "phpunit/phpunit": "4.8.36",
                 "squizlabs/php_codesniffer": "1.*"
             },
+            "time": "2023-04-12T07:43:14+00:00",
             "type": "library",
+            "installation-source": "source",
             "autoload": {
                 "psr-4": {
                     "Ifsnop\\": "src/Ifsnop/"
@@ -63,11 +60,12 @@
                 "issues": "https://github.com/ifsnop/mysqldump-php/issues",
                 "source": "https://github.com/ifsnop/mysqldump-php/tree/v2.12"
             },
-            "time": "2023-04-12T07:43:14+00:00"
+            "install-path": "../ifsnop/mysqldump-php"
         },
         {
             "name": "nelexa/zip",
             "version": "4.0.2",
+            "version_normalized": "4.0.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Ne-Lexa/php-zip.git",
@@ -105,7 +103,9 @@
                 "ext-iconv": "Needed to support convert zip entry name to requested character encoding",
                 "ext-openssl": "Needed to support encrypt zip entries or use ext-mcrypt"
             },
+            "time": "2022-06-17T11:17:46+00:00",
             "type": "library",
+            "installation-source": "source",
             "autoload": {
                 "psr-4": {
                     "PhpZip\\": "src/"
@@ -136,11 +136,12 @@
                 "issues": "https://github.com/Ne-Lexa/php-zip/issues",
                 "source": "https://github.com/Ne-Lexa/php-zip/tree/4.0.2"
             },
-            "time": "2022-06-17T11:17:46+00:00"
+            "install-path": "../nelexa/zip"
         },
         {
             "name": "psr/http-message",
             "version": "2.0",
+            "version_normalized": "2.0.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-fig/http-message.git",
@@ -155,12 +156,14 @@
             "require": {
                 "php": "^7.2 || ^8.0"
             },
+            "time": "2023-04-04T09:54:51+00:00",
             "type": "library",
             "extra": {
                 "branch-alias": {
                     "dev-master": "2.0.x-dev"
                 }
             },
+            "installation-source": "source",
             "autoload": {
                 "psr-4": {
                     "Psr\\Http\\Message\\": "src/"
@@ -189,11 +192,12 @@
             "support": {
                 "source": "https://github.com/php-fig/http-message/tree/2.0"
             },
-            "time": "2023-04-04T09:54:51+00:00"
+            "install-path": "../psr/http-message"
         },
         {
             "name": "symfony/finder",
             "version": "v7.0.7",
+            "version_normalized": "7.0.7.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/finder.git",
@@ -211,7 +215,9 @@
             "require-dev": {
                 "symfony/filesystem": "^6.4|^7.0"
             },
+            "time": "2024-04-28T11:44:19+00:00",
             "type": "library",
+            "installation-source": "source",
             "autoload": {
                 "psr-4": {
                     "Symfony\\Component\\Finder\\": ""
@@ -253,16 +259,9 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-04-28T11:44:19+00:00"
+            "install-path": "../symfony/finder"
         }
     ],
-    "packages-dev": [],
-    "aliases": [],
-    "minimum-stability": "stable",
-    "stability-flags": [],
-    "prefer-stable": false,
-    "prefer-lowest": false,
-    "platform": [],
-    "platform-dev": [],
-    "plugin-api-version": "2.6.0"
+    "dev": true,
+    "dev-package-names": []
 }
