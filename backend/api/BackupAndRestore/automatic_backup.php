@@ -13,97 +13,7 @@
   require_once('./Ifsnop/vendor/autoload.php');
   require_once(__DIR__ . '/SendInBlue/vendor/autoload.php');
   use Ifsnop\Mysqldump as IMysqldump;
-  class API{
-    public function __construct()
-    {
-
-        $this->db = new MysqliDB('localhost', 'root', '', 'weavemanila_main');
-    }
-    public function httpGet($payload)
-    {
-        if ($payload['type'] == 'backup') {
-            $getBackup = $this->db->rawQuery("SELECT * FROM audit_logs WHERE action = 'Backup Data' ORDER BY timestamp DESC LIMIT 3");
-            
-            if ($getBackup) {
-                $response = ['backupData' => $getBackup];
-                echo json_encode($response);
-                exit;                
-            } else {
-                $response = ['message' => 'There is no Data.'];
-                echo json_encode($response);
-                exit;
-            }
-        } 
-        else if ($payload['type'] == 'dump_sql') {
-            $host = 'localhost';
-            $username = 'root';
-            $password = '';
-            $database = 'weavemanila_main';
-            $dump = new IMysqldump\Mysqldump("mysql:host=$host;dbname=$database", $username, $password);
-            $outputFile = 'backup_' . date("Y-m-d") . '.sql';
-
-            $dump->start($outputFile);
-            $content = file_get_contents($outputFile);
-            $response = ['status' => 'success', 'content' => $content];
-            echo json_encode($response);
-            // Delete the file from the local storage
-            unlink($outputFile);
-            exit;
-        }
-        else if ($payload['type'] == 'backup_dump') {
-            $host = 'localhost';
-            $username = 'root';
-            $password = '';
-            $database = 'weavemanila_main';
-            $dump = new IMysqldump\Mysqldump("mysql:host=$host;dbname=$database", $username, $password);
-            $outputFile = 'backup_' . date("Y-m-d") . '.sql';
-
-            $dump->start($outputFile);
-            $content = file_get_contents($outputFile);
-
-            // Delete the file from the local storage
-            unlink($outputFile);
-            $userData = $this->db->where('email', $payload['email'])->getOne('personel_tbl');
-            if(!$userData){
-                $response = ['status' => 'fail', 'message' => 'There is no such account.'];
-                echo json_encode($response);
-                exit;
-            }
-            $fullname = $userData['firstname'] . " " . $userData['lastname'];
-            //date_default_timezone_set('Asia/Singapore');
-
-            $insertData = [
-                'image' => $userData['profile_pic'],
-                'uid' => $userData['personelID'],
-                'fullname' => $fullname,
-                'position' => $userData['position'],
-                'action' => 'Backup Data',
-                'timestamp' => date('Y-m-d H:i:s'), // Format: YYYY-MM-DD HH:MM:SS
-                'date' => date('Y-m-d'),
-            ];
-            $addLogs = $this->db->insert('audit_logs', $insertData);
-            if($addLogs){
-                $response = ['status' => 'success', 'content' => $content];
-                echo json_encode($response);
-                exit;
-            }else{
-                $response = ['status' => 'fail', 'message' => 'Failed to insert data.'];
-                echo json_encode($response);
-                exit;
-            }
-            exit;
-        }else {
-            $response = ['status' => 'fail', 'message' => 'Empty Payload.'];
-            echo json_encode($response);
-            exit;
-        }
-    }
-    
-    
-    
-    public function httpPost($payload)
-    {
-
+  
         $host = 'localhost';
         $username = 'root';
         $password = '';
@@ -189,87 +99,23 @@
 
         // Send email
         $result = $apiInstance->sendTransacEmail($sendSmtpEmail);
-        if($result){
-            $insertData = [
-                'image' => 'dont_delete.png',
-                // 'uid' => $userData['personelID'],
-                'fullname' => 'WeaveManila Automatic Backup',
-                'position' => 'Bot',
-                'action' => 'Automatic Backup',
-                'timestamp' => date('Y-m-d H:i:s'), // Format: YYYY-MM-DD HH:MM:SS
-                'date' => date('Y-m-d'),
-            ];
-            $addLogs = $this->db->insert('audit_logs', $insertData);
-            if($addLogs){
-                $response = ['status' => 'success', 'message' => 'Backup Data has been sent to admin email address.'];
-                echo json_encode($response);
-                exit;
-            }else{
-                $response = ['status' => 'fail', 'message' => 'Failed to insert data.'];
-                echo json_encode($response);
-                exit;
-            }
+        $insertData = [
+            'image' => 'dont_delete.png',
+            'fullname' => 'WeaveManila Automatic Backup',
+            'position' => 'Bot',
+            'action' => 'Automatic Backup',
+            'timestamp' => date('Y-m-d H:i:s'),
+            'date' => date('Y-m-d'),
+        ];
+        $addLogs = $this->db->insert('audit_logs', $insertData);
+        if($addLogs){
+            $response = ['status' => 'success', 'message' => 'Backup Data has been sent to admin email address.'];
+            echo json_encode($response);
+            exit;
         }else{
-            $response = ['status' => 'fail', 'message' => 'Failed to send email.'];
+            $response = ['status' => 'fail', 'message' => 'Failed to insert data.'];
             echo json_encode($response);
             exit;
         }
-    }
-    
-    
-    
-    public function httpPut($ids, $payload)
-    {
-    }
 
-    public function httpDelete($payload)
-    {
-    }
-
-  }
- 
-  $received_data = json_decode(file_get_contents('php://input'), true);
-
-  $api = new API;
-//////////////////////////////////////
-if (isset($_SERVER['REQUEST_METHOD'])) {
-    $request_method = $_SERVER['REQUEST_METHOD'];
-    // Rest of your code using $request_method
-    if ($request_method === 'GET') {
-        $received_data = $_GET;
-    } else {
-    //check if method is PUT or DELETE, and get the ids on URL
-    if ($request_method === 'PUT' || $request_method === 'DELETE') {
-        $request_uri = $_SERVER['REQUEST_URI'];
-    
-    
-        $ids = null;
-        $exploded_request_uri = array_values(explode("/", $request_uri));
-    
-    
-        $last_index = count($exploded_request_uri) - 1;
-    
-    
-        $ids = $exploded_request_uri[$last_index];
-    
-    
-        }
-    }
-    //Checking if what type of request and designating to specific functions
-    switch ($request_method) {
-        case 'GET':
-            $api->httpGet($received_data);
-            break;
-        case 'POST':
-            $api->httpPost($received_data);
-            break;
-        case 'PUT':
-            $api->httpPut($ids, $received_data);
-            break;
-        case 'DELETE':
-            $api->httpDelete($ids,$received_data);
-            break;
-    }
-  
-}
-?>
+ ?>
