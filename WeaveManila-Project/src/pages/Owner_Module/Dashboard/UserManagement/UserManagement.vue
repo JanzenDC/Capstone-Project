@@ -205,27 +205,6 @@
                 ></q-input>
               </div>
             </div>
-            <!-- <div class="text-h6 font-bold text-[#667085]">Security</div> -->
-              <!-- Password -->
-              <!-- <div>
-                <p class="text-[15px]">Password</p>
-                  <q-input
-                    class="w-full"
-                    v-model="pvalue"
-                    label="Password"
-                    outlined
-                    dense
-                    type='text'
-                    :no-error-icon="true"
-                    :rules="[val => !!val || 'Password is required',
-                              val => val.length >= 8 || 'Password must be at least 8 characters']"
-                  >
-                  <template v-slot:after>
-                    <q-btn class="h-[35px] text-white text-[13px] bg-[#967259] w-[180px]" label="Generate Password" @click="generatePassword"/>
-                  </template>
-                </q-input>
-              </div> -->
-
           </q-card-section>
           <q-card-actions align="right">
             <q-btn label="Submit" type="submit" class='text-white bg-[#967259]'/>
@@ -711,12 +690,13 @@ export default {
         avalue: this.avalue,
         evalue: this.evalue,
         cvalue: this.cvalue,
-        pvalue: this.pvalue,
         posvalue: this.posvalue,
         type: 2
       };
+      // console.log(formData)
       axios.post(`http://localhost/Capstone-Project/backend/api/Usermanagement/userdata.php`, formData)
       .then(response => {
+        console.log(response.data)
         const Status = response.data.status;
         const Message = response.data.message;
         if (Status === "success") {

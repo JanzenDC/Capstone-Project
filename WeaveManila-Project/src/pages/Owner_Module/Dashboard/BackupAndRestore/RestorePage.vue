@@ -6,7 +6,7 @@
       <div class="items-center flex">
         <q-icon
           name="menu"
-          v-if="showMenuIcon"
+            v-if="showMenuIcon"
           @click="toggleDrawer"
           class="cursor-pointer"
         />
@@ -57,7 +57,7 @@
           </div>
         </div>
       </div>
-    </div>    
+    </div>
   </div>
 
   <div class="p-4">

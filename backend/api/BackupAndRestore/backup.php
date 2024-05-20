@@ -70,7 +70,7 @@
         
         $content = file_get_contents($zipFileName);
 
-        $credentials = SendinBlue\Client\Configuration::getDefaultConfiguration()->setApiKey('api-key', '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');
+        $credentials = SendinBlue\Client\Configuration::getDefaultConfiguration()->setApiKey('api-key', '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');
         $apiInstance = new SendinBlue\Client\Api\TransactionalEmailsApi(
             new GuzzleHttp\Client(),
             $credentials

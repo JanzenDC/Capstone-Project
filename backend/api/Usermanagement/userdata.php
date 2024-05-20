@@ -91,7 +91,7 @@
     public function httpPost($payload)
     {
         if($payload['type'] == '2'){
-            $requiredFields = ['fname', 'lname', 'bdate', 'gInput', 'cInput', 'avalue', 'evalue', 'cvalue', 'pvalue', 'posvalue'];
+            $requiredFields = ['fname', 'lname', 'bdate', 'gInput', 'cInput', 'avalue', 'evalue', 'cvalue', 'posvalue'];
             foreach ($requiredFields as $field) {
                 if (!isset($payload[$field])) {
                     $response = ['status' => 'fail', 'message' => 'Missing required field: ' . $field];
@@ -117,7 +117,8 @@
                 echo json_encode($response);
                 exit;
             }else{
-                $hashedPassword = password_hash($payload['pvalue'], PASSWORD_DEFAULT);
+                $generatedPassword = substr(str_shuffle(MD5(microtime())), 0, 8);
+                $hashedPassword = password_hash($generatedPassword, PASSWORD_DEFAULT);
                 $birth_date = $payload['bdate'];
 
                 $birthdate = new DateTime($birth_date);
@@ -138,15 +139,18 @@
                     'age' => $age, // Calculated age
                     'profile_pic' => 'default_pfp.png',
                     'account_created' => date('Y-m-d H:i:s'), // current date and time
-                    'status' => 0,
+                    'status' => 1,
                 ];
               
                 $id = $this->db->insert('personel_tbl', $data);
                 
                 // Check if the insertion was successful
                 if ($id) {
+                    
+
+
                     // Send email using SendinBlue
-                    $credentials = SendinBlue\Client\Configuration::getDefaultConfiguration()->setApiKey('api-key', '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');
+                    $credentials = SendinBlue\Client\Configuration::getDefaultConfiguration()->setApiKey('api-key', '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');
                     $apiInstance = new SendinBlue\Client\Api\TransactionalEmailsApi(
                         new GuzzleHttp\Client(),
                         $credentials
@@ -157,63 +161,94 @@
                     $htmlContent = '<!DOCTYPE html>
                     <html lang="en">
                     <head>
-                      <meta charset="UTF-8">
-                      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                      <title>Document</title>
-                      <style type="text/css">
-                        .container {
-                          width: 100%;
-                          display: flex;
-                          justify-content: center;
-                        }
-                        .card{
-                          border: 2px solid #000;
-                          width: 400px;
-                          font-weight: bold;
-                          border-radius: 5px;
-                        }
-                        .card-2{
-                          padding: 30px;
-                        }
-                        footer {
-                          background: #000;
-                          padding: 5px;
-                          color: white;
-                          text-align: center;
-                        }
-                      </style>
+                        <meta charset="UTF-8">
+                        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                        <style>
+                            body {
+                                font-family: Arial, sans-serif;
+                                background-color: #f9f9f9;
+                                margin: 0;
+                                padding: 0;
+                                display: flex;
+                                justify-content: center;
+                                align-items: center;
+                                height: 100vh;
+                            }
+                            .container {
+                                background-color: #fff;
+                                border: 1px solid #ddd;
+                                border-radius: 5px;
+                                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                                max-width: 400px;
+                                width: 100%;
+                                padding: 20px;
+                            }
+                            .header {
+                                background-color: #e74c3c;
+                                color: #fff;
+                                padding: 10px 20px;
+                                border-top-left-radius: 5px;
+                                border-top-right-radius: 5px;
+                                font-size: 18px;
+                                font-weight: bold;
+                                text-align: center;
+                            }
+                            .content {
+                                padding: 20px;
+                            }
+                            .content p {
+                                margin: 0 0 10px;
+                            }
+                            .test-details {
+                                background-color: #f4f4f4;
+                                border: 1px solid #ddd;
+                                padding: 10px;
+                                border-radius: 5px;
+                                margin-bottom: 20px;
+                            }
+                            .test-details p {
+                                margin: 5px 0;
+                                text-align: center;
+                            }
+                            .button-container {
+                                text-align: center;
+                            }
+                            .button {
+                                background-color: #3b82f6;
+                                color: #fff;
+                                padding: 10px 20px;
+                                text-decoration: none;
+                                border-radius: 5px;
+                                font-weight: bold;
+                                display: inline-block;
+                            }
+                            .footer {
+                                text-align: center;
+                                margin-top: 20px;
+                                font-size: 12px;
+                                color: #888;
+                            }
+                        </style>
                     </head>
                     <body>
-                      <div class="container">
-                        <div class="card">
-                          <div class="card-2">
-                            Please remember not to share any personal or sensitive user information to ensure privacy and security.
-                            <div>
-                              <h1>User Information:</h1>
-                              <div>
-                                <p>Name: ' . $payload['fname'] .' '. $payload['lname'] . ' </p>
-                                <p>Birthdate: ' . $payload['bdate'] . '</p>
-                                <p>Gender: ' . $payload['   gInput'] . '</p>
-                                <p>Civil Status: ' . $payload['cInput'] . '</p>
-                                <p>Address: ' . $payload['avalue'] . '</p>
-                                <p>Email: ' . $payload['evalue'] . '</p>
-                                <p>Position: ' . $payload['posvalue'] . '</p>
-                                <p>Password: ' . $payload['pvalue'] . '</p>
-                                <p>Contact Number: ' . $payload['cvalue'] . '</p>
-                              </div>
-                              <div>
-                                Kindly visit this link <a href="#">weavemanila.com</a> if you wish to log in.
-                              </div>
+                        <div class="container">
+                            <div class="header">WEAVEMANILA CO.</div>
+                            <div class="content">
+                                <p>The system of <strong>WEAVEMANILA CO.</strong> has been generate you an account. Below is the generated password of your account please visit this page to login <a href="http://example.com">http://example.com</a></p>
+                                <div class="test-details">
+                                    <p><strong>'. $generatedPassword . '</strong> <br>
+                                </div>
+                                <div class="button-container">
+                                    <a href="#" class="button">LOGIN NOW</a>
+                                </div>
                             </div>
-                          </div>
-
-                          <footer>
-                            <p>&copy; 2024 Weavemanila Co. All rights reserved.</p>
-                          </footer>
+                            <div class="footer">
+                                Need help? Just reply to this email!
+                            </div>
                         </div>
-                      </div>
                     </body>
-                    </html>';
+                    </html>
+                    ';
                 
                     $sendSmtpEmail = new \SendinBlue\Client\Model\SendSmtpEmail([
                         'subject' => 'User Account',
@@ -225,7 +260,6 @@
                     ]);
                 
                     $result = $apiInstance->sendTransacEmail($sendSmtpEmail);
-
                     $response = ['status' => 'success', 'message' => 'Successfully Add in the database'];
                     echo json_encode($response);
                     exit;

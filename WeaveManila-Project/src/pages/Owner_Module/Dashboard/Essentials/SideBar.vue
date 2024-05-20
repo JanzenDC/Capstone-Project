@@ -9,16 +9,16 @@ bordered
     <div class="flex">
       <div class="w-1/4 items-center flex justify-center" >
         <q-img
-          src="~assets/favicon-128x128.png"
+          :src="getCompanyImagePath()"
           alt="Description of the image"
           class="w-[50px] md:w-[60px]"
         />
       </div>
       <div class=" items-center flex justify-center" v-if="drawerWidth <= 80">
         <q-img
-          src="~assets/favicon-128x128.png"
+          :src="getCompanyImagePath()"
           alt="Description of the image"
-          class="w-[150px] md:w-[60px]"
+          class="w-[50px] md:w-[60px]"
         />
       </div>
       <div class="text-[#281c0f] text-[18px] w-3/4 flex justify-center items-center gap-1" v-if="drawerWidth !== 80">
@@ -81,7 +81,7 @@ bordered
           <router-link to="/dashboard/weaver-section">
             <li class="py-[2px] px-[40px] mt-3">Weavers List</li>
           </router-link>
-          
+
         </ul>
       </li>
       <!-- Settings Section -->
@@ -128,7 +128,7 @@ bordered
 
       <li class="py-[10px] px-[20px]" @click="toggleDrawer">
         <div class="flex items-center cursor-pointer gap-2 justify-between">
-          <div><q-icon name="inventory"/></div>   
+          <div><q-icon name="inventory"/></div>
         </div>
       </li>
 
@@ -174,6 +174,7 @@ bordered
 <script>
 import { useQuasar } from 'quasar';
 import { SessionStorage } from 'quasar';
+import axios from 'axios';
 
 export default {
   setup() {
@@ -201,6 +202,7 @@ export default {
       productionVisible: false,
       OpenLogout: false,
       modalVisible: false,
+      companyimage: '',
     };
   },
   beforeUnmount() {
@@ -208,8 +210,32 @@ export default {
   },
   mounted() {
     this.loadUserData();
+    this.fetchImageLogo();
   },
   methods: {
+    getCompanyImagePath() {
+      // Ensure userProfileImage is not null before creating the path
+      if (this.companyimage) {
+        return `/Logo/${this.companyimage}`;
+      }else if (this.companyimage == '') {
+        // Return a default path or handle it as per your requirement
+        return '/Logo/default_logo.png';
+      }
+      else {
+        // Return a default path or handle it as per your requirement
+        return '/Logo/default_logo.png';
+      }
+    },
+    fetchImageLogo(){
+      axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/MPO_Queries/mpo_data.php?get=companylogo`)
+      .then(response => {
+          console.log('selectAdmin', response.data.isAdmin);
+          this.companyimage = response.data.isAdmin.company_logo;
+        })
+        .catch(error => {
+          console.error('Error fetching categories:', error);
+        });
+    },
     loadUserData() {
       const userData = SessionStorage.getItem('information');
 
