@@ -157,15 +157,6 @@
           <q-input type='number' dense outlined v-model='qty_raw_issuance'/>
         </div>
       </div>
-      <p class='font-bold mt-3'>Received</p>
-      <div class='grid grid-cols-2 gap-2'>
-        <div>Qty Received
-          <q-input type='number' dense outlined v-model='qty_received'/>
-        </div>
-        <div>Waste/Gumon
-          <q-input type='number' dense outlined v-model='vWaste'/>
-        </div>
-      </div>
     </q-card-section>
 
     <q-card-actions align="right" class="bg-white text-teal">
@@ -553,7 +544,7 @@
         this.segregatorName = rowData.segregator;
         console.log(this.segregatorName);
         this.openModal2 = true;
-        axios.get(`http://localhost/Capstone-Project/backend/api/ProductionMonitoring/Weaver_Queries/segregator.php?get=onesegregator&id=${this.segregatorName}`)
+        axios.get(`http://localhost/Capstone-Project/backend/api/ProductionMonitoring/Weaver_Queries/segregator.php?get=onesegregator&segregatorName=${this.segregatorName}&mpoID=${this.mpoIDnumber}`)
         .then(response => {
           console.log(response.data)
           // this.qqty_raw = response.data.mpoSeg.qty_raw_for_issuance;

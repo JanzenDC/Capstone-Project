@@ -250,6 +250,7 @@ CREATE TABLE `mpo_segregate_tbl` (
 CREATE TABLE `mpo_segregator_projects` (
   `segreID` int(11) NOT NULL,
   `baseID` int(11) NOT NULL,
+  `mpoID` int(11) NOT NULL,
   `segregatorName` varchar(255) DEFAULT NULL,
   `date_issuance` date NOT NULL,
   `qty_issued` int(11) DEFAULT NULL,

@@ -42,25 +42,35 @@
             }
 
         }else if($payload['get'] === 'onesegregator'){
-          // $getData = $this->db->where('segregateID', $payload['id'])->getOne('mpo_segregate_tbl');
-          $getData2 = $this->db->where('segregatorName', $payload['id'])->get('mpo_segregator_projects');
-          if($getData2){
-              $response = [
-                  'status' => 'success',
-                  'message' => 'Successfully fetch data.',
-                  // 'segregatorData' => $getData2,
-                  'mpoSeg' => $getData2
-              ];
-              echo json_encode($response);
-              exit;
-          }else{
-              $response = [
-                  'status' => 'fail',
-                  'message' => 'There is no Data.',
-              ];
-              echo json_encode($response);
-              exit;
-          }
+
+            $getData1 = "
+                SELECT *
+                FROM mpo_segregator_projects
+                WHERE mpoID = ?
+                AND segregatorName = ?
+            ";
+            
+            $getData2 = $this->db->rawQuery($getData1, Array($payload['mpoID'], $payload['segregatorName']));
+            if ($getData2) {
+  
+                $response = [
+                    'status' => 'success',
+                    'message' => 'Successfully fetched data.',
+                    'mpoSeg' => $getData2
+                ];
+                echo json_encode($response);
+                exit;
+            } else {
+                // If no data is found for the given mpoID
+                $response = [
+                    'status' => 'fail',
+                    'message' => 'No data found for the given mpoID.'
+                ];
+                echo json_encode($response);
+                exit;
+            }
+
+
 
         }
         else{
