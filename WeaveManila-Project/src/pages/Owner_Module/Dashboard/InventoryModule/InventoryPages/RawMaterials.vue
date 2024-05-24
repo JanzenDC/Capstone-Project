@@ -39,19 +39,19 @@
       </router-link>
       <router-link to="issuance-section">
           <div class="flex w-[128px] text-[#89909e] border-t-2 border-l-2 h-[44px] py-3 px-5 gap-[8px] rounded items-center text-[14px]">
-            <q-icon name="group"/>
+            <q-icon name="group"/> 
             <p>Issuance</p>
           </div>
       </router-link>
     </div>
-    <div class="w-full bg-white p-4  h-[390px]">
+    <div class="w-full bg-white p-4  h-[470px]">
       <div class="flex justify-end items-end gap-4">
         <q-btn icon="download" />
         <q-btn icon="print" />
         <q-btn icon="refresh" />
       </div>
       <q-separator class="mt-9 "/>
-      <div class="overflox-y-auto overflow-x-hidden h-[300px] mt-3">
+      <div class="overflow-y-auto overflow-x-hidden h-[350px] mt-3">
         <div class="text-[16px] mt-3">
           <p> Date Purchased: {{ date_purchased }}</p>
           <p> Supplier: {{ supplier_name }}</p>

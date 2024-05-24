@@ -60,7 +60,7 @@
 
       </div>
       <q-separator class="mt-5"/>
-      <div class="overflow-y-auto overflow-x-hidden h-[390px] mt-3">
+      <div class="overflow-y-auto overflow-x-hidden h-[350px] mt-3">
         <div>
           <q-select dense outlined v-model="selectProduct" :options="optionssss" class='w-[180px] mb-3'/>
           <p>Quantity In: {{ qty_in }}</p>
@@ -563,13 +563,21 @@
         });
       },
       submitForm() {
-        if (!this.selectSegregator || !this.vData || !this.qty_raw_issuance || !this.qty_received || !this.vWaste) {
+        if (!this.selectSegregator || !this.vData || !this.qty_raw_issuance) {
           this.$q.notify({
             type: 'negative',
             message: 'All fields are required'
           });
           return;
         }
+        if (this.qty_raw_issuance == 0 || this.qty_raw_issuance == '0') {
+          this.$q.notify({
+            type: 'negative',
+            message: 'Quantity Raw Issuance cannot be zero.'
+          });
+          return;
+        }
+
         const calc1 = parseFloat(this.qty_received) + parseFloat(this.vWaste);
         const calc2 = parseFloat(this.qty_raw_issuance) - calc1;
 
