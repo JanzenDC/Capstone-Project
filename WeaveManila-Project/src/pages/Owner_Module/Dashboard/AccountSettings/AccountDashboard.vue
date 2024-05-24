@@ -44,7 +44,7 @@
         <div>
           <p class='font-bold text-[24px]'>Profile Picture</p>
           <q-btn dense icon='upload' label="Upload Photo" @click="uploadDialog = true" class="bg-[#634832] text-white mt-3"/>
-          <p class='mt-3'>We support PNGs</p>
+          <p class='mt-3'>We accept JPEG, PNG and JPG</p>
             <q-dialog v-model="uploadDialog" persistent transition-show="scale" transition-hide="scale">
 
               <q-card class="text-Black" style="width: 350px">
@@ -70,11 +70,12 @@
                         @update:model-value="handleFileChange"
                         dense outlined
                         type="file"
-                        accept="image/png"
-                        hint="Only PNG format picture allowed."
+                        accept="image/*"
+                        hint="All image formats are allowed."
                         v-model="selectedFile"
                         class='w-[240px]'
                       />
+
                       <div v-if="previewImage">
                         <q-btn flat label="Cancel Preview" @click="cancelPreview" class="q-mt-sm" />
                       </div>
@@ -249,7 +250,7 @@
             <q-btn label='Save Changes' type='submit' class='bg-[#634832] text-white' />
           </div>
         </q-form>
- 
+
       </div>
 
       <div v-if='isAdmin == 1' class='items-center border-orange-100 border-2 rounded drop-shadow-md p-4 mt-3'>
@@ -473,7 +474,7 @@ export default {
                 caption: 'Your password has been changed successfully.',
                 color: 'green',
             });
-  
+
             SessionStorage.set('information', JSON.stringify(existingInformation));
             this.loadUserData();
             this.currentPW = '';
