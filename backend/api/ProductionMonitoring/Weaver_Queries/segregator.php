@@ -41,38 +41,57 @@
                 exit;
             }
 
-        }else if($payload['get'] === 'onesegregator'){
+        }else if($payload['type'] == '4'){
 
-            $getData1 = "
-                SELECT *
-                FROM mpo_segregator_projects
-                WHERE mpoID = ?
-                AND segregatorName = ?
-            ";
-            
-            $getData2 = $this->db->rawQuery($getData1, Array($payload['mpoID'], $payload['segregatorName']));
-            if ($getData2) {
-  
-                $response = [
-                    'status' => 'success',
-                    'message' => 'Successfully fetched data.',
-                    'mpoSeg' => $getData2
-                ];
+            $currentValues = $this->db->rawQuery("
+                SELECT
+                    mpoID,
+                    segregatorName,
+                    MAX(qty_issued) AS max_qty_issued,
+                    MAX(qty_received) AS max_qty_received,
+                    MAX(waste_gumon) AS max_waste_gumon,
+                    GREATEST(0, (MAX(qty_received) + MAX(waste_gumon) - MAX(qty_issued))) AS balance
+                FROM
+                    mpo_segregator_projects
+                WHERE
+                    mpoID = ? AND segregatorName = ?
+                GROUP BY
+                    mpoID,
+                    segregatorName
+            ", Array($payload['mpoID'], $payload['selectSegregator']));
+        
+                $response = ['status' => '', 'message' => $currentValues];
                 echo json_encode($response);
                 exit;
-            } else {
-                // If no data is found for the given mpoID
-                $response = [
-                    'status' => 'fail',
-                    'message' => 'No data found for the given mpoID.'
-                ];
-                echo json_encode($response);
-                exit;
-            }
-
-
-
+            // if(!$currentValues){
+            //     $insertData = [
+            //         'baseID' => $payload['selectedBaseID'],
+            //         'segregatorName' => $payload['selectSegregator'],
+            //         'date_issuance' => $payload['vData'],
+            //         'qty_issued' => 0, // Assuming qty_issued is 0 for the new record
+            //         'qty_received' => $new_qty_received,
+            //         'waste_gumon' => $new_waste_gumon,
+            //         'process' => $payload['selectProcess'],
+            //         'mpoID' => $payload['mpoID'] // Don't forget to add mpoID to the insert data
+            //     ];
+            //     $insertQuery = $this->db->insert('mpo_segregator_projects', $insertData);
+            //     if($insertQuery){
+            //         $response = ['status' => 'success', 'message' => 'Data inserted successfully'];
+            //         echo json_encode($response);
+            //         exit;
+            //     } else {
+            //         $response = ['status' => 'fail', 'message' => 'There is a problem to insert data'];
+            //         echo json_encode($response);
+            //         exit;
+            //     }
+            // } else {
+            //     $response = ['status' => 'fail', 'message' => 'Balance would be negative, cannot insert data'];
+            //     echo json_encode($response);
+            //     exit;
+            // }
         }
+        
+        
         else{
             $response = [
                 'status' => 'fail',
@@ -129,7 +148,7 @@
                     exit;
                 }
             }
-        }else if($payload['type'] == '2'){
+        } if($payload['type'] == '2'){
             $requiredFields = ['segregatorAddress','v_fname', 'v_lname', 'v_contactnumber', 'v_emailaddress', 'v_selectedID'];
             foreach ($requiredFields as $field) {
                 if (!isset($payload[$field])) {
@@ -188,29 +207,72 @@
               echo json_encode($response);
               exit;
             }
-        }else if($payload['type'] == '4'){
-            $getMpoID = $this->db->where('baseID', $payload['selectedBaseID'])->getOne('mpo_base');
-
-            $insertData = [
-                'baseID' => $payload['selectedBaseID'],
-                'segregatorName' => $payload['selectSegregator'],
-                'date_issuance' => $payload['vData'],
-                'qty_received' => $payload['qty_receiveds'],
-                'waste_gumon' => $payload['vWastes'],
-                'process' => $payload['selectProcess'],
-            ];
-            $insertQuery = $this->db->insert('mpo_segregator_projects', $insertData);
-            if($insertQuery){
- 
-              $response = ['status' => 'success', 'message' => 'Data inserted successfully'];
-              echo json_encode($response);
-              exit;
-            }else{
-              $response = ['status' => 'fail', 'message' => 'There is a problem to insert data'];
-              echo json_encode($response);
-              exit;
+        } else if($payload['type'] == '4'){
+            $mpoID = $payload['mpoID'];
+        
+            // Check if there is existing data for the specified mpoID and segregatorName
+            $firstQuery = $this->db->rawQueryOne("
+                SELECT
+                    COUNT(*) AS count
+                FROM
+                    mpo_segregator_projects
+                WHERE
+                    mpoID = ? AND segregatorName = ?
+            ", [$mpoID, $payload['selectSegregator']]);
+        
+            if ($firstQuery['count'] > 0) {
+                // Retrieve the current max values and balance
+                $currentValues = $this->db->rawQueryOne("
+                    SELECT
+                        mpoID,
+                        segregatorName,
+                        MAX(qty_issued) AS max_qty_issued,
+                        MAX(qty_received) AS max_qty_received,
+                        MAX(waste_gumon) AS max_waste_gumon,
+                        GREATEST(0, (MAX(qty_received) + MAX(waste_gumon) - MAX(qty_issued))) AS balance
+                    FROM
+                        mpo_segregator_projects
+                    WHERE
+                        mpoID = ? AND segregatorName = ?
+                    GROUP BY
+                        mpoID,
+                        segregatorName
+                ", [$mpoID, $payload['selectSegregator']]);
+        
+                if ($currentValues['balance'] >= 0) {
+                    $insertData = [
+                        'baseID' => $payload['selectedBaseID'],
+                        'segregatorName' => $payload['selectSegregator'],
+                        'date_issuance' => $payload['vData'],
+                        'qty_issued' => 0, // Assuming qty_issued is 0 for the new record
+                        'qty_received' => $payload['qty_receiveds'],
+                        'waste_gumon' =>  $payload['vWastes'],
+                        'process' => $payload['selectProcess'],
+                        'mpoID' => $mpoID // Don't forget to add mpoID to the insert data
+                    ];
+                    $insertQuery = $this->db->insert('mpo_segregator_projects', $insertData);
+                    if ($insertQuery) {
+                        $response = ['status' => 'success', 'message' => 'Data inserted successfully'];
+                        echo json_encode($response);
+                        exit;
+                    } else {
+                        $response = ['status' => 'fail', 'message' => 'There is a problem to insert data'];
+                        echo json_encode($response);
+                        exit;
+                    }
+                } else {
+                    $response = ['status' => 'fail', 'message' => 'Balance would be negative, cannot insert data'];
+                    echo json_encode($response);
+                    exit;
+                }
+            } else {
+                $response = ['status' => 'fail', 'message' => 'No existing data for the specified mpoID and segregatorName'];
+                echo json_encode($response);
+                exit;
             }
         }
+        
+        
         else{
             $response = ['status' => 'fail', 'message' => 'Invalid Type for payload'];
             echo json_encode($response);

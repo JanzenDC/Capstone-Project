@@ -465,7 +465,7 @@
         return balance;
       },
       submitReceived() {
-        if (!this.selectSegregator || !this.vData || !this.qty_receiveds || !this.vWastess) {
+        if (!this.selectSegregator || !this.vData || !this.qty_receiveds || !this.vWastes) {
           this.$q.notify({
             type: 'negative',
             message: 'All fields are required'
@@ -481,6 +481,7 @@
           vWastes: this.vWastes,
           selectProcess: this.selectProcess,
           selectTwine: this.selectTwine,
+          mpoID: this.mpoIDnumber,
           type: 4,
         }
         console.log(formData)
