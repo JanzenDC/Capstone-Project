@@ -382,89 +382,89 @@
 
 <!-- PRODUCT RECIEVED -->
 <q-dialog v-model="product_dialog">
-<q-card style="width: 1024px; max-width: 80vw;">
-  <q-card-section class="row items-center q-pb-none">
-    <div class="flex items-center gap-2">
-      <div class='p-2 text-[18px] border '>
-        <q-icon name="local_mall"/>
+  <q-card style="width: 1024px; max-width: 80vw;">
+    <q-card-section class="row items-center q-pb-none">
+      <div class="flex items-center gap-2">
+        <div class='p-2 text-[18px] border '>
+          <q-icon name="local_mall"/>
+        </div>
+        <span class="font-semibold text-[18px]">Product Received</span>
       </div>
-      <span class="font-semibold text-[18px]">Product Received</span>
-    </div>
-    <q-space />
-    <q-btn icon="close" flat round dense v-close-popup />
-  </q-card-section>
+      <q-space />
+      <q-btn icon="close" flat round dense v-close-popup />
+    </q-card-section>
 
-  <q-card-section class="text-[18px]">
-    <div class='grid grid-cols-2 gap-10'>
-      <div>
-        <label>MPO Ref. No</label>
-        <q-input dense outlined disable v-model="mpo_ref"/>
+    <q-card-section class="text-[18px]">
+      <div class='grid grid-cols-2 gap-10'>
+        <div>
+          <label>MPO Ref. No</label>
+          <q-input dense outlined disable v-model="mpo_ref"/>
+        </div>
+        <div>
+          <label>Date Received</label>
+          <q-input dense outlined v-model="date_received" type='date' required/>
+        </div>
       </div>
-      <div>
-        <label>Date Received</label>
-        <q-input dense outlined v-model="date_received" type='date' required/>
-      </div>
-    </div>
-    <q-table
-      dense bordered
-      :rows="selectedRows"
-      :columns="selectedColumns"
-      row-key="name"
-      class="my-sticky-header-table-second mt-3"
-    >
-    <template v-slot:body="props">
-      <q-tr :props="props">
-        <q-td key="id" :props="props">
-          {{ props.row.id }}
-        </q-td>
+      <q-table
+        dense bordered
+        :rows="selectedRows"
+        :columns="selectedColumns"
+        row-key="name"
+        class="my-sticky-header-table-second mt-3"
+      >
+      <template v-slot:body="props">
+        <q-tr :props="props">
+          <q-td key="id" :props="props">
+            {{ props.row.id }}
+          </q-td>
 
-        <q-td key="sproducts" :props="props">
-          {{ props.row.sproducts }}
-        </q-td>
+          <q-td key="sproducts" :props="props">
+            {{ props.row.sproducts }}
+          </q-td>
 
-        <q-td key="sdescription" :props="props">
-          {{ props.row.sdescription }}
-        </q-td>
+          <q-td key="sdescription" :props="props">
+            {{ props.row.sdescription }}
+          </q-td>
 
-        <q-td key="sqtypurchased" :props="props">
-          {{ props.row.sqtypurchased }}
-        </q-td>
+          <q-td key="sqtypurchased" :props="props">
+            {{ props.row.sqtypurchased }}
+          </q-td>
 
-        <q-td key="sunit" :props="props">
-          {{ props.row.sunit }}
-        </q-td>
+          <q-td key="sunit" :props="props">
+            {{ props.row.sunit }}
+          </q-td>
 
-        <q-td key="sqtyrecieved" :props="props">
-          {{ props.row.sqtyrecieved }}
-        </q-td>
+          <q-td key="sqtyrecieved" :props="props">
+            {{ props.row.sqtyrecieved }}
+          </q-td>
 
-        <q-td key="sreceived" :props="props">
-          {{ props.row.sreceived }}
-          <q-popup-edit v-model="props.row.sreceived" title="Update Description" :disable="props.row.sstatus === 2" buttons v-slot="scope">
-            <q-input type="number" v-model="scope.value" dense autofocus />
-          </q-popup-edit>
-        </q-td>
+          <q-td key="sreceived" :props="props">
+            {{ props.row.sreceived }}
+            <q-popup-edit v-model="props.row.sreceived" title="Update Description" :disable="props.row.sstatus === 2" buttons v-slot="scope">
+              <q-input type="number" v-model="scope.value" dense autofocus />
+            </q-popup-edit>
+          </q-td>
 
 
 
-        <q-td key="sstatus" :props="props">
-          <q-badge :color="calculateStatusColor(props.row.sstatus)">
-            {{ getStatusWord(props.row.sstatus) }}
-          </q-badge>
-        </q-td>
-      </q-tr>
-    </template>
-    <!-- <template v-slot:body-cell-sstatus="props">
-      <q-badge :color="calculateStatusColor(props.row.sstatus)">
-        {{ getStatusWord(props.row.sstatus) }}
-      </q-badge>
-    </template> -->
-    </q-table>
-  </q-card-section>
-  <q-card-actions align="right">
-    <q-btn @click="submitHandler" class="bg-[#634832] text-white" label="Submit" />
-  </q-card-actions>
-</q-card>
+          <q-td key="sstatus" :props="props">
+            <q-badge :color="calculateStatusColor(props.row.sstatus)">
+              {{ getStatusWord(props.row.sstatus) }}
+            </q-badge>
+          </q-td>
+        </q-tr>
+      </template>
+      <!-- <template v-slot:body-cell-sstatus="props">
+        <q-badge :color="calculateStatusColor(props.row.sstatus)">
+          {{ getStatusWord(props.row.sstatus) }}
+        </q-badge>
+      </template> -->
+      </q-table>
+    </q-card-section>
+    <q-card-actions align="right">
+      <q-btn @click="submitHandler" class="bg-[#634832] text-white" label="Submit" />
+    </q-card-actions>
+  </q-card>
 </q-dialog>
 </q-page>
 <q-dialog v-model="OpenLogout">
@@ -605,7 +605,7 @@ export default {
         { name: 'sunit', align: 'left', label: 'Unit', field: 'sunit', sortable: true },
         { name: 'sqtyrecieved', align: 'center', label: 'Quantity Received', field: 'sqtyrecieved', sortable: true },
         { name: 'sreceived', align: 'left', label: 'Received', field: 'sreceived', sortable: true },
-        { name: 'sstatus', align: 'left', label: 'Status', field: 'sstatus', sortable: true },
+        // { name: 'sstatus', align: 'left', label: 'Status', field: 'sstatus', sortable: true },
       ],
       selectedRows: [],
       date_received: '',
@@ -613,35 +613,35 @@ export default {
       statuss: 'pending',
     };
   },
-  watch: {
-    selectedRows: {
-      handler(newRows, oldRows) {
-        newRows.forEach(row => {
-          // Check if received quantity equals or exceeds purchased quantity
-          if (row.sreceived == row.sqtypurchased) {
-            row.sstatus = 2; // Set status to 2 if received quantity equals purchased quantity
-          } else if (row.sreceived === 0 || row.sreceived === '0') {
-            row.sstatus = 0;
-          } else if (row.sreceived < row.sqtypurchased) { // Check if received quantity is lower than purchased quantity
-            row.sstatus = 1; // Set status to 1 if received quantity is lower than purchased quantity
-          } else { // Default case: received quantity is higher than purchased quantity or invalid
-            row.sstatus = 0; // Set status to 0
-          }
-        });
-        const invalidRows = newRows.filter(row => row.sreceived > row.sqtypurchased);
-        if (invalidRows.length > 0) {
-          invalidRows.forEach(row => {
-            row.sreceived = 0;
-          });
-          this.$q.notify({
-            type: 'negative',
-            message: 'Received quantity cannot exceed purchased quantity in some rows.'
-          });
-        }
-      },
-      deep: true
-    }
-  },
+  // watch: {
+  //   selectedRows: {
+  //     handler(newRows, oldRows) {
+  //       newRows.forEach(row => {
+  //         // Check if received quantity equals or exceeds purchased quantity
+  //         if (row.sreceived == row.sqtypurchased) {
+  //           row.sstatus = 2; // Set status to 2 if received quantity equals purchased quantity
+  //         } else if (row.sreceived === 0 || row.sreceived === '0') {
+  //           row.sstatus = 0;
+  //         } else if (row.sreceived < row.sqtypurchased) { // Check if received quantity is lower than purchased quantity
+  //           row.sstatus = 1; // Set status to 1 if received quantity is lower than purchased quantity
+  //         } else { // Default case: received quantity is higher than purchased quantity or invalid
+  //           row.sstatus = 0; // Set status to 0
+  //         }
+  //       });
+  //       const invalidRows = newRows.filter(row => row.sreceived > row.sqtypurchased);
+  //       if (invalidRows.length > 0) {
+  //         invalidRows.forEach(row => {
+  //           row.sreceived = 0;
+  //         });
+  //         this.$q.notify({
+  //           type: 'negative',
+  //           message: 'Received quantity cannot exceed purchased quantity in some rows.'
+  //         });
+  //       }
+  //     },
+  //     deep: true
+  //   }
+  // },
   computed: {
     filteredRows() {
       if (!this.searchQuery) return this.daterows;
@@ -671,6 +671,7 @@ export default {
   methods: {
     setStatus(newStatus) {
       this.statuss = newStatus;
+      console.log(this.statuss)
       let select = 0;
       if (newStatus === 'received') {
         select = 2;
@@ -683,7 +684,6 @@ export default {
       }
       axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/MPO_Queries/mpo_data.php?get=alldata&id=${select}`)
       .then(response => {
-        console.log(response.data)
 
         try {
             const groupedData = response.data.categoryData.reduce((acc, row) => {
@@ -693,6 +693,7 @@ export default {
                       mpo_number: row.mpoID,
                       supplier: row.supplier_name,
                       date_purchase: row.date_purchased,
+                      handler_received: [],
                       product: [],
                       qty: [],
                       total: [],
@@ -702,6 +703,7 @@ export default {
                       date_received: [],
                   };
               }
+              acc[row.mpoID].handler_received.push(row.handler_received);
               acc[row.mpoID].amount.push(row.subtotal);
               acc[row.mpoID].product.push(row.item_name);
               acc[row.mpoID].qty.push(row.quantity);
@@ -724,7 +726,7 @@ export default {
               acc[row.mpoID].status.push(status);
               return acc;
           }, {});
-
+          console.log('Test: ',groupedData)
           const groupedArray = Object.values(groupedData);
 
           // Filter out ungrouped data (where only one data point exists)
@@ -832,7 +834,6 @@ export default {
     fetchImageLogo(){
       axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/MPO_Queries/mpo_data.php?get=companylogo`)
       .then(response => {
-          console.log('selectAdmin', response.data.isAdmin);
           this.companyimage = response.data.isAdmin.company_logo;
         })
         .catch(error => {
@@ -1246,7 +1247,19 @@ export default {
         });
     },
     ProductReceived(targetID){
-      axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/MPO_Queries/viewform.php?mpoform=${targetID}`)
+
+      let select = 0;
+      if (this.statuss === 'received') {
+        select = 2;
+      }
+      if (this.statuss === 'partialReceived') {
+        select = 1;
+      }
+      if (this.statuss === 'pending') {
+        select = 0;
+      }
+      console.log(select);
+      axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/MPO_Queries/viewform.php?mpoform=${targetID}&selected=${select}`)
       .then(response => {
         this.product_dialog = true;
         const responseData = response.data;

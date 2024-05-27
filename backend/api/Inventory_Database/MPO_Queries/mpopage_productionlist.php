@@ -35,61 +35,77 @@
                 $productData = json_decode($productJSON, true);
                 if ($productData !== null) { 
                     $selectedData = $this->db->where('baseID', $productData['sqlid'])->getOne('mpo_base');
-                    if($selectedData){
-                        $data = [
-                            'quantity_received' => $productData['sreceived'],
-                            'quantity_balance' => $productData['sreceived'],
-                            'status' => $productData['sstatus'],
-                        ];
-                        $result = $this->db->where('baseID', $productData['sqlid'])->update('mpo_base', $data);
-                        if ($productData['sstatus'] != $selectedData['status'] || $productData['sreceived'] != $selectedData['quantity_received']) {
-                          // Check if data already exists for the baseID and status '2'
-                          $params = [$selectedData['baseID'], 2];
-                          $users = $this->db->rawQuery("SELECT * FROM mpo_datereceived_logs WHERE baseID = ? AND status = ?", $params);
-
-                          // If no existing data found, insert new data
-                          if (!$users) {
-      
-                              $date_received = isset($_POST['date_received']) ? $_POST['date_received'] : null;
-                              $status = isset($productData['sstatus']) ? $productData['sstatus'] : null;
-
-                              // Prepare data for insertion
-                              $dataInsert = [
-                                  'baseID' => $selectedData['baseID'],
-                                  'mpoID' => $selectedData['mpoID'],
-                                  'date_received' => $date_received,
-                                  'status' => $status,
-                                  'received' => $productData['sreceived']
-                              ];
-
-                              // Insert new data
-                              $result = $this->db->insert('mpo_datereceived_logs', $dataInsert);
-                              $insertedProducts[] = $dataInsert;
-                              if ($result) {
-                                  // Data inserted successfully
+                    // add validation first if $productData['sreceived']  cannot be more than handler_received
+                    // $productData['sreceived'] - handler_received = $calcualte
+                    // the quantity_received and quantity_balance must have update their data +$productData['sreceived']
+                    if ($productData['sreceived'] <= $selectedData['handler_received']) {
+                        if($selectedData){
+                            $calculate = $selectedData['handler_received'] - $productData['sreceived'];
+                            $newQuantityReceived = $selectedData['quantity_received'] + $productData['sreceived'];
+                            if ($newQuantityReceived == $selectedData['quantity']) {
+                                $status = 2;
+                            } elseif ($newQuantityReceived > 0) {
+                                $status = 1;
+                            } else {
+                                $status = 0;
+                            }
+                            $data = [
+                                'quantity_received' => $selectedData['quantity_received'] + $productData['sreceived'],
+                                'quantity_balance' => $selectedData['quantity_balance'] + $productData['sreceived'],
+                                'status' => $status,
+                                'handler_received' => $calculate,
+                            ];
+                            $result = $this->db->where('baseID', $productData['sqlid'])->update('mpo_base', $data);
+                            if ($productData['sstatus'] != $selectedData['status'] || $productData['sreceived'] != $selectedData['quantity_received']) {
+                              $params = [$selectedData['baseID'], 2];
+                              $users = $this->db->rawQuery("SELECT * FROM mpo_datereceived_logs WHERE baseID = ? AND status = ?", $params);
+    
+                              if (!$users) {
+          
+                                  $date_received = isset($_POST['date_received']) ? $_POST['date_received'] : null;
+                                  $status = isset($productData['sstatus']) ? $productData['sstatus'] : null;
+    
+                                  $dataInsert = [
+                                      'baseID' => $selectedData['baseID'],
+                                      'mpoID' => $selectedData['mpoID'],
+                                      'date_received' => $date_received,
+                                      'status' => $status,
+                                      'received' => $productData['sreceived']
+                                  ];
+    
+                                  $result = $this->db->insert('mpo_datereceived_logs', $dataInsert);
+                                  $insertedProducts[] = $dataInsert;
+                                  if ($result) {
+                                      $response = [
+                                          'status' => 'success',
+                                          'message' => 'Data inserted successfully.',
+                                      ];
+                                  } else {
+                                      $response = [
+                                          'status' => 'error',
+                                          'message' => 'Failed to insert data.',
+                                      ];
+                                  }
+                              } else {
                                   $response = [
                                       'status' => 'success',
-                                      'message' => 'Data inserted successfully.',
-                                  ];
-                              } else {
-                                  // Handle insertion failure
-                                  $response = [
-                                      'status' => 'error',
-                                      'message' => 'Failed to insert data.',
+                                      'message' => "Data already exists for the given baseID and status.",
                                   ];
                               }
-                          } else {
-                              // If there is existing data, return a message without inserting new data
-                              $response = [
-                                  'status' => 'success',
-                                  'message' => "Data already exists for the given baseID and status.",
-                              ];
-                          }
+                            }
+                        }else{
+                            $response = [
+                                'status' => 'fail',
+                                'message' => 'Error: Invalid target MPO product ID.',
+                            ];
+                            echo json_encode($response);
+                            exit;
                         }
-                    }else{
+                    }
+                    else{
                         $response = [
                             'status' => 'fail',
-                            'message' => 'Error: Invalid target MPO product ID.',
+                            'message' => "Error: Invalid data you can input between 1-" . $selectedData['handler_received'],
                         ];
                         echo json_encode($response);
                         exit;

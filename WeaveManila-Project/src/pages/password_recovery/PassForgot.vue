@@ -7,7 +7,7 @@
     />
     <div class="bg-[#9e896a]  md:bg-white md:w-[800px] p-4 h-64 md:h-screen">
       <q-img
-      src="../../assets/favicon-128x128.png"
+      :src="getCompanyImagePath()"
       alt="Description of the image"
       class="w-[46px] md:w-[96px]"
       />
@@ -106,9 +106,36 @@ export default {
       responseEmail: '',
       responseCode: '',
       responseChangepass: '',
+      companyimage: ''
     };
   },
+  mounted() {
+    this.fetchImageLogo();
+  },
   methods: {
+    getCompanyImagePath() {
+      // Ensure userProfileImage is not null before creating the path
+      if (this.companyimage) {
+        return `/Logo/${this.companyimage}`;
+      }else if (this.companyimage == '') {
+        // Return a default path or handle it as per your requirement
+        return '/Logo/default_logo.png';
+      }
+      else {
+        // Return a default path or handle it as per your requirement
+        return '/Logo/default_logo.png';
+      }
+    },
+    fetchImageLogo(){
+      axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/MPO_Queries/mpo_data.php?get=companylogo`)
+      .then(response => {
+          console.log('selectAdmin', response.data.isAdmin);
+          this.companyimage = response.data.isAdmin.company_logo;
+        })
+        .catch(error => {
+          console.error('Error fetching categories:', error);
+        });
+    },
     clearSession() {
       sessionStorage.clear();
       this.$router.push('/');

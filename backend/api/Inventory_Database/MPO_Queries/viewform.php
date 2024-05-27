@@ -27,9 +27,11 @@
             echo json_encode($response);
             exit;
         }
+        
         $existingRecord = $this->db->where('mpoID', $payload['mpoform'])->getOne('mpo_tbl');
         $supplierTarget = $existingRecord['supplierID'];
         if($existingRecord){
+            // add here a query where selected only the status equal to $payload['select']
             $getRecord = $this->db->where('mpoID', $payload['mpoform'])->get('mpo_base');
             $supplierRecord = $this->db->where('supplierID', $supplierTarget)->getOne('w_supplierlist');
             $response = [

@@ -229,7 +229,6 @@ export default {
     fetchImageLogo(){
       axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/MPO_Queries/mpo_data.php?get=companylogo`)
       .then(response => {
-          console.log('selectAdmin', response.data.isAdmin);
           this.companyimage = response.data.isAdmin.company_logo;
         })
         .catch(error => {

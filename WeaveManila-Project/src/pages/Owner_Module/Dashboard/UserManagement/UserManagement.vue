@@ -84,7 +84,7 @@
         <q-form @submit="onSubmit">
           <q-card-section class='overflow-x-hidden overflow-y-auto h-[450px]'>
             <div class="text-h6 font-bold text-[#667085]">Personal Information</div>
-            <div class="grid grid-cols-2 gap-1">
+            <div class="grid grid-cols-2 gap-2">
               <!-- Firstname -->
               <div>
                 <p class="text-[15px]">First Name</p>
@@ -174,7 +174,7 @@
               </div>
             </div>
             <div class="text-h6 font-bold text-[#667085]">Contact Information</div>
-            <div class="grid grid-cols-2 gap-5">
+            <div class="grid grid-cols-2 gap-2">
               <!-- Email -->
               <div>
                 <p class="text-[15px]">Email Address</p>

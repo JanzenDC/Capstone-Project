@@ -51,6 +51,7 @@
                         base.quantity,
                         base.unit,
                         base.quantity_received,
+                        base.handler_received,
                         base.unit_price,
                         base.status,
                         base.discounts,
@@ -347,6 +348,7 @@
                             'unit' => $productData['unit'],
                             'unit_price' => $productData['unit_price'],
                             'subtotal' => $productData['total'],
+                            'handler_received' => $productData['quantity'],
                         ];
                         $test = $this->db->insert('mpo_base', $productDataToInsert);
                         $insertedProducts[] = $productDataToInsert;
