@@ -1263,6 +1263,7 @@ export default {
       .then(response => {
         this.product_dialog = true;
         const responseData = response.data;
+        console.log(responseData)
         const mpoData = responseData.MpoData;
         const mpo_ref = `WEMA-MPO-${mpoData.date_purchased}-${mpoData.mpoID}`;
         this.mpo_ref = mpo_ref;

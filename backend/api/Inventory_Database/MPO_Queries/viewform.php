@@ -31,13 +31,11 @@
         $existingRecord = $this->db->where('mpoID', $payload['mpoform'])->getOne('mpo_tbl');
         $supplierTarget = $existingRecord['supplierID'];
         if($existingRecord){
-            // add here a query where selected only the status equal to $payload['select']
-            // $getRecord = $this->db->where('mpoID', $payload['mpoform'])->get('mpo_base');
             $sqlQuery = 'SELECT *
             FROM mpo_base
             WHERE mpoID = ? AND status = ?
             ';
-            $getRecord = $this->db->rawQuery($sqlQuery, Array($payload['targetID'], $payload['select']));
+            $getRecord = $this->db->rawQuery($sqlQuery, Array($payload['mpoform'], $payload['selected']));
             $supplierRecord = $this->db->where('supplierID', $supplierTarget)->getOne('w_supplierlist');
             $response = [
                 'status' => 'success',
