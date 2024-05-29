@@ -416,7 +416,7 @@ export default {
       const formData = new FormData();
       formData.append('file', this.companyLogos);
       formData.append('id', this.id);
-      axios.post(`http://localhost/Capstone-Project/backend/api/Account_Settings/changelogo.php/`, formData)
+      axios.post(`https://weavemanila.optikl.ink/backend/api/Account_Settings/changelogo.php/`, formData)
       .then((response) =>{
         this.responseStatus = response.data.status;
         this.responseInformation = response.data.information;
@@ -462,7 +462,7 @@ export default {
         currentPass: this.currentPW,
         newpass: this.changePW,
       }
-      axios.put(`http://localhost/Capstone-Project/backend/api/Account_Settings/changepassword.php/${this.id}`, formData)
+      axios.put(`https://weavemanila.optikl.ink/backend/api/Account_Settings/changepassword.php/${this.id}`, formData)
       .then((response) =>{
         this.responseStatus = response.data.status;
         this.responseInformation = response.data.information;
@@ -508,7 +508,7 @@ export default {
         Address: this.addressValue
       };
       console.log(formData)
-      axios.put(`http://localhost/Capstone-Project/backend/api/Account_Settings/basicinfo.php/${this.email}`, formData)
+      axios.put(`https://weavemanila.optikl.ink/backend/api/Account_Settings/basicinfo.php/${this.email}`, formData)
       .then((response) =>{
         console.log(response.data)
         this.responseStatus = response.data.status;
@@ -626,7 +626,7 @@ export default {
       formData.append("file", this.selectedFile);
       formData.append("id", id);
 
-      axios.post(`http://localhost/Capstone-Project/backend/api/Account_Settings/uploadprofile.php`, formData)
+      axios.post(`https://weavemanila.optikl.ink/backend/api/Account_Settings/uploadprofile.php`, formData)
       .then((response) => {
         console.log(response.data);
         this.responseStatus = response.data.status;
@@ -708,7 +708,7 @@ export default {
       }
     },
     checkUserStatus() {
-        axios.get(`http://localhost/Capstone-Project/backend/api/verification.php?email=${this.email}`)
+        axios.get(`https://weavemanila.optikl.ink/backend/api/verification.php?email=${this.email}`)
         .then(response => {
 
         const information = response.data.information;

@@ -485,7 +485,7 @@
           type: 4,
         }
         console.log(formData)
-        axios.post('http://localhost/Capstone-Project/backend/api/ProductionMonitoring/Weaver_Queries/segregator.php/', formData)
+        axios.post('https://weavemanila.optikl.ink/backend/api/ProductionMonitoring/Weaver_Queries/segregator.php/', formData)
         .then(response => {
           console.log(response.data)
           const Status = response.data.status;
@@ -530,7 +530,7 @@
             formData.append('products[]', JSON.stringify(segregateData));
         });
         this.openModal2 = false;
-        axios.post('http://localhost/Capstone-Project/backend/api/ProductionMonitoring/Weaver_Queries/segregator.php/', formData)
+        axios.post('https://weavemanila.optikl.ink/backend/api/ProductionMonitoring/Weaver_Queries/segregator.php/', formData)
         .then(response => {
         }).catch(error => {
               console.error('Error fetching data:', error);
@@ -545,7 +545,7 @@
         this.segregatorName = rowData.segregator;
         console.log(this.segregatorName);
         this.openModal2 = true;
-        axios.get(`http://localhost/Capstone-Project/backend/api/ProductionMonitoring/Weaver_Queries/segregator.php?get=onesegregator&segregatorName=${this.segregatorName}&mpoID=${this.mpoIDnumber}`)
+        axios.get(`https://weavemanila.optikl.ink/backend/api/ProductionMonitoring/Weaver_Queries/segregator.php?get=onesegregator&segregatorName=${this.segregatorName}&mpoID=${this.mpoIDnumber}`)
         .then(response => {
           console.log(response.data)
           // this.qqty_raw = response.data.mpoSeg.qty_raw_for_issuance;
@@ -597,7 +597,7 @@
           type: 3,
         }
         console.log(formData)
-        axios.post('http://localhost/Capstone-Project/backend/api/ProductionMonitoring/Weaver_Queries/segregator.php/', formData)
+        axios.post('https://weavemanila.optikl.ink/backend/api/ProductionMonitoring/Weaver_Queries/segregator.php/', formData)
         .then(response => {
           console.log(response.data)
           const Status = response.data.status;
@@ -634,7 +634,7 @@
         this.IssueDialog = true;
       },
       loadWeaverData(){
-        axios.get(`http://localhost/Capstone-Project/backend/api/ProductionMonitoring/Weaver_Queries/segregator.php?get=segregator`)
+        axios.get(`https://weavemanila.optikl.ink/backend/api/ProductionMonitoring/Weaver_Queries/segregator.php?get=segregator`)
         .then(response => {
           this.segOptions = response.data.segregatorData.map(segregator => ({
             value: segregator.segregatorID, // Assuming segregatorID is the value you want to use
@@ -647,7 +647,7 @@
       },
       onItemClick(event){
 
-        axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/MPO_Queries/mpo_details.php?targetdata=onedata&targetdatas=${event}`)
+        axios.get(`https://weavemanila.optikl.ink/backend/api/Inventory_Database/MPO_Queries/mpo_details.php?targetdata=onedata&targetdatas=${event}`)
             .then(response => {
               this.selectedBaseID = response.data.information[0].baseID;
               this.selectItem = response.data.information[0].item_name;
@@ -707,7 +707,7 @@
             this.discount = mpoInfo.discount;
             this.other_costs = mpoInfo.other_costs;
 
-            axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/MPO_Queries/mpo_details.php?targetdata=moredata&targetdatas=${this.mpoIDnumber}`)
+            axios.get(`https://weavemanila.optikl.ink/backend/api/Inventory_Database/MPO_Queries/mpo_details.php?targetdata=moredata&targetdatas=${this.mpoIDnumber}`)
             .then(response => {
               console.log(response.data)
               this.selectedBaseID = response.data.information[0].baseID;
@@ -796,7 +796,7 @@
         }
       },
       checkUserStatus() {
-        axios.get(`http://localhost/Capstone-Project/backend/api/verification.php?email=${this.email}`)
+        axios.get(`https://weavemanila.optikl.ink/backend/api/verification.php?email=${this.email}`)
         .then(response => {
 
           const information = response.data.information;

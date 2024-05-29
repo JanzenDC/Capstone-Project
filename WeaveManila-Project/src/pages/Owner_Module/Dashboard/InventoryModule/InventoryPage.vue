@@ -398,7 +398,7 @@ export default {
         formData.append('pdfFileName', pdfBlob, pdfformat);
         formData.append('selectedSupplier', this.selectedSupplier);
         // Send the FormData via email using Axios
-        axios.post('http://localhost/Capstone-Project/backend/api/Inventory_Database/MPO_Queries/viewform.php/', formData)
+        axios.post('https://weavemanila.optikl.ink/backend/api/Inventory_Database/MPO_Queries/viewform.php/', formData)
           .then(response => {
             const Status = response.data.status;
             const Message = response.data.message;
@@ -488,7 +488,7 @@ export default {
       }
     },
     fetchImageLogo(){
-      axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/MPO_Queries/mpo_data.php?get=companylogo`)
+      axios.get(`https://weavemanila.optikl.ink/backend/api/Inventory_Database/MPO_Queries/mpo_data.php?get=companylogo`)
       .then(response => {
           console.log('selectAdmin', response.data.isAdmin);
           this.companyimage = response.data.isAdmin.company_logo;
@@ -499,7 +499,7 @@ export default {
     },
     ViewForm(targetID) {
       // Fetch data from the server
-      axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/MPO_Queries/viewform.php?mpoform=${targetID}`)
+      axios.get(`https://weavemanila.optikl.ink/backend/api/Inventory_Database/MPO_Queries/viewform.php?mpoform=${targetID}`)
         .then(response => {
           // Process response data
           const responseData = response.data;
@@ -564,7 +564,7 @@ export default {
       if (category == null) {
         this.fetchMPOData();
       } else {
-        axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/inventory.php?type=4&id=${category}`)
+        axios.get(`https://weavemanila.optikl.ink/backend/api/Inventory_Database/inventory.php?type=4&id=${category}`)
         .then(response => {
           try {
             const groupedData = response.data.categoryData.reduce((acc, row) => {
@@ -626,7 +626,7 @@ export default {
       }
     },
     fetchMPOData() {
-      axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/inventory.php?type=3`)
+      axios.get(`https://weavemanila.optikl.ink/backend/api/Inventory_Database/inventory.php?type=3`)
       .then(response => {
         console.log(response.data)
         const groupedData = response.data.categoryData.reduce((acc, row) => {
@@ -678,7 +678,7 @@ export default {
       });
     },
     fetchCategory() {
-      axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/MPO_Queries/mpo_data.php?get=category`)
+      axios.get(`https://weavemanila.optikl.ink/backend/api/Inventory_Database/MPO_Queries/mpo_data.php?get=category`)
         .then(response => {
           // Assuming response.data is an array of categories
           this.categories = response.data.categoryData;
@@ -697,7 +697,7 @@ export default {
         description: this.description,
 
       }
-      axios.post('http://localhost/Capstone-Project/backend/api/Inventory_Database/inventory.php/', formData)
+      axios.post('https://weavemanila.optikl.ink/backend/api/Inventory_Database/inventory.php/', formData)
       .then(response => {
 
         const Status = response.data.status;
@@ -739,7 +739,7 @@ export default {
       }
     },
     toNextPage(targetID) {
-      axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/MPO_Queries/mpopage_segregation.php?select=${targetID}`)
+      axios.get(`https://weavemanila.optikl.ink/backend/api/Inventory_Database/MPO_Queries/mpopage_segregation.php?select=${targetID}`)
           .then(response => {
               const Status = response.data.status;
               const Message = response.data.message;
@@ -817,7 +817,7 @@ export default {
       }
     },
     checkUserStatus() {
-      axios.get(`http://localhost/Capstone-Project/backend/api/verification.php?email=${this.email}`)
+      axios.get(`https://weavemanila.optikl.ink/backend/api/verification.php?email=${this.email}`)
       .then(response => {
         const information = response.data.information;
           this.information = {

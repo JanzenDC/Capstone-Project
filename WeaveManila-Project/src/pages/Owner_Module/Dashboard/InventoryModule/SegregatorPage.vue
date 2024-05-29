@@ -429,7 +429,7 @@ export default {
     //     'Millimeters': 'mm',
     //     'Inches': 'in'
     //   };
-    //   axios.get(`http://localhost/Capstone-Project/backend/api/ProductionMonitoring/Weaver_Queries/weaver.php?get=weaverproject&getData=${name}`)
+    //   axios.get(`https://weavemanila.optikl.ink/backend/api/ProductionMonitoring/Weaver_Queries/weaver.php?get=weaverproject&getData=${name}`)
     //   .then((response) =>{
     //     console.log(response.data)
     //     const Status = response.data.status;
@@ -482,7 +482,7 @@ export default {
         v_emailaddress: this.v_emailaddress,
         type: 2,
       }
-      axios.post('http://localhost/Capstone-Project/backend/api/ProductionMonitoring/Weaver_Queries/segregator.php/', formData)
+      axios.post('https://weavemanila.optikl.ink/backend/api/ProductionMonitoring/Weaver_Queries/segregator.php/', formData)
       .then((response) =>{
         console.log(response.data);
         const Status = response.data.status;
@@ -518,7 +518,7 @@ export default {
       this.deleteget = null;
     },
     HandleRemove(){
-      axios.delete(`http://localhost/Capstone-Project/backend/api/ProductionMonitoring/Weaver_Queries/segregator.php/${this.deleteget}`)
+      axios.delete(`https://weavemanila.optikl.ink/backend/api/ProductionMonitoring/Weaver_Queries/segregator.php/${this.deleteget}`)
       .then((response) =>{
         console.log(response.data);
         const Status = response.data.status;
@@ -568,7 +568,7 @@ export default {
         v_emailaddress: this.v_emailaddress,
         type: 1,
       }
-      axios.post('http://localhost/Capstone-Project/backend/api/ProductionMonitoring/Weaver_Queries/segregator.php/', formData)
+      axios.post('https://weavemanila.optikl.ink/backend/api/ProductionMonitoring/Weaver_Queries/segregator.php/', formData)
       .then((response) =>{
         console.log(response.data);
         const Status = response.data.status;
@@ -600,7 +600,7 @@ export default {
       });
     },
     loadWeaverData(){
-      axios.get(`http://localhost/Capstone-Project/backend/api/ProductionMonitoring/Weaver_Queries/segregator.php?get=segregator`)
+      axios.get(`https://weavemanila.optikl.ink/backend/api/ProductionMonitoring/Weaver_Queries/segregator.php?get=segregator`)
       .then(response => {
         console.log(response.data);
         this.w_rows = response.data.segregatorData.map(row => {
@@ -712,7 +712,7 @@ export default {
       }
     },
     checkUserStatus() {
-    axios.get(`http://localhost/Capstone-Project/backend/api/verification.php?email=${this.email}`)
+    axios.get(`https://weavemanila.optikl.ink/backend/api/verification.php?email=${this.email}`)
     .then(response => {
 
       const information = response.data.information;

@@ -226,7 +226,7 @@ export default {
     const formData = new FormData();
     formData.append('sql_file', this.$refs.fileInput.files[0]);
 
-    axios.post('http://localhost/Capstone-Project/backend/api/BackupAndRestore/restore.php/', formData, {
+    axios.post('https://weavemanila.optikl.ink/backend/api/BackupAndRestore/restore.php/', formData, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }
@@ -303,7 +303,7 @@ export default {
       }
     },
     checkUserStatus() {
-      axios.get(`http://localhost/Capstone-Project/backend/api/verification.php?email=${this.email}`)
+      axios.get(`https://weavemanila.optikl.ink/backend/api/verification.php?email=${this.email}`)
       .then(response => {
         const information = response.data.information;
           this.information = {

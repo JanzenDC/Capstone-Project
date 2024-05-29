@@ -216,7 +216,7 @@
         }
       },
       checkCategoryStatus() {
-        axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/inventory.php?type&id=${this.category_id}`)
+        axios.get(`https://weavemanila.optikl.ink/backend/api/Inventory_Database/inventory.php?type&id=${this.category_id}`)
         .then(response => {
           const inventoryData = {
             InventoryId: this.category_id,
@@ -230,7 +230,7 @@
       },
       fetchMPOData(){
         this.rows = [];
-        axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/inventory.php?type=2&id=${this.category_id}`)
+        axios.get(`https://weavemanila.optikl.ink/backend/api/Inventory_Database/inventory.php?type=2&id=${this.category_id}`)
         .then(response => {
           console.log(response.data);
 
@@ -320,7 +320,7 @@
         }
       },
       checkUserStatus() {
-        axios.get(`http://localhost/Capstone-Project/backend/api/verification.php?email=${this.email}`)
+        axios.get(`https://weavemanila.optikl.ink/backend/api/verification.php?email=${this.email}`)
         .then(response => {
 
           const information = response.data.information;

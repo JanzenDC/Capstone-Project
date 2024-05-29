@@ -12,7 +12,7 @@ const AuthService = {
       loginPassword: password,
     };
 
-    return axios.post('http://localhost/Capstone-Project/backend/api/login.php', formData)
+    return axios.post('https://weavemanila.optikl.ink/backend/api/login.php', formData)
       .then(response => {
         const status = response.data.status;
         console.log(response.data);

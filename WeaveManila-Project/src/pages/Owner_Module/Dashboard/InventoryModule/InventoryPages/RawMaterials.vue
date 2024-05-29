@@ -205,7 +205,7 @@ import SideBar from '../../Essentials/SideBar.vue';
           this.discount = mpoInfo.discount;
           this.other_costs = mpoInfo.other_costs;
 
-          axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/MPO_Queries/mpo_details.php?targetdata=rawmats&targetdatas=${this.mpoIDnumber}`)
+          axios.get(`https://weavemanila.optikl.ink/backend/api/Inventory_Database/MPO_Queries/mpo_details.php?targetdata=rawmats&targetdatas=${this.mpoIDnumber}`)
           .then(response => {
             console.log(response.data.information);
             this.rows = response.data.information.map(row => {
@@ -274,7 +274,7 @@ import SideBar from '../../Essentials/SideBar.vue';
       }
     },
     checkUserStatus() {
-      axios.get(`http://localhost/Capstone-Project/backend/api/verification.php?email=${this.email}`)
+      axios.get(`https://weavemanila.optikl.ink/backend/api/verification.php?email=${this.email}`)
       .then(response => {
 
         const information = response.data.information;

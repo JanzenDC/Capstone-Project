@@ -222,7 +222,7 @@ export default {
       this.daysLeft = daysLeft;
     },
     fetchLogs() {
-      axios.get('http://localhost/Capstone-Project/backend/api/BackupAndRestore/backup.php?type=backup')
+      axios.get('https://weavemanila.optikl.ink/backend/api/BackupAndRestore/backup.php?type=backup')
         .then(response => {
 
           const currentDate = new Date();
@@ -265,7 +265,7 @@ export default {
         });
     },
     getBackupDump(){
-      axios.get('http://localhost/Capstone-Project/backend/api/BackupAndRestore/backup_second.php?type=dump_sql')
+      axios.get('https://weavemanila.optikl.ink/backend/api/BackupAndRestore/backup_second.php?type=dump_sql')
       .then(response => {
         console.log(response.data);
       })
@@ -274,7 +274,7 @@ export default {
       });
     },
     backupData() {
-      axios.get(`http://localhost/Capstone-Project/backend/api/BackupAndRestore/backup_second.php?type=backup_dump&email=${this.email}`)
+      axios.get(`https://weavemanila.optikl.ink/backend/api/BackupAndRestore/backup_second.php?type=backup_dump&email=${this.email}`)
         .then(response => {
           const content = response.data.content.substring(response.data.content.indexOf('content":"') + 108);
           const url = window.URL.createObjectURL(new Blob([content]));
@@ -302,7 +302,7 @@ export default {
       const formData = {
         email: this.email,
       };
-      axios.post('http://localhost/Capstone-Project/backend/api/BackupAndRestore/backup.php/',formData)
+      axios.post('https://weavemanila.optikl.ink/backend/api/BackupAndRestore/backup.php/',formData)
         .then(response => {
           console.log(response.data);
           const Status = response.data.status;
@@ -356,7 +356,7 @@ export default {
       }
     },
     checkUserStatus() {
-      axios.get(`http://localhost/Capstone-Project/backend/api/verification.php?email=${this.email}`)
+      axios.get(`https://weavemanila.optikl.ink/backend/api/verification.php?email=${this.email}`)
       .then(response => {
         const information = response.data.information;
           this.information = {

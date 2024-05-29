@@ -226,7 +226,7 @@ export default {
       }
     },
     fetchActivities(){
-      axios.get(`http://localhost/Capstone-Project/backend/api/Dashboard/dashboard.php?get=activities`)
+      axios.get(`https://weavemanila.optikl.ink/backend/api/Dashboard/dashboard.php?get=activities`)
       .then(response => {
         
         this.activities = response.data.auditLogs;
@@ -258,7 +258,7 @@ export default {
       }
     },
     checkUserStatus() {
-        axios.get(`http://localhost/Capstone-Project/backend/api/verification.php?email=${this.email}`)
+        axios.get(`https://weavemanila.optikl.ink/backend/api/verification.php?email=${this.email}`)
         .then(response => {
         const information = response.data.information;
           this.information = {

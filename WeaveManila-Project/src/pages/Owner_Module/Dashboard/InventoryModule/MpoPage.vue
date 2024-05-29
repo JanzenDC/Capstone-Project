@@ -682,7 +682,7 @@ export default {
       if (newStatus === 'pending') {
         select = 0;
       }
-      axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/MPO_Queries/mpo_data.php?get=alldata&id=${select}`)
+      axios.get(`https://weavemanila.optikl.ink/backend/api/Inventory_Database/MPO_Queries/mpo_data.php?get=alldata&id=${select}`)
       .then(response => {
 
         try {
@@ -749,7 +749,7 @@ export default {
       if (!category) {
         this.fetchMPOData();
       } else {
-        axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/MPO_Queries/mpo_data.php?get=targetCategory&id=${category}`)
+        axios.get(`https://weavemanila.optikl.ink/backend/api/Inventory_Database/MPO_Queries/mpo_data.php?get=targetCategory&id=${category}`)
         .then(response => {
           try {
             const groupedData = response.data.categoryData.reduce((acc, row) => {
@@ -832,7 +832,7 @@ export default {
       }
     },
     fetchImageLogo(){
-      axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/MPO_Queries/mpo_data.php?get=companylogo`)
+      axios.get(`https://weavemanila.optikl.ink/backend/api/Inventory_Database/MPO_Queries/mpo_data.php?get=companylogo`)
       .then(response => {
           this.companyimage = response.data.isAdmin.company_logo;
         })
@@ -841,7 +841,7 @@ export default {
         });
     },
     fetchCategory() {
-      axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/MPO_Queries/mpo_data.php?get=category`)
+      axios.get(`https://weavemanila.optikl.ink/backend/api/Inventory_Database/MPO_Queries/mpo_data.php?get=category`)
         .then(response => {
           // Assuming response.data is an array of categories
           this.categories = response.data.categoryData;
@@ -853,7 +853,7 @@ export default {
     handleDateClick(date_received, event, product, dateIndex) {
       const a = dateIndex;
       if (this.isValidDate(date_received)) {
-        axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/MPO_Queries/mpo_data.php?get=datelogs&id=${event}`)
+        axios.get(`https://weavemanila.optikl.ink/backend/api/Inventory_Database/MPO_Queries/mpo_data.php?get=datelogs&id=${event}`)
         .then(response => {
           this.medium = true;
           console.log(response.data)
@@ -902,7 +902,7 @@ export default {
       return !isNaN(date.getTime()) && dateString !== 'No Data';
     },
     toNextPage(targetID) {
-      axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/MPO_Queries/mpopage_segregation.php?select=${targetID}`)
+      axios.get(`https://weavemanila.optikl.ink/backend/api/Inventory_Database/MPO_Queries/mpopage_segregation.php?select=${targetID}`)
           .then(response => {
               const Status = response.data.status;
               const Message = response.data.message;
@@ -1013,7 +1013,7 @@ export default {
         formData.append('pdfFileName', pdfBlob, pdfformat);
         formData.append('selectedSupplier', this.selectedSupplier);
         // Send the FormData via email using Axios
-        axios.post('http://localhost/Capstone-Project/backend/api/Inventory_Database/MPO_Queries/viewform.php/', formData)
+        axios.post('https://weavemanila.optikl.ink/backend/api/Inventory_Database/MPO_Queries/viewform.php/', formData)
           .then(response => {
             const Status = response.data.status;
             const Message = response.data.message;
@@ -1099,7 +1099,7 @@ export default {
     },
     fetchMPOData() {
       let select = 0;
-      axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/MPO_Queries/mpo_data.php?get=alldata&id=${select}`)
+      axios.get(`https://weavemanila.optikl.ink/backend/api/Inventory_Database/MPO_Queries/mpo_data.php?get=alldata&id=${select}`)
       .then(response => {
         console.log(response.data)
         const groupedData = response.data.categoryData.reduce((acc, row) => {
@@ -1185,7 +1185,7 @@ export default {
     },
     ViewForm(targetID) {
       // Fetch data from the server
-      axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/MPO_Queries/viewform.php?mpoform=${targetID}`)
+      axios.get(`https://weavemanila.optikl.ink/backend/api/Inventory_Database/MPO_Queries/viewform.php?mpoform=${targetID}`)
         .then(response => {
           // Process response data
           const responseData = response.data;
@@ -1259,7 +1259,7 @@ export default {
         select = 0;
       }
       console.log(select);
-      axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/MPO_Queries/viewform.php?mpoform=${targetID}&selected=${select}`)
+      axios.get(`https://weavemanila.optikl.ink/backend/api/Inventory_Database/MPO_Queries/viewform.php?mpoform=${targetID}&selected=${select}`)
       .then(response => {
         this.product_dialog = true;
         const responseData = response.data;
@@ -1326,7 +1326,7 @@ export default {
       }
       const formData = new FormData();
 
-      const endpoint = 'http://localhost/Capstone-Project/backend/api/Inventory_Database/MPO_Queries/mpopage_productionlist.php/';
+      const endpoint = 'https://weavemanila.optikl.ink/backend/api/Inventory_Database/MPO_Queries/mpopage_productionlist.php/';
       formData.append('date_received', this.date_received);
       // Append each selected row to the FormData object
       this.selectedRows.forEach(row => {
@@ -1394,7 +1394,7 @@ export default {
       }
     },
     checkUserStatus() {
-      axios.get(`http://localhost/Capstone-Project/backend/api/verification.php?email=${this.email}`)
+      axios.get(`https://weavemanila.optikl.ink/backend/api/verification.php?email=${this.email}`)
       .then(response => {
         const information = response.data.information;
           this.information = {

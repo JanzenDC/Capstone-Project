@@ -725,7 +725,7 @@ export default {
       this.rows_add.push(newData);
     },
     fetchCategoryData(){
-      axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/MPO_Queries/mpo_data.php?get=category`)
+      axios.get(`https://weavemanila.optikl.ink/backend/api/Inventory_Database/MPO_Queries/mpo_data.php?get=category`)
       .then(response => {
           this.categories = response.data.categoryData.map(category => ({
             value: category.title,
@@ -830,7 +830,7 @@ export default {
     },
     ViewSupplierItem(targetID){
       this.ShowItemData = true;
-      axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/Supplier_Database/supplier.php?get=item&id=${targetID}`)
+      axios.get(`https://weavemanila.optikl.ink/backend/api/Inventory_Database/Supplier_Database/supplier.php?get=item&id=${targetID}`)
       .then((response) =>{
         console.log(response.data)
         this.selectedSupplierName = response.data.supplierData.supplier_name;
@@ -854,7 +854,7 @@ export default {
     },
     EditSupplier(targetID) {
       this.showDropdown = true;
-      axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/Supplier_Database/supplier.php?get=supplier&id=${targetID}`)
+      axios.get(`https://weavemanila.optikl.ink/backend/api/Inventory_Database/Supplier_Database/supplier.php?get=supplier&id=${targetID}`)
       .then((response) =>{
         console.log(response.data);
         const data = response.data.supplierData;
@@ -902,7 +902,7 @@ export default {
     // New Data
     fetchData(){
       this.rows = [];
-      axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/Supplier_Database/supplier.php?get=alldata`)
+      axios.get(`https://weavemanila.optikl.ink/backend/api/Inventory_Database/Supplier_Database/supplier.php?get=alldata`)
       .then(response => {
         this.rows = response.data.information.values.map(row => {
           return {
@@ -963,7 +963,7 @@ export default {
           };
           formData.append('items_list[]', JSON.stringify(itemData));
         });
-        axios.post('http://localhost/Capstone-Project/backend/api/Inventory_Database/Supplier_Database/supplier_data.php/', formData)
+        axios.post('https://weavemanila.optikl.ink/backend/api/Inventory_Database/Supplier_Database/supplier_data.php/', formData)
         .then(response => {
           console.log(response.data);
           const Status = response.data.status;
@@ -1021,7 +1021,7 @@ export default {
         };
         formData.append('items_list[]', JSON.stringify(itemData));
       });
-      axios.post('http://localhost/Capstone-Project/backend/api/Inventory_Database/Supplier_Database/supplier_data.php/', formData)
+      axios.post('https://weavemanila.optikl.ink/backend/api/Inventory_Database/Supplier_Database/supplier_data.php/', formData)
       .then(response => {
         console.log(response.data)
         const Status = response.data.status;
@@ -1070,7 +1070,7 @@ export default {
       }
     },
     checkUserStatus() {
-      axios.get(`http://localhost/Capstone-Project/backend/api/verification.php?email=${this.email}`)
+      axios.get(`https://weavemanila.optikl.ink/backend/api/verification.php?email=${this.email}`)
       .then(response => {
         const information = response.data.information;
           this.information = {
