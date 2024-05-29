@@ -99,7 +99,7 @@
             ", Array($payload['mpoID'], $payload['segregatorName']));
         
         
-                $response = ['status' => '', 'message' => $currentValues];
+                $response = ['status' => '', 'mpoSeg' => $currentValues];
                 echo json_encode($response);
                 exit;
         }
