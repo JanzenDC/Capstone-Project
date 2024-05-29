@@ -545,7 +545,7 @@
         this.segregatorName = rowData.segregator;
         console.log(this.segregatorName);
         this.openModal2 = true;
-        axios.get(`https://weavemanila.optikl.ink/backend/api/ProductionMonitoring/Weaver_Queries/segregator.php?get=onesegregator&segregatorName=${this.segregatorName}&mpoID=${this.mpoIDnumber}`)
+        axios.get(`https://weavemanila.optikl.ink/backend/api/ProductionMonitoring/Weaver_Queries/segregator.php?get=onesegregators&segregatorName=${this.segregatorName}&mpoID=${this.mpoIDnumber}`)
         .then(response => {
           console.log(response.data)
           // this.qqty_raw = response.data.mpoSeg.qty_raw_for_issuance;
