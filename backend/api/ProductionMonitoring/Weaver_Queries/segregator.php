@@ -94,8 +94,8 @@
             $currentValues = $this->db->rawQuery("
                 SELECT *
                 FROM mpo_segregator_projects
-                WHERE mpoID = ? AND segregatorName = ?
-            ", Array($payload['mpoID'], $payload['segregatorName']));
+                WHERE mpoID = ? AND segregatorName = ? AND baseID = ?
+            ", Array($payload['mpoID'], $payload['segregatorName'], $payload['baseID']));
         
         
                 $response = ['status' => '', 'mpoSeg' => $currentValues];
