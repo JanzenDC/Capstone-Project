@@ -95,7 +95,6 @@
                 SELECT *
                 FROM mpo_segregator_projects
                 WHERE mpoID = ? AND segregatorName = ?
-                GROUP BY mpoID, segregatorName
             ", Array($payload['mpoID'], $payload['segregatorName']));
         
         
