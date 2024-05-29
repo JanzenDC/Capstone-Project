@@ -41,7 +41,7 @@
                 exit;
             }
 
-        }else if($payload['type'] == '4'){
+        }else if($payload['get'] == 'onesegregator'){
 
             $currentValues = $this->db->rawQuery("
                 SELECT
