@@ -91,17 +91,13 @@
             // }
     
         }else if($payload['get'] == 'onesegregators'){
-
             $currentValues = $this->db->rawQuery("
                 SELECT *
-                FROM
-                    mpo_segregator_projects
-                WHERE
-                    mpoID = ? AND segregatorName = ?
-                GROUP BY
-                    mpoID,
-                    segregatorName
-            ", Array($payload['mpoID'], $payload['selectSegregator']));
+                FROM mpo_segregator_projects
+                WHERE mpoID = ? AND segregatorName = ?
+                GROUP BY mpoID, segregatorName
+            ", Array($payload['mpoID'], $payload['segregatorName']));
+        
         
                 $response = ['status' => '', 'message' => $currentValues];
                 echo json_encode($response);
