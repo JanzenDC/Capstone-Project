@@ -90,7 +90,7 @@
             //     exit;
             // }
     
-        }else if($payload['get'] == 'onesegregator'){
+        }else if($payload['get'] == 'onesegregators'){
 
             $currentValues = $this->db->rawQuery("
                 SELECT *
