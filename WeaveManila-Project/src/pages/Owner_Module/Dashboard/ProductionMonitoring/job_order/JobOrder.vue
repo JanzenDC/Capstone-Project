@@ -1226,7 +1226,7 @@ export default {
         console.log(pair[0] + ': ' + pair[1]);
       }
       // query using axios post
-      axios.post(`https://weavemanila.optikl.ink/backend/api/ProductionMonitoring/job_order/job_order.php/`, formData)
+      axios.post(`http://localhost/Capstone-Project/backend/api/ProductionMonitoring/job_order/job_order.php/`, formData)
       .then((response) => {
           console.log('Your Data:', response.data);
       }).catch(error => {
@@ -1278,7 +1278,7 @@ export default {
 
     // FETCH QUERY AREA
     fetchWarehouseMan() {
-      axios.get('https://weavemanila.optikl.ink/backend/api/ProductionMonitoring/job_order/job_order.php?type=get')
+      axios.get('http://localhost/Capstone-Project/backend/api/ProductionMonitoring/job_order/job_order.php?type=get')
         .then((response) => {
           if (response.data.status === 'success') {
             const warehouseManData = response.data.WarehouseManData;
@@ -1300,7 +1300,7 @@ export default {
       if(joNumber)
       {
         try {
-          axios.get(`https://weavemanila.optikl.ink/backend/api/ProductionMonitoring/job_order/job_order.php?type=pjo&id=${success}`)
+          axios.get(`http://localhost/Capstone-Project/backend/api/ProductionMonitoring/job_order/job_order.php?type=pjo&id=${success}`)
           .then((response) => {
             console.log(response.data)
             const JOdata = response.data.jobOrder[0];
@@ -1462,7 +1462,7 @@ export default {
 
     },
     fetchWeaver(){
-      axios.get('https://weavemanila.optikl.ink/backend/api/ProductionMonitoring/job_order/job_order.php?type=weaver')
+      axios.get('http://localhost/Capstone-Project/backend/api/ProductionMonitoring/job_order/job_order.php?type=weaver')
       .then((response) => {
         if (response.data.status === 'success') {
           const weaverData = response.data.weaver;
@@ -1477,7 +1477,7 @@ export default {
       });
     },
     fetchProductionStaff(){
-      axios.get('https://weavemanila.optikl.ink/backend/api/ProductionMonitoring/job_order/job_order.php?type=production_staff')
+      axios.get('http://localhost/Capstone-Project/backend/api/ProductionMonitoring/job_order/job_order.php?type=production_staff')
       .then((response) => {
         if (response.data.status === 'success') {
           const productionData = response.data.production_staff;

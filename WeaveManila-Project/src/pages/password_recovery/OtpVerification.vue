@@ -184,7 +184,7 @@ export default {
         email: this.email,
         code: code,
       };
-      axios.post('https://weavemanila.optikl.ink/backend/api/api.php', formData)
+      axios.post('http://localhost/Capstone-Project/backend/api/api.php', formData)
 
     },
     verifyCode() {
@@ -194,7 +194,7 @@ export default {
         email: this.email
       };
 
-      axios.post('https://weavemanila.optikl.ink/backend/api/otpverification.php', formData)
+      axios.post('http://localhost/Capstone-Project/backend/api/otpverification.php', formData)
         .then(response => {
           this.responseStatus = response.data.status;
           this.responseMessage = response.data.message;

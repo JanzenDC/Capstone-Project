@@ -193,7 +193,7 @@ export default {
       confirmPassword: this.confirmPassword,
       email: this.email,
     };
-    axios.post('https://weavemanila.optikl.ink/backend/api/otpchangepass.php', formData)
+    axios.post('http://localhost/Capstone-Project/backend/api/otpchangepass.php', formData)
       .then((response) => {
         this.responseStatus = response.data.status;
         if (this.responseStatus === 'success') {

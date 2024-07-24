@@ -300,7 +300,7 @@ export default {
       this.showDateArea = false;
       this.tableData = [];
       if (days === 1 || days === 2 || days === 3 || days === 4 || days === 5) {
-        axios.get(`https://weavemanila.optikl.ink/backend/api/Audit_logs/auditlogs.php?type=${days}`)
+        axios.get(`http://localhost/Capstone-Project/backend/api/Audit_logs/auditlogs.php?type=${days}`)
           .then(response => {
             if (response.data && response.data.informations && response.data.informations.rows) {
               this.tableData = response.data.informations.rows.map(row => {
@@ -330,7 +330,7 @@ export default {
       }
     },
     fetchData() {
-    axios.get('https://weavemanila.optikl.ink/backend/api/Audit_logs/auditlogs.php?type=7')
+    axios.get('http://localhost/Capstone-Project/backend/api/Audit_logs/auditlogs.php?type=7')
       .then(response => {
         if (response.data && response.data.informations && response.data.informations.rows) {
           this.tableData = response.data.informations.rows.map(row => {
@@ -451,7 +451,7 @@ export default {
     },
     onSubmitDate() {
       this.tableData = [];
-      axios.get(`https://weavemanila.optikl.ink/backend/api/Audit_logs/auditlogs.php?type=6&startDate=${this.startDate}&endDate=${this.endDate}`)
+      axios.get(`http://localhost/Capstone-Project/backend/api/Audit_logs/auditlogs.php?type=6&startDate=${this.startDate}&endDate=${this.endDate}`)
       .then(response => {
       if (response.data && response.data.informations && response.data.informations.rows) {
         this.tableData = response.data.informations.rows.map(row => ({
@@ -474,7 +474,7 @@ export default {
     },
     // Old Data
     checkUserStatus() {
-      axios.get(`https://weavemanila.optikl.ink/backend/api/verification.php?email=${this.email}`)
+      axios.get(`http://localhost/Capstone-Project/backend/api/verification.php?email=${this.email}`)
       .then(response => {
         const information = response.data.information;
           this.information = {

@@ -578,7 +578,7 @@ export default {
         status: storeValue,
         type: 3
       }
-      axios.post(`https://weavemanila.optikl.ink/backend/api/Usermanagement/userdata.php/`, formData)
+      axios.post(`http://localhost/Capstone-Project/backend/api/Usermanagement/userdata.php/`, formData)
       .then(response => {
         const Status = response.data.status;
         const message = response.data.message;
@@ -601,7 +601,7 @@ export default {
       });
     },
     FetchUser(){
-      axios.get('https://weavemanila.optikl.ink/backend/api/Usermanagement/userdata.php?select=all')
+      axios.get('http://localhost/Capstone-Project/backend/api/Usermanagement/userdata.php?select=all')
       .then(response => {
         console.log(response.data);
         this.tableData = response.data.informations.rows.map(row => {
@@ -694,7 +694,7 @@ export default {
         type: 2
       };
       // console.log(formData)
-      axios.post(`https://weavemanila.optikl.ink/backend/api/Usermanagement/userdata.php`, formData)
+      axios.post(`http://localhost/Capstone-Project/backend/api/Usermanagement/userdata.php`, formData)
       .then(response => {
         console.log(response.data)
         const Status = response.data.status;
@@ -742,7 +742,7 @@ export default {
         posvalue: this.posvalue,
         type: 3
       };
-      axios.put(`https://weavemanila.optikl.ink/backend/api/Usermanagement/userdata.php/${this.selectedUserId}`, formData)
+      axios.put(`http://localhost/Capstone-Project/backend/api/Usermanagement/userdata.php/${this.selectedUserId}`, formData)
       .then(response => {
         const Status = response.data.status;
         const Message = response.data.message;
@@ -839,7 +839,7 @@ export default {
       }
     },
     checkUserStatus() {
-      axios.get(`https://weavemanila.optikl.ink/backend/api/verification.php?email=${this.email}`)
+      axios.get(`http://localhost/Capstone-Project/backend/api/verification.php?email=${this.email}`)
       .then(response => {
         const information = response.data.information;
           this.information = {

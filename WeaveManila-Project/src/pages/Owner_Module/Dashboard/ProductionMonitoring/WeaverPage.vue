@@ -430,7 +430,7 @@
           'Millimeters': 'mm',
           'Inches': 'in'
         };
-        axios.get(`https://weavemanila.optikl.ink/backend/api/ProductionMonitoring/Weaver_Queries/weaver.php?get=weaverproject&getData=${name}`)
+        axios.get(`http://localhost/Capstone-Project/backend/api/ProductionMonitoring/Weaver_Queries/weaver.php?get=weaverproject&getData=${name}`)
         .then((response) =>{
           console.log(response.data)
           const Status = response.data.status;
@@ -483,7 +483,7 @@
           v_emailaddress: this.v_emailaddress,
           type: 2,
         }
-        axios.post('https://weavemanila.optikl.ink/backend/api/ProductionMonitoring/Weaver_Queries/weaver.php/', formData)
+        axios.post('http://localhost/Capstone-Project/backend/api/ProductionMonitoring/Weaver_Queries/weaver.php/', formData)
         .then((response) =>{
           console.log(response.data);
           const Status = response.data.status;
@@ -519,7 +519,7 @@
         this.deleteget = null;
       },
       HandleRemove(){
-        axios.delete(`https://weavemanila.optikl.ink/backend/api/ProductionMonitoring/Weaver_Queries/weaver.php/${this.deleteget}`)
+        axios.delete(`http://localhost/Capstone-Project/backend/api/ProductionMonitoring/Weaver_Queries/weaver.php/${this.deleteget}`)
         .then((response) =>{
           console.log(response.data);
           const Status = response.data.status;
@@ -569,7 +569,7 @@
           v_emailaddress: this.v_emailaddress,
           type: 1,
         }
-        axios.post('https://weavemanila.optikl.ink/backend/api/ProductionMonitoring/Weaver_Queries/weaver.php/', formData)
+        axios.post('http://localhost/Capstone-Project/backend/api/ProductionMonitoring/Weaver_Queries/weaver.php/', formData)
         .then((response) =>{
           console.log(response.data);
           const Status = response.data.status;
@@ -602,7 +602,7 @@
         });
       },
       loadWeaverData(){
-        axios.get(`https://weavemanila.optikl.ink/backend/api/ProductionMonitoring/Weaver_Queries/weaver.php?get=weaver`)
+        axios.get(`http://localhost/Capstone-Project/backend/api/ProductionMonitoring/Weaver_Queries/weaver.php?get=weaver`)
         .then(response => {
           console.log(response.data);
           this.w_rows = response.data.weaverData.map(row => {
@@ -714,7 +714,7 @@
         }
       },
       checkUserStatus() {
-      axios.get(`https://weavemanila.optikl.ink/backend/api/verification.php?email=${this.email}`)
+      axios.get(`http://localhost/Capstone-Project/backend/api/verification.php?email=${this.email}`)
       .then(response => {
 
         const information = response.data.information;

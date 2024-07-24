@@ -306,7 +306,7 @@ export default {
   },
   methods: {
     fetchPJOLatestID(){
-      axios.get('https://weavemanila.optikl.ink/backend/api/ProductionMonitoring/productionplan.php')
+      axios.get('http://localhost/Capstone-Project/backend/api/ProductionMonitoring/productionplan.php')
       .then((response) => {
         const latestData = response.data.mpo;
         const latestPJO = response.data.pjoID;
@@ -337,7 +337,7 @@ export default {
         v_width: this.v_width,
         v_size: this.v_size
       }
-      axios.post('https://weavemanila.optikl.ink/backend/api/ProductionMonitoring/productionplan.php', formData)
+      axios.post('http://localhost/Capstone-Project/backend/api/ProductionMonitoring/productionplan.php', formData)
       .then((response) => {
         const Message = response.data.message;
         if(response.data.status === 'success'){
@@ -432,7 +432,7 @@ export default {
         v_width: this.v_width,
         v_size: this.v_size
       }
-      axios.post('https://weavemanila.optikl.ink/backend/api/ProductionMonitoring/production_job_order/pjo_query.php', formData)
+      axios.post('http://localhost/Capstone-Project/backend/api/ProductionMonitoring/production_job_order/pjo_query.php', formData)
       .then((response) => {
         console.log(response.data);
           const Status = response.data.status;
@@ -474,7 +474,7 @@ export default {
         'Inches': 'in'
       };
 
-      axios.get('https://weavemanila.optikl.ink/backend/api/ProductionMonitoring/job_order/job_order.php?type=getPJOall')
+      axios.get('http://localhost/Capstone-Project/backend/api/ProductionMonitoring/job_order/job_order.php?type=getPJOall')
       .then((response) => {
           console.log(response.data);
           this.rows = response.data.PJOdata.map(row => {
@@ -536,7 +536,7 @@ export default {
       }
     },
     checkUserStatus() {
-      axios.get(`https://weavemanila.optikl.ink/backend/api/verification.php?email=${this.email}`)
+      axios.get(`http://localhost/Capstone-Project/backend/api/verification.php?email=${this.email}`)
       .then(response => {
 
         const information = response.data.information;

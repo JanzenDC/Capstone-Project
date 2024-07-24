@@ -106,7 +106,7 @@ export default {
       }
     },
     checkUserStatus() {
-      axios.get(`https://weavemanila.optikl.ink/backend/api/verification.php?email=${this.email}`)
+      axios.get(`http://localhost/Capstone-Project/backend/api/verification.php?email=${this.email}`)
       .then(response => {
         const information = response.data.information;
           this.information = {

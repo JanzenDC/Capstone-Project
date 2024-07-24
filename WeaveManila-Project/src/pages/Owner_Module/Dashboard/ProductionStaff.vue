@@ -190,7 +190,7 @@
         }
       },
       checkUserStatus() {
-          axios.get(`https://weavemanila.optikl.ink/backend/api/verification.php?email=${this.email}`)
+          axios.get(`http://localhost/Capstone-Project/backend/api/verification.php?email=${this.email}`)
           .then(response => {
           console.log(response.data);
 

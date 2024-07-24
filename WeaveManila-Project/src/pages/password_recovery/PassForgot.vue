@@ -127,7 +127,7 @@ export default {
       }
     },
     fetchImageLogo(){
-      axios.get(`https://weavemanila.optikl.ink/backend/api/Inventory_Database/MPO_Queries/mpo_data.php?get=companylogo`)
+      axios.get(`http://localhost/Capstone-Project/backend/api/Inventory_Database/MPO_Queries/mpo_data.php?get=companylogo`)
       .then(response => {
           console.log('selectAdmin', response.data.isAdmin);
           this.companyimage = response.data.isAdmin.company_logo;
@@ -154,7 +154,7 @@ export default {
         code: code,
       };
 
-      axios.post('https://weavemanila.optikl.ink/backend/api/api.php', formData)
+      axios.post('http://localhost/Capstone-Project/backend/api/api.php', formData)
       .then(response => {
         console.log(response.data);
         this.responseStatus = response.data.status;
