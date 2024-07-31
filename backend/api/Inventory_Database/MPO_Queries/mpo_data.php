@@ -17,7 +17,7 @@
     public function __construct()
     {
 
-        $this->db = new MysqliDB('localhost:3306', 'weavemanila', '^d27P64xx', 'weavemanila_main');
+        $this->db = new MysqliDB('localhost', 'root', '', 'weavemanila_main');
     }
 
     public function httpGet($payload)
@@ -51,7 +51,6 @@
                         base.quantity,
                         base.unit,
                         base.quantity_received,
-                        base.handler_received,
                         base.unit_price,
                         base.status,
                         base.discounts,

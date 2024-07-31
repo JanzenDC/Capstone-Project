@@ -160,31 +160,32 @@
             <div v-for="amount in props.row.amount" :key="amount">{{ amount }}</div>
           </q-td>
         </template>
-
         <template v-slot:body-cell-actions="props">
-              <q-td :props="props">
-                <div class="flex items-center justify-center w-[221px] gap-1">
-                  <div @click="ProductReceived(props.row.mpo_id)" class="bg-[#ddffcd] py-1 px-2 text-green-600 rounded font-bold cursor-pointer">
-                    Received
-
-                  </div>
-
-                  <div class="bg-[#26218e] rounded text-white cursor-pointer w-[32px] h-[32px] text-[20px]">
-                    <q-icon name="assignment" @click="ViewForm(props.row.mpo_id)">
-                      <q-tooltip :offset="[0, 8]">View Form</q-tooltip>
-                    </q-icon>
-                  </div>
-                  <div class="bg-[#475467] rounded text-white cursor-pointer w-[32px] h-[32px] text-[20px]">
-                    <q-icon name="edit" @click="toNextPage(props.row.mpo_id)">
-                      <q-tooltip :offset="[0, 8]">Edit</q-tooltip>
-                    </q-icon>
-                  </div>
-                  <!-- <div class="w-[32px] h-[32px] cursor-pointer text-[20px]">
-                    <q-icon name="arrow_forward_ios" @click="toNextPage(props.row.mpo_id)"/>
-                  </div> -->
-                </div>
-              </q-td>
+          <q-td :props="props">
+            <div class="flex items-center justify-center w-[221px] gap-1">
+              <div
+                @click="ProductReceived(props.row.mpo_id)"
+                class="bg-[#ddffcd] py-1 px-2 text-green-600 rounded font-bold cursor-pointer"
+                :class="{ 'cursor-not-allowed opacity-50': props.row.status.includes('Received') }"
+                :disabled="props.row.status.includes('Received')"
+              >
+                Received
+              </div>
+              <div class="bg-[#26218e] rounded text-white cursor-pointer w-[32px] h-[32px] text-[20px]">
+                <q-icon name="assignment" @click="ViewForm(props.row.mpo_id)">
+                  <q-tooltip :offset="[0, 8]">View Form</q-tooltip>
+                </q-icon>
+              </div>
+              <div class="bg-[#475467] rounded text-white cursor-pointer w-[32px] h-[32px] text-[20px]">
+                <q-icon name="edit" @click="toNextPage(props.row.mpo_id)">
+                  <q-tooltip :offset="[0, 8]">Edit</q-tooltip>
+                </q-icon>
+              </div>
+            </div>
+          </q-td>
         </template>
+
+
         </q-table>
       </div>
     </div>

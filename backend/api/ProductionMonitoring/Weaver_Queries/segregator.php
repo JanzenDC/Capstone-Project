@@ -17,7 +17,7 @@
     public function __construct()
     {
 
-        $this->db = new MysqliDB('localhost:3306', 'weavemanila', '^d27P64xx', 'weavemanila_main');
+        $this->db = new MysqliDB('localhost', 'root', '', 'weavemanila_main');
     }
 
     public function httpGet($payload)
@@ -228,7 +228,7 @@
                 FROM
                     mpo_segregator_projects
                 WHERE
-                    mpoID = ? AND segregatorName = ?
+                    mpoID = ? AND segregatorName = ? AND process IS NOT NULL
             ", [$mpoID, $payload['selectSegregator']]);
         
             if ($firstQuery['count'] > 0) {
@@ -244,7 +244,7 @@
                     FROM
                         mpo_segregator_projects
                     WHERE
-                        mpoID = ? AND segregatorName = ?
+                        mpoID = ? AND segregatorName = ? AND process IS NOT NULL
                     GROUP BY
                         mpoID,
                         segregatorName
@@ -277,7 +277,7 @@
                     exit;
                 }
             } else {
-                $response = ['status' => 'fail', 'message' => 'No existing data for the specified mpoID and segregatorName'];
+                $response = ['status' => 'fail', 'message' => 'No existing data for the specified mpoID, segregatorName, or process'];
                 echo json_encode($response);
                 exit;
             }

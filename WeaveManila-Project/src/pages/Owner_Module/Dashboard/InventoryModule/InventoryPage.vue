@@ -747,10 +747,6 @@ export default {
               const mpoData = response.data.queryResult;
 
               if (Status === "success") {
-                  this.$q.notify({
-                      message: `${Message}`,
-                      color: 'green',
-                  });
                   if (Array.isArray(itemId)) {
                     mpoData.map(mpoInfo => {
                       const time = new Date(mpoInfo.date_purchased).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });

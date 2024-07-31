@@ -19,7 +19,7 @@
     public function __construct()
     {
 
-        $this->db = new MysqliDB('localhost:3306', 'weavemanila', '^d27P64xx', 'weavemanila_main');
+        $this->db = new MysqliDB('localhost', 'root', '', 'weavemanila_main');
     }
     public function httpGet($payload)
     {
@@ -70,7 +70,7 @@
         
         $content = file_get_contents($zipFileName);
 
-        $credentials = SendinBlue\Client\Configuration::getDefaultConfiguration()->setApiKey('api-key', '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');
+        $credentials = SendinBlue\Client\Configuration::getDefaultConfiguration()->setApiKey('api-key', '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');
         $apiInstance = new SendinBlue\Client\Api\TransactionalEmailsApi(
             new GuzzleHttp\Client(),
             $credentials
