@@ -1,91 +1,88 @@
 <template>
-  <q-page class="md:flex bg-[#9e896a] relative ">
-    <q-img
-      src="../../assets/images/login_images.jpg"
-      alt="Description of the image"
-      class=" min-[320px]:right-[16px] min-[320px]:top-[88px] w-[328px] md:w-[550px] absolute md:top-[50px] md:right-[250px] rounded-[32px]"
-    />
-    <div class="bg-[#9e896a]  md:bg-white md:w-[800px] p-4 h-64 md:h-screen">
-      <q-img
-      :src="getCompanyImagePath()"
-      alt="Description of the image"
-      class="w-[46px] md:w-[96px]"
-      />
-      <div class="flex justify-center items-center w-[550px]">
-        <div class="p-4 mt-3 w-[340px] min-[320px]:hidden sm:hidden md:block">
-          <div>
+  <q-page class="flex flex-col lg:flex-row min-h-screen overflow-hidden">
+    <!-- Left Container - Form -->
+    <div class="flex-1 flex flex-col bg-white order-2 lg:order-1">
+      <!-- Logo Section -->
+      <div class="p-6 md:p-8 lg:p-10">
+        <q-img
+          :src="getCompanyImagePath()"
+          alt="Company Logo"
+          class="w-[56px] md:w-[76px] lg:w-[86px]"
+        />
+      </div>
 
-          <p class="font-bold text-[30px]">
+      <!-- Form Container -->
+      <div class="flex-1 flex items-center justify-center px-6 md:px-12 lg:px-16 py-8">
+        <div class="w-full max-w-[440px]">
+          <!-- Header -->
+          <div class="mb-8">
+            <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-3">
+              Forgot Password?
+            </h1>
+            <p class="text-sm md:text-base text-gray-600">
+              No worries, we'll send you reset instructions.
+            </p>
+          </div>
 
-            Forgot Password?
-          </p>
-          <p>No worries, we’ll send you reset instructions.</p>
-          <q-form
-            @submit="onSubmit"
-            class="q-gutter-md mt-3"
-          >
-            <q-input
-              v-model="email"
-              label="Email"
-              type="email"
-              outlined
-              dense
-              :no-error-icon="true"
-              :rules="[ruleEmail]"
-            ></q-input>
-            <div v-if="responseStatus === 'fail'" class="text-red-600 text-[11px]   mt-1 ms-7">
+          <!-- Form -->
+          <q-form @submit="onSubmit" class="space-y-5">
+            <!-- Email Input -->
+            <div>
+              <q-input
+                v-model="email"
+                label="Email"
+                type="email"
+                outlined
+                :no-error-icon="true"
+                :rules="[ruleEmail]"
+                class="custom-input"
+              />
+            </div>
+
+            <!-- Error Message -->
+            <div v-if="responseStatus === 'fail'" class="text-red-600 text-sm px-1">
               {{ responseMessage }}
             </div>
-              <div class="flex gap-2">
-                <p class="text-[12px] mt-[3px]">Remember Password?</p><router-link to="/" @click="clearSession"><span class="text-[12px] font-bold">Login</span></router-link>
-              </div>
-            <div>
 
-              <q-btn label="Send Code" type="submit" class="bg-[#9e896a] rounded-md w-full text-white"/>
+            <!-- Remember Password Link -->
+            <div class="flex items-center gap-2">
+              <p class="text-sm text-gray-600">Remember Password?</p>
+              <router-link 
+                to="/" 
+                @click="clearSession"
+                class="text-sm text-[#9e896a] hover:text-[#8a7759] font-medium transition-colors"
+              >
+                Login
+              </router-link>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="pt-2">
+              <q-btn 
+                label="Send Code" 
+                type="submit" 
+                class="w-full bg-[#9e896a] hover:bg-[#8a7759] text-white font-semibold py-3 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg"
+                unelevated
+                no-caps
+              />
             </div>
           </q-form>
-
-          </div>
         </div>
       </div>
     </div>
-    <div class="min-[320px]:bg-white h-screen md:bg-[#9e896a] ">
-      <div class="p-4 mt-3 md:w-[340px] min-[320px]:block sm:block md:hidden">
-          <div class="mt-[150px]">
-            <p class="font-bold text-[30px]">
-            Forgot Password?
-            </p>
-            <p>No worries, we’ll send you reset instructions.</p>
-            <q-form
-              @submit="onSubmit"
-              class="q-gutter-md mt-3"
-            >
-                <q-input
-                  v-model="email"
-                  label="Email"
-                  type="email"
-                  outlined
-                  dense
-                  :no-error-icon="true"
-                  :rules="[ruleEmail]"
-                ></q-input>
-                <div v-if="responseStatus === 'fail'" class="text-red-600 text-[11px]   mt-1 ms-7">
-                  {{ responseMessage }}
-                </div>
-                <div class="flex gap-2">
-                  <p class="text-[12px] mt-[3px]">Remember Password?</p><router-link to="/" @click="clearSession"><span class="text-[12px] font-bold">Login</span></router-link>
-                </div>
-              <div>
 
-                <q-btn label="Send Code" type="submit" class="bg-[#9e896a] rounded-md w-full text-white"/>
-              </div>
-            </q-form>
-          </div>
-        </div>
+    <!-- Right Container - Image -->
+    <div class="flex-1 bg-[#9e896a] flex items-center justify-center p-6 md:p-10 lg:p-16 order-1 lg:order-2 min-h-[300px] lg:min-h-screen">
+      <div class="w-full h-full max-w-[600px] max-h-[600px] lg:max-h-[700px]">
+        <q-img
+          src="../../assets/images/login_images.jpg"
+          alt="Forgot Password Illustration"
+          class="w-full h-full rounded-3xl shadow-2xl object-cover"
+          fit="cover"
+        />
+      </div>
     </div>
   </q-page>
-
-
 </template>
 
 <script>
@@ -182,3 +179,48 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+/* Custom input styling */
+:deep(.custom-input .q-field__control) {
+  height: 48px;
+  border-radius: 8px;
+}
+
+:deep(.custom-input .q-field__native) {
+  padding-top: 12px;
+  padding-bottom: 12px;
+}
+
+:deep(.custom-input .q-field__label) {
+  font-size: 14px;
+}
+
+:deep(.q-field__control):hover {
+  border-color: #9e896a;
+}
+
+:deep(.q-field__control):focus-within {
+  border-color: #9e896a;
+}
+
+.q-btn:hover {
+  transform: translateY(-1px);
+}
+
+@media (max-width: 1023px) {
+  .q-page {
+    flex-direction: column;
+  }
+}
+
+@media (max-height: 600px) and (orientation: landscape) {
+  .flex-1.flex.flex-col.bg-white {
+    min-height: auto;
+  }
+  
+  .flex-1.bg-\[#9e896a\] {
+    min-height: 250px;
+  }
+}
+</style>
