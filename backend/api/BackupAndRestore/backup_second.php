@@ -11,7 +11,8 @@
   header('Content-Type: application/json');
   require_once('../../MysqliDb.php');
   require_once('./Ifsnop/vendor/autoload.php');
-  require_once(__DIR__ . '/SendInBlue/vendor/autoload.php');
+  require_once(__DIR__ . '/../Brevo/vendor/autoload.php');
+  require_once(__DIR__ . '/../config.php');
   use Ifsnop\Mysqldump as IMysqldump;
   class API{
     public function __construct()
@@ -132,12 +133,12 @@
 
         $content = file_get_contents($zipFileName);
 
-        $credentials = SendinBlue\Client\Configuration::getDefaultConfiguration()->setApiKey('api-key', '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');
-        $apiInstance = new SendinBlue\Client\Api\TransactionalEmailsApi(
+        $config = Brevo\Client\Configuration::getDefaultConfiguration()->setApiKey('api-key', BREVO_API_KEY);
+        $apiInstance = new Brevo\Client\Api\TransactionalEmailsApi(
             new GuzzleHttp\Client(),
-            $credentials
+            $config
         );
-        $sendSmtpEmail = new \SendinBlue\Client\Model\SendSmtpEmail([
+        $sendSmtpEmail = new \Brevo\Client\Model\SendSmtpEmail([
             'subject' => 'Backup SQL File',
             'sender' => ['name' => 'WeaveManila Company', 'email' => 'janzendelacruz28@gmail.com'],
             'to' => [['email' => $payload['email']]],

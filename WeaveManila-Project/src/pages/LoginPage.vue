@@ -1,126 +1,114 @@
 <template>
-  <q-page class="md:flex bg-[#9e896a] relative ">
-    <q-img
-      src="../assets/images/login_images.jpg"
-      alt="Description of the image"
-      class=" min-[390px]:right-[30px] min-[390px]:top-[88px] w-[328px] md:w-[550px] absolute md:top-[50px] md:right-[250px] rounded-[32px]"
-    />
-    <div class="bg-[#9e896a]  md:bg-white md:w-[800px] p-4 h-64 md:h-screen">
-      <q-img
-        :src="getCompanyImagePath()"
-        alt="Description of the image"
-        class="w-[46px] md:w-[86px] mt-8"
-      />
-      <div class=" w-[550px]">
-        <div class="p-4 mt-8 w-[340px] min-[390px]:hidden sm:hidden md:block">
+  <q-page class="flex flex-col lg:flex-row min-h-screen overflow-hidden">
+    <!-- Left Container - Sign In Form -->
+    <div class="flex-1 flex flex-col bg-white order-2 lg:order-1">
+      <!-- Logo Section -->
+      <div class="p-6 md:p-8 lg:p-10">
+        <q-img
+          :src="getCompanyImagePath()"
+          alt="Company Logo"
+          class="w-[56px] md:w-[76px] lg:w-[86px]"
+        />
+      </div>
 
-          <div>
-            <p class="text-[15px] ">Welcome to <span class="text-[#9e896a]">Online Production</span>
-            <br><span class="text-[#9e896a]">Monitoring & Inventory Management</span>
-            <br><span class="text-[#9e896a]">System!</span>
-          </p>
-          <p class="font-bold text-4xl mt-10">
-            Login
-          </p>
-          <p>Enter your credentials to access your account</p>
-          <q-form
-            @submit="onSubmit"
-            class="q-gutter-md mt-3"
-          >
-            <q-input
-              v-model="email"
-              label="Email"
-              type="email"
-              outlined
-              dense
-              :no-error-icon="true"
-              :rules="[ruleEmail]"
-            ></q-input>
-            <q-input
-              v-model="password"
-              label="Password"
-              :type="showPassword ? 'text' : 'password'"
-              outlined
-              dense
-              :no-error-icon="true"
-              :rules="[ruleRequired]"
-            >
-              <template v-slot:append>
-                <q-icon
-                  :name="showPassword ? 'visibility_off' : 'visibility'"
-                  class="cursor-pointer"
-                  @click="togglePasswordVisibility"
-                />
-              </template>
-            </q-input>
-            <div v-if="responseStatus === 'fail'" class="text-red-600 text-[11px]   mt-1 ms-7">
-                  {{ responseMessage }}
-            </div>
-            <router-link to="/forgot/reset" class="text-right">Forgot password?</router-link>
+      <!-- Form Container -->
+      <div class="flex-1 flex items-center justify-center px-6 md:px-12 lg:px-16 py-8">
+        <div class="w-full max-w-[440px]">
+          <!-- Welcome Text -->
+          <div class="mb-8 md:mb-10">
+            <p class="text-sm md:text-base text-gray-700 leading-relaxed">
+              Welcome to <span class="text-[#9e896a] font-semibold">Online Production<br>Monitoring & Inventory Management<br>System!</span>
+            </p>
+          </div>
+
+          <!-- Login Header -->
+          <div class="mb-8">
+            <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-3">
+              Login
+            </h1>
+            <p class="text-sm md:text-base text-gray-600">
+              Enter your credentials to access your account
+            </p>
+          </div>
+
+          <!-- Login Form -->
+          <q-form @submit="onSubmit" class="space-y-5">
+            <!-- Email Input -->
             <div>
-              <q-btn label="Login" type="submit" class="bg-[#9e896a] rounded-md w-full text-white"/>
+              <q-input
+                v-model="email"
+                label="Email"
+                type="email"
+                outlined
+                :no-error-icon="true"
+                :rules="[ruleEmail]"
+                class="custom-input"
+              />
+            </div>
+
+            <!-- Password Input -->
+            <div>
+              <q-input
+                v-model="password"
+                label="Password"
+                :type="showPassword ? 'text' : 'password'"
+                outlined
+                :no-error-icon="true"
+                :rules="[ruleRequired]"
+                class="custom-input"
+              >
+                <template v-slot:append>
+                  <q-icon
+                    :name="showPassword ? 'visibility_off' : 'visibility'"
+                    class="cursor-pointer text-gray-500 hover:text-gray-700 transition-colors"
+                    @click="togglePasswordVisibility"
+                  />
+                </template>
+              </q-input>
+            </div>
+
+            <!-- Error Message -->
+            <div v-if="responseStatus === 'fail'" class="text-red-600 text-sm px-1">
+              {{ responseMessage }}
+            </div>
+
+            <!-- Forgot Password Link -->
+            <div class="flex justify-end">
+              <router-link
+                to="/forgot/reset"
+                class="text-sm text-[#9e896a] hover:text-[#8a7759] font-medium transition-colors"
+              >
+                Forgot password?
+              </router-link>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="pt-2">
+              <q-btn
+                label="Login"
+                type="submit"
+                class="w-full bg-[#9e896a] hover:bg-[#8a7759] text-white font-semibold py-3 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg"
+                unelevated
+                no-caps
+              />
             </div>
           </q-form>
-          </div>
         </div>
       </div>
     </div>
-    <div class="min-[390px]:bg-white h-screen md:bg-[#9e896a] ">
-      <div class="p-4 mt-3 md:w-[340px] min-[390px]:block sm:block md:hidden">
-          <div class="mt-[150px]">
-            <p class="text-[16px] text-center">Welcome to <span class="text-[#9e896a]">Online Production</span>
-            <br><span class="text-[#9e896a]">Monitoring & Inventory Management</span>
-            <br><span class="text-[#9e896a]">System!</span>
-          </p>
-          <p class="font-bold text-[24px] mt-10">
-            Login
-          </p>
-          <p class="text-[12px]">Enter your credentials to access your account</p>
-          <q-form
-            @submit="onSubmit"
-            class="q-gutter-md mt-3"
-          >
-            <q-input
-              v-model="email"
-              label="Email"
-              type="email"
-              outlined
-              dense
-              :no-error-icon="true"
-              :rules="[ruleEmail]"
-            ></q-input>
-            <q-input
-              v-model="password"
-              label="Password"
-              :type="showPassword ? 'text' : 'password'"
-              outlined
-              dense
-              :no-error-icon="true"
-              :rules="[ruleRequired]"
-            >
-              <template v-slot:append>
-                <q-icon
-                  :name="showPassword ? 'visibility_off' : 'visibility'"
-                  class="cursor-pointer"
-                  @click="togglePasswordVisibility"
-                />
-              </template>
-            </q-input>
-            <div v-if="responseStatus === 'fail'" class="text-red-600 text-[11px]   mt-1 ms-7">
-                  {{ responseMessage }}
-            </div>
-            <router-link to="/forgot/reset" ><span class="text-right">Forgot password?</span></router-link>
-            <div>
 
-              <q-btn label="Login" type="submit" class="bg-[#9e896a] rounded-md w-full text-white"/>
-            </div>
-          </q-form>
-          </div>
-        </div>
+    <!-- Right Container - Image -->
+    <div class="flex-1 bg-[#9e896a] flex items-center justify-center p-6 md:p-10 lg:p-16 order-1 lg:order-2 min-h-[300px] lg:min-h-screen">
+      <div class="w-full h-full max-w-[600px] max-h-[600px] lg:max-h-[700px]">
+        <q-img
+          src="../assets/images/login_images.jpg"
+          alt="Login Illustration"
+          class="w-full h-full rounded-3xl shadow-2xl object-cover"
+          fit="cover"
+        />
+      </div>
     </div>
   </q-page>
-
-
 </template>
 
 <script>
@@ -213,3 +201,52 @@ export default {
 
 };
 </script>
+
+<style scoped>
+/* Custom input styling */
+:deep(.custom-input .q-field__control) {
+  height: 48px;
+  border-radius: 8px;
+}
+
+:deep(.custom-input .q-field__native) {
+  padding-top: 12px;
+  padding-bottom: 12px;
+}
+
+:deep(.custom-input .q-field__label) {
+  font-size: 14px;
+}
+
+/* Smooth transitions */
+:deep(.q-field__control):hover {
+  border-color: #9e896a;
+}
+
+:deep(.q-field__control):focus-within {
+  border-color: #9e896a;
+}
+
+/* Button hover effect */
+.q-btn:hover {
+  transform: translateY(-1px);
+}
+
+/* Responsive adjustments */
+@media (max-width: 1023px) {
+  .q-page {
+    flex-direction: column;
+  }
+}
+
+/* Mobile landscape optimization */
+@media (max-height: 600px) and (orientation: landscape) {
+  .flex-1.flex.flex-col.bg-white {
+    min-height: auto;
+  }
+
+  .flex-1.bg-\[#9e896a\] {
+    min-height: 250px;
+  }
+}
+</style>

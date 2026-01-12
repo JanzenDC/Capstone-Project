@@ -10,7 +10,8 @@
   header("Access-Control-Allow-Headers: Content-Type");
   header('Content-Type: application/json');
   require_once('../MysqliDb.php');
-  require_once(__DIR__ . '/SendInBlue/vendor/autoload.php');
+  require_once(__DIR__ . '/Brevo/vendor/autoload.php');
+  require_once(__DIR__ . '/config.php');
 
 
   class API{
@@ -61,7 +62,7 @@
         }
         
         if ($addotp) {
-            $config = Brevo\Client\Configuration::getDefaultConfiguration()->setApiKey('api-key', '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');
+            $config = Brevo\Client\Configuration::getDefaultConfiguration()->setApiKey('api-key', BREVO_API_KEY);
             $apiInstance = new Brevo\Client\Api\TransactionalEmailsApi(
                 new GuzzleHttp\Client(),
                 $config
