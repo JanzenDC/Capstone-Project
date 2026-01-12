@@ -6,6 +6,7 @@
 
 // Load environment variables from .env file if it exists
 $envFile = __DIR__ . '/../.env';
+$envLoaded = false;
 if (file_exists($envFile) && is_readable($envFile)) {
     $lines = file($envFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
     foreach ($lines as $line) {
@@ -26,6 +27,7 @@ if (file_exists($envFile) && is_readable($envFile)) {
         if (!empty($name) && !empty($value)) {
             $_ENV[$name] = $value;
             putenv($name . '=' . $value);
+            $envLoaded = true;
         }
     }
 }

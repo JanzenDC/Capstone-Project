@@ -62,6 +62,13 @@
         }
         
         if ($addotp) {
+            // Verify API key is loaded
+            if (!defined('BREVO_API_KEY') || empty(BREVO_API_KEY)) {
+                $response = ['status' => 'fail', 'message' => 'Brevo API key is not configured. Please check your .env file.'];
+                echo json_encode($response);
+                exit;
+            }
+            
             $config = Brevo\Client\Configuration::getDefaultConfiguration()->setApiKey('api-key', BREVO_API_KEY);
             $apiInstance = new Brevo\Client\Api\TransactionalEmailsApi(
                 new GuzzleHttp\Client(),
@@ -153,19 +160,38 @@
                  'params' => ['bodyMessage' => "test"]
             ]);
     
-            $result = $apiInstance->sendTransacEmail($sendSmtpEmail);
-            $response = [
-                'status' => 'success',
-                'message' => 'OTP record updated for the user.',
-                'info' => [
-                    'email' => $user['email'],
-                    'code' => $code,
-                    'isChangingPass' => 1,
-                    
-                ]
-            ];
-            echo json_encode($response);
-            exit;
+            try {
+                $result = $apiInstance->sendTransacEmail($sendSmtpEmail);
+                $response = [
+                    'status' => 'success',
+                    'message' => 'OTP record updated for the user.',
+                    'info' => [
+                        'email' => $user['email'],
+                        'code' => $code,
+                        'isChangingPass' => 1,
+                        
+                    ]
+                ];
+                echo json_encode($response);
+                exit;
+            } catch (Brevo\Client\ApiException $e) {
+                $errorMessage = $e->getMessage();
+                // Check if it's an API key issue
+                if (strpos($errorMessage, 'API Key is not enabled') !== false || strpos($errorMessage, 'unauthorized') !== false) {
+                    $response = [
+                        'status' => 'fail',
+                        'message' => 'Brevo API key is not enabled. Please enable it in your Brevo dashboard at https://app.brevo.com/settings/keys/api and ensure it has "Send emails" permission.',
+                        'error_code' => 'api_key_not_enabled'
+                    ];
+                } else {
+                    $response = [
+                        'status' => 'fail',
+                        'message' => 'Failed to send email: ' . $errorMessage
+                    ];
+                }
+                echo json_encode($response);
+                exit;
+            }
         } else {
             $response = ['status' => 'fail', 'message' => 'Failed to update OTP record.'];
             echo json_encode($response);
