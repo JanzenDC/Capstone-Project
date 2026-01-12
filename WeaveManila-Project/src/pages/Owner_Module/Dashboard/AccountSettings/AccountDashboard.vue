@@ -277,7 +277,8 @@ import { SessionStorage } from 'quasar';
 import axios from 'axios';
 import SideBar from '../Essentials/SideBar.vue';
 import LogoutTop from '../Essentials/LogoutTop.vue';
-import philippineData from '../../../../javascript/philippine_provinces_cities_municipalities_and_barangays_2019v2.json';
+import philippineDataRaw from '../../../../javascript/philippine_provinces_cities_municipalities_and_barangays_2019v2.json?raw';
+const philippineData = JSON.parse(philippineDataRaw);
 export default {
   components: {
     SideBar,

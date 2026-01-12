@@ -102,9 +102,65 @@ export default configure(function (/* ctx */) {
           // runtimeOnly: false,
 
           // you need to set i18n resource including paths !
-          include: path.resolve(__dirname, './src/i18n/**')
+          include: path.resolve(__dirname, './src/i18n/**'),
+          // Force the plugin to only process files in the i18n directory
+          compositionOnly: true,
+          runtimeOnly: true
         }]
-      ]
+      ],
+
+      extendViteConf (viteConf) {
+        // Fix for i18n plugin conflict with JSON files
+        // The i18n plugin should only process files in the i18n directory
+        if (viteConf.plugins) {
+          for (let i = 0; i < viteConf.plugins.length; i++) {
+            const plugin = viteConf.plugins[i];
+            
+            // Handle different plugin formats (direct object, function, or array)
+            let pluginObj = null;
+            if (plugin && typeof plugin === 'object') {
+              pluginObj = plugin;
+            } else if (plugin && typeof plugin === 'function') {
+              // Plugin might be a function that returns an object
+              try {
+                const result = plugin();
+                if (result && typeof result === 'object') {
+                  pluginObj = result;
+                }
+              } catch (e) {
+                // Ignore
+              }
+            }
+            
+            // Check if this is the i18n plugin
+            if (pluginObj && pluginObj.name === '@intlify/vite-plugin-vue-i18n') {
+              const originalTransform = pluginObj.transform;
+              if (originalTransform) {
+                pluginObj.transform = function(code, id, options) {
+                  // Only process files in the i18n directory
+                  if (id) {
+                    const normalizedId = id.replace(/\\/g, '/');
+                    if (!normalizedId.includes('/src/i18n/')) {
+                      return null;
+                    }
+                  }
+                  // Safely call original transform
+                  try {
+                    if (typeof originalTransform === 'function') {
+                      return originalTransform.call(this, code, id, options);
+                    }
+                  } catch (error) {
+                    // If transform fails, return null to let Vite's default JSON plugin handle it
+                    return null;
+                  }
+                  return null;
+                };
+              }
+              break; // Found and fixed, no need to continue
+            }
+          }
+        }
+      }
     },
 
     // Full list of options: https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#devServer

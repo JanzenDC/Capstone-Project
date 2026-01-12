@@ -531,7 +531,9 @@
 import { useQuasar } from 'quasar';
 import { SessionStorage } from 'quasar';
 import axios from 'axios';
-import philippineData from '../../../../javascript/philippine_provinces_cities_municipalities_and_barangays_2019v2.json';
+// Import JSON as raw string to bypass i18n plugin, then parse it
+import philippineDataRaw from '../../../../javascript/philippine_provinces_cities_municipalities_and_barangays_2019v2.json?raw';
+const philippineData = JSON.parse(philippineDataRaw);
 import SideBar from '../Essentials/SideBar.vue';
 import LogoutTop from '../Essentials/LogoutTop.vue';
 
