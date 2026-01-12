@@ -61,18 +61,18 @@
         }
         
         if ($addotp) {
-            $credentials = SendinBlue\Client\Configuration::getDefaultConfiguration()->setApiKey('api-key', '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');
-            $apiInstance = new SendinBlue\Client\Api\TransactionalEmailsApi(
+            $config = Brevo\Client\Configuration::getDefaultConfiguration()->setApiKey('api-key', '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');
+            $apiInstance = new Brevo\Client\Api\TransactionalEmailsApi(
                 new GuzzleHttp\Client(),
-                $credentials
+                $config
             );
             $recipient = $payload['email'];
             $validEmail = $payload['email'];
             $code =  $payload['code'];
-            $sendSmtpEmail = new \SendinBlue\Client\Model\SendSmtpEmail([
+            $sendSmtpEmail = new \Brevo\Client\Model\SendSmtpEmail([
                  'subject' => 'Verification Code',
                  'sender' => ['name' => 'WeaveManila Company', 'email' => 'janzendelacruz28@gmail.com'],
-                 'replyTo' => ['name' => 'Sendinblue', 'email' => 'no-reply@gmail.com'],
+                 'replyTo' => ['name' => 'Brevo', 'email' => 'no-reply@gmail.com'],
                  'to' => [[ 'name' => $recipient, 'email' => $validEmail]],
                  'htmlContent' => '
                     <!DOCTYPE html>

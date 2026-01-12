@@ -10,7 +10,6 @@
   header("Access-Control-Allow-Headers: Content-Type");
   header('Content-Type: application/json');
   require_once('../MysqliDb.php');
-  require_once(__DIR__ . '/SendInBlue/vendor/autoload.php');
 
 
   class API{

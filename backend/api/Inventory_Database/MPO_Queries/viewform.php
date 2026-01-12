@@ -78,16 +78,16 @@
                 $pdfContent = file_get_contents($tempFilePath);
     
                 // Create a new instance of TransactionalEmailsApi
-                $credentials = SendinBlue\Client\Configuration::getDefaultConfiguration()->setApiKey('api-key', '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');
-                $apiInstance = new SendinBlue\Client\Api\TransactionalEmailsApi(
+                $config = Brevo\Client\Configuration::getDefaultConfiguration()->setApiKey('api-key', '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');
+                $apiInstance = new Brevo\Client\Api\TransactionalEmailsApi(
                     new GuzzleHttp\Client(),
-                    $credentials
+                    $config
                 );
                 // Prepare the email data
-                $sendSmtpEmail = new \SendinBlue\Client\Model\SendSmtpEmail([
+                $sendSmtpEmail = new \Brevo\Client\Model\SendSmtpEmail([
                     'subject' => 'Purchase Order Request',
                     'sender' => ['name' => 'WeaveManila Company', 'email' => 'janzendelacruz28@gmail.com'],
-                    'replyTo' => ['name' => 'Sendinblue', 'email' => 'no-reply@gmail.com'],
+                    'replyTo' => ['name' => 'Brevo', 'email' => 'no-reply@gmail.com'],
                     'to' => [['name' => $supplierEmail, 'email' => $supplierEmail]],
                     'htmlContent' => 'WeaveManila is reaching out to express our interest in buying  some list of items as specified in the attached purchase order request. Please find the detailed request in the PDF document attached.
                     
